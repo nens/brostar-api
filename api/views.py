@@ -27,8 +27,7 @@ class ImportTaskView(generics.ListAPIView):
     queryset = models.ImportTask.objects.all()
 
     def get(self, request, *args, **kwargs):
-        """List of all Import Tasks.
-        """
+        """List of all Import Tasks."""
         return self.list(request, *args, **kwargs)
 
     def post(self, request):
@@ -37,12 +36,12 @@ class ImportTaskView(generics.ListAPIView):
         """
 
         serializer = serializers.ImportTaskSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             import_task_instance = serializer.save()
-        
+
             # Collect the relevant data
-            bro_object_type = request.data.get('bro_object_type')
+            bro_object_type = request.data.get("bro_object_type")
             import_task_instance_uuid = import_task_instance.uuid
             user_profile = models.UserProfile.objects.get(user=request.user)
             organisation = user_profile.organisation
@@ -55,21 +54,27 @@ class ImportTaskView(generics.ListAPIView):
 
             # Start the celery task
             tasks.import_bro_data_task.delay(import_task_instance_uuid)
-            
+
             # Get the dynamic URL using reverse
-            url = reverse('api:import-task-detail', kwargs={'uuid': import_task_instance.uuid})
+            url = reverse(
+                "api:import-task-detail", kwargs={"uuid": import_task_instance.uuid}
+            )
             full_url = request.build_absolute_uri(url)
 
-            return Response({'message': f'Succesfully received the import taks request. Check {full_url} for the status of the import task.'}, status=status.HTTP_201_CREATED)
-        
+            return Response(
+                {
+                    "message": f"Succesfully received the import taks request. Check {full_url} for the status of the import task."
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 
 class ImportTaskDetailView(generics.RetrieveAPIView):
     queryset = models.ImportTask.objects.all()
     serializer_class = serializers.ImportTaskSerializer
-    lookup_field = 'uuid'
+    lookup_field = "uuid"
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
