@@ -1,18 +1,18 @@
 import requests
-from abc import ABC, abstractmethod
 
 from django.conf import settings
 from .. import models
+from . import object_import
 
 class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
 
-class BROImporter(ABC):
-    """ Imports data from the BRO 'uitgifteservice' and saves it into the Django datamodel.
+class BulkImporter:
+    """ Imports data from the BRO for a given KVK and BRO domain.
     
-    It first fetches all BRO id's for the given BRO object type.
+    It first fetches all BRO id's for the given BRO domain and KVK number.
     Then loops over all id's to import the data if its object.
-    Saves the data in the corresponding datamodel in this project.
+    Finally, it saves the data in the corresponding datamodel in the database.
     """
 
     def __init__(self, import_task_instance_uuid):
@@ -23,19 +23,27 @@ class BROImporter(ABC):
         self.organisation = self.import_task_instance.organisation
         self.kvk_number = self.organisation.kvk_number
 
+        # Lookup the right importer class to initiate for obje
+        object_importer_mapping = {
+            "GMN":object_import.GMNObjectImporter,
+            "GMW":object_import.GMWObjectImporter,
+            "GLD":object_import.GLDObjectImporter,
+            "FRD":object_import.FRDObjectImporter,
+        }
+
+        self.object_importer = object_importer_mapping[self.bro_domain]
+
     def run(self):
-        """ Handles the complete import process.
-        """
         bro_ids = self._fetch_bro_ids()
         
         for bro_id in bro_ids:
-            self._import_bro_object_data(bro_id)
+            self.object_importer(bro_id).hi()
 
     def _fetch_bro_ids(self) -> list:
         """Fetch BRO IDs from the provided URL.
 
         Returns:
-            dict: The fetched BRO IDs.
+            list: The fetched BRO IDs.
         """
         url = self._create_bro_ids_import_url()
 
@@ -56,25 +64,3 @@ class BROImporter(ABC):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
         return url
     
-    #TODO: Deze hoeft nog niet abstract. Maak deze normaal: pak url met method, fetch data, en dan pas een abstract method aanroepen die de data verwerkt
-    @abstractmethod
-    def _import_bro_object_data(self, bro_id):
-        """ Handles the import of the object specific data from the BRO.
-        
-        This abstract method varies for each BRO object type, but the generic setup is:
-            1) generate the url
-            2) fetch the data
-            3) and save the data to the database.
-        """
-        
-    
-class GMNImporter(BROImporter):
-    pass
-class GMWImporter(BROImporter):
-    pass
-
-class GLDImporter(BROImporter):
-    pass
-
-class FRDImporter(BROImporter):
-    pass

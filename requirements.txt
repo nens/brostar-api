@@ -6,3 +6,5 @@ redis
 flower
 requests
 markdown
+pytest
+pytest-django
