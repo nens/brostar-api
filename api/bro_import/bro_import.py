@@ -56,8 +56,9 @@ class BROImporter(ABC):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
         return url
     
+    #TODO: Deze hoeft nog niet abstract. Maak deze normaal: pak url met method, fetch data, en dan pas een abstract method aanroepen die de data verwerkt
     @abstractmethod
-    def _import_bro_object_data(self):
+    def _import_bro_object_data(self, bro_id):
         """ Handles the import of the object specific data from the BRO.
         
         This abstract method varies for each BRO object type, but the generic setup is:
@@ -65,11 +66,10 @@ class BROImporter(ABC):
             2) fetch the data
             3) and save the data to the database.
         """
-        pass
+        
     
 class GMNImporter(BROImporter):
     pass
-
 class GMWImporter(BROImporter):
     pass
 
