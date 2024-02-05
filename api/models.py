@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 class Organisation(models.Model):
@@ -8,3 +9,10 @@ class Organisation(models.Model):
 
     def __str__(self):
         return self.name
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    organization = models.ForeignKey('Organisation', on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
