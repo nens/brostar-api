@@ -8,7 +8,7 @@ class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
 
 class BulkImporter:
-    """ Imports data from the BRO for a given KVK and BRO domain.
+    """ Imports bulk data from the BRO for a given KVK and BRO domain.
     
     It first fetches all BRO id's for the given BRO domain and KVK number.
     Then loops over all id's to import the data if its object.
@@ -31,14 +31,14 @@ class BulkImporter:
             "FRD":object_import.FRDObjectImporter,
         }
 
-        self.object_importer = object_importer_mapping[self.bro_domain]
+        self.object_importer_class = object_importer_mapping[self.bro_domain]
 
     def run(self):
         url = self._create_bro_ids_import_url()
         bro_ids = self._fetch_bro_ids(url)
         
         for bro_id in bro_ids:
-            data_importer = self.object_importer(bro_id)
+            data_importer = self.object_importer_class(self.bro_domain, bro_id)
             data_importer.run()
 
     def _create_bro_ids_import_url(self) -> str:
