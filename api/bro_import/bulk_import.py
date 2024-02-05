@@ -34,19 +34,26 @@ class BulkImporter:
         self.object_importer = object_importer_mapping[self.bro_domain]
 
     def run(self):
-        bro_ids = self._fetch_bro_ids()
+        url = self._create_bro_ids_import_url()
+        bro_ids = self._fetch_bro_ids(url)
         
         for bro_id in bro_ids:
-            self.object_importer(bro_id)
+            data_importer = self.object_importer(bro_id)
+            data_importer.run()
 
-    def _fetch_bro_ids(self) -> list:
+    def _create_bro_ids_import_url(self) -> str:
+        """ Creates the import url for a given bro object type and kvk combination.       
+        """
+        bro_domain = self.bro_domain.lower()
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
+        return url
+
+    def _fetch_bro_ids(self, url) -> list:
         """Fetch BRO IDs from the provided URL.
 
         Returns:
             list: The fetched BRO IDs.
         """
-        url = self._create_bro_ids_import_url()
-
         try:
             r = requests.get(url)
             r.raise_for_status() 
@@ -56,11 +63,4 @@ class BulkImporter:
         
         except requests.RequestException as e:
             raise FetchBROIDsError(f"Error fetching BRO IDs from {url}: {e}") from e
-        
-    def _create_bro_ids_import_url(self) -> str:
-        """ Creates the import url for a given bro object type and kvk combination.       
-        """
-        bro_domain = self.bro_domain.lower()
-        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
-        return url
-    
+           
