@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . import models
+from .auth import models
 
 admin.site.register(models.Organisation)
 admin.site.register(models.UserProfile)
