@@ -8,6 +8,6 @@ def import_view(request):
     bro_object = data.get('bro_object')
     kvk_number = data.get('kvk_number')
 
-    tasks.import_task.delay(bro_object, kvk_number)
+    tasks.import_bro_data_task.delay(bro_object, kvk_number)
 
     return Response({'message': 'Task scheduled successfully'})
