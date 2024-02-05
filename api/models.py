@@ -34,7 +34,7 @@ class ImportTask(models.Model):
         ("FAILED", "Failed"),
     ]
 
-    BRO_OBJECT_CHOICES = [
+    BRO_DOMAIN_CHOICES = [
         ("GMN", "GMN"),
         ("GMW", "GMW"),
         ("GLD", "GLD"),
@@ -42,8 +42,8 @@ class ImportTask(models.Model):
     ]
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bro_object_type = models.CharField(
-        max_length=3, choices=BRO_OBJECT_CHOICES, default=None
+    bro_domain = models.CharField(
+        max_length=3, choices=BRO_DOMAIN_CHOICES, default=None
     )
     organisation = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
@@ -56,4 +56,4 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.bro_object_type} import - {self.organisation} ({self.created_at})"
+        return f"{self.bro_domain} import - {self.organisation} ({self.created_at})"
