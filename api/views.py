@@ -42,19 +42,19 @@ class ImportTaskView(generics.ListAPIView):
             import_task_instance = serializer.save()
         
             # Collect the relevant data
-            input_data = json.dumps(request.data)
+            bro_object_type = request.data.get('bro_object_type')
             import_task_instance_uuid = import_task_instance.uuid
-
             user_profile = models.UserProfile.objects.get(user=request.user)
             organisation = user_profile.organisation
 
             # Update the instance of the new task
             import_task_instance.status = "PENDING"
             import_task_instance.organisation = organisation
+            import_task_instance.bro_object_type = bro_object_type
             import_task_instance.save()
 
             # Start the celery task
-            tasks.import_bro_data_task.delay(import_task_instance_uuid, input_data)
+            tasks.import_bro_data_task.delay(import_task_instance_uuid)
             
             # Get the dynamic URL using reverse
             url = reverse('api:import-task-detail', kwargs={'uuid': import_task_instance.uuid})

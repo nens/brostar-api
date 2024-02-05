@@ -37,7 +37,7 @@ class ImportTask(models.Model):
     ]
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    bro_object = models.CharField(max_length=3, choices=BRO_OBJECT_CHOICES, default=None)
+    bro_object_type = models.CharField(max_length=3, choices=BRO_OBJECT_CHOICES, default=None)
     organisation = models.ForeignKey(Organisation, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -45,5 +45,5 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f'{self.organisation}-{self.bro_object} import ({self.created_at})'
+        return f'{self.bro_object} import - {self.organisation} ({self.created_at})'
     
