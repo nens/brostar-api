@@ -56,4 +56,4 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.bro_object} import - {self.organisation} ({self.created_at})"
+        return f"{self.bro_object_type} import - {self.organisation} ({self.created_at})"
