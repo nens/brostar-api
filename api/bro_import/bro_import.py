@@ -65,7 +65,16 @@ class BROImporter(ABC):
             2) fetch the data
             3) and save the data to the database.
         """
+        pass
     
-    
+class GMNImporter(BROImporter):
+    pass
 
+class GMWImporter(BROImporter):
+    pass
 
+class GLDImporter(BROImporter):
+    pass
+
+class FRDImporter(BROImporter):
+    pass
