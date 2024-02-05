@@ -23,6 +23,8 @@ def import_bro_data_task(import_task_instance_uuid):
     
     try:
         importer.run()
+        import_task_instance.status = "COMPLETED"
+        import_task_instance.save()
     except Exception as e:
         import_task_instance.log = e
         import_task_instance.status = "FAILED"

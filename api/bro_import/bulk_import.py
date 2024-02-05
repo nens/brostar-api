@@ -37,7 +37,7 @@ class BulkImporter:
         bro_ids = self._fetch_bro_ids()
         
         for bro_id in bro_ids:
-            self.object_importer(bro_id).hi()
+            self.object_importer(bro_id)
 
     def _fetch_bro_ids(self) -> list:
         """Fetch BRO IDs from the provided URL.
