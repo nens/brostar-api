@@ -7,3 +7,6 @@ class GMN(models.Model):
 
     def __str__(self):
         return self.bro_id
+
+    class Meta:
+        verbose_name_plural = "GMN's"
