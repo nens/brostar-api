@@ -2,5 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('import/', views.import_view, name='import'),
+    path('import-tasks/', views.ImportTaskView.as_view(), name='import-tasks-list'),
+    path('import-tasks/<uuid:uuid>/', views.ImportTaskDetailView.as_view(), name='import-task-detail'),
 ]
