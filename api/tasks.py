@@ -19,10 +19,9 @@ def import_bro_data_task(import_task_instance_uuid):
     importer = bro_import.BROImporter(import_task_instance_uuid)
     
     try:
-        bro_ids = importer.fetch_bro_ids()
-    except bro_import.FetchBROIDsError as e:
+        importer.run()
+    except Exception as e:
         import_task_instance.log = e
         import_task_instance.status = "FAILED"
         import_task_instance.save()
 
-    print(bro_ids)

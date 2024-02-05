@@ -22,7 +22,13 @@ class BROImporter:
         self.organisation = self.import_task_instance.organisation
         self.kvk_number = self.organisation.kvk_number
 
-    def fetch_bro_ids(self) -> list:
+    def run(self):
+        """ Handles the complete import process.
+        """
+        bro_ids = self._fetch_bro_ids()
+        print(bro_ids)
+
+    def _fetch_bro_ids(self) -> list:
         """Fetch BRO IDs from the provided URL.
 
         Returns:
