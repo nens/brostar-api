@@ -3,6 +3,8 @@ import json
 from rest_framework import status, generics
 from django.contrib.auth.models import User
 from rest_framework.response import Response
+from django.urls import reverse
+
 from . import tasks
 from . import serializers
 from . import models
@@ -37,27 +39,28 @@ class ImportTaskView(generics.ListAPIView):
         serializer = serializers.ImportTaskSerializer(data=request.data)
         
         if serializer.is_valid():
-            instance = serializer.save()
+            import_task_instance = serializer.save()
         
             # Collect the relevant data
             input_data = json.dumps(request.data)
-            instance_uuid = instance.uuid
+            import_task_instance_uuid = import_task_instance.uuid
 
             user_profile = models.UserProfile.objects.get(user=request.user)
             organisation = user_profile.organisation
-            organisation_uuid = organisation.uuid
 
-            # Update the status of the new task
-            instance.status = "PENDING"
-            instance.organisation = organisation
-            instance.save()
+            # Update the instance of the new task
+            import_task_instance.status = "PENDING"
+            import_task_instance.organisation = organisation
+            import_task_instance.save()
 
             # Start the celery task
-            tasks.import_bro_data_task.delay(instance_uuid, input_data, organisation_uuid)
+            tasks.import_bro_data_task.delay(import_task_instance_uuid, input_data)
             
-            # Handle the response
-            url = f"http://localhost:8000/api/import-tasks/{instance.uuid}/"
-            return Response({'message': f'Succesfully received the data. Check {url} for the status of the import task.'}, status=status.HTTP_201_CREATED)
+            # Get the dynamic URL using reverse
+            url = reverse('api:import-task-detail', kwargs={'uuid': import_task_instance.uuid})
+            full_url = request.build_absolute_uri(url)
+
+            return Response({'message': f'Succesfully received the import taks request. Check {full_url} for the status of the import task.'}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
