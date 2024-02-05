@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +128,16 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# DRF configuration
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10
+}
+
+# Celery configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  
+
+
+# Automatically discover tasks in Django app
+CELERY_IMPORTS = ('api.tasks', ) 
