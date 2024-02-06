@@ -8,3 +8,4 @@ requests
 markdown
 pytest
 pytest-django
+xmltodict
