@@ -12,9 +12,9 @@ from . import models
 class APIOverview(views.APIView):
     def get(self, request, format=None):
         data = {
-            'import-tasks': drf_reverse('api:import-tasks-list', request=request, format=format),
-            'gmns': drf_reverse('api:gmn:gmns-list', request=request, format=format),
-            'measuringpoints': drf_reverse('api:gmn:measuringpoints-list', request=request, format=format),
+            'importtasks': drf_reverse('api:importtask-list', request=request, format=format),
+            'gmns': drf_reverse('api:gmn:gmn-list', request=request, format=format),
+            'measuringpoints': drf_reverse('api:gmn:measuringpoint-list', request=request, format=format),
         }
         return Response(data)
 
@@ -65,7 +65,7 @@ class ImportTaskView(generics.ListAPIView):
 
             # Get the dynamic URL using reverse
             url = reverse(
-                "api:import-task-detail", kwargs={"uuid": import_task_instance.uuid}
+                "api:importtask-detail", kwargs={"uuid": import_task_instance.uuid}
             )
             full_url = request.build_absolute_uri(url)
 
