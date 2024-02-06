@@ -19,6 +19,8 @@ class GMN(models.Model):
     start_date_monitoring = models.DateField(blank=True, null=True)
     object_registration_time = models.DateTimeField(blank=True, null=True)
     registration_status = models.CharField(max_length=50, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.bro_id
@@ -40,6 +42,8 @@ class Measuringpoint(models.Model):
     gmw_bro_id = models.CharField(max_length=50, blank=True, null=True)
     tube_number = models.CharField(max_length=50, blank=True, null=True)
     tube_start_date = models.DateField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.measuringpoint_code
