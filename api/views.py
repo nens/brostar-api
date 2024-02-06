@@ -1,14 +1,22 @@
 import json
 
-from rest_framework import status, generics
-from django.contrib.auth.models import User
+from rest_framework import status, generics, views
 from rest_framework.response import Response
 from django.urls import reverse
+from rest_framework.reverse import reverse as drf_reverse
 
 from . import tasks
 from . import serializers
 from . import models
 
+class APIOverview(views.APIView):
+    def get(self, request, format=None):
+        data = {
+            'import-tasks': drf_reverse('api:import-tasks-list', request=request, format=format),
+            'gmns': drf_reverse('api:gmn:gmns-list', request=request, format=format),
+            'measuringpoints': drf_reverse('api:gmn:measuringpoints-list', request=request, format=format),
+        }
+        return Response(data)
 
 class ImportTaskView(generics.ListAPIView):
     """
