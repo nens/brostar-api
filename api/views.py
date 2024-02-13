@@ -1,5 +1,3 @@
-import json
-
 from rest_framework import status, generics, views
 from rest_framework.response import Response
 from django.urls import reverse
