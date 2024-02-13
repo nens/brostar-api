@@ -1,10 +1,11 @@
 import uuid
 
 from django.db import models
+from api import choices
 
 
 class GMN(models.Model):
-    """ Monitoring
+    """Groundwater Monitoring Network
     
     The abbreviation GMN was intentionally chosen, as it is the commonly used term in BRO land."""
 
@@ -29,7 +30,7 @@ class GMN(models.Model):
         verbose_name_plural = "GMN's"
 
 class Measuringpoint(models.Model):
-    """ A measuringpoint is a single object in a GMN.
+    """A measuringpoint is a single object in a GMN.
     
     However, a measuring point is NOT a physical measuring point,
     but rather an abstraction of it. It is linked to a physical GMW monitoringtube, 
@@ -47,3 +48,40 @@ class Measuringpoint(models.Model):
 
     def __str__(self):
         return self.measuringpoint_code
+
+
+class GMNStartregistration(models.Model):
+    """GMN Startregistrations"""
+    
+    REQUEST_TYPE_OPTIONS = {
+        "register":"register",
+        "replace":"replace",
+        "move":"move",
+    }
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)   
+    request_type = models.CharField(
+        blank=False, max_length=235, choices=REQUEST_TYPE_OPTIONS
+    )
+    request_reference = models.CharField(max_length=150, blank=False)
+    delivery_accountable_party = models.CharField(max_length=150, blank=False)
+    quality_regime = models.CharField(
+        blank=False, max_length=235, choices=choices.QUALITY_REGIME_OPTIONS
+    )
+    object_id_accountable_party = models.CharField(max_length=150, blank=False)
+    name = models.CharField(max_length=150, blank=False)
+    delivery_context =  models.CharField(
+        blank=False, max_length=235, choices=choices.DELIVERY_CONTEXT_OPTIONS
+    )
+    monitoring_purpose =  models.CharField(
+        blank=False, max_length=235, choices=choices.MONITORING_PURPOSE_OPTIONS
+    )
+    groundwater_aspect =  models.CharField(
+        blank=False, max_length=235, choices=choices.GROUNDWATER_ASPECT_OPTIONS
+    )
+    start_date_monitoring = models.DateField(blank=False, null=True)
+
+    def __str__(self) -> str:
+        return self.request_reference
