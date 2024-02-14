@@ -3,4 +3,3 @@ from . import models
 
 admin.site.register(models.GMN)
 admin.site.register(models.Measuringpoint)
-admin.site.register(models.GMNStartregistration)

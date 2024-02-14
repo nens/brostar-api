@@ -11,12 +11,13 @@ class APIOverview(views.APIView):
     def get(self, request, format=None):
         data = {
             'importtasks': drf_reverse('api:importtask-list', request=request, format=format),
+            'uploadtasks': drf_reverse('api:uploadtask-list', request=request, format=format),
             'gmns': drf_reverse('api:gmn:gmn-list', request=request, format=format),
             'measuringpoints': drf_reverse('api:gmn:measuringpoint-list', request=request, format=format),
         }
         return Response(data)
 
-class ImportTaskView(generics.ListAPIView):
+class ImportTaskListView(generics.ListAPIView):
     """
     This endpoint handles the import of data from the BRO.
     As input, it takes one of the four possible BRO Objects (GMN, GMW, GLD, FRD).
@@ -47,7 +48,6 @@ class ImportTaskView(generics.ListAPIView):
             import_task_instance = serializer.save()
 
             # Collect the relevant data
-            bro_domain = request.data.get("bro_domain")
             import_task_instance_uuid = import_task_instance.uuid
             user_profile = models.UserProfile.objects.get(user=request.user)
             organisation = user_profile.organisation
@@ -55,7 +55,6 @@ class ImportTaskView(generics.ListAPIView):
             # Update the instance of the new task
             import_task_instance.status = "PENDING"
             import_task_instance.organisation = organisation
-            import_task_instance.bro_domain = bro_domain
             import_task_instance.save()
 
             # Start the celery task
@@ -86,3 +85,63 @@ class ImportTaskDetailView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UploadTaskListView(generics.ListAPIView):
+    """This endpoint handles the upload of data to the BRO.
+
+    It takes the registration type, request type and the sourcedocument data as input.
+    This API handles the transformation, validation and delivery of the data.
+    The status of this proces can be followed in the generated upload task instance.
+    """
+
+    serializer_class = serializers.UploadTaskSerializer
+    queryset = models.UploadTask.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        """List of all Upload Tasks."""
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request):
+        """
+        Initialize an upload task by posting the bro_domain, registartion_type, request_type, and the sourcedocument_data
+        """
+
+        serializer = serializers.UploadTaskSerializer(data=request.data)
+
+        if serializer.is_valid():
+            upload_task_instance = serializer.save()
+
+            # Update the instance of the new task
+            upload_task_instance.status = "PENDING"
+            upload_task_instance.save()
+
+            # Start the celery task
+            tasks.upload_bro_data_task.delay(upload_task_instance.uuid)
+
+            # Get the dynamic URL using reverse
+            url = reverse(
+                "api:uploadtask-detail", kwargs={"uuid": upload_task_instance.uuid}
+            )
+            full_url = request.build_absolute_uri(url)
+
+            return Response(
+                {
+                    "message": f"Succesfully received the upload taks request. Check {full_url} for the status of the import task."
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UploadTaskDetailView(generics.RetrieveAPIView):
+    queryset = models.UploadTask.objects.all()
+    serializer_class = serializers.UploadTaskSerializer
+    lookup_field = "uuid"
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

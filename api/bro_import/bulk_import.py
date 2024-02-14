@@ -1,7 +1,6 @@
 import requests
 
 from django.conf import settings
-from .. import models
 from . import object_import
 
 class FetchBROIDsError(Exception):
@@ -15,10 +14,8 @@ class BulkImporter:
     Finally, it saves the data in the corresponding datamodel in the database.
     """
 
-    def __init__(self, import_task_instance_uuid):
-        self.import_task_instance = models.ImportTask.objects.get(
-            uuid=import_task_instance_uuid
-        )
+    def __init__(self, import_task_instance) -> None:
+        self.import_task_instance = import_task_instance
         self.bro_domain = self.import_task_instance.bro_domain
         self.organisation = self.import_task_instance.organisation
         self.kvk_number = self.organisation.kvk_number
@@ -33,7 +30,7 @@ class BulkImporter:
 
         self.object_importer_class = object_importer_mapping[self.bro_domain]
 
-    def run(self):
+    def run(self) -> None:
         url = self._create_bro_ids_import_url()
         bro_ids = self._fetch_bro_ids(url)
         

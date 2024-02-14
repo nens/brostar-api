@@ -1,7 +1,10 @@
+import json
 from rest_framework import generics, status
 from rest_framework.response import Response
+from django.urls import reverse
 from . import serializers
 from . import models
+from api import tasks
 
 class GMNView(generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
@@ -38,3 +41,4 @@ class MeasuringpointDetailView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    

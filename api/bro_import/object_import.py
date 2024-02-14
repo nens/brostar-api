@@ -22,11 +22,11 @@ class ObjectImporter(ABC):
         3) Translation from XML to JSON
         4) Save actions into the database
     """
-    def __init__(self, bro_domain, bro_id):
+    def __init__(self, bro_domain, bro_id) -> None:
         self.bro_domain = bro_domain
         self.bro_id = bro_id
 
-    def run(self):
+    def run(self) -> None:
         url = self._create_download_url()
         xml_data = self._download_xml(url)
         json_data = self._convert_xml_to_json(xml_data)
@@ -62,7 +62,7 @@ class GMNObjectImporter(ObjectImporter):
     def _save_data_to_database(self, json_data: Dict[str, Any]):
         gmn_data, measuringpoint_data = self._split_json_data(json_data)
                     
-        gmn_object = self._save_gmn_data(gmn_data)
+        self._save_gmn_data(gmn_data)
         self._save_measuringpoint_data(measuringpoint_data)
 
     def _split_json_data(self, json_data: Dict[str, Any]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:

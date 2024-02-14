@@ -1,57 +1,26 @@
-QUALITY_REGIME_OPTIONS = (
-        ("IMBRO", "IMBRO"),
-        ("IMBRO/A", "IMBRO/A"),
-)
+STATUS_CHOICES = [
+    ("PENDING", "Pending"),
+    ("PROCESSING", "Processing"),
+    ("COMPLETED", "Completed"),
+    ("FAILED", "Failed"),
+]
 
-DELIVERY_CONTEXT_OPTIONS = (
-    ("waterwetStrategischGrondwaterbeheer", "waterwetStrategischGrondwaterbeheer"),
-    ("waterwetGrondwaterzorgplicht", "waterwetGrondwaterzorgplicht"),
-    ("waterwetOnttrekkingInfiltratie", "waterwetOnttrekkingInfiltratie"),
-    ("waterwetPeilbeheer", "waterwetPeilbeheer"),
-    (
-        "waterwetWaterstaatswerkAanlegWijziging",
-        "waterwetWaterstaatswerkAanlegWijziging",
-    ),
-    ("waterwetWaterstaatswerkIngreep", "waterwetWaterstaatswerkIngreep"),
-    ("waterwetWaterstaatswerkBeheer", "waterwetWaterstaatswerkBeheer"),
-    ("kaderrichtlijnWater", "kaderrichtlijnWater"),
-    ("waterschapswet", "waterschapswet"),
-    ("drinkwaterwet", "drinkwaterwet"),
-    ("ontgrondingenwet", "ontgrondingenwet"),
-    ("wetNatuurbescherming", "wetNatuurbescherming"),
-)
+BRO_DOMAIN_CHOICES = [
+    ("GMN", "GMN"),
+    ("GMW", "GMW"),
+    ("GLD", "GLD"),
+    ("FRD", "FRD"),
+]
 
-MONITORING_PURPOSE_OPTIONS = (
-    ("strategischBeheerKwaliteitLandelijk", "strategischBeheerKwaliteitLandelijk"),
-    ("strategischBeheerKwantiteitLandelijk", "strategischBeheerKwantiteitLandelijk"),
-    ("strategischBeheerKwaliteitRegionaal", "strategischBeheerKwaliteitRegionaal"),
-    ("strategischBeheerKwantiteitRegionaal", "strategischBeheerKwantiteitRegionaal"),
-    ("beheersingStedelijkGebied", "beheersingStedelijkGebied"),
-    ("gevolgenOnttrekkingKwaliteit", "gevolgenOnttrekkingKwaliteit"),
-    ("gevolgenOnttrekkingKwantiteit", "gevolgenOnttrekkingKwantiteit"),
-    ("gevolgenPeilbeheer", "gevolgenPeilbeheer"),
-    ("gevolgenWaterstaatswerkKwaliteit", "gevolgenWaterstaatswerkKwaliteit"),
-    ("gevolgenWaterstaatswerkKwantiteit", "gevolgenWaterstaatswerkKwantiteit"),
-    ("waterstaatswerkBeheerKwaliteit", "waterstaatswerkBeheerKwaliteit"),
-    ("waterstaatswerkBeheerKwantiteit", "waterstaatswerkBeheerKwantiteit"),
-    ("veiligstellingGrondwaterKwaliteit", "veiligstellingGrondwaterKwaliteit"),
-    ("veiligstellingGrondwaterKwantiteit", "veiligstellingGrondwaterKwantiteit"),
-    ("waterstaatkundigeVerzorgingKwaliteit", "waterstaatkundigeVerzorgingKwaliteit"),
-    ("waterstaatkundigeVerzorgingKwantiteit", "waterstaatkundigeVerzorgingKwantiteit"),
-    (
-        "veiligstellingDrinkwatervoorzieningKwaliteit",
-        "veiligstellingDrinkwatervoorzieningKwaliteit",
-    ),
-    (
-        "veiligstellingDrinkwatervoorzieningKwantiteit",
-        "veiligstellingDrinkwatervoorzieningKwantiteit",
-    ),
-    ("gevolgenOntgronding", "gevolgenOntgronding"),
-    ("natuurbescherming", "natuurbescherming"),
-    ("natuurbeheer", "natuurbeheer"),
-)
+REGISTRATION_TYPE_OPTIONS = [
+    ("GMN_StartRegistration", "GMN_StartRegistration"),
+]
 
-GROUNDWATER_ASPECT_OPTIONS = (
-    ("kwaliteit", "kwaliteit"),
-    ("kwantiteit", "kwantiteit"),
-)
+REQUEST_TYPE_OPTIONS = [
+    ("register", "register"),
+    ("replace", "replace"),
+    ("move", "move"),
+    ("insert", "insert"),
+    ("delete", "delete"),
+]
+

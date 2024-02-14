@@ -1,6 +1,9 @@
 import uuid
 
 from django.contrib.auth.models import User
+from django.db.models import JSONField
+
+from . import choices
 from django.db import models
 
 
@@ -29,23 +32,9 @@ class UserProfile(models.Model):
 
 
 class ImportTask(models.Model):
-    STATUS_CHOICES = [
-        ("PENDING", "Pending"),
-        ("PROCESSING", "Processing"),
-        ("COMPLETED", "Completed"),
-        ("FAILED", "Failed"),
-    ]
-
-    BRO_DOMAIN_CHOICES = [
-        ("GMN", "GMN"),
-        ("GMW", "GMW"),
-        ("GLD", "GLD"),
-        ("FRD", "FRD"),
-    ]
-
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bro_domain = models.CharField(
-        max_length=3, choices=BRO_DOMAIN_CHOICES, default=None
+        max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
     organisation = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
@@ -53,9 +42,31 @@ class ImportTask(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="PENDING", blank=True
+        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
     )
     log = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.bro_domain} import - {self.organisation} ({self.created_at})"
+
+
+class UploadTask(models.Model): 
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    bro_domain = models.CharField(
+        max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
+    )
+    registration_type = models.CharField(
+        blank=False, max_length=235, choices=choices.REGISTRATION_TYPE_OPTIONS
+    )
+    request_type = models.CharField(
+        blank=False, max_length=235, choices=choices.REQUEST_TYPE_OPTIONS
+    )
+    sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
+    status = models.CharField(max_length=500, blank=True, null=True)
+    log = models.TextField(blank=True)
+    
+    
+    def __str__(self) -> str:
+        return self.request_reference
