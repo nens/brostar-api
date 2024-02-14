@@ -83,5 +83,7 @@ class GMNStartregistration(models.Model):
     )
     start_date_monitoring = models.DateField(blank=False, null=True)
 
+    measuringpoints = models.ForeignKey(Measuringpoint, on_delete=models.SET_NULL, null=True)
+
     def __str__(self) -> str:
         return self.request_reference
