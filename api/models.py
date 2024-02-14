@@ -63,6 +63,7 @@ class UploadTask(models.Model):
     request_type = models.CharField(
         blank=False, max_length=235, choices=choices.REQUEST_TYPE_OPTIONS
     )
+    metadata = JSONField("Metadata", default=dict, blank=False)
     sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(max_length=500, blank=True, null=True)
     log = models.TextField(blank=True)

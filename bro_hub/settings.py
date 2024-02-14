@@ -144,3 +144,4 @@ CELERY_IMPORTS = ("api.tasks",)
 
 # BRO SETTINGS
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
+BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"

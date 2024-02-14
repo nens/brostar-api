@@ -15,7 +15,7 @@ urlpatterns = [
     path("uploadtasks/", views.UploadTaskListView.as_view(), name="uploadtask-list"),
     path(
         "uploadtasks/<uuid:uuid>/",
-        views.UploadTaskListView.as_view(),
+        views.UploadTaskDetailView.as_view(),
         name="uploadtask-detail",
     ),
 ]

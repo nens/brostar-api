@@ -1,6 +1,5 @@
 import requests
 import xmltodict
-import json
 
 from abc import ABC, abstractmethod
 from typing import IO, Dict, Any, List, Tuple

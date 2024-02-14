@@ -86,6 +86,9 @@ class ImportTaskDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+#TODO: add token functionality. Should be a model, which is saved per user/organisation.
+    # In the UploadTaskListView, the token should be passed to the task, so it can be used
+    # to do the delivery
 
 class UploadTaskListView(generics.ListAPIView):
     """This endpoint handles the upload of data to the BRO.
