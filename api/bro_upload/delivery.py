@@ -1,6 +1,7 @@
 import time
+import traceback
 
-from . import mappings
+from . import config
 from lxml.etree import _Element
 
 from . import utils
@@ -49,19 +50,19 @@ class BRODelivery:
         self.request_type = self.upload_task_instance.registration_type
         self.metadata = self.upload_task_instance.metadata
         self.sourcedocument_data = self.upload_task_instance.sourcedocument_data
-        self.xml_generator_class = mappings.xml_generator_mapping.get(
+        self.xml_generator_class = config.xml_generator_mapping.get(
             self.registration_type
         )
 
     def process(self) -> None:
         # Generate the XML file.
-        xml_file, filename = self._generate_xml_file()
+        xml_file = self._generate_xml_file()
 
         # Validate with the BRO API
         self._validate_xml_file(xml_file)
 
         # Deliver the XML file. The deliver_url is returned to use for the check.
-        deliver_url = self._deliver_xml_file(xml_file, filename)
+        deliver_url = self._deliver_xml_file(xml_file)
 
         # Check of the status of the delivery. Retries 3 times before failing
         retries_count = 0
@@ -72,7 +73,7 @@ class BRODelivery:
             else:
                 time.sleep(10)
                 retries_count += 1
-
+    
         raise DeliveryError(f"Delivery was unsuccesfull")
 
     def _generate_xml_file(self) -> _Element:
@@ -80,9 +81,10 @@ class BRODelivery:
             generator = self.xml_generator_class(
                 self.request_type, self.metadata, self.sourcedocument_data
             )
-            return generator.create_xml()
+            return generator.create_xml_file()
 
         except Exception as e:
+            traceback.print_exc()
             raise RuntimeError(f"Error generating XML file: {e}") from e
 
     def _validate_xml_file(self, xml_file: _Element) -> None:
@@ -97,7 +99,7 @@ class BRODelivery:
         else:
             return
 
-    def _deliver_xml_file(self, xml_file: _Element, filename: str) -> str:
+    def _deliver_xml_file(self, xml_file: _Element) -> str:
         """The upload consists of 4 steps:
         1) Requesting an upload by posting to the BRO api. Returns an upload_url
         2) Adding the XML file to the upload
@@ -109,7 +111,6 @@ class BRODelivery:
         )
         utils.add_xml_to_upload(
             xml_file,
-            filename,
             upload_id,
             self.bro_username,
             self.bro_password,

@@ -2,7 +2,7 @@ from rest_framework import status, generics, views
 from rest_framework.response import Response
 from django.urls import reverse
 from rest_framework.reverse import reverse as drf_reverse
-from django.contrib.auth.models import User
+
 
 from . import tasks
 from . import serializers
@@ -96,11 +96,6 @@ class ImportTaskDetailView(generics.RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-# TODO: add token functionality. Should be a model, which is saved per user/organisation.
-# In the UploadTaskListView, the token should be passed to the task, so it can be used
-# to do the delivery
-
-
 class UploadTaskListView(generics.ListAPIView):
     """This endpoint handles the upload of data to the BRO.
 
@@ -135,6 +130,8 @@ class UploadTaskListView(generics.ListAPIView):
             username = user_profile.bro_user_token
             password = user_profile.bro_user_password
             project_number = user_profile.project_number
+
+            print(username, password)
 
             # Start the celery task
             tasks.upload_bro_data_task.delay(

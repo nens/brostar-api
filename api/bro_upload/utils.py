@@ -1,5 +1,7 @@
 import requests
 import json
+import traceback
+from datetime import datetime
 
 from lxml.etree import _Element
 from typing import Dict, Any
@@ -27,6 +29,7 @@ def validate_xml_file(
         r.raise_for_status()
         return r.json()
     except requests.RequestException as e:
+        traceback.print_exc()
         raise RuntimeError(f"Validat xml error: {e}")
 
 
@@ -45,12 +48,12 @@ def create_upload_id(bro_username: str, bro_password: str, project_number: str) 
         return r.json()["id"]
 
     except requests.RequestException as e:
+        traceback.print_exc()
         raise RuntimeError(f"Create upload url error: {e}")
 
 
 def add_xml_to_upload(
     xml_file: _Element,
-    filename: str,
     upload_id: str,
     bro_username: str,
     bro_password: str,
@@ -62,19 +65,21 @@ def add_xml_to_upload(
         f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads/{upload_id}"
     )
 
+    now = datetime.now()
+
     try:
         r = requests.post(
             upload_url,
             headers={"Content-Type": "application/xml"},
-            params={"filename": xml_file},
             auth=(bro_username, bro_password),
             data=xml_file,
-            params={"filename": filename},
+            params={"filename": f"BROHub request - {now}"},
         )
         r.raise_for_status()
         return r.headers["Location"]
 
     except requests.RequestException as e:
+        traceback.print_exc()
         raise RuntimeError(f"Add XML to upload error: {e}")
 
 
@@ -100,6 +105,7 @@ def create_delivery(
         return r.headers["Location"]
 
     except requests.RequestException as e:
+        traceback.print_exc()
         raise RuntimeError(f"Deliver uploaded XML error: {e}")
 
 
@@ -116,4 +122,5 @@ def check_delivery_status(
         return r.json()
 
     except requests.RequestException as e:
+        traceback.print_exc()
         raise RuntimeError(f"Delivery info check error: {e}")
