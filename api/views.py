@@ -2,6 +2,7 @@ from rest_framework import status, generics, views
 from rest_framework.response import Response
 from django.urls import reverse
 from rest_framework.reverse import reverse as drf_reverse
+from django.contrib.auth.models import User
 
 from . import tasks
 from . import serializers
@@ -119,8 +120,14 @@ class UploadTaskListView(generics.ListAPIView):
             upload_task_instance.status = "PENDING"
             upload_task_instance.save()
 
+            # Accessing the authenticated user's username and token
+            user_profile = models.UserProfile.objects.get(user=request.user)
+            username = user_profile.bro_user_token
+            password = user_profile.bro_user_password
+            project_number = user_profile.project_number
+
             # Start the celery task
-            tasks.upload_bro_data_task.delay(upload_task_instance.uuid)
+            tasks.upload_bro_data_task.delay(upload_task_instance.uuid, username, password, project_number)
 
             # Get the dynamic URL using reverse
             url = reverse(

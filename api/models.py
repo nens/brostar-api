@@ -2,9 +2,11 @@ import uuid
 
 from django.contrib.auth.models import User
 from django.db.models import JSONField
+from encrypted_model_fields.fields import EncryptedCharField
 
 from . import choices
 from django.db import models
+
 
 
 class Organisation(models.Model):
@@ -26,6 +28,9 @@ class UserProfile(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    bro_user_token = EncryptedCharField(max_length=100)
+    bro_user_password = EncryptedCharField(max_length=100)
+    project_number = models.CharField(max_length=20)
 
     def __str__(self):
         return self.user.username

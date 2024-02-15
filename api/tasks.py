@@ -30,20 +30,21 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         import_task_instance.save()
 
 @shared_task
-def upload_bro_data_task(upload_task_instance_uuid: str) -> None:
+def upload_bro_data_task(upload_task_instance_uuid: str, bro_username:str, bro_password:str, project_number:str) -> None:
     """Celery task that uploads data to the BRO.
 
     It is called when a valid POST request is done on the uploadtask endpoint is done.
     The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
+    
     # Lookup and update the import task instance
     upload_task_instance = models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
     upload_task_instance.status = "PROCESSING"
     upload_task_instance.save()
     
     # Initialize and run importer
-    uploader = BRODelivery(upload_task_instance)
+    uploader = BRODelivery(upload_task_instance, bro_username, bro_password, project_number)
     
     try:
         uploader.process()

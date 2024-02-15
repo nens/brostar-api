@@ -11,9 +11,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env
+load_dotenv()
 
 # Options are development and production
 ENVIRONMENT = "development"
+
+FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    'encrypted_model_fields',
 ]
 
 MIDDLEWARE = [
@@ -126,6 +134,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 10,
 }
+
 
 
 # Automatically discover tasks in Django app

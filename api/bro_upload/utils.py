@@ -4,16 +4,20 @@ from typing import Dict, Any
 
 from django.conf import settings
 
-#TODO: add token and projectnummer to this function
-def validate_xml_file(xml_file: _Element) -> Dict[str, Any]:
+def validate_xml_file(xml_file: _Element, bro_username: str, bro_password:str, project_number:str) -> Dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
-    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/validatie"
-    print(url)
+    
+    if settings.ENVIRONMENT == "productie": 
+        url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
+    elif settings.ENVIRONMENT == "development":
+        url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/validatie"
+    
     try:
         r = requests.post(
             url=url,
             data=xml_file,
             headers={"Content-Type": "application/xml"},
+            auth=(bro_username, bro_password)
         )
         r.raise_for_status()
         return r.json()

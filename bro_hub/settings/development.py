@@ -18,4 +18,4 @@ CELERY_BROKER_URL = "redis://localhost:6379/0"
 
 # BRO SETTINGS
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
-BRONHOUDERSPORTAAL_URL = "https://www.acc.bronhouderportaal-bro.nl"
+BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"

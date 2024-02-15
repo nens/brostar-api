@@ -22,8 +22,11 @@ class BRODelivery:
         5) Finalization of the whole process.
     """
 
-    def __init__(self, upload_task_instance: str) -> None:
+    def __init__(self, upload_task_instance: str, bro_username: str, bro_password: str, project_number: str) -> None:
         self.upload_task_instance = upload_task_instance
+        self.bro_username = bro_username
+        self.bro_password = bro_password
+        self.project_number = project_number
         self.bro_domain = self.upload_task_instance.bro_domain
         self.registration_type = self.upload_task_instance.registration_type
         self.request_type = self.upload_task_instance.registration_type
@@ -34,9 +37,9 @@ class BRODelivery:
     def process(self) -> None:
         xml_file = self._generate_xml_file()
         
-        if self._validate_xml_file(xml_file):
-            self._deliver_xml_file(xml_file)
-            self._check_delivery()
+        self._validate_xml_file(xml_file)
+        self._deliver_xml_file(xml_file)
+        self._check_delivery()
         
         
     def _generate_xml_file(self) -> _Element:
@@ -47,13 +50,13 @@ class BRODelivery:
         except Exception as e:
             raise RuntimeError(f"Error generating XML file: {e}") from e
         
-    def _validate_xml_file(self, xml_file) -> bool:
-        validation_response = utils.validate_xml_file(xml_file)
+    def _validate_xml_file(self, xml_file) -> None:
+        validation_response = utils.validate_xml_file(xml_file, self.bro_username, self.bro_password, self.project_number)
         
         if validation_response["status"] != "VALIDE":
             raise XMLValidationError(f"Errors while validating the XML file: {validation_response['errors']}")
         else:
-            return True
+            return
 
     def _deliver_xml_file(self, xml_file):
         pass
