@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 
 from lxml import etree
 from lxml.etree import _Element
@@ -15,11 +15,11 @@ class XMLGenerator(ABC):
         self.metadata = metadata
         self.sourcedocs_data = sourcedocs_data
 
-    def create_xml(self) -> _Element:
+    def create_xml(self) -> Tuple[_Element, str]:
         #TODO: write this 'main' method and all the other methods. check https://github.com/nens/bro-exchange/blob/main/bro_exchange/broxml/frd/requests.py for inspiration
-        return etree.Element(
+        return (etree.Element(
             "test",
-        )
+        ), "filename")
 
 class GMNStartregistration(XMLGenerator):
     """Generates a XML file for the 01_GMN_StartRegistration
