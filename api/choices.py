@@ -23,4 +23,3 @@ REQUEST_TYPE_OPTIONS = [
     ("insert", "insert"),
     ("delete", "delete"),
 ]
-

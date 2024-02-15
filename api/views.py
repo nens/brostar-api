@@ -8,15 +8,23 @@ from . import tasks
 from . import serializers
 from . import models
 
+
 class APIOverview(views.APIView):
     def get(self, request, format=None):
         data = {
-            'importtasks': drf_reverse('api:importtask-list', request=request, format=format),
-            'uploadtasks': drf_reverse('api:uploadtask-list', request=request, format=format),
-            'gmns': drf_reverse('api:gmn:gmn-list', request=request, format=format),
-            'measuringpoints': drf_reverse('api:gmn:measuringpoint-list', request=request, format=format),
+            "importtasks": drf_reverse(
+                "api:importtask-list", request=request, format=format
+            ),
+            "uploadtasks": drf_reverse(
+                "api:uploadtask-list", request=request, format=format
+            ),
+            "gmns": drf_reverse("api:gmn:gmn-list", request=request, format=format),
+            "measuringpoints": drf_reverse(
+                "api:gmn:measuringpoint-list", request=request, format=format
+            ),
         }
         return Response(data)
+
 
 class ImportTaskListView(generics.ListAPIView):
     """
@@ -87,9 +95,11 @@ class ImportTaskDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-#TODO: add token functionality. Should be a model, which is saved per user/organisation.
-    # In the UploadTaskListView, the token should be passed to the task, so it can be used
-    # to do the delivery
+
+# TODO: add token functionality. Should be a model, which is saved per user/organisation.
+# In the UploadTaskListView, the token should be passed to the task, so it can be used
+# to do the delivery
+
 
 class UploadTaskListView(generics.ListAPIView):
     """This endpoint handles the upload of data to the BRO.
@@ -127,7 +137,9 @@ class UploadTaskListView(generics.ListAPIView):
             project_number = user_profile.project_number
 
             # Start the celery task
-            tasks.upload_bro_data_task.delay(upload_task_instance.uuid, username, password, project_number)
+            tasks.upload_bro_data_task.delay(
+                upload_task_instance.uuid, username, password, project_number
+            )
 
             # Get the dynamic URL using reverse
             url = reverse(
@@ -154,4 +166,3 @@ class UploadTaskDetailView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
-

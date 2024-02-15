@@ -8,7 +8,6 @@ from . import choices
 from django.db import models
 
 
-
 class Organisation(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -55,7 +54,7 @@ class ImportTask(models.Model):
         return f"{self.bro_domain} import - {self.organisation} ({self.created_at})"
 
 
-class UploadTask(models.Model): 
+class UploadTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
@@ -72,7 +71,6 @@ class UploadTask(models.Model):
     sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(max_length=500, blank=True, null=True)
     log = models.TextField(blank=True)
-    
-    
+
     def __str__(self) -> str:
         return self.request_reference

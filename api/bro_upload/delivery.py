@@ -5,21 +5,26 @@ from lxml.etree import _Element
 
 from . import utils
 
+
 class XMLValidationError(Exception):
     """Exception raised when XML validation fails."""
+
     pass
+
 
 class DeliveryError(Exception):
     """Exception raised when the delivery has an error."""
+
     pass
 
+
 class BRODelivery:
-    """ Handles the complete process of uploading data to the BRO.
-    
+    """Handles the complete process of uploading data to the BRO.
+
     During the initialization, a XML-generator class is defined based on the provided registration_type.
     This class instance is then used to create the XML file for the Delivery.
-    The rest of the delivery process is handled by this class. 
-    
+    The rest of the delivery process is handled by this class.
+
     The steps of the complete process are:
         1) Generation of the XML File.
         2) Validation of the XML File with the BRO webservice.
@@ -28,7 +33,13 @@ class BRODelivery:
         5) Finalization of the whole process.
     """
 
-    def __init__(self, upload_task_instance: str, bro_username: str, bro_password: str, project_number: str) -> None:
+    def __init__(
+        self,
+        upload_task_instance: str,
+        bro_username: str,
+        bro_password: str,
+        project_number: str,
+    ) -> None:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
@@ -38,15 +49,17 @@ class BRODelivery:
         self.request_type = self.upload_task_instance.registration_type
         self.metadata = self.upload_task_instance.metadata
         self.sourcedocument_data = self.upload_task_instance.sourcedocument_data
-        self.xml_generator_class = mappings.xml_generator_mapping.get(self.registration_type)
-        
+        self.xml_generator_class = mappings.xml_generator_mapping.get(
+            self.registration_type
+        )
+
     def process(self) -> None:
         # Generate the XML file.
-        xml_file, filename = self._generate_xml_file() 
+        xml_file, filename = self._generate_xml_file()
 
         # Validate with the BRO API
         self._validate_xml_file(xml_file)
-        
+
         # Deliver the XML file. The deliver_url is returned to use for the check.
         deliver_url = self._deliver_xml_file(xml_file, filename)
 
@@ -60,22 +73,27 @@ class BRODelivery:
                 time.sleep(10)
                 retries_count += 1
 
-        raise DeliveryError(f"Delivery was unsuccesfull")          
-        
-        
+        raise DeliveryError(f"Delivery was unsuccesfull")
+
     def _generate_xml_file(self) -> _Element:
         try:
-            generator = self.xml_generator_class(self.request_type, self.metadata, self.sourcedocument_data)
+            generator = self.xml_generator_class(
+                self.request_type, self.metadata, self.sourcedocument_data
+            )
             return generator.create_xml()
 
         except Exception as e:
             raise RuntimeError(f"Error generating XML file: {e}") from e
-        
+
     def _validate_xml_file(self, xml_file: _Element) -> None:
-        validation_response = utils.validate_xml_file(xml_file, self.bro_username, self.bro_password, self.project_number)
-        
+        validation_response = utils.validate_xml_file(
+            xml_file, self.bro_username, self.bro_password, self.project_number
+        )
+
         if validation_response["status"] != "VALIDE":
-            raise XMLValidationError(f"Errors while validating the XML file: {validation_response['errors']}")
+            raise XMLValidationError(
+                f"Errors while validating the XML file: {validation_response['errors']}"
+            )
         else:
             return
 
@@ -86,27 +104,37 @@ class BRODelivery:
         3) The actual delivery
         """
 
-        upload_id = utils.create_upload_id(self.bro_username, self.bro_password, self.project_number)
-        utils.add_xml_to_upload(xml_file, filename, upload_id, self.bro_username, self.bro_password, self.project_number)
-        delivery_url = utils.create_delivery(upload_id, self.bro_username, self.bro_password, self.project_number)
-        
+        upload_id = utils.create_upload_id(
+            self.bro_username, self.bro_password, self.project_number
+        )
+        utils.add_xml_to_upload(
+            xml_file,
+            filename,
+            upload_id,
+            self.bro_username,
+            self.bro_password,
+            self.project_number,
+        )
+        delivery_url = utils.create_delivery(
+            upload_id, self.bro_username, self.bro_password, self.project_number
+        )
+
         return delivery_url
-        
 
     def _check_delivery(self, delivery_url: str) -> bool:
         """Checks the delivery status."""
-        
-        delivery_info = utils.check_delivery_status(delivery_url, self.bro_username, self.bro_password)
+
+        delivery_info = utils.check_delivery_status(
+            delivery_url, self.bro_username, self.bro_password
+        )
 
         errors = delivery_info.json()["brondocuments"][0]["errors"]
         if errors:
             raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
-        
+
         else:
             delivery_status = delivery_info.json()["status"]
-            delivery_brondocument_status = delivery_info["brondocuments"][
-                0
-            ]["status"]
+            delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
 
             if (
                 delivery_status == "DOORGELEVERD"

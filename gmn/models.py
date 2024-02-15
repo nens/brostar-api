@@ -6,8 +6,9 @@ from api import choices
 
 class GMN(models.Model):
     """Groundwater Monitoring Network
-    
-    The abbreviation GMN was intentionally chosen, as it is the commonly used term in BRO land."""
+
+    The abbreviation GMN was intentionally chosen, as it is the commonly used term in BRO land.
+    """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     bro_id = models.CharField(max_length=18)
@@ -29,13 +30,15 @@ class GMN(models.Model):
     class Meta:
         verbose_name_plural = "GMN's"
 
+
 class Measuringpoint(models.Model):
     """A measuringpoint is a single object in a GMN.
-    
+
     However, a measuring point is NOT a physical measuring point,
-    but rather an abstraction of it. It is linked to a physical GMW monitoringtube, 
+    but rather an abstraction of it. It is linked to a physical GMW monitoringtube,
     which can be replaced.
     """
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     gmn = models.ForeignKey(GMN, on_delete=models.SET_NULL, null=True, blank=True)
     measuringpoint_code = models.CharField(max_length=50, blank=True, null=True)
@@ -48,4 +51,3 @@ class Measuringpoint(models.Model):
 
     def __str__(self):
         return self.measuringpoint_code
-

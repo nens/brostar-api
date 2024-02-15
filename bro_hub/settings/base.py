@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    'encrypted_model_fields',
+    "encrypted_model_fields",
 ]
 
 MIDDLEWARE = [
@@ -136,7 +136,5 @@ REST_FRAMEWORK = {
 }
 
 
-
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)
-

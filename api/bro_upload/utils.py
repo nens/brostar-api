@@ -54,20 +54,22 @@ def add_xml_to_upload(
     upload_id: str,
     bro_username: str,
     bro_password: str,
-    project_number: str
+    project_number: str,
 ) -> str:
     """Add the XML to the upload request, which is step 2 of 3 in the upload process."""
-    
-    upload_url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads/{upload_id}"
+
+    upload_url = (
+        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads/{upload_id}"
+    )
 
     try:
         r = requests.post(
             upload_url,
             headers={"Content-Type": "application/xml"},
-            params = {"filename": xml_file},
+            params={"filename": xml_file},
             auth=(bro_username, bro_password),
             data=xml_file,
-            params={"filename": filename}
+            params={"filename": filename},
         )
         r.raise_for_status()
         return r.headers["Location"]
@@ -75,40 +77,43 @@ def add_xml_to_upload(
     except requests.RequestException as e:
         raise RuntimeError(f"Add XML to upload error: {e}")
 
+
 def create_delivery(
-    upload_id: str,
-    bro_username: str,
-    bro_password: str,
-    project_number: str
+    upload_id: str, bro_username: str, bro_password: str, project_number: str
 ) -> str:
     """Delivers the uploaded XML file, which is step 3 of 3 in the upload process."""
-    
-    delivery_url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
+
+    delivery_url = (
+        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
+    )
     payload = {"upload": int(upload_id)}
-    
+
     try:
         r = requests.post(
             delivery_url,
-            headers = {"Content-type": "application/json"},
+            headers={"Content-type": "application/json"},
             data=json.dumps(payload),
             auth=(bro_username, bro_password),
         )
         r.raise_for_status()
 
         return r.headers["Location"]
-        
+
     except requests.RequestException as e:
         raise RuntimeError(f"Deliver uploaded XML error: {e}")
 
-def check_delivery_status(delivery_url: str, bro_username: str, bro_password: str) -> str:
+
+def check_delivery_status(
+    delivery_url: str, bro_username: str, bro_password: str
+) -> str:
     """Checks the Delivery info. Step 4 of 4 in the upload process."""
     try:
         r = requests.get(
-            url = delivery_url,
+            url=delivery_url,
             auth=(bro_username, bro_password),
         )
 
         return r.json()
-    
+
     except requests.RequestException as e:
         raise RuntimeError(f"Delivery info check error: {e}")

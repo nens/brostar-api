@@ -6,6 +6,7 @@ from . import serializers
 from . import models
 from api import tasks
 
+
 class GMNView(generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
     queryset = models.GMN.objects.all()
@@ -13,7 +14,8 @@ class GMNView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         """List of all GMNs."""
         return self.list(request, *args, **kwargs)
-    
+
+
 class GMNDetailView(generics.RetrieveAPIView):
     queryset = models.GMN.objects.all()
     serializer_class = serializers.GMNSerializer
@@ -24,6 +26,7 @@ class GMNDetailView(generics.RetrieveAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class MeasuringpointView(generics.ListAPIView):
     serializer_class = serializers.MeasuringpointSerializer
     queryset = models.Measuringpoint.objects.all()
@@ -31,7 +34,8 @@ class MeasuringpointView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         """List of all Measuringpoints."""
         return self.list(request, *args, **kwargs)
-    
+
+
 class MeasuringpointDetailView(generics.RetrieveAPIView):
     queryset = models.Measuringpoint.objects.all()
     serializer_class = serializers.MeasuringpointSerializer
@@ -41,4 +45,3 @@ class MeasuringpointDetailView(generics.RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    

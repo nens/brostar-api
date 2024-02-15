@@ -7,6 +7,7 @@ from typing import IO, Dict, Any, List, Tuple
 from django.conf import settings
 from gmn.models import GMN, Measuringpoint
 
+
 class ObjectImporter(ABC):
     """Imports the BRO data based on the object ID.
 
@@ -21,6 +22,7 @@ class ObjectImporter(ABC):
         3) Translation from XML to JSON
         4) Save actions into the database
     """
+
     def __init__(self, bro_domain, bro_id) -> None:
         self.bro_domain = bro_domain
         self.bro_id = bro_id
@@ -30,21 +32,19 @@ class ObjectImporter(ABC):
         xml_data = self._download_xml(url)
         json_data = self._convert_xml_to_json(xml_data)
         self._save_data_to_database(json_data)
-    
+
     def _create_download_url(self) -> str:
-        """ Creates the import url for a given bro object.       
-        """
+        """Creates the import url for a given bro object."""
         bro_domain = self.bro_domain.lower()
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
         return url
 
     def _download_xml(self, url: str) -> IO[bytes]:
-        """ Downloads the BRO XML file based on an url"""
+        """Downloads the BRO XML file based on an url"""
         r = requests.get(url=url)
         r.raise_for_status()
 
         return r.content
-        
 
     def _convert_xml_to_json(self, xml_data: IO[bytes]) -> Dict[str, Any]:
         json_data = xmltodict.parse(xml_data)
@@ -53,66 +53,88 @@ class ObjectImporter(ABC):
 
     @abstractmethod
     def _save_data_to_database(self, json_data: Dict[str, Any]):
-        """ Saves the downloaded BRO data into the Django database."""
+        """Saves the downloaded BRO data into the Django database."""
         pass
 
-    
+
 class GMNObjectImporter(ObjectImporter):
     def _save_data_to_database(self, json_data: Dict[str, Any]):
         gmn_data, measuringpoint_data = self._split_json_data(json_data)
-                    
+
         self._save_gmn_data(gmn_data)
         self._save_measuringpoint_data(measuringpoint_data)
 
-    def _split_json_data(self, json_data: Dict[str, Any]) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
-        """ Takes in the json data and splits it up into GMN and Measuringpoint data"""
-        dispatch_document_data = json_data.get('dispatchDataResponse', {}).get('dispatchDocument', {})
+    def _split_json_data(
+        self, json_data: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        """Takes in the json data and splits it up into GMN and Measuringpoint data"""
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
 
-        measuringpoint_data = dispatch_document_data['GMN_PPO'].get('measuringPoint', [])
+        measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
+            "measuringPoint", []
+        )
 
-        gmn_data = dispatch_document_data['GMN_PPO']
-        gmn_data.pop('measuringPoint', None)      
+        gmn_data = dispatch_document_data["GMN_PPO"]
+        gmn_data.pop("measuringPoint", None)
 
         return gmn_data, measuringpoint_data
-    
+
     def _save_gmn_data(self, gmn_data: Dict[str, Any]):
         self.gmn_obj, created = GMN.objects.update_or_create(
-            bro_id=gmn_data.get('brocom:broId', None),
-            delivery_accountable_party=gmn_data.get('brocom:deliveryAccountableParty', None),
-            quality_regime=gmn_data.get('brocom:qualityRegime', None),
-            name=gmn_data.get('name', None),
-            delivery_context=gmn_data.get('deliveryContext', {}).get('#text', None),
-            monitoring_purpose=gmn_data.get('monitoringPurpose', {}).get('#text', None),
-            groundwater_aspect=gmn_data.get('groundwaterAspect', {}).get('#text', None),
-            start_date_monitoring=gmn_data.get('monitoringNetHistory', {}).get('startDateMonitoring', {}).get('brocom:date', None),
-            object_registration_time=gmn_data.get('registrationHistory', {}).get('brocom:objectRegistrationTime', None),
-            registration_status=gmn_data.get('registrationHistory', {}).get('brocom:registrationStatus', {}).get('#text', None),
+            bro_id=gmn_data.get("brocom:broId", None),
+            delivery_accountable_party=gmn_data.get(
+                "brocom:deliveryAccountableParty", None
+            ),
+            quality_regime=gmn_data.get("brocom:qualityRegime", None),
+            name=gmn_data.get("name", None),
+            delivery_context=gmn_data.get("deliveryContext", {}).get("#text", None),
+            monitoring_purpose=gmn_data.get("monitoringPurpose", {}).get("#text", None),
+            groundwater_aspect=gmn_data.get("groundwaterAspect", {}).get("#text", None),
+            start_date_monitoring=gmn_data.get("monitoringNetHistory", {})
+            .get("startDateMonitoring", {})
+            .get("brocom:date", None),
+            object_registration_time=gmn_data.get("registrationHistory", {}).get(
+                "brocom:objectRegistrationTime", None
+            ),
+            registration_status=gmn_data.get("registrationHistory", {})
+            .get("brocom:registrationStatus", {})
+            .get("#text", None),
         )
-        
-        self.gmn_obj.save()
 
+        self.gmn_obj.save()
 
     def _save_measuringpoint_data(self, measuringpoint_data):
         for measuringpoint in measuringpoint_data:
-            mp_data = measuringpoint.get('MeasuringPoint', {})
-            monitoring_tube_data = mp_data.get('monitoringTube', {}).get('GroundwaterMonitoringTube', {})
+            mp_data = measuringpoint.get("MeasuringPoint", {})
+            monitoring_tube_data = mp_data.get("monitoringTube", {}).get(
+                "GroundwaterMonitoringTube", {}
+            )
 
             measuringpoint_obj, created = Measuringpoint.objects.update_or_create(
                 gmn=self.gmn_obj,
-                measuringpoint_code = mp_data.get('measuringPointCode', None),
-                measuringpoint_start_date = mp_data.get('startDate', {}).get('brocom:date', None),
-                gmw_bro_id = monitoring_tube_data.get('broId', None),
-                tube_number = monitoring_tube_data.get('tubeNumber', None),
-                tube_start_date = monitoring_tube_data.get('startDate', None).get('brocom:date', None),
+                measuringpoint_code=mp_data.get("measuringPointCode", None),
+                measuringpoint_start_date=mp_data.get("startDate", {}).get(
+                    "brocom:date", None
+                ),
+                gmw_bro_id=monitoring_tube_data.get("broId", None),
+                tube_number=monitoring_tube_data.get("tubeNumber", None),
+                tube_start_date=monitoring_tube_data.get("startDate", None).get(
+                    "brocom:date", None
+                ),
             )
 
             measuringpoint_obj.save()
 
+
 class GMWObjectImporter(ObjectImporter):
     pass
 
+
 class GLDObjectImporter(ObjectImporter):
     pass
+
 
 class FRDObjectImporter(ObjectImporter):
     pass

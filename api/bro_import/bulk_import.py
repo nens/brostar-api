@@ -3,12 +3,14 @@ import requests
 from django.conf import settings
 from . import object_import
 
+
 class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
 
+
 class BulkImporter:
-    """ Imports bulk data from the BRO for a given KVK and BRO domain.
-    
+    """Imports bulk data from the BRO for a given KVK and BRO domain.
+
     It first fetches all BRO id's for the given BRO domain and KVK number.
     Then loops over all id's to import the data if its object.
     Finally, it saves the data in the corresponding datamodel in the database.
@@ -22,10 +24,10 @@ class BulkImporter:
 
         # Lookup the right importer class to initiate for obje
         object_importer_mapping = {
-            "GMN":object_import.GMNObjectImporter,
-            "GMW":object_import.GMWObjectImporter,
-            "GLD":object_import.GLDObjectImporter,
-            "FRD":object_import.FRDObjectImporter,
+            "GMN": object_import.GMNObjectImporter,
+            "GMW": object_import.GMWObjectImporter,
+            "GLD": object_import.GLDObjectImporter,
+            "FRD": object_import.FRDObjectImporter,
         }
 
         self.object_importer_class = object_importer_mapping[self.bro_domain]
@@ -33,14 +35,13 @@ class BulkImporter:
     def run(self) -> None:
         url = self._create_bro_ids_import_url()
         bro_ids = self._fetch_bro_ids(url)
-        
+
         for bro_id in bro_ids:
             data_importer = self.object_importer_class(self.bro_domain, bro_id)
             data_importer.run()
 
     def _create_bro_ids_import_url(self) -> str:
-        """ Creates the import url for a given bro object type and kvk combination.       
-        """
+        """Creates the import url for a given bro object type and kvk combination."""
         bro_domain = self.bro_domain.lower()
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
         return url
@@ -53,11 +54,10 @@ class BulkImporter:
         """
         try:
             r = requests.get(url)
-            r.raise_for_status() 
+            r.raise_for_status()
             bro_ids = r.json()["broIds"]
-            
+
             return bro_ids
-        
+
         except requests.RequestException as e:
             raise FetchBROIDsError(f"Error fetching BRO IDs from {url}: {e}") from e
-           
