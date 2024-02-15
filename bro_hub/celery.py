@@ -1,9 +1,11 @@
 import os
-
 from celery import Celery
+from bro_hub.settings.base import ENVIRONMENT
 
-# Set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings")
+if ENVIRONMENT == "production":
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings.production")
+elif ENVIRONMENT == "development":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings.development")
 
 app = Celery("bro_hub")
 

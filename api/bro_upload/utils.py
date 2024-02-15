@@ -8,7 +8,7 @@ from django.conf import settings
 def validate_xml_file(xml_file: _Element) -> Dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/validatie"
-
+    print(url)
     try:
         r = requests.post(
             url=url,

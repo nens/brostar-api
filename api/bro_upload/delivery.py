@@ -7,7 +7,7 @@ class XMLValidationError(Exception):
     """Exception raised when XML validation fails."""
     pass
 
-class Delivery:
+class BRODelivery:
     """ Handles the complete process of uploading data to the BRO.
     
     During the initialization, a XML-generator class is defined based on the provided registration_type.

@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+# Options are development and production
+ENVIRONMENT = "development"
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -76,17 +79,6 @@ WSGI_APPLICATION = "bro_hub.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "bro_hub_dev",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -135,13 +127,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 10,
 }
 
-# Celery configuration
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-
 
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)
 
-# BRO SETTINGS
-BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
-BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"

@@ -1,7 +1,7 @@
 from celery import shared_task
 from . import models
 from .bro_import import bulk_import
-from .bro_upload.delivery import Delivery
+from .bro_upload.delivery import BRODelivery
 
 
 @shared_task
@@ -34,7 +34,7 @@ def upload_bro_data_task(upload_task_instance_uuid: str) -> None:
     """Celery task that uploads data to the BRO.
 
     It is called when a valid POST request is done on the uploadtask endpoint is done.
-    The Delivery class is used to handle the whole proces of delivery.
+    The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
     # Lookup and update the import task instance
@@ -43,7 +43,7 @@ def upload_bro_data_task(upload_task_instance_uuid: str) -> None:
     upload_task_instance.save()
     
     # Initialize and run importer
-    uploader = Delivery(upload_task_instance)
+    uploader = BRODelivery(upload_task_instance)
     
     try:
         uploader.process()
