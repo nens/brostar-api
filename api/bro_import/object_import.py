@@ -129,7 +129,12 @@ class GMNObjectImporter(ObjectImporter):
 
 
 class GMWObjectImporter(ObjectImporter):
-    pass
+    def _save_data_to_database(self, json_data: Dict[str, Any]):
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+        print(dispatch_document_data)
+        
 
 
 class GLDObjectImporter(ObjectImporter):
