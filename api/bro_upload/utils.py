@@ -10,15 +10,12 @@ from django.conf import settings
 
 
 def validate_xml_file(
-    xml_file: _Element, bro_username: str, bro_password: str, project_number: str
+    xml_file: str, bro_username: str, bro_password: str, project_number: str
 ) -> Dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
 
-    if settings.ENVIRONMENT == "productie":
-        url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
-    elif settings.ENVIRONMENT == "development":
-        url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/validatie"
-
+    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
+    
     try:
         r = requests.post(
             url=url,
@@ -30,7 +27,7 @@ def validate_xml_file(
         return r.json()
     except requests.RequestException as e:
         traceback.print_exc()
-        raise RuntimeError(f"Validat xml error: {e}")
+        raise RuntimeError(f"Validate xml error: {e}")
 
 
 def create_upload_id(bro_username: str, bro_password: str, project_number: str) -> str:
@@ -53,7 +50,7 @@ def create_upload_id(bro_username: str, bro_password: str, project_number: str) 
 
 
 def add_xml_to_upload(
-    xml_file: _Element,
+    xml_file: str,
     upload_id: str,
     bro_username: str,
     bro_password: str,
