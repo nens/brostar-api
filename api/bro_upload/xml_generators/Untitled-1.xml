@@ -1,0 +1,14 @@
+<GMN_StartRegistration xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd">
+    <brocom:requestReference>test</brocom:requestReference>
+    <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
+    <brocom:qualityRegime>IMBRO/A</brocom:qualityRegime>
+    <sourceDocument>
+        <GMN_StartRegistration gml:id="id_0001">
+            <objectIdAccountableParty>test</objectIdAccountableParty>
+            <name>test</name>
+        </GMN_StartRegistration>
+    </sourceDocument>
+</GMN_StartRegistration>

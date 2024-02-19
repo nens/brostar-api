@@ -1,8 +1,8 @@
-from . import xml_generators
+from .xml_generators import gmn_generators
 
 # Mapping for the determination of which xml generator should be used for a given request_type
 xml_generator_mapping = {
-    "GMN_StartRegistration": xml_generators.GMNStartregistration,
+    "GMN_StartRegistration": gmn_generators.GMNStartregistration,
 }
 
 

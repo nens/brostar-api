@@ -57,6 +57,7 @@ class BRODelivery:
     def process(self) -> None:
         # Generate the XML file.
         xml_file = self._generate_xml_file()
+        print(xml_file)
 
         # Validate with the BRO API
         self._validate_xml_file(xml_file)
