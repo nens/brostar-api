@@ -3,7 +3,6 @@ import json
 import traceback
 from datetime import datetime
 
-from lxml.etree import _Element
 from typing import Dict, Any
 
 from django.conf import settings
