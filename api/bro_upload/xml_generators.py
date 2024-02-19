@@ -93,7 +93,7 @@ class GMNStartregistration(XMLGenerator):
         """
         # Create main sourcedocs element
         main_element = etree.Element(
-            f'{{{config.gmn}}}{self.request_type}'
+            f'{{{config.gmn}}}GMN_StartRegistration'
         )
         main_element.set(
             f"{{{config.gml}}}id", f"id_000{self.id_count}"
