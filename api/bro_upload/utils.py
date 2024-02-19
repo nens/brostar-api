@@ -9,7 +9,7 @@ from django.conf import settings
 
 
 def validate_xml_file(
-    xml_file: str, bro_username: str, bro_password: str, project_number: str
+    xml_file: bytes, bro_username: str, bro_password: str, project_number: str
 ) -> Dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
 
@@ -23,7 +23,9 @@ def validate_xml_file(
             auth=(bro_username, bro_password),
         )
         r.raise_for_status()
+
         return r.json()
+    
     except requests.RequestException as e:
         traceback.print_exc()
         raise RuntimeError(f"Validate xml error: {e}")

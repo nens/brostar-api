@@ -47,7 +47,7 @@ class BRODelivery:
         self.project_number = project_number
         self.bro_domain = self.upload_task_instance.bro_domain
         self.registration_type = self.upload_task_instance.registration_type
-        self.request_type = self.upload_task_instance.registration_type
+        self.request_type = self.upload_task_instance.request_type
         self.metadata = self.upload_task_instance.metadata
         self.sourcedocument_data = self.upload_task_instance.sourcedocument_data
         self.xml_generator_class = config.xml_generator_mapping.get(
@@ -57,6 +57,7 @@ class BRODelivery:
     def process(self) -> None:
         # Generate the XML file.
         xml_file = self._generate_xml_file()
+        print(xml_file)
 
         # Validate with the BRO API
         self._validate_xml_file(xml_file)
@@ -79,7 +80,7 @@ class BRODelivery:
     def _generate_xml_file(self) -> _Element:
         try:
             generator = self.xml_generator_class(
-                self.request_type, self.metadata, self.sourcedocument_data
+                self.registration_type, self.request_type, self.metadata, self.sourcedocument_data
             )
             return generator.create_xml_file()
 

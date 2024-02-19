@@ -12,7 +12,7 @@ gml = "http://www.opengis.net/gml/3.2"
 xsi = "http://www.w3.org/2001/XMLSchema-instance"
 gmn = "http://www.broservices.nl/xsd/isgmn/1.0"
 
-xsi_schemalocation = ("http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd")
+gmn_xsi_schemalocation = ("http://www.broservices.nl/xsd/isgmn/1.0 https://schema.broservices.nl/xsd/isgmn/1.0/isgmn-messages.xsd")
 
 # Declaration configuration per request type
 declaration_mapping = {

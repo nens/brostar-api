@@ -131,8 +131,6 @@ class UploadTaskListView(generics.ListAPIView):
             password = user_profile.bro_user_password
             project_number = user_profile.project_number
 
-            print(username, password)
-
             # Start the celery task
             tasks.upload_bro_data_task.delay(
                 upload_task_instance.uuid, username, password, project_number

@@ -17,7 +17,7 @@ REGISTRATION_TYPE_OPTIONS = [
 ]
 
 REQUEST_TYPE_OPTIONS = [
-    ("register", "register"),
+    ("registration", "registration"),
     ("replace", "replace"),
     ("move", "move"),
     ("insert", "insert"),

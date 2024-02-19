@@ -1,15 +1,14 @@
 from lxml import etree
-from lxml.etree import _Element, tostring
 
 from .. import config
 from .base_generator import XMLGenerator
 
 class GMNStartregistration(XMLGenerator):
     """Generates a XML file for the 01_GMN_StartRegistration."""
-    def __init__(self, request_type: str, metadata: dict, srcdocdata: dict) -> None:
-        super().__init__(request_type, metadata, srcdocdata)
-        self.namespace = config.declaration_mapping[self.request_type]
-        self.xsi_schema_location = config.xsi_schemalocation
+    def __init__(self, registration_type:str, request_type: str, metadata: dict, srcdocdata: dict) -> None:
+        super().__init__(registration_type, request_type, metadata, srcdocdata)
+        self.namespace = config.declaration_mapping[self.registration_type]
+        self.xsi_schema_location = config.gmn_xsi_schemalocation
         self.id_count = 1
     
     def _create_sourcedocument(self):
@@ -43,7 +42,7 @@ class GMNStartregistration(XMLGenerator):
         delivery_context_element = etree.SubElement(
             main_element,
             "deliveryContext",
-            attrib={"codeSpace": "urn:bro:frd:EvaluationProcedure"},
+            attrib={"codeSpace": "urn:bro:gmn:DeliveryContext"},
         )
         delivery_context_element.text = self.sourcedocs_data["deliveryContext"]
 
@@ -51,7 +50,7 @@ class GMNStartregistration(XMLGenerator):
         monitoring_purpose_element = etree.SubElement(
             main_element,
             "monitoringPurpose",
-            attrib={"codeSpace": "urn:bro:frd:EvaluationProcedure"},
+            attrib={"codeSpace": "urn:bro:gmn:MonitoringPurpose"},
         )
         monitoring_purpose_element.text = self.sourcedocs_data["monitoringPurpose"]
 
@@ -59,7 +58,7 @@ class GMNStartregistration(XMLGenerator):
         groundwater_aspect_element = etree.SubElement(
             main_element,
             "groundwaterAspect",
-            attrib={"codeSpace": "urn:bro:frd:EvaluationProcedure"},
+            attrib={"codeSpace": "urn:bro:gmn:GroundwaterAspect"},
         )
         groundwater_aspect_element.text = self.sourcedocs_data["groundwaterAspect"]
 
@@ -130,3 +129,13 @@ class GMNStartregistration(XMLGenerator):
 
         # Add startregistration to sourcedocs
         self.source_document.append(main_element)
+
+
+
+class GMNMeasuringPoint(XMLGenerator):
+    """Generates a XML file for the 02_GMN_MeasuringPoint.xml."""
+    pass
+
+class GMNTubeReference(XMLGenerator):
+    """Generates a XML file for the 03_GMN_TubeReference.xml."""
+    pass

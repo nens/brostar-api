@@ -75,4 +75,4 @@ class UploadTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self) -> str:
-        return self.request_reference
+        return f"{self.request_type} {self.registration_type} {self.created}"
