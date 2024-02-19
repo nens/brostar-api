@@ -91,11 +91,35 @@ class GMNStartregistration(XMLGenerator):
         """Example XML for register:
         https://www.bro-productomgeving.nl/__attachments/159095997/01_GMN_StartRegistration.xml?inst-v=6362ee09-a77d-4052-8ab8-caf3a373ad16
         """
-        # Create FRDStartregistration element
-        gmn_startregistration = etree.Element(
-            f'{{{config.gmn}}}GMN_StartRegistration'
+        # Create main sourcedocs element
+        main_element = etree.Element(
+            f'{{{config.gmn}}}{self.request_type}'
         )
-        gmn_startregistration.set(
+        main_element.set(
             f"{{{config.gml}}}id", f"id_000{self.id_count}"
         )
         self.id_count += 1
+
+        # Create object id accountable party element
+        object_id_accountable_party_element = etree.SubElement(
+            main_element,
+            "objectIdAccountableParty",
+        )
+        object_id_accountable_party_element.text = self.sourcedocs_data["objectIdAccountableParty"]
+
+        # Create name element
+        name_element = etree.SubElement(
+            main_element,
+            "name",
+        )
+        name_element.text = self.sourcedocs_data["name"]
+        
+        # Create delivery context element
+
+        # Create monitoring purpose element
+
+        # Create groundwater aspect element
+
+
+        # Add startregistration to sourcedocs
+        self.source_document.append(main_element)
