@@ -57,7 +57,6 @@ class BRODelivery:
     def process(self) -> None:
         # Generate the XML file.
         xml_file = self._generate_xml_file()
-        print(xml_file)
 
         # Validate with the BRO API
         self._validate_xml_file(xml_file)
@@ -107,18 +106,17 @@ class BRODelivery:
         3) The actual delivery
         """
 
-        upload_id = utils.create_upload_id(
+        upload_url = utils.create_upload_url(
             self.bro_username, self.bro_password, self.project_number
         )
         utils.add_xml_to_upload(
             xml_file,
-            upload_id,
+            upload_url,
             self.bro_username,
             self.bro_password,
-            self.project_number,
         )
         delivery_url = utils.create_delivery(
-            upload_id, self.bro_username, self.bro_password, self.project_number
+            upload_url, self.bro_username, self.bro_password, self.project_number
         )
 
         return delivery_url
@@ -136,7 +134,7 @@ class BRODelivery:
 
         else:
             delivery_status = delivery_info.json()["status"]
-            delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
+            delivery_brondocument_status = delivery_info.json()["brondocuments"][0]["status"]
 
             if (
                 delivery_status == "DOORGELEVERD"

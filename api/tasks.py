@@ -57,6 +57,7 @@ def upload_bro_data_task(
     try:
         uploader.process()
         upload_task_instance.status = "COMPLETED"
+        upload_task_instance.log = "The upload was done successfully"
         upload_task_instance.save()
     except Exception as e:
         upload_task_instance.log = e

@@ -1,7 +1,6 @@
 import requests
 import json
 import traceback
-from datetime import datetime
 
 from typing import Dict, Any
 
@@ -12,7 +11,6 @@ def validate_xml_file(
     xml_file: bytes, bro_username: str, bro_password: str, project_number: str
 ) -> Dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
-
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
     
     try:
@@ -31,7 +29,7 @@ def validate_xml_file(
         raise RuntimeError(f"Validate xml error: {e}")
 
 
-def create_upload_id(bro_username: str, bro_password: str, project_number: str) -> str:
+def create_upload_url(bro_username: str, bro_password: str, project_number: str) -> str:
     """POST to the BRO api to receive an upload id, which is step 1 of 3 in the upload process."""
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads"
 
@@ -42,8 +40,9 @@ def create_upload_id(bro_username: str, bro_password: str, project_number: str) 
             auth=(bro_username, bro_password),
         )
         r.raise_for_status()
+        upload_url = r.headers["Location"]
 
-        return r.json()["id"]
+        return upload_url
 
     except requests.RequestException as e:
         traceback.print_exc()
@@ -52,18 +51,13 @@ def create_upload_id(bro_username: str, bro_password: str, project_number: str) 
 
 def add_xml_to_upload(
     xml_file: str,
-    upload_id: str,
+    upload_url: str,
     bro_username: str,
     bro_password: str,
-    project_number: str,
 ) -> str:
     """Add the XML to the upload request, which is step 2 of 3 in the upload process."""
-
-    upload_url = (
-        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads/{upload_id}"
-    )
-
-    now = datetime.now()
+    
+    upload_url = f"{upload_url}/brondocumenten"
 
     try:
         r = requests.post(
@@ -71,7 +65,7 @@ def add_xml_to_upload(
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
             data=xml_file,
-            params={"filename": f"BROHub request - {now}"},
+            params={"filename": f"BROHub request"},
         )
         r.raise_for_status()
         return r.headers["Location"]
@@ -82,18 +76,18 @@ def add_xml_to_upload(
 
 
 def create_delivery(
-    upload_id: str, bro_username: str, bro_password: str, project_number: str
+    upload_url: str, bro_username: str, bro_password: str, project_number: str
 ) -> str:
     """Delivers the uploaded XML file, which is step 3 of 3 in the upload process."""
-
-    delivery_url = (
-        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
-    )
+    
+    upload_id = upload_url.split('/')[-1]
     payload = {"upload": int(upload_id)}
+
+    deliver_url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
 
     try:
         r = requests.post(
-            delivery_url,
+            deliver_url,
             headers={"Content-type": "application/json"},
             data=json.dumps(payload),
             auth=(bro_username, bro_password),
@@ -117,7 +111,7 @@ def check_delivery_status(
             auth=(bro_username, bro_password),
         )
 
-        return r.json()
+        return r
 
     except requests.RequestException as e:
         traceback.print_exc()
