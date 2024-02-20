@@ -38,7 +38,7 @@ Om het lokaal te installeren:
         new_key = base64.urlsafe_b64encode(os.urandom(32))
         print(new_key)
 
-Sla de key (zonder de b'' bytes structuur) op in een .env.
+    Sla de key (zonder de b'' bytes structuur) op in een .env.
 
 
 
