@@ -32,7 +32,7 @@ Om het lokaal te installeren:
 
 9) De bro auth gegevens worden geencrypt. Hiervoor is een FIELD_ENCRYPTION_KEY nodig. Om deze aan te maken, run hetvolgende: 
 
-    $ import os
+        $ import os
     import base64
 
     new_key = base64.urlsafe_b64encode(os.urandom(32))
