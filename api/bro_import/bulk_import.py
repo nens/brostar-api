@@ -1,4 +1,5 @@
 import requests
+import traceback
 
 from django.conf import settings
 from . import object_import
@@ -6,6 +7,10 @@ from . import object_import
 
 class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
+
+
+class DataImportError(Exception):
+    """Custom exception for errors during BRO data import."""
 
 
 class BulkImporter:
@@ -37,8 +42,12 @@ class BulkImporter:
         bro_ids = self._fetch_bro_ids(url)
 
         for bro_id in bro_ids:
-            data_importer = self.object_importer_class(self.bro_domain, bro_id)
-            data_importer.run()
+            try:
+                data_importer = self.object_importer_class(self.bro_domain, bro_id)
+                data_importer.run()
+            except requests.RequestException as e:
+                traceback.print_exc()
+                raise DataImportError(f"Error fetching BRO IDs from {url}: {e}") from e
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""

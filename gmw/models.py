@@ -24,8 +24,14 @@ class GMW(models.Model):
     well_code = models.CharField(max_length=100, blank=True, null=True)
     owner = models.CharField(max_length=100, blank=True, null=True)
     well_head_protector = models.CharField(max_length=100, blank=True, null=True)
-    delivery_location = models.CharField(max_length=100, blank=True, null=True)
-    delivered_vertical_postition = models.CharField(
+    delivered_location = models.CharField(max_length=100, blank=True, null=True)
+    local_vertical_reference_point = models.CharField(
+        max_length=100, blank=True, null=True
+    )
+    offset = models.CharField(max_length=100, blank=True, null=True)
+    vertical_datum = models.CharField(max_length=100, blank=True, null=True)
+    ground_level_position = models.CharField(max_length=100, blank=True, null=True)
+    ground_level_positioning_method = models.CharField(
         max_length=100, blank=True, null=True
     )
     standardized_location = models.CharField(max_length=100, blank=True, null=True)
@@ -49,6 +55,7 @@ class MonitoringTube(models.Model):
     tube_number = models.CharField(max_length=100, blank=True, null=True)
     tube_type = models.CharField(max_length=100, blank=True, null=True)
     artesian_well_cap_present = models.CharField(max_length=100, blank=True, null=True)
+    sediment_sump_present = models.CharField(max_length=100, blank=True, null=True)
     number_of_geo_ohm_cables = models.CharField(max_length=100, blank=True, null=True)
     tube_top_diameter = models.CharField(max_length=100, blank=True, null=True)
     variable_diameter = models.CharField(max_length=100, blank=True, null=True)

@@ -6,6 +6,7 @@ from typing import IO, Dict, Any, List, Tuple
 
 from django.conf import settings
 from gmn.models import GMN, Measuringpoint
+from gmw.models import GMW, MonitoringTube
 
 
 class ObjectImporter(ABC):
@@ -89,23 +90,31 @@ class GMNObjectImporter(ObjectImporter):
     def _save_gmn_data(self, gmn_data: Dict[str, Any]) -> None:
         self.gmn_obj, created = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
-            delivery_accountable_party=gmn_data.get(
-                "brocom:deliveryAccountableParty", None
-            ),
-            quality_regime=gmn_data.get("brocom:qualityRegime", None),
-            name=gmn_data.get("name", None),
-            delivery_context=gmn_data.get("deliveryContext", {}).get("#text", None),
-            monitoring_purpose=gmn_data.get("monitoringPurpose", {}).get("#text", None),
-            groundwater_aspect=gmn_data.get("groundwaterAspect", {}).get("#text", None),
-            start_date_monitoring=gmn_data.get("monitoringNetHistory", {})
-            .get("startDateMonitoring", {})
-            .get("brocom:date", None),
-            object_registration_time=gmn_data.get("registrationHistory", {}).get(
-                "brocom:objectRegistrationTime", None
-            ),
-            registration_status=gmn_data.get("registrationHistory", {})
-            .get("brocom:registrationStatus", {})
-            .get("#text", None),
+            defaults={
+                "delivery_accountable_party": gmn_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": gmn_data.get("brocom:qualityRegime", None),
+                "name": gmn_data.get("name", None),
+                "delivery_context": gmn_data.get("deliveryContext", {}).get(
+                    "#text", None
+                ),
+                "monitoring_purpose": gmn_data.get("monitoringPurpose", {}).get(
+                    "#text", None
+                ),
+                "groundwater_aspect": gmn_data.get("groundwaterAspect", {}).get(
+                    "#text", None
+                ),
+                "start_date_monitoring": gmn_data.get("monitoringNetHistory", {})
+                .get("startDateMonitoring", {})
+                .get("brocom:date", None),
+                "object_registration_time": gmn_data.get("registrationHistory", {}).get(
+                    "brocom:objectRegistrationTime", None
+                ),
+                "registration_status": gmn_data.get("registrationHistory", {})
+                .get("brocom:registrationStatus", {})
+                .get("#text", None),
+            },
         )
 
         self.gmn_obj.save()
@@ -120,14 +129,16 @@ class GMNObjectImporter(ObjectImporter):
             measuringpoint_obj, created = Measuringpoint.objects.update_or_create(
                 gmn=self.gmn_obj,
                 measuringpoint_code=mp_data.get("measuringPointCode", None),
-                measuringpoint_start_date=mp_data.get("startDate", {}).get(
-                    "brocom:date", None
-                ),
-                gmw_bro_id=monitoring_tube_data.get("broId", None),
-                tube_number=monitoring_tube_data.get("tubeNumber", None),
-                tube_start_date=monitoring_tube_data.get("startDate", None).get(
-                    "brocom:date", None
-                ),
+                defaults={
+                    "measuringpoint_start_date": mp_data.get("startDate", {}).get(
+                        "brocom:date", None
+                    ),
+                    "gmw_bro_id": monitoring_tube_data.get("broId", None),
+                    "tube_number": monitoring_tube_data.get("tubeNumber", None),
+                    "tube_start_date": monitoring_tube_data.get("startDate", None).get(
+                        "brocom:date", None
+                    ),
+                },
             )
 
             measuringpoint_obj.save()
@@ -163,10 +174,130 @@ class GMWObjectImporter(ObjectImporter):
         return gmw_data, monitoringtubes_data
 
     def _save_gmw_data(self, gmw_data: Dict[str, Any]) -> None:
-        pass
+        self.gmw_obj, created = GMW.objects.update_or_create(
+            bro_id=gmw_data.get("brocom:broId", None),
+            defaults={
+                "delivery_accountable_party": gmw_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": gmw_data.get("brocom:qualityRegime", None),
+                "delivery_context": gmw_data.get("deliveryContext", {}).get(
+                    "#text", None
+                ),
+                "construction_standard": gmw_data.get("constructionStandard", {}).get(
+                    "#text", None
+                ),
+                "initial_function": gmw_data.get("initialFunction", {}).get(
+                    "#text", None
+                ),
+                "removed": gmw_data.get("removed", None),
+                "ground_level_stable": gmw_data.get("groundLevelStable", None),
+                "well_stability": gmw_data.get("wellStability", {}).get("#text", None),
+                "nitg_code": gmw_data.get("nitgCode", None),
+                "well_code": gmw_data.get("wellCode", None),
+                "owner": gmw_data.get("owner", None),
+                "well_head_protector": gmw_data.get("wellHeadProtector", {}).get(
+                    "#text", None
+                ),
+                "delivered_location": gmw_data.get("deliveredLocation", {})
+                .get("gmwcommon:location", {})
+                .get("gml:pos", None),
+                "local_vertical_reference_point": gmw_data.get(
+                    "deliveredVerticalPosition", {}
+                )
+                .get("gmwcommon:localVerticalReferencePoint", {})
+                .get("#text", None),
+                "offset": gmw_data.get("deliveredVerticalPosition", {})
+                .get("gmwcommon:offset", {})
+                .get("#text", None),
+                "vertical_datum": gmw_data.get("deliveredVerticalPosition", {})
+                .get("gmwcommon:verticalDatum", {})
+                .get("#text", None),
+                "ground_level_position": gmw_data.get("deliveredVerticalPosition", {})
+                .get("gmwcommon:groundLevelPosition", {})
+                .get("#text", None),
+                "ground_level_positioning_method": gmw_data.get(
+                    "deliveredVerticalPosition", {}
+                )
+                .get("gmwcommon:groundLevelPositioningMethod", {})
+                .get("#text", None),
+                "standardized_location": gmw_data.get("standardizedLocation", {})
+                .get("brocom:location", {})
+                .get("gml:pos", None),
+                "object_registration_time": gmw_data.get("registrationHistory", {}).get(
+                    "brocom:objectRegistrationTime", None
+                ),
+                "registration_status": gmw_data.get("registrationHistory", {})
+                .get("brocom:registrationStatus", {})
+                .get("#text", None),
+            },
+        )
+
+        self.gmw_obj.save()
 
     def _save_monitoringtubes_data(self, monitoringtubes_data) -> None:
-        pass
+        # If only one monitoringtube data, the monitoringtubes_data is not in a list
+        if not isinstance(monitoringtubes_data, list):
+            monitoringtubes_data = [monitoringtubes_data]
+
+        for monitoringtube in monitoringtubes_data:
+            monitoringtube_obj, created = MonitoringTube.objects.update_or_create(
+                gmw=self.gmw_obj,
+                tube_number=monitoringtube.get("tubeNumber", None),
+                defaults={
+                    "tube_type": monitoringtube.get("tubeType", {}).get("#text", None),
+                    "artesian_well_cap_present": monitoringtube.get(
+                        "artesianWellCapPresent", None
+                    ),
+                    "sediment_sump_present": monitoringtube.get(
+                        "sedimentSumpPresent", None
+                    ),
+                    "number_of_geo_ohm_cables": monitoringtube.get(
+                        "numberOfGeoOhmCables", None
+                    ),
+                    "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
+                        "@xsi:nil", None
+                    ),
+                    "variable_diameter": monitoringtube.get("variableDiameter", None),
+                    "tube_status": monitoringtube.get("tubeStatus", {}).get(
+                        "#text", None
+                    ),
+                    "tube_top_position": monitoringtube.get("tubeTopPosition", {}).get(
+                        "#text", None
+                    ),
+                    "tube_top_positioning_method": monitoringtube.get(
+                        "tubeTopPositioningMethod", {}
+                    ).get("#text", None),
+                    "tube_part_inserted": monitoringtube.get("tubePartInserted", None),
+                    "tube_in_use": monitoringtube.get("tubeInUse", None),
+                    "tube_packing_material": monitoringtube.get("materialUsed", {})
+                    .get("gmwcommon:tubePackingMaterial", {})
+                    .get("#text", None),
+                    "tube_material": monitoringtube.get("materialUsed", {})
+                    .get("gmwcommon:tubeMaterial", {})
+                    .get("#text", None),
+                    "glue": monitoringtube.get("materialUsed", {})
+                    .get("gmwcommon:glue", {})
+                    .get("#text", None),
+                    "screen_length": monitoringtube.get("screen", {})
+                    .get("screenLength", {})
+                    .get("#text", None),
+                    "sock_material": monitoringtube.get("screen", {})
+                    .get("sockMaterial", {})
+                    .get("#text", None),
+                    "screen_top_position": monitoringtube.get("screen", {})
+                    .get("screenTopPosition", {})
+                    .get("#text", None),
+                    "screen_bottom_position": monitoringtube.get("screen", {})
+                    .get("screenBottomPosition", {})
+                    .get("#text", None),
+                    "plain_tube_part_length": monitoringtube.get("plainTubePart", {})
+                    .get("gmwcommon:plainTubePartLength", {})
+                    .get("#text", None),
+                },
+            )
+
+            monitoringtube_obj.save()
 
 
 class GLDObjectImporter(ObjectImporter):
