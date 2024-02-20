@@ -11,11 +11,11 @@ Project beschrijving
 -----------------
 De backend bestaat uit een api met daarin:
 
-        - Een importtask endpoint. Hiermee kan op basis van een KvK en projectnummer alle actuele data van een BRO domein geimporteerd worden
+- Een importtask endpoint. Hiermee kan op basis van een KvK en projectnummer alle actuele data van een BRO domein geimporteerd worden
 
-        - Een uploadtask endpoint. Hiermee kan data naar de BRO gestuurd worden, met als input een json van alle relevante data. De api handelt de                 transformatie naar XML-formaat en het berichtenverkeer van en naar de BRO af.
+- Een uploadtask endpoint. Hiermee kan data naar de BRO gestuurd worden, met als input een json van alle relevante data. De api handelt de                 transformatie naar XML-formaat en het berichtenverkeer van en naar de BRO af.
 
-        - Endpoints voor alle assets die uit de BRO worden geimporteerd.
+- Endpoints voor alle assets die uit de BRO worden geimporteerd.
 
 Installatie backend
 -----------------------
