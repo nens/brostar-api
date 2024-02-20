@@ -4,11 +4,11 @@ from . import views
 app_name = "gmn"
 
 urlpatterns = [
-    path("gmns/", views.GMNView.as_view(), name="gmn-list"),
+    path("gmns/", views.GMNListView.as_view(), name="gmn-list"),
     path("gmns/<uuid:uuid>/", views.GMNDetailView.as_view(), name="gmn-detail"),
     path(
         "measuringpoints/",
-        views.MeasuringpointView.as_view(),
+        views.MeasuringpointListView.as_view(),
         name="measuringpoint-list",
     ),
     path(

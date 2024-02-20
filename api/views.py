@@ -22,6 +22,10 @@ class APIOverview(views.APIView):
             "measuringpoints": drf_reverse(
                 "api:gmn:measuringpoint-list", request=request, format=format
             ),
+            "gmws": drf_reverse("api:gmw:gmw-list", request=request, format=format),
+            "monitoringtubes": drf_reverse(
+                "api:gmw:monitoringtube-list", request=request, format=format
+            ),
         }
         return Response(data)
 
