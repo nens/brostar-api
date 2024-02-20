@@ -7,7 +7,7 @@ BRO-hub is een allomvattend product voor het datamanagement rondom de BRO. Het b
 
 De backend is een Django applicatie, en de frontend (voorlopig) een Streamlit dashboard.
 
-Technische documentatie
+Installatie backend
 -----------------------
 
 (Voorlopig moet alles nog zelf lokaal opgezet te worden. Hopelijk wordt een groot deel via docker opgezet in de toekomst, daarom is deze omschrijving nogal beperkt in details)
@@ -41,4 +41,8 @@ Om het lokaal te installeren:
     Sla de key (zonder de b'' bytes structuur) op in een .env.
 
 
+Nu kan het product gebruikt worden.
 
+Installatie frontend
+--------------------
+Schrijven als frontend is gestart
