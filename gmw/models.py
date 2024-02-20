@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 
+
 class GMW(models.Model):
     """Groundwater Monitoring Well
 
@@ -24,11 +25,13 @@ class GMW(models.Model):
     owner = models.CharField(max_length=100, blank=True, null=True)
     well_head_protector = models.CharField(max_length=100, blank=True, null=True)
     delivery_location = models.CharField(max_length=100, blank=True, null=True)
-    delivered_vertical_postition = models.CharField(max_length=100, blank=True, null=True)
+    delivered_vertical_postition = models.CharField(
+        max_length=100, blank=True, null=True
+    )
     standardized_location = models.CharField(max_length=100, blank=True, null=True)
     object_registration_time = models.DateTimeField(blank=True, null=True)
     registration_status = models.CharField(max_length=50, blank=True, null=True)
-    
+
     def __str__(self):
         return self.bro_id
 
@@ -51,7 +54,9 @@ class MonitoringTube(models.Model):
     variable_diameter = models.CharField(max_length=100, blank=True, null=True)
     tube_status = models.CharField(max_length=100, blank=True, null=True)
     tube_top_position = models.CharField(max_length=100, blank=True, null=True)
-    tube_top_positioning_method = models.CharField(max_length=100, blank=True, null=True)
+    tube_top_positioning_method = models.CharField(
+        max_length=100, blank=True, null=True
+    )
     tube_part_inserted = models.CharField(max_length=100, blank=True, null=True)
     tube_in_use = models.CharField(max_length=100, blank=True, null=True)
     tube_packing_material = models.CharField(max_length=100, blank=True, null=True)
@@ -62,7 +67,6 @@ class MonitoringTube(models.Model):
     screen_top_position = models.CharField(max_length=100, blank=True, null=True)
     screen_bottom_position = models.CharField(max_length=100, blank=True, null=True)
     plain_tube_part_length = models.CharField(max_length=100, blank=True, null=True)
-    
-    
+
     def __str__(self):
         return f"{self.gmw}-{self.tube_number}"

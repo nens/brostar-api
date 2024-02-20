@@ -73,13 +73,16 @@ class BRODelivery:
             else:
                 time.sleep(10)
                 retries_count += 1
-    
+
         raise DeliveryError(f"Delivery was unsuccesfull")
 
     def _generate_xml_file(self) -> _Element:
         try:
             generator = self.xml_generator_class(
-                self.registration_type, self.request_type, self.metadata, self.sourcedocument_data
+                self.registration_type,
+                self.request_type,
+                self.metadata,
+                self.sourcedocument_data,
             )
             return generator.create_xml_file()
 
@@ -134,7 +137,9 @@ class BRODelivery:
 
         else:
             delivery_status = delivery_info.json()["status"]
-            delivery_brondocument_status = delivery_info.json()["brondocuments"][0]["status"]
+            delivery_brondocument_status = delivery_info.json()["brondocuments"][0][
+                "status"
+            ]
 
             if (
                 delivery_status == "DOORGELEVERD"

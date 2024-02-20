@@ -6,13 +6,14 @@ from lxml.etree import _Element, tostring
 
 from .. import config
 
+
 class XMLGenerator(ABC):
     """Handles the creation of the XML files.
 
-    This baseclass is inherited by the XML Generators per request type. 
+    This baseclass is inherited by the XML Generators per request type.
     Only the _create_sourcedocument varies per request type.
 
-    Returns: 
+    Returns:
         XML in str format
     """
 
@@ -41,10 +42,10 @@ class XMLGenerator(ABC):
         self.xml_tree.append(self.source_document)
 
         xml_file = etree.ElementTree(self.xml_tree)
-        xml_string = tostring(xml_file, encoding='utf-8', method='xml')
+        xml_string = tostring(xml_file, encoding="utf-8", method="xml")
 
         return xml_string
-    
+
     def _setup_xml_tree(self) -> None:
         """Sets up the basis of the XML File, consisting of the declaration urls."""
         self.xml_tree = etree.Element(
@@ -57,10 +58,10 @@ class XMLGenerator(ABC):
                 "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation",
                 self.xsi_schema_location,
             )
-    
+
     def _add_metadata(self):
         """Fills in the metadata (all information between the declaration sourcedocs."""
-        
+
         metadata_options = [
             "requestReference",
             "deliveryAccountableParty",
@@ -71,11 +72,10 @@ class XMLGenerator(ABC):
             if metadata_field in self.metadata.keys():
                 metadata_element = etree.SubElement(
                     self.xml_tree,
-                    f'{{{config.brocom}}}{metadata_field}',
+                    f"{{{config.brocom}}}{metadata_field}",
                 )
                 metadata_element.text = self.metadata[metadata_field]
 
-    
     @abstractmethod
     def _create_sourcedocument(self):
         """Creates the sourcedocs XML structure."""

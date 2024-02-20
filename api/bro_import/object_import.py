@@ -66,7 +66,7 @@ class GMNObjectImporter(ObjectImporter):
         # If GMN_PPO is not found, it basically means that the object is not relevant anymore
         if not "GMN_PPO" in dispatch_document_data:
             return
-        
+
         gmn_data, measuringpoint_data = self._split_json_data(dispatch_document_data)
 
         self._save_gmn_data(gmn_data)
@@ -75,7 +75,7 @@ class GMNObjectImporter(ObjectImporter):
     def _split_json_data(
         self, dispatch_document_data: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
-        """Takes in the json data and splits it up into GMN and Measuringpoint data"""   
+        """Takes in the json data and splits it up into GMN and Measuringpoint data"""
 
         measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
             "measuringPoint", []
@@ -138,20 +138,20 @@ class GMWObjectImporter(ObjectImporter):
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
         )
-        
+
         # If GMW_PPO is not found, it basically means that the object is not relevant anymore
         if not "GMW_PPO" in dispatch_document_data:
             return
-        
+
         gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)
 
         self._save_gmw_data(gmw_data)
         self._save_monitoringtubes_data(monitoringtubes_data)
-        
+
     def _split_json_data(
         self, dispatch_document_data: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
-        """Takes in the json data and splits it up into GMW and tubes data""" 
+        """Takes in the json data and splits it up into GMW and tubes data"""
 
         monitoringtubes_data = dispatch_document_data["GMW_PPO"].get(
             "monitoringTube", []
@@ -167,7 +167,6 @@ class GMWObjectImporter(ObjectImporter):
 
     def _save_monitoringtubes_data(self, monitoringtubes_data) -> None:
         pass
-        
 
 
 class GLDObjectImporter(ObjectImporter):

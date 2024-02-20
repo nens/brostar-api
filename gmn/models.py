@@ -48,6 +48,6 @@ class Measuringpoint(models.Model):
     gmw_bro_id = models.CharField(max_length=50, blank=True, null=True)
     tube_number = models.CharField(max_length=50, blank=True, null=True)
     tube_start_date = models.DateField(blank=True, null=True)
-   
+
     def __str__(self):
         return self.measuringpoint_code
