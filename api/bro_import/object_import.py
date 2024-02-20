@@ -58,19 +58,24 @@ class ObjectImporter(ABC):
 
 
 class GMNObjectImporter(ObjectImporter):
-    def _save_data_to_database(self, json_data: Dict[str, Any]):
-        gmn_data, measuringpoint_data = self._split_json_data(json_data)
+    def _save_data_to_database(self, json_data: Dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If GMN_PPO is not found, it basically means that the object is not relevant anymore
+        if not "GMN_PPO" in dispatch_document_data:
+            return
+        
+        gmn_data, measuringpoint_data = self._split_json_data(dispatch_document_data)
 
         self._save_gmn_data(gmn_data)
         self._save_measuringpoint_data(measuringpoint_data)
 
     def _split_json_data(
-        self, json_data: Dict[str, Any]
+        self, dispatch_document_data: Dict[str, Any]
     ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
-        """Takes in the json data and splits it up into GMN and Measuringpoint data"""
-        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
-            "dispatchDocument", {}
-        )
+        """Takes in the json data and splits it up into GMN and Measuringpoint data"""   
 
         measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
             "measuringPoint", []
@@ -81,7 +86,7 @@ class GMNObjectImporter(ObjectImporter):
 
         return gmn_data, measuringpoint_data
 
-    def _save_gmn_data(self, gmn_data: Dict[str, Any]):
+    def _save_gmn_data(self, gmn_data: Dict[str, Any]) -> None:
         self.gmn_obj, created = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             delivery_accountable_party=gmn_data.get(
@@ -105,7 +110,7 @@ class GMNObjectImporter(ObjectImporter):
 
         self.gmn_obj.save()
 
-    def _save_measuringpoint_data(self, measuringpoint_data):
+    def _save_measuringpoint_data(self, measuringpoint_data: Dict[str, Any]) -> None:
         for measuringpoint in measuringpoint_data:
             mp_data = measuringpoint.get("MeasuringPoint", {})
             monitoring_tube_data = mp_data.get("monitoringTube", {}).get(
@@ -129,11 +134,41 @@ class GMNObjectImporter(ObjectImporter):
 
 
 class GMWObjectImporter(ObjectImporter):
-    def _save_data_to_database(self, json_data: Dict[str, Any]):
+    def _save_data_to_database(self, json_data: Dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
         )
-        print(dispatch_document_data)
+        
+        # If GMW_PPO is not found, it basically means that the object is not relevant anymore
+        if not "GMW_PPO" in dispatch_document_data:
+            return
+        
+        gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)
+        print(gmw_data)
+        print(8888888888888888888888888888888888888888888888)
+        print(monitoringtubes_data)
+        # self._save_gmw_data(gmw_data)
+        # self._save_monitoringtubes_data(monitoringtubes_data)
+        
+    def _split_json_data(
+        self, dispatch_document_data: Dict[str, Any]
+    ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        """Takes in the json data and splits it up into GMW and tubes data""" 
+
+        monitoringtubes_data = dispatch_document_data["GMW_PPO"].get(
+            "monitoringTube", []
+        )
+
+        gmw_data = dispatch_document_data["GMW_PPO"]
+        gmw_data.pop("monitoringTube", None)
+
+        return gmw_data, monitoringtubes_data
+
+    def _save_gmw_data(self, gmw_data: Dict[str, Any]) -> None:
+        pass
+
+    def _save_monitoringtubes_data(self, monitoringtubes_data) -> None:
+        pass
         
 
 
