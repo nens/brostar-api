@@ -144,11 +144,9 @@ class GMWObjectImporter(ObjectImporter):
             return
         
         gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)
-        print(gmw_data)
-        print(8888888888888888888888888888888888888888888888)
-        print(monitoringtubes_data)
-        # self._save_gmw_data(gmw_data)
-        # self._save_monitoringtubes_data(monitoringtubes_data)
+
+        self._save_gmw_data(gmw_data)
+        self._save_monitoringtubes_data(monitoringtubes_data)
         
     def _split_json_data(
         self, dispatch_document_data: Dict[str, Any]

@@ -11,6 +11,8 @@ class GMN(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, blank=True, null=True)
     quality_regime = models.CharField(max_length=50, blank=True, null=True)
@@ -21,8 +23,6 @@ class GMN(models.Model):
     start_date_monitoring = models.DateField(blank=True, null=True)
     object_registration_time = models.DateTimeField(blank=True, null=True)
     registration_status = models.CharField(max_length=50, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.bro_id
@@ -32,7 +32,7 @@ class GMN(models.Model):
 
 
 class Measuringpoint(models.Model):
-    """A measuringpoint is a single object in a GMN.
+    """A measuringpoint is linked to a GMN.
 
     However, a measuring point is NOT a physical measuring point,
     but rather an abstraction of it. It is linked to a physical GMW monitoringtube,
@@ -40,14 +40,14 @@ class Measuringpoint(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     gmn = models.ForeignKey(GMN, on_delete=models.SET_NULL, null=True, blank=True)
     measuringpoint_code = models.CharField(max_length=50, blank=True, null=True)
     measuringpoint_start_date = models.DateField(blank=True, null=True)
     gmw_bro_id = models.CharField(max_length=50, blank=True, null=True)
     tube_number = models.CharField(max_length=50, blank=True, null=True)
     tube_start_date = models.DateField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+   
     def __str__(self):
         return self.measuringpoint_code
