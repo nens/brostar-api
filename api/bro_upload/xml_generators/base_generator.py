@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Any, Tuple
 
 from lxml import etree
-from lxml.etree import _Element, tostring
+from lxml.etree import tostring
 
 from .. import config
 
@@ -32,7 +32,7 @@ class XMLGenerator(ABC):
         self.xsi_schema_location = None
         self.xml_tree = None
 
-    def create_xml_file(self) -> Tuple[_Element, str]:
+    def create_xml_file(self) -> str:
         """Generates the XML file, based on the provided request_type, metadata and sourcedocs_data"""
         self._setup_xml_tree()
         self._add_metadata()

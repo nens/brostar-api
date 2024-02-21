@@ -1,5 +1,6 @@
 from rest_framework.reverse import reverse
 
+
 class UserOrganizationMixin:
     def get_user_organisation(self):
         return self.request.user.userprofile.organisation
@@ -8,6 +9,7 @@ class UserOrganizationMixin:
         user_organization = self.get_user_organisation()
         queryset = super().get_queryset()
         return queryset.filter(data_owner=user_organization)
+
 
 class UrlFieldMixin:
     """

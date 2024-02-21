@@ -2,7 +2,6 @@ import time
 import traceback
 
 from . import config
-from lxml.etree import _Element
 
 from . import utils
 
@@ -75,7 +74,7 @@ class BRODelivery:
 
         raise DeliveryError(f"Delivery was unsuccesfull")
 
-    def _generate_xml_file(self) -> _Element:
+    def _generate_xml_file(self) -> str:
         try:
             generator = self.xml_generator_class(
                 self.registration_type,
@@ -89,7 +88,7 @@ class BRODelivery:
             traceback.print_exc()
             raise RuntimeError(f"Error generating XML file: {e}") from e
 
-    def _validate_xml_file(self, xml_file: _Element) -> None:
+    def _validate_xml_file(self, xml_file: str) -> None:
         validation_response = utils.validate_xml_file(
             xml_file, self.bro_username, self.bro_password, self.project_number
         )
@@ -101,7 +100,7 @@ class BRODelivery:
         else:
             return
 
-    def _deliver_xml_file(self, xml_file: _Element) -> str:
+    def _deliver_xml_file(self, xml_file: str) -> str:
         """The upload consists of 4 steps:
         1) Requesting an upload by posting to the BRO api. Returns an upload_url
         2) Adding the XML file to the upload

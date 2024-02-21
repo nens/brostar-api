@@ -6,6 +6,7 @@ from api import mixins
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 
+
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMWSerializer
     queryset = models.GMW.objects.all()
@@ -13,7 +14,7 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         """List of all GMWs."""
@@ -40,7 +41,7 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         """List of all MonitoringTubes."""
@@ -51,7 +52,7 @@ class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAP
     queryset = models.MonitoringTube.objects.all()
     serializer_class = serializers.MonitoringTubeSerializer
     lookup_field = "uuid"
-    
+
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):

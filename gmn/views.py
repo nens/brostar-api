@@ -6,6 +6,7 @@ from api import mixins
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions
 
+
 class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
     queryset = models.GMN.objects.all()
@@ -13,7 +14,7 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'    
+    filterset_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         """List of all GMNs."""
@@ -40,7 +41,7 @@ class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'
+    filterset_fields = "__all__"
 
     def get(self, request, *args, **kwargs):
         """List of all Measuringpoints."""

@@ -45,7 +45,7 @@ class ImportTask(models.Model):
     bro_domain = models.CharField(
         max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
-    kvk_number = models.CharField(max_length=8, blank=True, null=True)   
+    kvk_number = models.CharField(max_length=8, blank=True, null=True)
     status = models.CharField(
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
     )

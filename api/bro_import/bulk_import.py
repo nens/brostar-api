@@ -44,7 +44,9 @@ class BulkImporter:
 
         for bro_id in bro_ids:
             try:
-                data_importer = self.object_importer_class(self.bro_domain, bro_id, self.data_owner)
+                data_importer = self.object_importer_class(
+                    self.bro_domain, bro_id, self.data_owner
+                )
                 data_importer.run()
             except requests.RequestException as e:
                 traceback.print_exc()

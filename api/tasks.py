@@ -49,9 +49,7 @@ def upload_bro_data_task(
     upload_task_instance.save()
 
     # Initialize and run importer
-    uploader = BRODelivery(
-        upload_task_instance, bro_username, bro_password
-    )
+    uploader = BRODelivery(upload_task_instance, bro_username, bro_password)
 
     try:
         uploader.process()

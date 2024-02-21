@@ -13,18 +13,21 @@ from . import models
 from . import mixins
 from . import filters
 
+
 class LogoutView(views.APIView):
     """
-    Djano 5 does not have GET logout route anymore, so Django Rest Framework UI can't log out.
+    Django 5 does not have GET logout route anymore, so Django Rest Framework UI can't log out.
     This is a workaround until Django Rest Framework implements POST logout.
     Can be removed after next djangorestframework release (and update).
     Details: https://github.com/encode/django-rest-framework/issues/9206
     """
+
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         logout(request)
-        return redirect('/api')
+        return redirect("/api")
+
 
 class APIOverview(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -69,10 +72,10 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = models.ImportTask.objects.all()
 
     permission_classes = [permissions.IsAuthenticated]
-    
+
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'
-    
+    filterset_fields = "__all__"
+
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""
         return self.list(request, *args, **kwargs)
@@ -95,7 +98,9 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             # Update the instance of the new task
             import_task_instance.status = "PENDING"
             import_task_instance.data_owner = data_owner
-            import_task_instance.kvk_number = import_task_instance.kvk_number or data_owner.kvk_number
+            import_task_instance.kvk_number = (
+                import_task_instance.kvk_number or data_owner.kvk_number
+            )
             import_task_instance.save()
 
             # Start the celery task
@@ -144,22 +149,22 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     `kvk_number`:
         string (*optional*) When not filled in, the kvk of the organisation linked to the user is used.
-    
+
     `project_number`:
         String (*optional*) When not filled in, the default project number is used. If that doesnt exist, the upload fails.
-    
+
     `registration_type`:
         String (*required*) available options are found in the docs
 
     `request_type`:
         String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check the docs for the possible combinations
-    
+
     `metadata`:
         dict (*required*) check the docs
 
     `sourcedocument_data`:
         dict (*required*) check the docs
-    
+
     """
 
     serializer_class = serializers.UploadTaskSerializer
@@ -189,11 +194,14 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             data_owner = user_profile.organisation
             username = user_profile.bro_user_token
             password = user_profile.bro_user_password
-                        
+
             # Update the instance of the new task
             upload_task_instance.status = "PENDING"
             upload_task_instance.data_owner = data_owner
-            upload_task_instance.project_number = upload_task_instance.project_number or user_profile.default_project_number
+            upload_task_instance.project_number = (
+                upload_task_instance.project_number
+                or user_profile.default_project_number
+            )
             upload_task_instance.save()
 
             # Start the celery task
