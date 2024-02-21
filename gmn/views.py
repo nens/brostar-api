@@ -3,11 +3,14 @@ from rest_framework.response import Response
 from . import serializers
 from . import models
 from api import mixins
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
     queryset = models.GMN.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'    
 
     def get(self, request, *args, **kwargs):
         """List of all GMNs."""
@@ -28,6 +31,8 @@ class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MeasuringpointSerializer
     queryset = models.Measuringpoint.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
 
     def get(self, request, *args, **kwargs):
         """List of all Measuringpoints."""

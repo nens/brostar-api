@@ -2,6 +2,7 @@ from rest_framework import status, generics, views
 from rest_framework.response import Response
 from django.urls import reverse
 from rest_framework.reverse import reverse as drf_reverse
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 from . import tasks
@@ -46,6 +47,8 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.ImportTaskSerializer
     queryset = models.ImportTask.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
     
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""
@@ -112,6 +115,8 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.UploadTaskSerializer
     queryset = models.UploadTask.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
 
     def get(self, request, *args, **kwargs):
         """List of all Upload Tasks."""

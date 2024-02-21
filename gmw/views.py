@@ -3,11 +3,14 @@ from rest_framework.response import Response
 from . import serializers
 from . import models
 from api import mixins
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMWSerializer
     queryset = models.GMW.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
 
     def get(self, request, *args, **kwargs):
         """List of all GMWs."""
@@ -28,6 +31,8 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer
     queryset = models.MonitoringTube.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
 
     def get(self, request, *args, **kwargs):
         """List of all MonitoringTubes."""
