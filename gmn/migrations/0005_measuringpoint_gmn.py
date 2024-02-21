@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0004_remove_measuringpoint_tube_gml_id"),
     ]

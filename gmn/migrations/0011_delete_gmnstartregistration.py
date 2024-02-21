@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0010_remove_gmnstartregistration_measuringpoints_and_more"),
     ]

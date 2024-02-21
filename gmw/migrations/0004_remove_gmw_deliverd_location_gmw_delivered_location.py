@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmw", "0003_remove_gmw_delivered_vertical_postition_and_more"),
     ]

@@ -5,7 +5,6 @@ from api import serializers
 
 
 class ImportTaskSerializerTest(TestCase):
-
     def setUp(self):
         # Create an Organisation instance for testing
         self.organisation = models.Organisation.objects.create(

@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0004_rename_bro_object_importtask_bro_object_type"),
     ]

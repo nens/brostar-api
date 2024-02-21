@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0002_measuringpoint_gmn_delivery_accountable_party_and_more"),
     ]

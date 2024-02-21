@@ -48,7 +48,6 @@ def test_user_profile_creation():
 
 
 class ImportTaskModelTest(TestCase):
-
     def setUp(self):
         # Create an Organisation instance for testing
         self.organisation = models.Organisation.objects.create(

@@ -5,7 +5,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0014_remove_importtask_organisation_and_more"),
     ]

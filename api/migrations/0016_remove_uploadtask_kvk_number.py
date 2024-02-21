@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0015_alter_userprofile_bro_user_password_and_more"),
     ]

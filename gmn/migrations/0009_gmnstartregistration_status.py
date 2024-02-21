@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0008_gmnstartregistration_measuringpoints"),
     ]

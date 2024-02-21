@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0006_gmn_created_at_gmn_updated_at_and_more"),
     ]

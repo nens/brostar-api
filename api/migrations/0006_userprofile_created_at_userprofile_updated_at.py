@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0005_rename_bro_object_type_importtask_bro_domain"),
     ]

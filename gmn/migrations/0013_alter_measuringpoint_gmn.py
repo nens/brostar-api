@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmn", "0012_gmn_data_owner_measuringpoint_data_owner"),
     ]

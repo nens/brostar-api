@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("gmw", "0002_rename_delivery_location_gmw_ground_level_position_and_more"),
     ]
