@@ -72,7 +72,7 @@ class BRODelivery:
                 time.sleep(10)
                 retries_count += 1
 
-        raise DeliveryError(f"Delivery was unsuccesfull")
+        raise DeliveryError("Delivery was unsuccesfull")
 
     def _generate_xml_file(self) -> str:
         try:

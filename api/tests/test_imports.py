@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import patch
-from unittest.mock import MagicMock, patch
 from api.bro_import import bulk_import, object_import
 from api import models
 import uuid

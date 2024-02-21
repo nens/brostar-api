@@ -69,7 +69,7 @@ class GMNObjectImporter(ObjectImporter):
         )
 
         # If GMN_PPO is not found, it basically means that the object is not relevant anymore
-        if not "GMN_PPO" in dispatch_document_data:
+        if "GMN_PPO" not in dispatch_document_data:
             return
 
         gmn_data, measuringpoint_data = self._split_json_data(dispatch_document_data)
@@ -157,7 +157,7 @@ class GMWObjectImporter(ObjectImporter):
         )
 
         # If GMW_PPO is not found, it basically means that the object is not relevant anymore
-        if not "GMW_PPO" in dispatch_document_data:
+        if "GMW_PPO" not in dispatch_document_data:
             return
 
         gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)

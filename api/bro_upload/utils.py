@@ -65,7 +65,7 @@ def add_xml_to_upload(
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
             data=xml_file,
-            params={"filename": f"BROHub request"},
+            params={"filename": "BROHub request"},
         )
         r.raise_for_status()
         return r.headers["Location"]
