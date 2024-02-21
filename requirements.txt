@@ -12,3 +12,5 @@ xmltodict
 lxml
 python-dotenv
 django-encrypted-model-fields
+django-filter
+djangorestframework-simplejwt
