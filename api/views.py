@@ -58,8 +58,11 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     **POST Parameters**
 
-    `BRO object`:
+    `bro_domain`:
         String (*required*) options: 'GMN', 'GMW', 'GLD', 'FRD'
+
+    `kvk_number`:
+        string (*optional*). When not filled in, the kvk of the organisation linked to the user is used.
     """
 
     serializer_class = serializers.ImportTaskSerializer
@@ -133,6 +136,30 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     It takes the registration type, request type and the sourcedocument data as input.
     This API handles the transformation, validation and delivery of the data.
     The status of this proces can be followed in the generated upload task instance.
+
+    **POST Parameters**
+
+    `bro_domain`:
+        String (*required*) options: 'GMN', 'GMW', 'GLD', 'FRD'
+
+    `kvk_number`:
+        string (*optional*) When not filled in, the kvk of the organisation linked to the user is used.
+    
+    `project_number`:
+        String (*optional*) When not filled in, the default project number is used. If that doesnt exist, the upload fails.
+    
+    `registration_type`:
+        String (*required*) available options are found in the docs
+
+    `request_type`:
+        String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check the docs for the possible combinations
+    
+    `metadata`:
+        dict (*required*) check the docs
+
+    `sourcedocument_data`:
+        dict (*required*) check the docs
+    
     """
 
     serializer_class = serializers.UploadTaskSerializer
