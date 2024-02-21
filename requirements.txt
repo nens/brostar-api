@@ -1,4 +1,5 @@
 django == 5.0.1
+streamlit
 psycopg2-binary
 djangorestframework
 celery
