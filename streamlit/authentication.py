@@ -36,8 +36,8 @@ def authenticate():
 
 def get_api_token(username, password):
     """Uses the username and password combination to create an API token."""
-    url = "http://localhost:8000/api/token/"  # Add 'http://' to the URL
-    headers = {'Content-Type': 'application/json'}  # Use colon instead of equals
+    url = "http://localhost:8000/api/token/"  
+    headers = {'Content-Type': 'application/json'} 
     payload = {
         "username": username,
         "password": password
