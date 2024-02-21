@@ -35,7 +35,6 @@ def upload_bro_data_task(
     upload_task_instance_uuid: str,
     bro_username: str,
     bro_password: str,
-    project_number: str,
 ) -> None:
     """Celery task that uploads data to the BRO.
 
@@ -51,7 +50,7 @@ def upload_bro_data_task(
 
     # Initialize and run importer
     uploader = BRODelivery(
-        upload_task_instance, bro_username, bro_password, project_number
+        upload_task_instance, bro_username, bro_password
     )
 
     try:

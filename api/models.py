@@ -65,7 +65,6 @@ class UploadTask(models.Model):
     bro_domain = models.CharField(
         max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
-    kvk_number = models.CharField(max_length=8, blank=True, null=True)
     project_number = models.CharField(max_length=20, blank=True, null=True)
     registration_type = models.CharField(
         blank=False, max_length=235, choices=choices.REGISTRATION_TYPE_OPTIONS

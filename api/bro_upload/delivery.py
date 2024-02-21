@@ -39,12 +39,11 @@ class BRODelivery:
         upload_task_instance: str,
         bro_username: str,
         bro_password: str,
-        project_number: str,
     ) -> None:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
-        self.project_number = project_number
+        self.project_number = self.upload_task_instance.project_number
         self.bro_domain = self.upload_task_instance.bro_domain
         self.registration_type = self.upload_task_instance.registration_type
         self.request_type = self.upload_task_instance.request_type

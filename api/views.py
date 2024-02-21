@@ -69,8 +69,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             # Update the instance of the new task
             import_task_instance.status = "PENDING"
             import_task_instance.data_owner = data_owner
-            if not import_task_instance.kvk_number:
-                import_task_instance.kvk_number = data_owner.kvk_number
+            import_task_instance.kvk_number = import_task_instance.kvk_number or data_owner.kvk_number
             import_task_instance.save()
 
             # Start the celery task
@@ -128,19 +127,21 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         if serializer.is_valid():
             upload_task_instance = serializer.save()
 
-            # Update the instance of the new task
-            upload_task_instance.status = "PENDING"
-            upload_task_instance.save()
-
             # Accessing the authenticated user's username and token
             user_profile = models.UserProfile.objects.get(user=request.user)
+            data_owner = user_profile.organisation
             username = user_profile.bro_user_token
             password = user_profile.bro_user_password
-            project_number = user_profile.project_number
+                        
+            # Update the instance of the new task
+            upload_task_instance.status = "PENDING"
+            upload_task_instance.data_owner = data_owner
+            upload_task_instance.project_number = upload_task_instance.project_number or user_profile.default_project_number
+            upload_task_instance.save()
 
             # Start the celery task
             tasks.upload_bro_data_task.delay(
-                upload_task_instance.uuid, username, password, project_number
+                upload_task_instance.uuid, username, password
             )
 
             # Get the dynamic URL using reverse
