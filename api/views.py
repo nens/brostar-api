@@ -3,15 +3,32 @@ from rest_framework.response import Response
 from django.urls import reverse
 from rest_framework.reverse import reverse as drf_reverse
 from django_filters.rest_framework import DjangoFilterBackend
-
+from rest_framework import permissions
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 from . import tasks
 from . import serializers
 from . import models
 from . import mixins
+from . import filters
 
+class LogoutView(views.APIView):
+    """
+    Djano 5 does not have GET logout route anymore, so Django Rest Framework UI can't log out.
+    This is a workaround until Django Rest Framework implements POST logout.
+    Can be removed after next djangorestframework release (and update).
+    Details: https://github.com/encode/django-rest-framework/issues/9206
+    """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        logout(request)
+        return redirect('/api')
 
 class APIOverview(views.APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request, format=None):
         data = {
             "importtasks": drf_reverse(
@@ -47,6 +64,9 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.ImportTaskSerializer
     queryset = models.ImportTask.objects.all()
+
+    permission_classes = [permissions.IsAuthenticated]
+    
     filter_backends = [DjangoFilterBackend]
     filterset_fields = '__all__'
     
@@ -99,6 +119,8 @@ class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIVie
     serializer_class = serializers.ImportTaskSerializer
     lookup_field = "uuid"
 
+    permission_classes = [permissions.IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -115,8 +137,11 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.UploadTaskSerializer
     queryset = models.UploadTask.objects.all()
+
+    permission_classes = [permissions.IsAuthenticated]
+
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = '__all__'
+    filterset_class = filters.UploadTaskFilter
 
     def get(self, request, *args, **kwargs):
         """List of all Upload Tasks."""
@@ -169,6 +194,8 @@ class UploadTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIVie
     queryset = models.UploadTask.objects.all()
     serializer_class = serializers.UploadTaskSerializer
     lookup_field = "uuid"
+
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         instance = self.get_object()
