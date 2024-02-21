@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from api.models import Organisation
 
 
 class GMW(models.Model):
@@ -11,6 +12,9 @@ class GMW(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, blank=True, null=True)
     quality_regime = models.CharField(max_length=50, blank=True, null=True)
@@ -51,6 +55,9 @@ class MonitoringTube(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
     gmw = models.ForeignKey(GMW, on_delete=models.CASCADE, null=True, blank=True)
     tube_number = models.CharField(max_length=100, blank=True, null=True)
     tube_type = models.CharField(max_length=100, blank=True, null=True)

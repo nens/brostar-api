@@ -1,8 +1,7 @@
 import uuid
 
 from django.db import models
-from api import choices
-
+from api.models import Organisation
 
 class GMN(models.Model):
     """Groundwater Monitoring Network
@@ -13,6 +12,9 @@ class GMN(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, blank=True, null=True)
     quality_regime = models.CharField(max_length=50, blank=True, null=True)
@@ -42,7 +44,10 @@ class Measuringpoint(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    gmn = models.ForeignKey(GMN, on_delete=models.SET_NULL, null=True, blank=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    gmn = models.ForeignKey(GMN, on_delete=models.CASCADE, null=True, blank=True)
     measuringpoint_code = models.CharField(max_length=50, blank=True, null=True)
     measuringpoint_start_date = models.DateField(blank=True, null=True)
     gmw_bro_id = models.CharField(max_length=50, blank=True, null=True)

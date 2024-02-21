@@ -7,6 +7,7 @@ from rest_framework.reverse import reverse as drf_reverse
 from . import tasks
 from . import serializers
 from . import models
+from . import mixins
 
 
 class APIOverview(views.APIView):
@@ -30,7 +31,7 @@ class APIOverview(views.APIView):
         return Response(data)
 
 
-class ImportTaskListView(generics.ListAPIView):
+class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
     This endpoint handles the import of data from the BRO.
     As input, it takes one of the four possible BRO Objects (GMN, GMW, GLD, FRD).
@@ -45,7 +46,7 @@ class ImportTaskListView(generics.ListAPIView):
 
     serializer_class = serializers.ImportTaskSerializer
     queryset = models.ImportTask.objects.all()
-
+    
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""
         return self.list(request, *args, **kwargs)
@@ -63,11 +64,13 @@ class ImportTaskListView(generics.ListAPIView):
             # Collect the relevant data
             import_task_instance_uuid = import_task_instance.uuid
             user_profile = models.UserProfile.objects.get(user=request.user)
-            organisation = user_profile.organisation
+            data_owner = user_profile.organisation
 
             # Update the instance of the new task
             import_task_instance.status = "PENDING"
-            import_task_instance.organisation = organisation
+            import_task_instance.data_owner = data_owner
+            if not import_task_instance.kvk_number:
+                import_task_instance.kvk_number = data_owner.kvk_number
             import_task_instance.save()
 
             # Start the celery task
@@ -89,7 +92,7 @@ class ImportTaskListView(generics.ListAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ImportTaskDetailView(generics.RetrieveAPIView):
+class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.ImportTask.objects.all()
     serializer_class = serializers.ImportTaskSerializer
     lookup_field = "uuid"
@@ -100,7 +103,7 @@ class ImportTaskDetailView(generics.RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UploadTaskListView(generics.ListAPIView):
+class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """This endpoint handles the upload of data to the BRO.
 
     It takes the registration type, request type and the sourcedocument data as input.
@@ -156,7 +159,7 @@ class UploadTaskListView(generics.ListAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UploadTaskDetailView(generics.RetrieveAPIView):
+class UploadTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.UploadTask.objects.all()
     serializer_class = serializers.UploadTaskSerializer
     lookup_field = "uuid"

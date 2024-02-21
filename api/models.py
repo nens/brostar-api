@@ -27,9 +27,9 @@ class UserProfile(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    bro_user_token = EncryptedCharField(max_length=100)
-    bro_user_password = EncryptedCharField(max_length=100)
-    project_number = models.CharField(max_length=20)
+    bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
+    bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
+    default_project_number = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
@@ -37,30 +37,36 @@ class UserProfile(models.Model):
 
 class ImportTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.CASCADE, null=True, blank=True
+    )
     bro_domain = models.CharField(
         max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
-    organisation = models.ForeignKey(
-        Organisation, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    kvk_number = models.CharField(max_length=8, blank=True, null=True)   
     status = models.CharField(
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
     )
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.bro_domain} import - {self.organisation} ({self.created_at})"
+        return f"{self.bro_domain} import - {self.data_owner} ({self.created_at})"
 
 
 class UploadTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
     bro_domain = models.CharField(
         max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
+    kvk_number = models.CharField(max_length=8, blank=True, null=True)
+    project_number = models.CharField(max_length=20, blank=True, null=True)
     registration_type = models.CharField(
         blank=False, max_length=235, choices=choices.REGISTRATION_TYPE_OPTIONS
     )

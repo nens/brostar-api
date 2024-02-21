@@ -7,6 +7,7 @@ from typing import IO, Dict, Any, List, Tuple
 from django.conf import settings
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
+from api import models
 
 
 class ObjectImporter(ABC):
@@ -24,9 +25,10 @@ class ObjectImporter(ABC):
         4) Save actions into the database
     """
 
-    def __init__(self, bro_domain, bro_id) -> None:
+    def __init__(self, bro_domain: str, bro_id: str, data_owner: models.Organisation) -> None:
         self.bro_domain = bro_domain
         self.bro_id = bro_id
+        self.data_owner = data_owner
 
     def run(self) -> None:
         url = self._create_download_url()
@@ -90,6 +92,7 @@ class GMNObjectImporter(ObjectImporter):
     def _save_gmn_data(self, gmn_data: Dict[str, Any]) -> None:
         self.gmn_obj, created = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
+            data_owner = self.data_owner,
             defaults={
                 "delivery_accountable_party": gmn_data.get(
                     "brocom:deliveryAccountableParty", None
@@ -128,6 +131,7 @@ class GMNObjectImporter(ObjectImporter):
 
             measuringpoint_obj, created = Measuringpoint.objects.update_or_create(
                 gmn=self.gmn_obj,
+                data_owner = self.data_owner,
                 measuringpoint_code=mp_data.get("measuringPointCode", None),
                 defaults={
                     "measuringpoint_start_date": mp_data.get("startDate", {}).get(
@@ -176,6 +180,7 @@ class GMWObjectImporter(ObjectImporter):
     def _save_gmw_data(self, gmw_data: Dict[str, Any]) -> None:
         self.gmw_obj, created = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
+            data_owner = self.data_owner,
             defaults={
                 "delivery_accountable_party": gmw_data.get(
                     "brocom:deliveryAccountableParty", None
@@ -243,6 +248,7 @@ class GMWObjectImporter(ObjectImporter):
         for monitoringtube in monitoringtubes_data:
             monitoringtube_obj, created = MonitoringTube.objects.update_or_create(
                 gmw=self.gmw_obj,
+                data_owner = self.data_owner,
                 tube_number=monitoringtube.get("tubeNumber", None),
                 defaults={
                     "tube_type": monitoringtube.get("tubeType", {}).get("#text", None),

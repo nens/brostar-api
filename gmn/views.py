@@ -2,9 +2,10 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from . import serializers
 from . import models
+from api import mixins
 
 
-class GMNListView(generics.ListAPIView):
+class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
     queryset = models.GMN.objects.all()
 
@@ -13,7 +14,7 @@ class GMNListView(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class GMNDetailView(generics.RetrieveAPIView):
+class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.GMN.objects.all()
     serializer_class = serializers.GMNSerializer
     lookup_field = "uuid"
@@ -24,7 +25,7 @@ class GMNDetailView(generics.RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class MeasuringpointListView(generics.ListAPIView):
+class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MeasuringpointSerializer
     queryset = models.Measuringpoint.objects.all()
 
@@ -33,7 +34,7 @@ class MeasuringpointListView(generics.ListAPIView):
         return self.list(request, *args, **kwargs)
 
 
-class MeasuringpointDetailView(generics.RetrieveAPIView):
+class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.Measuringpoint.objects.all()
     serializer_class = serializers.MeasuringpointSerializer
     lookup_field = "uuid"

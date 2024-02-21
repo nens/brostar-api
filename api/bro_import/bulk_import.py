@@ -3,6 +3,7 @@ import traceback
 
 from django.conf import settings
 from . import object_import
+from api import models
 
 
 class FetchBROIDsError(Exception):
@@ -21,13 +22,13 @@ class BulkImporter:
     Finally, it saves the data in the corresponding datamodel in the database.
     """
 
-    def __init__(self, import_task_instance) -> None:
+    def __init__(self, import_task_instance: models.ImportTask) -> None:
         self.import_task_instance = import_task_instance
         self.bro_domain = self.import_task_instance.bro_domain
-        self.organisation = self.import_task_instance.organisation
-        self.kvk_number = self.organisation.kvk_number
+        self.kvk_number = self.import_task_instance.kvk_number
+        self.data_owner = self.import_task_instance.data_owner
 
-        # Lookup the right importer class to initiate for obje
+        # Lookup the right importer class to initiate for object
         object_importer_mapping = {
             "GMN": object_import.GMNObjectImporter,
             "GMW": object_import.GMWObjectImporter,
@@ -43,7 +44,7 @@ class BulkImporter:
 
         for bro_id in bro_ids:
             try:
-                data_importer = self.object_importer_class(self.bro_domain, bro_id)
+                data_importer = self.object_importer_class(self.bro_domain, bro_id, self.data_owner)
                 data_importer.run()
             except requests.RequestException as e:
                 traceback.print_exc()
