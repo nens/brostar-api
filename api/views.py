@@ -144,7 +144,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
             if not import_task_instance.kvk_number:
                 return Response(
-                {"error": "Er is geen kvk nummer beschikbaar. Voeg er een toe aan de POST request, of stel een kvk nummer in onder de organisatie."},
+                {"error": "No KvK found. Please set a kvk number under the Organisation you are linked to."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -248,6 +248,12 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
                 or user_profile.default_project_number
             )
             upload_task_instance.save()
+
+            if not upload_task_instance.project_number:
+                return Response(
+                {"error": "No project number found. Set a default project number under your user profile, or add one to the POST request data."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
             # Start the celery task
             tasks.upload_bro_data_task.delay(
