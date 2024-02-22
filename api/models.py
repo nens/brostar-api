@@ -33,6 +33,12 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    @property
+    def credentials_set(self) -> bool:
+        """Checks if the credentials are set"""
+        return bool(self.bro_user_password and self.bro_user_token)
+
 
 
 class ImportTask(models.Model):
