@@ -142,6 +142,12 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             )
             import_task_instance.save()
 
+            if not import_task_instance.kvk_number:
+                return Response(
+                {"error": "Er is geen kvk nummer beschikbaar. Voeg er een toe aan de POST request, of stel een kvk nummer in onder de organisatie."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
             # Start the celery task
             tasks.import_bro_data_task.delay(import_task_instance_uuid)
 
