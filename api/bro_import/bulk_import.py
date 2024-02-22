@@ -2,8 +2,8 @@ import requests
 import traceback
 
 from django.conf import settings
-from . import object_import
 from api import models
+from api.bro_import import config
 
 
 class FetchBROIDsError(Exception):
@@ -29,14 +29,7 @@ class BulkImporter:
         self.data_owner = self.import_task_instance.data_owner
 
         # Lookup the right importer class to initiate for object
-        object_importer_mapping = {
-            "GMN": object_import.GMNObjectImporter,
-            "GMW": object_import.GMWObjectImporter,
-            "GLD": object_import.GLDObjectImporter,
-            "FRD": object_import.FRDObjectImporter,
-        }
-
-        self.object_importer_class = object_importer_mapping[self.bro_domain]
+        self.object_importer_class = config.object_importer_mapping[self.bro_domain]
 
     def run(self) -> None:
         url = self._create_bro_ids_import_url()

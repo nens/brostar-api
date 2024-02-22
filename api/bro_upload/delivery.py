@@ -1,5 +1,6 @@
 import time
 import traceback
+from typing import Union
 
 from . import config
 
@@ -66,8 +67,9 @@ class BRODelivery:
         retries_count = 0
 
         while retries_count < 4:
-            if self._check_delivery(deliver_url):
-                return
+            bro_id = self._check_delivery(deliver_url)
+            if bro_id is not None:
+                return bro_id
             else:
                 time.sleep(10)
                 retries_count += 1
@@ -122,7 +124,7 @@ class BRODelivery:
 
         return delivery_url
 
-    def _check_delivery(self, delivery_url: str) -> bool:
+    def _check_delivery(self, delivery_url: str) -> Union[str, None]:
         """Checks the delivery status."""
 
         delivery_info = utils.check_delivery_status(
@@ -130,6 +132,8 @@ class BRODelivery:
         )
 
         errors = delivery_info.json()["brondocuments"][0]["errors"]
+        bro_id = delivery_info.json()["brondocuments"][0]["broId"]
+
         if errors:
             raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
 
@@ -143,7 +147,7 @@ class BRODelivery:
                 delivery_status == "DOORGELEVERD"
                 and delivery_brondocument_status == "OPGENOMEN_LVBRO"
             ):
-                return True
+                return bro_id
 
             else:
-                return False
+                return None
