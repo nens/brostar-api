@@ -2,8 +2,10 @@ import requests
 import json
 import streamlit as st
 
+import config
 
-def authenticate():
+
+def is_authenticated():
     """Returns `True` if the api token is set correctly to the session state."""
  
     def check_credentials():
@@ -36,7 +38,7 @@ def authenticate():
 
 def get_api_token(username, password):
     """Uses the username and password combination to create an API token."""
-    url = "http://localhost:8000/api/token/"  
+    url = f"{config.BASE_URL}/api/token/"  
     headers = {'Content-Type': 'application/json'} 
     payload = {
         "username": username,
@@ -55,7 +57,7 @@ def get_api_token(username, password):
 
 def update_session_state(api_token):
     if api_token is not None:
-        st.session_state["api_token"] = api_token
+        st.session_state.api_token = api_token
         del st.session_state["password"]
         del st.session_state["username"]
     else:
