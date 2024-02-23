@@ -55,4 +55,7 @@ Nu kan het product gebruikt worden.
 
 Installatie frontend
 --------------------
-Schrijven als frontend is gestart
+Start the frontend with:
+
+        $ streamlit run streamlit/Home.py
+        
