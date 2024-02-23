@@ -23,9 +23,8 @@ ENVIRONMENT = "development"
 
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
 
-TIME_ZONE = 'CET'
+TIME_ZONE = "CET"
 USE_TZ = True
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

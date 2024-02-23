@@ -1,4 +1,3 @@
-
 import streamlit as st
 import authentication as auth
 import utils
@@ -7,7 +6,6 @@ from components.general import sidebar
 
 
 def main():
-    
     if auth.is_authenticated():
         # Setup the session state, and page settings
         config.set_page_config()
@@ -18,7 +16,7 @@ def main():
             sidebar()
 
         st.map()
-    
+
 
 if __name__ == "__main__":
     main()

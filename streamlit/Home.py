@@ -5,8 +5,8 @@ import config
 from components.general import sidebar
 from components import home as components
 
+
 def main():
-    
     if auth.is_authenticated():
         # Setup the session state, and page settings
         config.set_page_config()
@@ -22,11 +22,7 @@ def main():
         components.asset_count_metrics()
         st.divider()
         components.import_information()
-        
 
 
-
-
-    
 if __name__ == "__main__":
     main()

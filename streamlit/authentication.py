@@ -9,7 +9,7 @@ import config
 
 def is_authenticated() -> bool:
     """Returns `True` if the api token is set correctly to the session state."""
- 
+
     def check_credentials() -> None:
         """Checks whether a password entered by the user is correct."""
         api_token = get_api_token(
@@ -38,14 +38,11 @@ def is_authenticated() -> bool:
         return True
 
 
-def get_api_token(username, password) -> Union[str,None]:
+def get_api_token(username, password) -> Union[str, None]:
     """Uses the username and password combination to create an API token."""
-    url = f"{config.BASE_URL}/api/token/"  
-    headers = {'Content-Type': 'application/json'} 
-    payload = {
-        "username": username,
-        "password": password
-    }
+    url = f"{config.BASE_URL}/api/token/"
+    headers = {"Content-Type": "application/json"}
+    payload = {"username": username, "password": password}
 
     try:
         r = requests.post(
@@ -57,12 +54,13 @@ def get_api_token(username, password) -> Union[str,None]:
     except:
         return None
 
+
 def update_session_state(api_token) -> None:
     if api_token is not None:
         st.session_state.headers = {
-        "Authorization": f"Bearer {api_token}",
-        "Content-Type":"application/json",
-    }
+            "Authorization": f"Bearer {api_token}",
+            "Content-Type": "application/json",
+        }
         del st.session_state["password"]
         del st.session_state["username"]
     else:

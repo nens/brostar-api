@@ -10,10 +10,12 @@ from gmw.models import GMW, MonitoringTube
 from api import models
 from api.bro_import import config
 
+
 def import_single_object(bro_domain: str, bro_id: str, data_owner: str) -> None:
     """Imports a single object, based on the domain and its bro_id"""
     object_importer_class = config.object_importer_mapping[bro_domain]
     object_importer_class(bro_domain, bro_id, data_owner).run()
+
 
 class ObjectImporter(ABC):
     """Imports the BRO data based on the object ID.

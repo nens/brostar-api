@@ -33,12 +33,13 @@ class APIOverview(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request, format=None):
-        
         data = {
             "api-token": drf_reverse(
                 "token_obtain_pair", request=request, format=format
             ),
-            "userprofile": drf_reverse("api:userprofile-list", request=request, format=format),
+            "userprofile": drf_reverse(
+                "api:userprofile-list", request=request, format=format
+            ),
             "importtasks": drf_reverse(
                 "api:importtask-list", request=request, format=format
             ),
@@ -56,6 +57,7 @@ class APIOverview(views.APIView):
         }
         return Response(data)
 
+
 class UserProfileListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -66,6 +68,7 @@ class UserProfileListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
+
 class UserProfileDetailView(generics.RetrieveUpdateAPIView):
     queryset = models.UserProfile.objects.all()
     serializer_class = serializers.UserProfileSerializer
@@ -74,22 +77,27 @@ class UserProfileDetailView(generics.RetrieveUpdateAPIView):
 
     # update makes sure only project number, token and password can be changed
     def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
         data = request.data
-        allowed_fields = {'default_project_number', 'bro_user_token', 'bro_user_password'} 
+        allowed_fields = {
+            "default_project_number",
+            "bro_user_token",
+            "bro_user_password",
+        }
         for key in data.keys():
             if key not in allowed_fields:
                 return Response(
                     {"error": f"Cannot update field {key}"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
 
 class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
@@ -114,7 +122,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     def get_queryset(self):
         """List of all Import Tasks ordered by updated_at in descending order."""
-        queryset = models.ImportTask.objects.all().order_by('-updated_at')
+        queryset = models.ImportTask.objects.all().order_by("-updated_at")
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -146,9 +154,11 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
             if not import_task_instance.kvk_number:
                 return Response(
-                {"error": "No KvK found. Please set a kvk number under the Organisation you are linked to."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                    {
+                        "error": "No KvK found. Please set a kvk number under the Organisation you are linked to."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             # Start the celery task
             tasks.import_bro_data_task.delay(import_task_instance_uuid)
@@ -253,9 +263,11 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
             if not upload_task_instance.project_number:
                 return Response(
-                {"error": "No project number found. Set a default project number under your user profile, or add one to the POST request data."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                    {
+                        "error": "No project number found. Set a default project number under your user profile, or add one to the POST request data."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             # Start the celery task
             tasks.upload_bro_data_task.delay(

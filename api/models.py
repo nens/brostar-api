@@ -23,7 +23,7 @@ class UserProfile(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50, null=True, blank=True)
-    last_name = models.CharField(max_length=50,null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
     organisation = models.ForeignKey(
         Organisation, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -35,7 +35,7 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+
     @property
     def credentials_set(self) -> bool:
         """Checks if the credentials are set"""
