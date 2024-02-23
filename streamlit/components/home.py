@@ -59,14 +59,7 @@ def import_information() -> None:
                 on_click=utils.start_import_tasks,
             )
 
-    if "import_task_started" in st.session_state:
-        if st.session_state["import_task_started"]:
-            st.success("De import taak is succesvol aangemaakt", icon="✅")
-        else:
-            st.warning(
-                "Er heeft in het afgelopen uur al een import taak gedraaid. Om overbelasting van de BRO te voorkomen is er maar 1 taak per uur mogelijk.",
-                icon="⚠️",
-            )
+    
 
     import_tasks = utils.get_endpoint_data(endpoint='importtasks')
     if not import_tasks.empty:

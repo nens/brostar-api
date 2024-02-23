@@ -34,8 +34,4 @@ def sidebar() -> None:
 
             st.form_submit_button("Opslaan", on_click=utils.patch_user_profile)
 
-    if "user_profile_updated_status" in st.session_state:
-        if st.session_state["user_profile_updated_status"]:
-            st.success("Wijzigingen opgeslagen", icon="✅")
-        else:
-            st.warning("Wijzigingen niet opgeslagen. Probeer opnieuw", icon="⚠️")
+    

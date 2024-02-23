@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Any
 import pytz
 from datetime import datetime, timedelta
 import requests
@@ -55,9 +55,11 @@ def patch_user_profile() -> None:
     r.raise_for_status()
 
     if r.status_code == 200:
-        st.session_state["user_profile_updated_status"] = True
+        st.toast("Wijzigingen opgeslagen", icon="✅")
     else:
-        st.session_state["user_profile_updated_status"] = False
+        st.toast("Wijzigingen niet opgeslagen. Probeer opnieuw", icon="⚠️")
+           
+
 
 
 def get_endpoint_count(endpoint: str) -> int:
@@ -84,8 +86,8 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
 
     try:
         last_update = r.json()["results"][0]["created"]
-        last_update_to_iso = last_update[:-1]
-        return datetime.fromisoformat(last_update_to_iso)
+        last_update = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc)
+        return last_update
         
     except:
         return None
@@ -110,17 +112,20 @@ def start_import_tasks() -> None:
             )
             r.raise_for_status()
 
-        st.session_state["import_task_started"] = True
+        st.toast("De import taak is succesvol aangemaakt", icon="✅")
 
     else:
-        st.session_state["import_task_started"] = False
+        st.toast(
+                "Er heeft in het afgelopen uur al een import taak gedraaid. Om overbelasting van de BRO te voorkomen is er maar 1 taak per uur mogelijk.",
+                icon="⚠️",
+            )
 
 
 def validate_import_request() -> bool:
     timezone = pytz.timezone("CET")
     now = datetime.now(timezone)
     most_recent_import_datetime = lookup_most_recent_datetime("importtasks")
-
+    print(now, most_recent_import_datetime)
     if not most_recent_import_datetime:
         return True
 
@@ -147,3 +152,21 @@ def get_endpoint_data(endpoint:str) -> pd.DataFrame:
         url = r.json()["next"]
        
     return pd.DataFrame(df_list)
+
+def start_upload_task(upload_data: Dict[str,Any]) -> None:
+    """Stats an upload task to deliver information to the BRO"""
+    url = f"{config.BASE_URL}/api/uploadtasks/"
+
+    r = requests.post(
+        url=url,
+        headers=st.session_state.headers,
+        json=upload_data,
+    )
+    print(r.json())
+
+    r.raise_for_status()
+
+    if r.status_code == 201:
+        st.toast("Het aanleverproces is gestart. Controleer de voortgang op de Home pagina.", icon="✅")
+    else:
+        st.toast("Aanlevering gefaald.", icon="⚠️")

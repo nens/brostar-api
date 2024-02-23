@@ -3,6 +3,7 @@ import authentication as auth
 import utils
 import config
 from components.general import sidebar
+from components import delivery as components
 
 
 def main():
@@ -15,8 +16,11 @@ def main():
         with st.sidebar:
             sidebar()
 
-        st.text("Lever hier je data aan")
+        if not st.session_state.credentials_set:
+            st.warning("De BRO user token en password zijn niet ingesteld. Vul deze in de sidebar in om gegevens aan te kunnen leveren.", icon="⚠️")
 
+        else:
+            components.delivery()
 
 if __name__ == "__main__":
     main()
