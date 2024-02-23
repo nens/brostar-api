@@ -3,6 +3,7 @@ import authentication as auth
 import utils
 import config
 from components.general import sidebar
+from components import gmw as components
 
 
 def main():
@@ -15,7 +16,13 @@ def main():
         with st.sidebar:
             sidebar()
 
-        st.text("Hier een overzicht van alle GMWs")
+        st.title("GMW Data")
+
+        st.subheader("Grondwatermonitoringputten")
+        components.gmw_table()
+
+        st.subheader("Monitoringbuizen")
+        components.monitoringtubes_table()
 
 
 if __name__ == "__main__":

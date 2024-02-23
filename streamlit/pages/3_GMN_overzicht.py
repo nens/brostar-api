@@ -3,6 +3,7 @@ import authentication as auth
 import utils
 import config
 from components.general import sidebar
+from components import gmn as components
 
 
 def main():
@@ -15,8 +16,13 @@ def main():
         with st.sidebar:
             sidebar()
 
-        st.text("Hier een overzicht van alle GMNs")
+        st.title("GMN Data")
 
+        st.subheader("Networks")
+        components.gmn_table()
+
+        st.subheader("Meetpunten")
+        components.measuringpoints_table()
 
 if __name__ == "__main__":
     main()
