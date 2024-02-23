@@ -12,8 +12,8 @@ class Organisation(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     kvk_number = models.CharField(max_length=8)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -27,8 +27,8 @@ class UserProfile(models.Model):
     organisation = models.ForeignKey(
         Organisation, on_delete=models.CASCADE, null=True, blank=True
     )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
     bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
     default_project_number = models.CharField(max_length=20, blank=True, null=True)
@@ -44,8 +44,8 @@ class UserProfile(models.Model):
 
 class ImportTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         Organisation, on_delete=models.CASCADE, null=True, blank=True
     )
@@ -59,7 +59,7 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.bro_domain} import - {self.data_owner} ({self.created_at})"
+        return f"{self.bro_domain} import - {self.data_owner} ({self.created})"
 
 
 class UploadTask(models.Model):

@@ -67,9 +67,8 @@ class BRODelivery:
         retries_count = 0
 
         while retries_count < 4:
-            bro_id = self._check_delivery(deliver_url)
-            if bro_id is not None:
-                return bro_id
+            if self._check_delivery(deliver_url):
+                return
             else:
                 time.sleep(10)
                 retries_count += 1
@@ -132,7 +131,6 @@ class BRODelivery:
         )
 
         errors = delivery_info.json()["brondocuments"][0]["errors"]
-        bro_id = delivery_info.json()["brondocuments"][0]["broId"]
 
         if errors:
             raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
@@ -147,7 +145,7 @@ class BRODelivery:
                 delivery_status == "DOORGELEVERD"
                 and delivery_brondocument_status == "OPGENOMEN_LVBRO"
             ):
-                return bro_id
+                return True
 
             else:
-                return None
+                return False

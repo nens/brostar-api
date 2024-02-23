@@ -22,6 +22,8 @@ def main():
         components.asset_count_metrics()
         st.divider()
         components.import_information()
+        st.divider()
+        components.upload_information()
 
 
 if __name__ == "__main__":

@@ -114,16 +114,12 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     `kvk_number`:
         string (*optional*). When not filled in, the kvk of the organisation linked to the user is used.
     """
-
+    queryset = models.ImportTask.objects.all().order_by("-created")
     serializer_class = serializers.ImportTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get_queryset(self):
-        """List of all Import Tasks ordered by updated_at in descending order."""
-        queryset = models.ImportTask.objects.all().order_by("-created_at")
-        return queryset
 
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""

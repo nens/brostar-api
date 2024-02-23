@@ -3,6 +3,7 @@ import pytz
 from datetime import datetime, timedelta
 import requests
 import streamlit as st
+import pandas as pd
 
 import config
 
@@ -82,7 +83,7 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
     r.raise_for_status()
 
     try:
-        last_update = datetime.fromisoformat(r.json()["results"][0]["created_at"])
+        last_update = datetime.fromisoformat(r.json()["results"][0]["created"])
         return last_update
     except:
         return None
@@ -124,3 +125,23 @@ def validate_import_request() -> bool:
     check = (now - most_recent_import_datetime) > timedelta(hours=1)
 
     return True if check else False
+
+def get_endpoint_data(endpoint:str) -> pd.DataFrame:
+    """Retreives all import tasks from the api"""
+    url = f"{config.BASE_URL}/api/{endpoint}/?limit=250"
+    df_list = []
+
+    while url:
+        r = requests.get(
+            url=url,
+            headers=st.session_state.headers,
+        )
+
+        results = r.json()["results"]
+        
+        for result in results:
+            df_list.append(result)
+
+        url = r.json()["next"]
+       
+    return pd.DataFrame(df_list)

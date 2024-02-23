@@ -53,20 +53,11 @@ def upload_bro_data_task(
 
     try:
         # The actual task
-        bro_id = uploader.process()
+        uploader.process()
 
         # Update upload task instance
         upload_task_instance.status = "COMPLETED"
         upload_task_instance.log = "The upload was done successfully"
-        upload_task_instance.save()
-
-        # When upload was succesfull: import the object into the database
-        bulk_import.import_single_object(
-            upload_task_instance.bro_domain, bro_id, upload_task_instance.data_owner
-        )
-
-        # Update upload task instance
-        upload_task_instance.log = "The upload was done successfully, and the data has been imported into the database"
         upload_task_instance.save()
 
     except Exception as e:
