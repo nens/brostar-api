@@ -8,33 +8,39 @@ def import_information() -> None:
 
     # Most recent import time element
     most_recent_import_datetime = utils.lookup_most_recent_datetime("importtasks")
-    most_recent_import_str = most_recent_import_datetime.strftime(
-        "%d-%m-%y om %H:%M:%S"
-    )
-    st.markdown("**Meest recente data import vanuit de BRO:**")
-    st.text(most_recent_import_str)
+    if most_recent_import_datetime:
+        most_recent_import_str = most_recent_import_datetime.strftime(
+            "%d-%m-%y om %H:%M:%S"
+        )
+        st.markdown("**Meest recente data import vanuit de BRO:**")
+        st.text(most_recent_import_str)
+    else:
+        st.info("Er heeft nog geen import plaatsgevonden. Gebruik de knop hieronder voor een eerste import.")
+    
+    
+    
 
     if st.button("Start nieuwe import taak"):
         with st.form(key="start-new-import-task"):
             # Start import task element
             st.markdown("**Importeer de huidige informatie uit de BRO:**")
             help_text = "GMN importeert GMN's en Meetpunten, GMW importeer GMW's en Monitoringbuizen"
-            kvk_number = st.text_input(
+            st.text_input(
                 "Importeer voor kvk (default is eigen organisatie):",
                 value=st.session_state.organisation_kvk,
+                key='import_task_kvk_number'
             )
-            domains_to_import = st.multiselect(
+            st.multiselect(
                 "BRO domeinen om te importeren:",
                 options=config.CURRENT_SUPPORTED_BRO_DOMAINS,
                 default=config.CURRENT_SUPPORTED_BRO_DOMAINS,
                 help=help_text,
+                key='domains_to_import'
             )
 
             st.form_submit_button(
                 "Start de import taak",
                 on_click=utils.start_import_tasks,
-                args=domains_to_import,
-                kwargs={"kvk_number": kvk_number},
             )
 
     if "import_task_started" in st.session_state:

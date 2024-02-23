@@ -122,7 +122,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     def get_queryset(self):
         """List of all Import Tasks ordered by updated_at in descending order."""
-        queryset = models.ImportTask.objects.all().order_by("-updated_at")
+        queryset = models.ImportTask.objects.all().order_by("-created_at")
         return queryset
 
     def get(self, request, *args, **kwargs):

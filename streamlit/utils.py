@@ -81,21 +81,25 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
     )
     r.raise_for_status()
 
-    last_update = datetime.fromisoformat(r.json()["results"][0]["updated_at"])
-    return last_update
+    try:
+        last_update = datetime.fromisoformat(r.json()["results"][0]["created_at"])
+        return last_update
+    except:
+        return None
 
 
-def start_import_tasks(*args: list[str], **kwargs) -> None:
+def start_import_tasks() -> None:
     """Start an importtask in the api based on the provided domains.
 
     Only runs after a validation, where is checked whether there has been an import
     task has been done in the last hour. This is to prevent an overload on the BRO.
     """
-    kvk_number = kwargs.get("kvk_number")
+    kvk_number = st.session_state.import_task_kvk_number
+
 
     if validate_import_request():
         url = f"{config.BASE_URL}/api/importtasks/"
-        for domain in args:
+        for domain in st.session_state.domains_to_import:
             r = requests.post(
                 url=url,
                 headers=st.session_state.headers,
@@ -113,6 +117,10 @@ def validate_import_request() -> bool:
     timezone = pytz.timezone("CET")
     now = datetime.now(timezone)
     most_recent_import_datetime = lookup_most_recent_datetime("importtasks")
+
+    if not most_recent_import_datetime:
+        return True
+
     check = (now - most_recent_import_datetime) > timedelta(hours=1)
 
     return True if check else False
