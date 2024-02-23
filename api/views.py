@@ -108,12 +108,14 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
 
     serializer_class = serializers.ImportTaskSerializer
-    queryset = models.ImportTask.objects.all()
-
     permission_classes = [permissions.IsAuthenticated]
-
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
+
+    def get_queryset(self):
+        """List of all Import Tasks ordered by updated_at in descending order."""
+        queryset = models.ImportTask.objects.all().order_by('-updated_at')
+        return queryset
 
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""

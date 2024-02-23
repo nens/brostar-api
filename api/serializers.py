@@ -8,14 +8,11 @@ from .mixins import UrlFieldMixin
 class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
     credentials_set = serializers.SerializerMethodField()
     organisation_name = serializers.SerializerMethodField()
+    organisation_kvk = serializers.SerializerMethodField()
     
     class Meta:
         model = models.UserProfile
         exclude = ["user"]
-
-    def get_credentials_set(self, obj):
-        """Return the value of the credentials_set property."""
-        return obj.credentials_set
 
     # Exclude token and password in the get requests
     def to_representation(self, instance):
@@ -25,10 +22,20 @@ class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
                 self.fields.pop(field, None)
         return super().to_representation(instance)
     
+    def get_credentials_set(self, obj):
+        """Return the value of the credentials_set property."""
+        return obj.credentials_set
+    
     def get_organisation_name(self, obj):
         organisation = obj.organisation
         return organisation.name if organisation else None
-
+    
+    def get_organisation_kvk(self, obj):
+        organisation = obj.organisation
+        return organisation.kvk_number if organisation else None
+    
+    
+    
 class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = models.ImportTask
