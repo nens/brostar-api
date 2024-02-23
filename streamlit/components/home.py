@@ -68,30 +68,34 @@ def import_information() -> None:
                 icon="⚠️",
             )
 
-    st.markdown("**Alle uitgevoerde import taken:**")
     import_tasks = utils.get_endpoint_data(endpoint='importtasks')
-    import_tasks = import_tasks[[
-        "bro_domain",
-        "kvk_number",
-        "status",
-        "created",
-        "log",
-    ]]
-    st.dataframe(import_tasks, hide_index=True)
+    if not import_tasks.empty:
+        st.markdown("**Alle uitgevoerde import taken:**")
+        import_tasks = import_tasks[[
+            "bro_domain",
+            "kvk_number",
+            "status",
+            "created",
+            "log",
+        ]]
+        st.dataframe(import_tasks, hide_index=True)
 
 def upload_information() -> None:
     """Upload information component"""
     st.subheader("Aanleveringen informatie")
 
-    st.markdown("**Alle leveringen:**")
     upload_tasks = utils.get_endpoint_data(endpoint='uploadtasks')
-    upload_tasks = upload_tasks[[
-        "bro_domain",
-        "project_number",
-        "registration_type",
-        "request_type",
-        "last_updated",
-        "status",
-        "log",
-    ]]
-    st.dataframe(upload_tasks, hide_index=True)
+    if upload_tasks.empty:
+        st.info("Er hebben nog geen leveringen via de API plaatsgevonden.")
+    else:
+        st.markdown("**Alle leveringen:**")
+        upload_tasks = upload_tasks[[
+            "bro_domain",
+            "project_number",
+            "registration_type",
+            "request_type",
+            "last_updated",
+            "status",
+            "log",
+        ]]
+        st.dataframe(upload_tasks, hide_index=True)

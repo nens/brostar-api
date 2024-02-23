@@ -83,8 +83,10 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
     r.raise_for_status()
 
     try:
-        last_update = datetime.fromisoformat(r.json()["results"][0]["created"])
-        return last_update
+        last_update = r.json()["results"][0]["created"]
+        last_update_to_iso = last_update[:-1]
+        return datetime.fromisoformat(last_update_to_iso)
+        
     except:
         return None
 
