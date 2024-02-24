@@ -16,22 +16,12 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        """List of all GMNs."""
-        return self.list(request, *args, **kwargs)
-
-
 class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.GMN.objects.all()
     serializer_class = serializers.GMNSerializer
     lookup_field = "uuid"
 
     permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -43,11 +33,6 @@ class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        """List of all Measuringpoints."""
-        return self.list(request, *args, **kwargs)
-
-
 class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.Measuringpoint.objects.all()
     serializer_class = serializers.MeasuringpointSerializer
@@ -55,7 +40,3 @@ class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAP
 
     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)

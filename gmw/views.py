@@ -16,10 +16,6 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        """List of all GMWs."""
-        return self.list(request, *args, **kwargs)
-
 
 class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.GMW.objects.all()
@@ -27,12 +23,6 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     lookup_field = "uuid"
 
     permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer
@@ -43,10 +33,6 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        """List of all MonitoringTubes."""
-        return self.list(request, *args, **kwargs)
-
 
 class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = models.MonitoringTube.objects.all()
@@ -54,8 +40,3 @@ class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAP
     lookup_field = "uuid"
 
     permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -3,6 +3,8 @@ import authentication as auth
 import utils
 import config
 from components.general import sidebar
+from components import map as components
+
 
 
 def main():
@@ -15,7 +17,7 @@ def main():
         with st.sidebar:
             sidebar()
 
-        st.map()
+        components.map()
 
 
 if __name__ == "__main__":

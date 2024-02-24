@@ -135,10 +135,11 @@ def validate_import_request() -> bool:
 
 def get_endpoint_data(endpoint:str) -> pd.DataFrame:
     """Retreives all import tasks from the api"""
-    url = f"{config.BASE_URL}/api/{endpoint}/?limit=250"
+    url = f"{config.BASE_URL}/api/{endpoint}/?limit=1000"
     df_list = []
 
-    while url:
+    while url is not None:
+        print(url)
         r = requests.get(
             url=url,
             headers=st.session_state.headers,
@@ -150,6 +151,7 @@ def get_endpoint_data(endpoint:str) -> pd.DataFrame:
             df_list.append(result)
 
         url = r.json()["next"]
+        print(url)
        
     return pd.DataFrame(df_list)
 
