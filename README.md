@@ -53,7 +53,7 @@ Om het lokaal te installeren:
 
 Nu kan het product gebruikt worden.
 
-Installatie frontend
+Installatie frontend (temp strealit)
 --------------------
 Start the frontend with:
 
