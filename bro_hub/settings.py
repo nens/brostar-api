@@ -19,6 +19,8 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
+
+
 # Options are development and production
 ENVIRONMENT = "development"
 
@@ -95,6 +97,17 @@ WSGI_APPLICATION = "bro_hub.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+DATABASES = {
+    # TODO: use docker-compose's version.
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "bro_hub_dev",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
+}
 
 
 # Password validation
@@ -153,6 +166,13 @@ REST_FRAMEWORK = {
 
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)
+# TODO: fix celery env settings
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+
+# BRO SETTINGS
+BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
+BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"
+# BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
