@@ -42,5 +42,3 @@ release = false
 
 [tool.pyright]
 include = ["bro_hub", "api", "gmn", "gmw"]
-venvPath = "."
-venv = ".venv"
