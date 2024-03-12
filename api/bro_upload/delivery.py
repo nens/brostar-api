@@ -83,7 +83,10 @@ class BRODelivery:
 
     def _validate_xml_file(self, xml_file: str) -> None:
         validation_response = utils.validate_xml_file(
-            xml_file, self.bro_username, self.bro_password, self.upload_task_instance.project_number
+            xml_file,
+            self.bro_username,
+            self.bro_password,
+            self.upload_task_instance.project_number,
         )
 
         if validation_response["status"] != "VALIDE":
@@ -101,7 +104,9 @@ class BRODelivery:
         """
 
         upload_url = utils.create_upload_url(
-            self.bro_username, self.bro_password, self.upload_task_instance.project_number
+            self.bro_username,
+            self.bro_password,
+            self.upload_task_instance.project_number,
         )
         utils.add_xml_to_upload(
             xml_file,
@@ -110,7 +115,10 @@ class BRODelivery:
             self.bro_password,
         )
         delivery_url = utils.create_delivery(
-            upload_url, self.bro_username, self.bro_password, self.upload_task_instance.project_number
+            upload_url,
+            self.bro_username,
+            self.bro_password,
+            self.upload_task_instance.project_number,
         )
 
         return delivery_url
