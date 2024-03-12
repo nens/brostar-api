@@ -41,14 +41,8 @@ class BRODelivery:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
-        self.project_number = self.upload_task_instance.project_number
-        self.bro_domain = self.upload_task_instance.bro_domain
-        self.registration_type = self.upload_task_instance.registration_type
-        self.request_type = self.upload_task_instance.request_type
-        self.metadata = self.upload_task_instance.metadata
-        self.sourcedocument_data = self.upload_task_instance.sourcedocument_data
         self.xml_generator_class = config.xml_generator_mapping.get(
-            self.registration_type
+            self.upload_task_instance.registration_type
         )
 
     def process(self) -> None:
@@ -76,10 +70,10 @@ class BRODelivery:
     def _generate_xml_file(self) -> str:
         try:
             generator = self.xml_generator_class(
-                self.registration_type,
-                self.request_type,
-                self.metadata,
-                self.sourcedocument_data,
+                self.upload_task_instance.registration_type,
+                self.upload_task_instance.request_type,
+                self.upload_task_instance.metadata,
+                self.upload_task_instance.sourcedocument_data,
             )
             return generator.create_xml_file()
 
@@ -89,7 +83,7 @@ class BRODelivery:
 
     def _validate_xml_file(self, xml_file: str) -> None:
         validation_response = utils.validate_xml_file(
-            xml_file, self.bro_username, self.bro_password, self.project_number
+            xml_file, self.bro_username, self.bro_password, self.upload_task_instance.project_number
         )
 
         if validation_response["status"] != "VALIDE":
@@ -107,7 +101,7 @@ class BRODelivery:
         """
 
         upload_url = utils.create_upload_url(
-            self.bro_username, self.bro_password, self.project_number
+            self.bro_username, self.bro_password, self.upload_task_instance.project_number
         )
         utils.add_xml_to_upload(
             xml_file,
@@ -116,7 +110,7 @@ class BRODelivery:
             self.bro_password,
         )
         delivery_url = utils.create_delivery(
-            upload_url, self.bro_username, self.bro_password, self.project_number
+            upload_url, self.bro_username, self.bro_password, self.upload_task_instance.project_number
         )
 
         return delivery_url
