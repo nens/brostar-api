@@ -21,6 +21,7 @@ packages = ["bro_hub", "api", "gmn", "gmw"]
 [tool.pytest.ini_options]
 testpaths = ["bro_hub", "api", "gmn", "gmw"]
 log_level = "DEBUG"
+DJANGO_SETTINGS_MODULE = "bro_hub.settings"
 
 [tool.coverage.run]
 source = ["bro_hub", "api", "gmn", "gmw"]
