@@ -15,7 +15,8 @@ class GMW(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
-        Organisation, on_delete=models.CASCADE,
+        Organisation,
+        on_delete=models.CASCADE,
     )
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8)
@@ -58,7 +59,8 @@ class MonitoringTube(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
-        Organisation, on_delete=models.CASCADE,
+        Organisation,
+        on_delete=models.CASCADE,
     )
     gmw = models.ForeignKey(GMW, on_delete=models.CASCADE)
     tube_number = models.CharField(max_length=100)

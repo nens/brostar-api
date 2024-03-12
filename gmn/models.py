@@ -14,9 +14,7 @@ class GMN(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        Organisation, on_delete=models.CASCADE
-    )
+    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8)
     quality_regime = models.CharField(max_length=50)
@@ -46,9 +44,7 @@ class Measuringpoint(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        Organisation, on_delete=models.CASCADE
-    )
+    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
     gmn = models.ForeignKey(GMN, on_delete=models.CASCADE)
     measuringpoint_code = models.CharField(max_length=50)
     measuringpoint_start_date = models.DateField()
