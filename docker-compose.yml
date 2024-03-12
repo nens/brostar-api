@@ -3,7 +3,7 @@ version: '2'
 services:
 
   db:
-    image: mdillon/postgis
+    image: postgis/postgis:14-3.4
     environment:
       POSTGRES_USER: 'bro_hub'
       POSTGRES_PASSWORD: 'bro_hub'
@@ -16,6 +16,8 @@ services:
     build: .
     # command: "bin/gunicorn -b 0.0.0.0:${PORT:-5000} --workers=3 --timeout 90 --preload --max-requests=10000 trs.wsgi"
     command: "python manage.py runserver 0.0.0.0:8000"
+    links:
+      - db
     ports:
       - "8000:8000"
     volumes:
@@ -25,7 +27,7 @@ services:
       # # Can be set in .env, we'll pass them on.
       # - SECRET_KEY
       - DEBUG
-      - FIELD_ENCRYPTION_KEY
+      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
       # - SENTRY_DSN
       # - NENS_AUTH_ISSUER
       # - NENS_AUTH_CLIENT_ID
