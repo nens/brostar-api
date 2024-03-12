@@ -1,0 +1,6 @@
+[meta]
+is_python_project = true
+uses_ansible = false
+meta_version = "0.5.dev0"
+project_name = "bro-hub"
+package_name = "bro_hub"

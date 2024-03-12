@@ -1,3 +1,6 @@
+-e .[test]
+
+# TODO: dependencies
 django == 5.0.1
 streamlit
 pandas
@@ -22,3 +25,4 @@ geopandas
 
 # development tools
 ruff
+coverage
