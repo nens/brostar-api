@@ -20,10 +20,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-
-# Options are development and production
-ENVIRONMENT = "development"
-
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
 
 TIME_ZONE = "CET"
