@@ -1,14 +1,13 @@
 # BRO-Hub
 
-Introductie
-------------
+## Introductie
 
 BRO-hub is een allomvattend product voor het datamanagement rondom de BRO. Het bestaat uit een API om zowel data uit de BRO te importeren als data naar de BRO op te sturen. De geimporteerde data wordt opgeslagen in een database en is via de API op te vragen.
 
 De backend is een Django applicatie, en de frontend (voorlopig) een Streamlit dashboard.
 
-Project beschrijving
------------------
+## Project beschrijving
+
 De backend bestaat uit een api met daarin:
 
 - Een importtask endpoint. Hiermee kan op basis van een KvK en projectnummer alle actuele data van een BRO domein geimporteerd worden
@@ -17,8 +16,7 @@ De backend bestaat uit een api met daarin:
 
 - Endpoints voor alle assets die uit de BRO worden geimporteerd.
 
-Installatie backend
------------------------
+## Installatie backend
 
 (Voorlopig moet alles nog zelf lokaal opgezet te worden. Hopelijk wordt een groot deel via docker opgezet in de toekomst, daarom is deze omschrijving nogal beperkt in details)
 
@@ -52,9 +50,3 @@ Om het lokaal te installeren:
 
 
 Nu kan het product gebruikt worden.
-
-Installatie frontend (temp strealit)
---------------------
-Start the frontend with:
-
-        $ streamlit run streamlit/Home.py
