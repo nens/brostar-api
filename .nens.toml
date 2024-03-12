@@ -4,3 +4,4 @@ uses_ansible = false
 meta_version = "0.5.dev0"
 project_name = "bro-hub"
 package_name = "bro_hub"
+extra_package_names = ["api", "gmn", "gmw"]

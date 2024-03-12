@@ -16,14 +16,14 @@ version = "0.1.dev0"
 test = ["pytest"] # pytest added by nens-meta
 
 [tool.setuptools]
-packages = ["bro_hub"]
+packages = ["bro_hub", "api", "gmn", "gmw"]
 
 [tool.pytest.ini_options]
-testpaths = ["bro_hub"]
+testpaths = ["bro_hub", "api", "gmn", "gmw"]
 log_level = "DEBUG"
 
 [tool.coverage.run]
-source = ["bro_hub"]
+source = ["bro_hub", "api", "gmn", "gmw"]
 
 [tool.coverage.report]
 show_missing = true
@@ -39,6 +39,6 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "C901"]
 release = false
 
 [tool.pyright]
-include = ["bro_hub"]
+include = ["bro_hub", "api", "gmn", "gmw"]
 venvPath = "."
 venv = ".venv"
