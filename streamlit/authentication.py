@@ -1,10 +1,12 @@
 import json
-from typing import Union
+import logging
 
 import config
 import requests
 
 import streamlit as st
+
+logger = logging.getLogger(__name__)
 
 
 def is_authenticated() -> bool:
@@ -38,7 +40,7 @@ def is_authenticated() -> bool:
         return True
 
 
-def get_api_token(username, password) -> Union[str, None]:
+def get_api_token(username, password) -> str | None:
     """Uses the username and password combination to create an API token."""
     url = f"{config.BASE_URL}/api/token/"
     headers = {"Content-Type": "application/json"}
@@ -51,7 +53,9 @@ def get_api_token(username, password) -> Union[str, None]:
             data=json.dumps(payload),
         )
         return r.json()["access"]
-    except:
+    except:  # noqa: E722
+        # TODO: fix bare except
+        logger.exception("get_api_token error")
         return None
 
 

@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -7,6 +8,8 @@ import pytz
 import requests
 
 import streamlit as st
+
+logger = logging.getLogger(__name__)
 
 
 def set_user_details() -> None:
@@ -90,7 +93,8 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
         )
         return last_update
 
-    except:
+    except:  # noqa: E722
+        logger.exception("TODO: bare except, fix this")
         return None
 
 
