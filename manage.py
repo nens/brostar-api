@@ -2,15 +2,11 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from bro_hub.settings.base import ENVIRONMENT
 
 
 def main():
     """Run administrative tasks."""
-    if ENVIRONMENT == "production":
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings.production")
-    elif ENVIRONMENT == "development":
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings.development")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bro_hub.settings")
 
     try:
         from django.core.management import execute_from_command_line

@@ -1,11 +1,11 @@
 import uuid
 
 from django.contrib.auth.models import User
+from django.db import models
 from django.db.models import JSONField
 from encrypted_model_fields.fields import EncryptedCharField
 
 from . import choices
-from django.db import models
 
 
 class Organisation(models.Model):

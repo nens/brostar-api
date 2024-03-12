@@ -1,10 +1,9 @@
-from rest_framework import generics, status
-from rest_framework.response import Response
-from . import serializers
-from . import models
-from api import mixins
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions
+from rest_framework import generics, permissions
+
+from api import mixins
+
+from . import models, serializers
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -23,6 +22,7 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     lookup_field = "uuid"
 
     permission_classes = [permissions.IsAuthenticated]
+
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer

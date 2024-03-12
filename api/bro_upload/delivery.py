@@ -1,10 +1,7 @@
 import time
 import traceback
-from typing import Union
 
-from . import config
-
-from . import utils
+from . import config, utils
 
 
 class XMLValidationError(Exception):
@@ -123,7 +120,7 @@ class BRODelivery:
 
         return delivery_url
 
-    def _check_delivery(self, delivery_url: str) -> Union[str, None]:
+    def _check_delivery(self, delivery_url: str) -> str | None:
         """Checks the delivery status."""
 
         delivery_info = utils.check_delivery_status(

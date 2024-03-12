@@ -36,15 +36,15 @@ Om het lokaal te installeren:
 
 6) start celery op: celery -A bro_hub worker -l INFO -P solo
 
-7) Maak een organisatie, vul de KvK in 
+7) Maak een organisatie, vul de KvK in
 
 8) Maak een user profile aan voor de superuser, en vul het project en evt bro authenticatie in
 
-9) De bro auth gegevens worden geencrypt. Hiervoor is een FIELD_ENCRYPTION_KEY nodig. Om deze aan te maken, run hetvolgende: 
+9) De bro auth gegevens worden geencrypt. Hiervoor is een FIELD_ENCRYPTION_KEY nodig. Om deze aan te maken, run hetvolgende:
 
         $ import os
         import base64
-        
+
         new_key = base64.urlsafe_b64encode(os.urandom(32))
         print(new_key)
 
@@ -58,4 +58,3 @@ Installatie frontend (temp strealit)
 Start the frontend with:
 
         $ streamlit run streamlit/Home.py
-        

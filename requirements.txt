@@ -1,6 +1,7 @@
+-e .[test]
+
+# TODO: dependencies
 django == 5.0.1
-streamlit
-pandas
 psycopg2-binary
 djangorestframework
 celery
@@ -16,9 +17,7 @@ python-dotenv
 django-encrypted-model-fields
 django-filter
 djangorestframework-simplejwt
-leafmap
-shapely
-geopandas
 
 # development tools
 ruff
+coverage

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any
+from typing import Any
 
 from lxml import etree
 from lxml.etree import tostring
@@ -21,8 +21,8 @@ class XMLGenerator(ABC):
         self,
         registration_type: str,
         request_type: str,
-        metadata: Dict[str, Any],
-        sourcedocs_data: Dict[str, Any],
+        metadata: dict[str, Any],
+        sourcedocs_data: dict[str, Any],
     ) -> None:
         self.registration_type = registration_type
         self.request_type = request_type
