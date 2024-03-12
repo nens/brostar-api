@@ -3,6 +3,8 @@
 # If you want this file to be left alone, add "nens_meta_leave_alone" in
 # all caps somewhere in this file in a comment.
 #
+# ... which we want for now as we have a docker-compose based setup...
+# NENS_META_LEAVE_ALONE
 
 name: nens-meta
 on:
@@ -28,15 +30,17 @@ jobs:
         with:
           python-version: 3.11
       - uses: pre-commit/action@v3.0.1
-      - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+      - name: Build/pull docker
+        run: |
+          docker-compose build
+          docker-compose pull
       - name: Test
-        run: pytest
+        run: docker-compose run web pytest
       - name: Coverage
         run: |
-          coverage run -m pytest
-          coverage xml
-          coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          coverage report --fail-under 10 --format text
+          docker-compose run web coverage run -m pytest
+          docker-compose run web coverage xml
+          docker-compose run web coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker-compose run web coverage report --fail-under 10 --format text
 
 ### Extra lines below are preserved ###
