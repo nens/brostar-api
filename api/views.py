@@ -1,17 +1,12 @@
-from rest_framework import status, generics, views
-from rest_framework.response import Response
-from django.urls import reverse
-from rest_framework.reverse import reverse as drf_reverse
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions
 from django.contrib.auth import logout
 from django.shortcuts import redirect
+from django.urls import reverse
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics, permissions, status, views
+from rest_framework.response import Response
+from rest_framework.reverse import reverse as drf_reverse
 
-from . import tasks
-from . import serializers
-from . import models
-from . import mixins
-from . import filters
+from . import filters, mixins, models, serializers, tasks
 
 
 class LogoutView(views.APIView):
@@ -114,12 +109,12 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     `kvk_number`:
         string (*optional*). When not filled in, the kvk of the organisation linked to the user is used.
     """
+
     queryset = models.ImportTask.objects.all().order_by("-created")
     serializer_class = serializers.ImportTaskSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
-
 
     def get(self, request, *args, **kwargs):
         """List of all Import Tasks."""

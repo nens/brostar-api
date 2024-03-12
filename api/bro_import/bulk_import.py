@@ -1,7 +1,8 @@
-import requests
 import traceback
 
+import requests
 from django.conf import settings
+
 from api import models
 from api.bro_import import config
 

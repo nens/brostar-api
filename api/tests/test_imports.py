@@ -1,8 +1,10 @@
-import pytest
-from unittest.mock import patch
-from api.bro_import import bulk_import, object_import
-from api import models
 import uuid
+from unittest.mock import patch
+
+import pytest
+
+from api import models
+from api.bro_import import bulk_import, object_import
 
 
 @pytest.fixture

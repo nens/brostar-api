@@ -1,7 +1,8 @@
 import uuid
+
 from django.test import TestCase
-from api import models
-from api import serializers
+
+from api import models, serializers
 
 
 class ImportTaskSerializerTest(TestCase):

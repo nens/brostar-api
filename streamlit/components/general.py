@@ -1,5 +1,6 @@
-import streamlit as st
 import utils
+
+import streamlit as st
 
 
 def sidebar() -> None:
@@ -33,5 +34,3 @@ def sidebar() -> None:
             )
 
             st.form_submit_button("Opslaan", on_click=utils.patch_user_profile)
-
-    

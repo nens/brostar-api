@@ -1,11 +1,12 @@
-from typing import Dict, Any
-import pytz
 from datetime import datetime, timedelta
-import requests
-import streamlit as st
-import pandas as pd
+from typing import Any
 
 import config
+import pandas as pd
+import pytz
+import requests
+
+import streamlit as st
 
 
 def set_user_details() -> None:
@@ -19,7 +20,7 @@ def set_user_details() -> None:
     st.session_state.user_profile_url = user_details["url"]
 
 
-def get_user_details() -> Dict[str, str]:
+def get_user_details() -> dict[str, str]:
     """Retreives userprofile information from the api."""
     url = f"{config.BASE_URL}/api/userprofile"
 
@@ -58,8 +59,6 @@ def patch_user_profile() -> None:
         st.toast("Wijzigingen opgeslagen", icon="✅")
     else:
         st.toast("Wijzigingen niet opgeslagen. Probeer opnieuw", icon="⚠️")
-           
-
 
 
 def get_endpoint_count(endpoint: str) -> int:
@@ -86,9 +85,11 @@ def lookup_most_recent_datetime(endpoint: str) -> str:
 
     try:
         last_update = r.json()["results"][0]["created"]
-        last_update = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=pytz.utc)
+        last_update = datetime.strptime(last_update, "%Y-%m-%dT%H:%M:%S.%fZ").replace(
+            tzinfo=pytz.utc
+        )
         return last_update
-        
+
     except:
         return None
 
@@ -100,7 +101,6 @@ def start_import_tasks() -> None:
     task has been done in the last hour. This is to prevent an overload on the BRO.
     """
     kvk_number = st.session_state.import_task_kvk_number
-
 
     if validate_import_request():
         url = f"{config.BASE_URL}/api/importtasks/"
@@ -116,9 +116,9 @@ def start_import_tasks() -> None:
 
     else:
         st.toast(
-                "Er heeft in het afgelopen uur al een import taak gedraaid. Om overbelasting van de BRO te voorkomen is er maar 1 taak per uur mogelijk.",
-                icon="⚠️",
-            )
+            "Er heeft in het afgelopen uur al een import taak gedraaid. Om overbelasting van de BRO te voorkomen is er maar 1 taak per uur mogelijk.",
+            icon="⚠️",
+        )
 
 
 def validate_import_request() -> bool:
@@ -133,7 +133,8 @@ def validate_import_request() -> bool:
 
     return True if check else False
 
-def get_endpoint_data(endpoint:str) -> pd.DataFrame:
+
+def get_endpoint_data(endpoint: str) -> pd.DataFrame:
     """Retreives all import tasks from the api"""
     url = f"{config.BASE_URL}/api/{endpoint}/?limit=1000"
     df_list = []
@@ -146,16 +147,17 @@ def get_endpoint_data(endpoint:str) -> pd.DataFrame:
         )
 
         results = r.json()["results"]
-        
+
         for result in results:
             df_list.append(result)
 
         url = r.json()["next"]
         print(url)
-       
+
     return pd.DataFrame(df_list)
 
-def start_upload_task(upload_data: Dict[str,Any]) -> None:
+
+def start_upload_task(upload_data: dict[str, Any]) -> None:
     """Stats an upload task to deliver information to the BRO"""
     url = f"{config.BASE_URL}/api/uploadtasks/"
 
@@ -169,6 +171,9 @@ def start_upload_task(upload_data: Dict[str,Any]) -> None:
     r.raise_for_status()
 
     if r.status_code == 201:
-        st.toast("Het aanleverproces is gestart. Controleer de voortgang op de Home pagina.", icon="✅")
+        st.toast(
+            "Het aanleverproces is gestart. Controleer de voortgang op de Home pagina.",
+            icon="✅",
+        )
     else:
         st.toast("Aanlevering gefaald.", icon="⚠️")

@@ -1,10 +1,10 @@
-import requests
 import json
 from typing import Union
 
-import streamlit as st
-
 import config
+import requests
+
+import streamlit as st
 
 
 def is_authenticated() -> bool:

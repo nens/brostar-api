@@ -1,6 +1,7 @@
 from celery import shared_task
+
 from . import models
-from .bro_import import bulk_import, object_import
+from .bro_import import bulk_import
 from .bro_upload.delivery import BRODelivery
 
 

@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from . import models
+
 from api.mixins import UrlFieldMixin
+
+from . import models
 
 
 class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):

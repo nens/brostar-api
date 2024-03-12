@@ -1,6 +1,8 @@
-import streamlit as st
-import utils
 import config
+import utils
+
+import streamlit as st
+
 
 def asset_count_metrics() -> None:
     """Gets the asset counts from the api and shows it in a matrix of metrics"""
@@ -22,6 +24,7 @@ def asset_count_metrics() -> None:
     col3.metric("GMW's", counts["gmw/gmws"])
     col4.metric("Monitoringbuizen", counts["gmw/monitoringtubes"])
 
+
 def import_information() -> None:
     st.subheader("BRO-data import informatie")
 
@@ -31,10 +34,14 @@ def import_information() -> None:
         most_recent_import_str = most_recent_import_datetime.strftime(
             "%d-%m-%y om %H:%M:%S"
         )
-        st.markdown("**Meest recente data import vanuit de BRO (voor eigen organisatie):**")
+        st.markdown(
+            "**Meest recente data import vanuit de BRO (voor eigen organisatie):**"
+        )
         st.text(most_recent_import_str)
     else:
-        st.info("Er heeft nog geen import plaatsgevonden. Gebruik de knop hieronder voor een eerste import.")
+        st.info(
+            "Er heeft nog geen import plaatsgevonden. Gebruik de knop hieronder voor een eerste import."
+        )
 
     if st.button("Start nieuwe import taak"):
         with st.form(key="start-new-import-task"):
@@ -44,14 +51,14 @@ def import_information() -> None:
             st.text_input(
                 "Importeer voor kvk (default is eigen organisatie):",
                 value=st.session_state.organisation_kvk,
-                key='import_task_kvk_number'
+                key="import_task_kvk_number",
             )
             st.multiselect(
                 "BRO domeinen om te importeren:",
                 options=config.CURRENT_SUPPORTED_BRO_DOMAINS,
                 default=config.CURRENT_SUPPORTED_BRO_DOMAINS,
                 help=help_text,
-                key='domains_to_import'
+                key="domains_to_import",
             )
 
             st.form_submit_button(
@@ -59,36 +66,39 @@ def import_information() -> None:
                 on_click=utils.start_import_tasks,
             )
 
-    
-
-    import_tasks = utils.get_endpoint_data(endpoint='importtasks')
+    import_tasks = utils.get_endpoint_data(endpoint="importtasks")
     if not import_tasks.empty:
         st.markdown("**Alle uitgevoerde import taken:**")
-        import_tasks = import_tasks[[
-            "bro_domain",
-            "kvk_number",
-            "status",
-            "created",
-            "log",
-        ]]
+        import_tasks = import_tasks[
+            [
+                "bro_domain",
+                "kvk_number",
+                "status",
+                "created",
+                "log",
+            ]
+        ]
         st.dataframe(import_tasks, hide_index=True)
+
 
 def upload_information() -> None:
     """Upload information component"""
     st.subheader("Aanleveringen informatie")
 
-    upload_tasks = utils.get_endpoint_data(endpoint='uploadtasks')
+    upload_tasks = utils.get_endpoint_data(endpoint="uploadtasks")
     if upload_tasks.empty:
         st.info("Er hebben nog geen leveringen via de API plaatsgevonden.")
     else:
         st.markdown("**Alle leveringen:**")
-        upload_tasks = upload_tasks[[
-            "bro_domain",
-            "project_number",
-            "registration_type",
-            "request_type",
-            "last_updated",
-            "status",
-            "log",
-        ]]
+        upload_tasks = upload_tasks[
+            [
+                "bro_domain",
+                "project_number",
+                "registration_type",
+                "request_type",
+                "last_updated",
+                "status",
+                "log",
+            ]
+        ]
         st.dataframe(upload_tasks, hide_index=True)

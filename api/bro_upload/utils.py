@@ -1,15 +1,14 @@
-import requests
 import json
 import traceback
+from typing import Any
 
-from typing import Dict, Any
-
+import requests
 from django.conf import settings
 
 
 def validate_xml_file(
     xml_file: bytes, bro_username: str, bro_password: str, project_number: str
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
 

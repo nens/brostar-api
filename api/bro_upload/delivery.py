@@ -2,9 +2,7 @@ import time
 import traceback
 from typing import Union
 
-from . import config
-
-from . import utils
+from . import config, utils
 
 
 class XMLValidationError(Exception):

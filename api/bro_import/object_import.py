@@ -1,14 +1,14 @@
+from abc import ABC, abstractmethod
+from typing import IO, Any
+
 import requests
 import xmltodict
-
-from abc import ABC, abstractmethod
-from typing import IO, Dict, Any, List, Tuple
-
 from django.conf import settings
-from gmn.models import GMN, Measuringpoint
-from gmw.models import GMW, MonitoringTube
+
 from api import models
 from api.bro_import import config
+from gmn.models import GMN, Measuringpoint
+from gmw.models import GMW, MonitoringTube
 
 
 def import_single_object(bro_domain: str, bro_id: str, data_owner: str) -> None:
@@ -58,19 +58,19 @@ class ObjectImporter(ABC):
 
         return r.content
 
-    def _convert_xml_to_json(self, xml_data: IO[bytes]) -> Dict[str, Any]:
+    def _convert_xml_to_json(self, xml_data: IO[bytes]) -> dict[str, Any]:
         json_data = xmltodict.parse(xml_data)
 
         return json_data
 
     @abstractmethod
-    def _save_data_to_database(self, json_data: Dict[str, Any]):
+    def _save_data_to_database(self, json_data: dict[str, Any]):
         """Saves the downloaded BRO data into the Django database."""
         pass
 
 
 class GMNObjectImporter(ObjectImporter):
-    def _save_data_to_database(self, json_data: Dict[str, Any]) -> None:
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
         )
@@ -85,8 +85,8 @@ class GMNObjectImporter(ObjectImporter):
         self._save_measuringpoint_data(measuringpoint_data)
 
     def _split_json_data(
-        self, dispatch_document_data: Dict[str, Any]
-    ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        self, dispatch_document_data: dict[str, Any]
+    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         """Takes in the json data and splits it up into GMN and Measuringpoint data"""
 
         measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
@@ -98,7 +98,7 @@ class GMNObjectImporter(ObjectImporter):
 
         return gmn_data, measuringpoint_data
 
-    def _save_gmn_data(self, gmn_data: Dict[str, Any]) -> None:
+    def _save_gmn_data(self, gmn_data: dict[str, Any]) -> None:
         self.gmn_obj, created = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -131,7 +131,7 @@ class GMNObjectImporter(ObjectImporter):
 
         self.gmn_obj.save()
 
-    def _save_measuringpoint_data(self, measuringpoint_data: Dict[str, Any]) -> None:
+    def _save_measuringpoint_data(self, measuringpoint_data: dict[str, Any]) -> None:
         for measuringpoint in measuringpoint_data:
             mp_data = measuringpoint.get("MeasuringPoint", {})
             monitoring_tube_data = mp_data.get("monitoringTube", {}).get(
@@ -158,7 +158,7 @@ class GMNObjectImporter(ObjectImporter):
 
 
 class GMWObjectImporter(ObjectImporter):
-    def _save_data_to_database(self, json_data: Dict[str, Any]) -> None:
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
         )
@@ -173,8 +173,8 @@ class GMWObjectImporter(ObjectImporter):
         self._save_monitoringtubes_data(monitoringtubes_data)
 
     def _split_json_data(
-        self, dispatch_document_data: Dict[str, Any]
-    ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+        self, dispatch_document_data: dict[str, Any]
+    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         """Takes in the json data and splits it up into GMW and tubes data"""
 
         monitoringtubes_data = dispatch_document_data["GMW_PPO"].get(
@@ -186,7 +186,7 @@ class GMWObjectImporter(ObjectImporter):
 
         return gmw_data, monitoringtubes_data
 
-    def _save_gmw_data(self, gmw_data: Dict[str, Any]) -> None:
+    def _save_gmw_data(self, gmw_data: dict[str, Any]) -> None:
         self.gmw_obj, created = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,

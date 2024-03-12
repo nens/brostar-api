@@ -1,5 +1,7 @@
 import os
+
 from celery import Celery
+
 from bro_hub.settings.base import ENVIRONMENT
 
 if ENVIRONMENT == "production":

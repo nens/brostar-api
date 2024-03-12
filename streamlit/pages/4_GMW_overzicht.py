@@ -1,9 +1,10 @@
-import streamlit as st
 import authentication as auth
-import utils
 import config
-from components.general import sidebar
+import utils
 from components import gmw as components
+from components.general import sidebar
+
+import streamlit as st
 
 
 def main():
