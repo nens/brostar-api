@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
 # Environment variables can get a default value from docker-compose itself *or* from a
 # `.env` file, as docker-compose automatically reads that (if the environment variable
