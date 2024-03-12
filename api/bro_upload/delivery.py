@@ -1,6 +1,7 @@
 import time
 import traceback
 
+from .. import models
 from . import config, utils
 
 
@@ -33,7 +34,7 @@ class BRODelivery:
 
     def __init__(
         self,
-        upload_task_instance: str,
+        upload_task_instance: models.UploadTask,
         bro_username: str,
         bro_password: str,
     ) -> None:
