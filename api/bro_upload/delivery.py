@@ -1,8 +1,17 @@
 import time
 import traceback
+from typing import Any
+
+from django.template.loader import render_to_string
 
 from .. import models as api_models
-from . import config, utils
+from . import utils
+
+
+class XMLGenerationError(Exception):
+    """Exception raised when XML generation fails."""
+
+    pass
 
 
 class XMLValidationError(Exception):
@@ -41,9 +50,6 @@ class BRODelivery:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
-        self.xml_generator_class = config.xml_generator_mapping.get(
-            self.upload_task_instance.registration_type
-        )
 
     def process(self) -> None:
         # Generate the XML file.
@@ -69,7 +75,7 @@ class BRODelivery:
 
     def _generate_xml_file(self) -> str:
         try:
-            generator = self.xml_generator_class(
+            generator = XMLGenerator(
                 self.upload_task_instance.registration_type,
                 self.upload_task_instance.request_type,
                 self.upload_task_instance.metadata,
@@ -149,3 +155,34 @@ class BRODelivery:
 
             else:
                 return False
+
+
+class XMLGenerator:
+    """XML generator based on Django Templates."""
+
+    def __init__(
+        self,
+        registration_type: str,
+        request_type: str,
+        metadata: dict[str, Any],
+        sourcedocs_data: dict[str, Any],
+    ) -> None:
+        self.metadata = metadata
+        self.sourcedocs_data = sourcedocs_data
+        self.template_filepath = f"{request_type}_{registration_type}.html"
+
+    def create_xml_file(self):
+        """Fills in the provided data into the templates"""
+        try:
+            rendered_xml = render_to_string(
+                self.template_filepath,
+                {
+                    "metadata": self.metadata,
+                    "sourcedocs_data": self.sourcedocs_data,
+                },
+            )
+            return rendered_xml
+
+        except Exception as e:
+            traceback.print_exc()
+            raise XMLGenerationError(f"Error generating XML file: {e}") from e
