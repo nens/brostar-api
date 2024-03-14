@@ -12,6 +12,8 @@ class Organisation(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     kvk_number = models.CharField(max_length=8)
+    bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
+    bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -29,17 +31,11 @@ class UserProfile(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
-    bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
+
     default_project_number = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return self.user.username
-
-    @property
-    def credentials_set(self) -> bool:
-        """Checks if the credentials are set"""
-        return bool(self.bro_user_password and self.bro_user_token)
 
 
 class ImportTask(models.Model):
