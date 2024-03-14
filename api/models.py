@@ -53,7 +53,7 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.bro_domain} import - {self.data_owner} ({self.created})"
+        return f"{self.bro_domain} import - {self.data_owner}"
 
 
 class UploadTask(models.Model):
@@ -79,4 +79,4 @@ class UploadTask(models.Model):
     log = models.TextField(blank=True)
 
     def __str__(self) -> str:
-        return f"{self.request_type} {self.registration_type} {self.created}"
+        return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
