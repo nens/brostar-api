@@ -32,8 +32,6 @@ class UserProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    default_project_number = models.CharField(max_length=20, blank=True, null=True)
-
     def __str__(self):
         return self.user.username
 
@@ -68,7 +66,7 @@ class UploadTask(models.Model):
     bro_domain = models.CharField(
         max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
-    project_number = models.CharField(max_length=20, blank=True, null=True)
+    project_number = models.CharField(max_length=20, blank=False)
     registration_type = models.CharField(
         blank=False, max_length=235, choices=choices.REGISTRATION_TYPE_OPTIONS
     )

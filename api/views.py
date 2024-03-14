@@ -70,27 +70,6 @@ class UserProfileDetailView(generics.RetrieveUpdateAPIView):
     lookup_field = "uuid"
     permission_classes = [permissions.IsAuthenticated]
 
-    # update makes sure only project number, token and password can be changed
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-
-        data = request.data
-        allowed_fields = {
-            "default_project_number",
-        }
-        for key in data.keys():
-            if key not in allowed_fields:
-                return Response(
-                    {"error": f"Cannot update field {key}"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
-
 
 class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
@@ -244,10 +223,6 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             # Update the instance of the new task
             upload_task_instance.status = "PENDING"
             upload_task_instance.data_owner = data_owner
-            upload_task_instance.project_number = (
-                upload_task_instance.project_number
-                or user_profile.default_project_number
-            )
             upload_task_instance.save()
 
             if not upload_task_instance.project_number:
