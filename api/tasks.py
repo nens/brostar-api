@@ -1,6 +1,6 @@
 from celery import shared_task
 
-from . import models
+from . import models as api_models
 from .bro_import import bulk_import
 from .bro_upload.delivery import BRODelivery
 
@@ -14,7 +14,9 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
     The status and logging of the process can be found in the ImportTask instance.
     """
     # Lookup and update the import task instance
-    import_task_instance = models.ImportTask.objects.get(uuid=import_task_instance_uuid)
+    import_task_instance = api_models.ImportTask.objects.get(
+        uuid=import_task_instance_uuid
+    )
     import_task_instance.status = "PROCESSING"
     import_task_instance.save()
 
@@ -45,7 +47,9 @@ def upload_bro_data_task(
     """
 
     # Lookup and update the import task instance
-    upload_task_instance = models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
+    upload_task_instance = api_models.UploadTask.objects.get(
+        uuid=upload_task_instance_uuid
+    )
     upload_task_instance.status = "PROCESSING"
     upload_task_instance.save()
 

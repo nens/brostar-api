@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from . import models
+from . import models as api_models
 from .mixins import UrlFieldMixin
 
 
@@ -10,7 +10,7 @@ class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
     organisation_kvk = serializers.SerializerMethodField()
 
     class Meta:
-        model = models.UserProfile
+        model = api_models.UserProfile
         exclude = ["user"]
 
     # Exclude token and password in the get requests
@@ -36,11 +36,11 @@ class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
 class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
-        model = models.ImportTask
+        model = api_models.ImportTask
         fields = "__all__"
 
 
 class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
-        model = models.UploadTask
+        model = api_models.UploadTask
         fields = "__all__"

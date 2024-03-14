@@ -14,19 +14,17 @@ class GMN(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        Organisation, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
-    delivery_accountable_party = models.CharField(max_length=8, blank=True, null=True)
-    quality_regime = models.CharField(max_length=50, blank=True, null=True)
-    name = models.CharField(max_length=100, blank=True, null=True)
-    delivery_context = models.CharField(max_length=100, blank=True, null=True)
-    monitoring_purpose = models.CharField(max_length=100, blank=True, null=True)
-    groundwater_aspect = models.CharField(max_length=100, blank=True, null=True)
-    start_date_monitoring = models.DateField(blank=True, null=True)
-    object_registration_time = models.DateTimeField(blank=True, null=True)
-    registration_status = models.CharField(max_length=50, blank=True, null=True)
+    delivery_accountable_party = models.CharField(max_length=8)
+    quality_regime = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
+    delivery_context = models.CharField(max_length=100)
+    monitoring_purpose = models.CharField(max_length=100)
+    groundwater_aspect = models.CharField(max_length=100)
+    start_date_monitoring = models.DateField()
+    object_registration_time = models.DateTimeField()
+    registration_status = models.CharField(max_length=50)
 
     def __str__(self):
         return self.bro_id
@@ -46,15 +44,13 @@ class Measuringpoint(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        Organisation, on_delete=models.SET_NULL, null=True, blank=True
-    )
-    gmn = models.ForeignKey(GMN, on_delete=models.CASCADE, null=True, blank=True)
-    measuringpoint_code = models.CharField(max_length=50, blank=True, null=True)
-    measuringpoint_start_date = models.DateField(blank=True, null=True)
-    gmw_bro_id = models.CharField(max_length=50, blank=True, null=True)
-    tube_number = models.CharField(max_length=50, blank=True, null=True)
-    tube_start_date = models.DateField(blank=True, null=True)
+    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    gmn = models.ForeignKey(GMN, on_delete=models.CASCADE)
+    measuringpoint_code = models.CharField(max_length=50)
+    measuringpoint_start_date = models.DateField()
+    gmw_bro_id = models.CharField(max_length=50)
+    tube_number = models.CharField(max_length=50)
+    tube_start_date = models.DateField()
 
     def __str__(self):
         return self.measuringpoint_code
