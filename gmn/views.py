@@ -3,12 +3,13 @@ from rest_framework import generics, permissions
 
 from api import mixins
 
-from . import models, serializers
+from . import models as gmn_models
+from . import serializers
 
 
 class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
-    queryset = models.GMN.objects.all()
+    queryset = gmn_models.GMN.objects.all()
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -17,7 +18,7 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
 
 class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.GMN.objects.all()
+    queryset = gmn_models.GMN.objects.all()
     serializer_class = serializers.GMNSerializer
     lookup_field = "uuid"
 
@@ -26,7 +27,7 @@ class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
 class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MeasuringpointSerializer
-    queryset = models.Measuringpoint.objects.all()
+    queryset = gmn_models.Measuringpoint.objects.all()
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -35,7 +36,7 @@ class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView)
 
 
 class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.Measuringpoint.objects.all()
+    queryset = gmn_models.Measuringpoint.objects.all()
     serializer_class = serializers.MeasuringpointSerializer
     lookup_field = "uuid"
 

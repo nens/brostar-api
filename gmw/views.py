@@ -3,12 +3,13 @@ from rest_framework import generics, permissions
 
 from api import mixins
 
-from . import models, serializers
+from . import models as gmw_models
+from . import serializers
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMWSerializer
-    queryset = models.GMW.objects.all()
+    queryset = gmw_models.GMW.objects.all()
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -17,7 +18,7 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
 
 class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.GMW.objects.all()
+    queryset = gmw_models.GMW.objects.all()
     serializer_class = serializers.GMWSerializer
     lookup_field = "uuid"
 
@@ -26,7 +27,7 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer
-    queryset = models.MonitoringTube.objects.all()
+    queryset = gmw_models.MonitoringTube.objects.all()
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -35,7 +36,7 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
 
 
 class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.MonitoringTube.objects.all()
+    queryset = gmw_models.MonitoringTube.objects.all()
     serializer_class = serializers.MonitoringTubeSerializer
     lookup_field = "uuid"
 

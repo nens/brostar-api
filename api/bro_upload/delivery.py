@@ -1,7 +1,7 @@
 import time
 import traceback
 
-from .. import models
+from .. import models as api_models
 from . import config, utils
 
 
@@ -34,7 +34,7 @@ class BRODelivery:
 
     def __init__(
         self,
-        upload_task_instance: models.UploadTask,
+        upload_task_instance: api_models.UploadTask,
         bro_username: str,
         bro_password: str,
     ) -> None:
