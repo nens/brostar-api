@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0020_remove_userprofile_bro_user_password_and_more'),
+        ("api", "0020_remove_userprofile_bro_user_password_and_more"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='default_project_number',
+            model_name="userprofile",
+            name="default_project_number",
         ),
         migrations.AlterField(
-            model_name='uploadtask',
-            name='project_number',
+            model_name="uploadtask",
+            name="project_number",
             field=models.CharField(max_length=20),
         ),
     ]
