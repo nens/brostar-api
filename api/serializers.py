@@ -5,7 +5,6 @@ from .mixins import UrlFieldMixin
 
 
 class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
-    credentials_set = serializers.SerializerMethodField()
     organisation_name = serializers.SerializerMethodField()
     organisation_kvk = serializers.SerializerMethodField()
 
@@ -13,17 +12,18 @@ class UserProfileSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = api_models.UserProfile
         exclude = ["user"]
 
-    # Exclude token and password in the get requests
-    def to_representation(self, instance):
-        if self.context["request"].method == "GET":
-            exclude_fields = ["bro_user_token", "bro_user_password"]
-            for field in exclude_fields:
-                self.fields.pop(field, None)
-        return super().to_representation(instance)
+    # NOTE:
+    # Removed this after removing auth-details from user profile.
+    # Auth-details are now linked to organisation and will need an endpoint.
+    # This snippet can be used in the organisation endpoint
 
-    def get_credentials_set(self, obj):
-        """Return the value of the credentials_set property."""
-        return obj.credentials_set
+    # # Exclude token and password in the get requests
+    # def to_representation(self, instance):
+    #     if self.context["request"].method == "GET":
+    #         exclude_fields = ["bro_user_token", "bro_user_password"]
+    #         for field in exclude_fields:
+    #             self.fields.pop(field, None)
+    #     return super().to_representation(instance)
 
     def get_organisation_name(self, obj):
         organisation = obj.organisation

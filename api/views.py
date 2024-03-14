@@ -78,8 +78,6 @@ class UserProfileDetailView(generics.RetrieveUpdateAPIView):
         data = request.data
         allowed_fields = {
             "default_project_number",
-            "bro_user_token",
-            "bro_user_password",
         }
         for key in data.keys():
             if key not in allowed_fields:
@@ -235,13 +233,13 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         serializer = serializers.UploadTaskSerializer(data=request.data)
 
         if serializer.is_valid():
-            upload_task_instance = serializer.save()
+            upload_task_instance: models.UploadTask = serializer.save()
 
             # Accessing the authenticated user's username and token
             user_profile = models.UserProfile.objects.get(user=request.user)
             data_owner = user_profile.organisation
-            username = user_profile.bro_user_token
-            password = user_profile.bro_user_password
+            username = data_owner.bro_user_token
+            password = data_owner.bro_user_password
 
             # Update the instance of the new task
             upload_task_instance.status = "PENDING"
