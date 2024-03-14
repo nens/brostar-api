@@ -41,37 +41,39 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
             </measuringPoint>
         </GMN_StartRegistration>
     </sourceDocument>
-</registrationRequest>"""
+</registrationRequest>
+"""
+
 
 def test_delivery1():
     generator = delivery.XMLGenerator(
-        registration_type = "GMN_StartRegistration",
-        request_type = "registration",
-        metadata= {
-            "requestReference":"test",
-            "deliveryAccountableParty":"27376655",
-            "qualityRegime":"IMBRO/A"
+        registration_type="GMN_StartRegistration",
+        request_type="registration",
+        metadata={
+            "requestReference": "test",
+            "deliveryAccountableParty": "27376655",
+            "qualityRegime": "IMBRO/A",
         },
-        sourcedocs_data= {
-            "objectIdAccountableParty":"test",
-            "name":"test",
-            "deliveryContext":"kaderrichtlijnWater",
-            "monitoringPurpose":"strategischBeheerKwaliteitRegionaal",
-            "groundwaterAspect":"kwantiteit",
-            "startDateMonitoring":"2024-01-01",
-            "measuringPoints":[
+        sourcedocs_data={
+            "objectIdAccountableParty": "test",
+            "name": "test",
+            "deliveryContext": "kaderrichtlijnWater",
+            "monitoringPurpose": "strategischBeheerKwaliteitRegionaal",
+            "groundwaterAspect": "kwantiteit",
+            "startDateMonitoring": "2024-01-01",
+            "measuringPoints": [
                 {
-                "measuringPointCode":"GMW000000038946",
-                "broId":"GMW000000038946",
-                "tubeNumber":"1"
+                    "measuringPointCode": "GMW000000038946",
+                    "broId": "GMW000000038946",
+                    "tubeNumber": "1",
                 },
                 {
-                "measuringPointCode":"GMW000000038946",
-                "broId":"GMW000000038946",
-                "tubeNumber":"2"
-                }
-            ]
-        }
+                    "measuringPointCode": "GMW000000038946",
+                    "broId": "GMW000000038946",
+                    "tubeNumber": "2",
+                },
+            ],
+        },
     )
 
     assert generator.create_xml_file() == expected_xml_str
