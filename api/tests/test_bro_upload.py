@@ -45,7 +45,7 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
 """
 
 
-def test_delivery1():
+def test_xml_generator():
     generator = delivery.XMLGenerator(
         registration_type="GMN_StartRegistration",
         request_type="registration",
