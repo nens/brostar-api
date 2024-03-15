@@ -1,3 +1,5 @@
+import pytest
+
 from api.bro_upload import delivery
 
 expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
@@ -45,7 +47,7 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
 """
 
 
-def test_xml_generator():
+def test_xml_generator1():
     generator = delivery.XMLGenerator(
         registration_type="GMN_StartRegistration",
         request_type="registration",
@@ -77,3 +79,14 @@ def test_xml_generator():
     )
 
     assert generator.create_xml_file() == expected_xml_str
+
+def test_xml_generator2():
+    """Tests a non existing combination of registration_type and request type."""
+    with pytest.raises(delivery.XMLGenerationError):
+        generator = delivery.XMLGenerator(
+            registration_type="GMN_StartRegistration",
+            request_type="insert",
+            metadata={},
+            sourcedocs_data={},
+        )
+        generator.create_xml_file()
