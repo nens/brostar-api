@@ -11,6 +11,33 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
+    networks:
+      - backend
+
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+
+  celery:
+    environment:
+      - DJANGO_SETTINGS_MODULE=bro_hub.settings
+      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
+    build: .
+    command: celery -A bro_hub worker --loglevel=INFO
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - db
+      - redis
+    networks:
+      - backend
 
   web:
     build: .
@@ -32,6 +59,19 @@ services:
       # - NENS_AUTH_ISSUER
       # - NENS_AUTH_CLIENT_ID
       # - NENS_AUTH_CLIENT_SECRET
+    depends_on:
+      - db
+      - redis
+      - celery
+    networks:
+      - backend
+
+  
+    
 
 volumes:
   pgdata:
+
+networks:
+  backend:
+    name: bro_hub
