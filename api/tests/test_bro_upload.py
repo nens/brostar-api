@@ -80,6 +80,7 @@ def test_xml_generator1():
 
     assert generator.create_xml_file() == expected_xml_str
 
+
 def test_xml_generator2():
     """Tests a non existing combination of registration_type and request type."""
     with pytest.raises(delivery.XMLGenerationError):
