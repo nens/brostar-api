@@ -14,6 +14,10 @@ BRO_DOMAIN_CHOICES = [
 
 REGISTRATION_TYPE_OPTIONS = [
     ("GMN_StartRegistration", "GMN_StartRegistration"),
+    ("GMN_MeasuringPoint", "GMN_MeasuringPoint"),
+    ("GMN_MeasuringPointEndDate", "GMN_MeasuringPointEndDate"),
+    ("GMN_TubeReference", "GMN_TubeReference"),
+    ("GMN_Closure", "GMN_Closure"),
 ]
 
 REQUEST_TYPE_OPTIONS = [

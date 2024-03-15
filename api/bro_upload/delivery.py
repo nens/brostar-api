@@ -185,4 +185,6 @@ class XMLGenerator:
 
         except Exception as e:
             traceback.print_exc()
-            raise XMLGenerationError(f"Error generating XML file: {e}") from e
+            raise XMLGenerationError(
+                "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
+            ) from e

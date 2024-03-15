@@ -1,0 +1,27 @@
+<registrationRequest xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgmn/1.0 https://schema.broservices.nl/xsd/isgmn/1.0/isgmn-messages.xsd">
+    <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+    <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+    <brocom:broId>{{ metadata.broId }}</brocom:broId>
+    <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+    <sourceDocument>
+        <GMN_MeasuringPoint gml:id="id_0001">
+            <eventDate>
+                <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+            </eventDate>
+            <measuringPoint>
+                <MeasuringPoint gml:id="id_0002">
+                    <measuringPointCode>{{ sourcedocs_data.measuringPointCode }}</measuringPointCode>
+                    <monitoringTube>
+                        <GroundwaterMonitoringTube gml:id="id_0003">
+                            <broId>{{ sourcedocs_data.broId }}</broId>
+                            <tubeNumber>{{ sourcedocs_data.tubeNumber }}</tubeNumber>
+                        </GroundwaterMonitoringTube>
+                    </monitoringTube>
+                </MeasuringPoint>
+            </measuringPoint>
+        </GMN_MeasuringPoint>
+    </sourceDocument>
+</registrationRequest>
