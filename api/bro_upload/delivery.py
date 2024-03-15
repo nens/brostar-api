@@ -129,7 +129,7 @@ class BRODelivery:
 
         return delivery_url
 
-    def _check_delivery(self, delivery_url: str) -> str | None:
+    def _check_delivery(self, delivery_url: str) -> bool:
         """Checks the delivery status."""
 
         delivery_info = utils.check_delivery_status(
@@ -171,7 +171,7 @@ class XMLGenerator:
         self.sourcedocs_data = sourcedocs_data
         self.template_filepath = f"{request_type}_{registration_type}.html"
 
-    def create_xml_file(self):
+    def create_xml_file(self) -> str:
         """Fills in the provided data into the templates"""
         try:
             rendered_xml = render_to_string(

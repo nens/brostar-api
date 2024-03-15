@@ -104,7 +104,7 @@ def create_delivery(
 
 def check_delivery_status(
     delivery_url: str, bro_username: str, bro_password: str
-) -> str:
+) -> requests.Response:
     """Checks the Delivery info. Step 4 of 4 in the upload process."""
     try:
         r = requests.get(
