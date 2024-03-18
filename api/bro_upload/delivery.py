@@ -146,9 +146,7 @@ class BRODelivery:
 
         else:
             delivery_status = delivery_info["status"]
-            delivery_brondocument_status = delivery_info["brondocuments"][0][
-                "status"
-            ]
+            delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
 
             if (
                 delivery_status == "DOORGELEVERD"
