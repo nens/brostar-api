@@ -44,7 +44,7 @@ class BulkImporter:
                 )
                 data_importer.run()
             except requests.RequestException as e:
-                logger.exception()
+                logger.exception(e)
                 raise DataImportError(f"Error fetching BRO IDs from {url}: {e}") from e
 
     def _create_bro_ids_import_url(self) -> str:

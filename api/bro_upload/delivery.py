@@ -3,6 +3,7 @@ import logging
 from typing import Any
 
 from django.template.loader import render_to_string
+from django.template.exceptions import TemplateDoesNotExist
 
 from .. import models as api_models
 from . import utils
@@ -85,7 +86,7 @@ class BRODelivery:
             return generator.create_xml_file()
 
         except Exception as e:
-            logger.exception()
+            logger.exception(e)
             raise RuntimeError(f"Error generating XML file: {e}") from e
 
     def _validate_xml_file(self, xml_file: str) -> None:
@@ -184,8 +185,12 @@ class XMLGenerator:
             )
             return rendered_xml
 
-        except Exception as e:
-            logger.exception()
+        except TemplateDoesNotExist as e:
+            logger.exception(e)
             raise XMLGenerationError(
                 "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
             ) from e
+        
+        except Exception as e:
+            logger.exception(e)
+            raise XMLGenerationError(e) from e
