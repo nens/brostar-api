@@ -1,4 +1,4 @@
-import traceback
+import logging
 
 import requests
 from django.conf import settings
@@ -6,6 +6,7 @@ from django.conf import settings
 from api import models
 from api.bro_import import config
 
+logger = logging.getLogger(__name__)
 
 class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
@@ -43,7 +44,7 @@ class BulkImporter:
                 )
                 data_importer.run()
             except requests.RequestException as e:
-                traceback.print_exc()
+                logger.exception()
                 raise DataImportError(f"Error fetching BRO IDs from {url}: {e}") from e
 
     def _create_bro_ids_import_url(self) -> str:

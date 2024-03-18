@@ -1,5 +1,5 @@
 import time
-import logger
+import logging
 from typing import Any
 
 from django.template.loader import render_to_string
@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from .. import models as api_models
 from . import utils
 
+logger = logging.getLogger(__name__)
 
 class XMLGenerationError(Exception):
     """Exception raised when XML generation fails."""
