@@ -12,6 +12,25 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
 
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+
+  celery:
+    environment:
+      - DJANGO_SETTINGS_MODULE=bro_hub.settings
+      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
+    build: .
+    command: celery -A bro_hub worker --loglevel=INFO
+    volumes:
+      - .:/code
+    links:
+      - redis
+    depends_on:
+      - db
+      - redis
+
   web:
     build: .
     # command: "bin/gunicorn -b 0.0.0.0:${PORT:-5000} --workers=3 --timeout 90 --preload --max-requests=10000 trs.wsgi"
@@ -32,6 +51,12 @@ services:
       # - NENS_AUTH_ISSUER
       # - NENS_AUTH_CLIENT_ID
       # - NENS_AUTH_CLIENT_SECRET
+    depends_on:
+      - db
+      - redis
+      - celery
+
+
 
 volumes:
   pgdata:

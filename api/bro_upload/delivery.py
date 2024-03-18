@@ -1,8 +1,20 @@
+import logging
 import time
-import traceback
+from typing import Any
+
+from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
 
 from .. import models as api_models
-from . import config, utils
+from . import utils
+
+logger = logging.getLogger(__name__)
+
+
+class XMLGenerationError(Exception):
+    """Exception raised when XML generation fails."""
+
+    pass
 
 
 class XMLValidationError(Exception):
@@ -41,9 +53,6 @@ class BRODelivery:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
-        self.xml_generator_class = config.xml_generator_mapping.get(
-            self.upload_task_instance.registration_type
-        )
 
     def process(self) -> None:
         # Generate the XML file.
@@ -69,7 +78,7 @@ class BRODelivery:
 
     def _generate_xml_file(self) -> str:
         try:
-            generator = self.xml_generator_class(
+            generator = XMLGenerator(
                 self.upload_task_instance.registration_type,
                 self.upload_task_instance.request_type,
                 self.upload_task_instance.metadata,
@@ -78,7 +87,7 @@ class BRODelivery:
             return generator.create_xml_file()
 
         except Exception as e:
-            traceback.print_exc()
+            logger.exception(e)
             raise RuntimeError(f"Error generating XML file: {e}") from e
 
     def _validate_xml_file(self, xml_file: str) -> None:
@@ -123,23 +132,21 @@ class BRODelivery:
 
         return delivery_url
 
-    def _check_delivery(self, delivery_url: str) -> str | None:
+    def _check_delivery(self, delivery_url: str) -> bool:
         """Checks the delivery status."""
 
         delivery_info = utils.check_delivery_status(
             delivery_url, self.bro_username, self.bro_password
         )
 
-        errors = delivery_info.json()["brondocuments"][0]["errors"]
+        errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
             raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
 
         else:
-            delivery_status = delivery_info.json()["status"]
-            delivery_brondocument_status = delivery_info.json()["brondocuments"][0][
-                "status"
-            ]
+            delivery_status = delivery_info["status"]
+            delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
 
             if (
                 delivery_status == "DOORGELEVERD"
@@ -149,3 +156,40 @@ class BRODelivery:
 
             else:
                 return False
+
+
+class XMLGenerator:
+    """XML generator based on Django Templates."""
+
+    def __init__(
+        self,
+        registration_type: str,
+        request_type: str,
+        metadata: dict[str, Any],
+        sourcedocs_data: dict[str, Any],
+    ) -> None:
+        self.metadata = metadata
+        self.sourcedocs_data = sourcedocs_data
+        self.template_filepath = f"{request_type}_{registration_type}.html"
+
+    def create_xml_file(self) -> str:
+        """Fills in the provided data into the templates"""
+        try:
+            rendered_xml = render_to_string(
+                self.template_filepath,
+                {
+                    "metadata": self.metadata,
+                    "sourcedocs_data": self.sourcedocs_data,
+                },
+            )
+            return rendered_xml
+
+        except TemplateDoesNotExist as e:
+            logger.exception(e)
+            raise XMLGenerationError(
+                "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
+            ) from e
+
+        except Exception as e:
+            logger.exception(e)
+            raise XMLGenerationError(e) from e

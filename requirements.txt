@@ -12,7 +12,6 @@ markdown
 pytest
 pytest-django
 xmltodict
-lxml
 python-dotenv
 django-encrypted-model-fields
 django-filter

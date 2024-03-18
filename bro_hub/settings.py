@@ -60,7 +60,7 @@ ROOT_URLCONF = "bro_hub.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "api", "bro_upload", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)
 # TODO: fix celery env settings
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
 
 # BRO SETTINGS
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"

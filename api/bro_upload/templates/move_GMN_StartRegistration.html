@@ -1,0 +1,39 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<moveRequest xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgmn/1.0 https://schema.broservices.nl/xsd/isgmn/1.0/isgmn-messages.xsd">
+    <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+    <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+    <brocom:broId>{{ metadata.broId }}</brocom:broId>
+    <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+    <correctionReason codeSpace="urn:bro:gmn:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
+    <sourceDocument>
+        <GMN_StartRegistration gml:id="id_0001">
+            <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
+            <name>{{ sourcedocs_data.name }}</name>
+            <deliveryContext codeSpace="urn:bro:gmn:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</deliveryContext>
+            <monitoringPurpose codeSpace="urn:bro:gmn:MonitoringPurpose">{{ sourcedocs_data.monitoringPurpose }}</monitoringPurpose>
+            <groundwaterAspect codeSpace="urn:bro:gmn:GroundwaterAspect">{{ sourcedocs_data.groundwaterAspect }}</groundwaterAspect>
+            <startDateMonitoring>
+                <brocom:date>{{ sourcedocs_data.startDateMonitoring }}</brocom:date>
+            </startDateMonitoring>
+{%          for measuringpoint in sourcedocs_data.measuringPoints %}
+            <measuringPoint>
+                <MeasuringPoint gml:id="id_0002">
+                    <measuringPointCode>{{ measuringpoint.measuringPointCode }}</measuringPointCode>
+                    <monitoringTube>
+                        <GroundwaterMonitoringTube gml:id="id_0003">
+                            <broId>{{ measuringpoint.broId }}</broId>
+                            <tubeNumber>{{ measuringpoint.tubeNumber }}</tubeNumber>
+                        </GroundwaterMonitoringTube>
+                    </monitoringTube>
+                </MeasuringPoint>
+            </measuringPoint>
+{%          endfor %}
+        </GMN_StartRegistration>
+    </sourceDocument>
+    <dateToBeCorrected>
+        <brocom:date>{{ sourcedocs_data.dateToBeCorrected }}</brocom:date>
+    </dateToBeCorrected>
+</moveRequest>

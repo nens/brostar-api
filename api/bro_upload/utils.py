@@ -1,9 +1,11 @@
 import json
-import traceback
+import logging
 from typing import Any
 
 import requests
 from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 def validate_xml_file(
@@ -24,7 +26,7 @@ def validate_xml_file(
         return r.json()
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception(e)
         raise RuntimeError(f"Validate xml error: {e}")
 
 
@@ -44,7 +46,7 @@ def create_upload_url(bro_username: str, bro_password: str, project_number: str)
         return upload_url
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception(e)
         raise RuntimeError(f"Create upload url error: {e}")
 
 
@@ -70,7 +72,7 @@ def add_xml_to_upload(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception(e)
         raise RuntimeError(f"Add XML to upload error: {e}")
 
 
@@ -98,13 +100,13 @@ def create_delivery(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception(e)
         raise RuntimeError(f"Deliver uploaded XML error: {e}")
 
 
 def check_delivery_status(
     delivery_url: str, bro_username: str, bro_password: str
-) -> str:
+) -> dict[str, Any]:
     """Checks the Delivery info. Step 4 of 4 in the upload process."""
     try:
         r = requests.get(
@@ -112,8 +114,8 @@ def check_delivery_status(
             auth=(bro_username, bro_password),
         )
 
-        return r
+        return r.json()
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception(e)
         raise RuntimeError(f"Delivery info check error: {e}")
