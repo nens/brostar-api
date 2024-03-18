@@ -20,10 +20,10 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
                 <brocom:date>2024-01-01</brocom:date>
             </startDateMonitoring>
             <measuringPoint>
-                <MeasuringPoint gml:id="id_0002">
+                <MeasuringPoint gml:id="measuringpoint_1">
                     <measuringPointCode>GMW000000038946</measuringPointCode>
                     <monitoringTube>
-                        <GroundwaterMonitoringTube gml:id="id_0003">
+                        <GroundwaterMonitoringTube gml:id="tube_1">
                             <broId>GMW000000038946</broId>
                             <tubeNumber>1</tubeNumber>
                         </GroundwaterMonitoringTube>
@@ -31,10 +31,10 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
                 </MeasuringPoint>
             </measuringPoint>
             <measuringPoint>
-                <MeasuringPoint gml:id="id_0002">
+                <MeasuringPoint gml:id="measuringpoint_2">
                     <measuringPointCode>GMW000000038946</measuringPointCode>
                     <monitoringTube>
-                        <GroundwaterMonitoringTube gml:id="id_0003">
+                        <GroundwaterMonitoringTube gml:id="tube_2">
                             <broId>GMW000000038946</broId>
                             <tubeNumber>2</tubeNumber>
                         </GroundwaterMonitoringTube>
@@ -77,6 +77,8 @@ def test_xml_generator1():
             ],
         },
     )
+
+    print(generator.create_xml_file())
 
     assert generator.create_xml_file() == expected_xml_str
 
