@@ -1,5 +1,5 @@
 import time
-import traceback
+import logger
 from typing import Any
 
 from django.template.loader import render_to_string
@@ -84,7 +84,7 @@ class BRODelivery:
             return generator.create_xml_file()
 
         except Exception as e:
-            traceback.print_exc()
+            logger.exception()
             raise RuntimeError(f"Error generating XML file: {e}") from e
 
     def _validate_xml_file(self, xml_file: str) -> None:
@@ -184,7 +184,7 @@ class XMLGenerator:
             return rendered_xml
 
         except Exception as e:
-            traceback.print_exc()
+            logger.exception()
             raise XMLGenerationError(
                 "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
             ) from e

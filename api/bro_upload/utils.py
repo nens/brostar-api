@@ -1,5 +1,5 @@
 import json
-import traceback
+import logger
 from typing import Any
 
 import requests
@@ -24,7 +24,7 @@ def validate_xml_file(
         return r.json()
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception()
         raise RuntimeError(f"Validate xml error: {e}")
 
 
@@ -44,7 +44,7 @@ def create_upload_url(bro_username: str, bro_password: str, project_number: str)
         return upload_url
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception()
         raise RuntimeError(f"Create upload url error: {e}")
 
 
@@ -70,7 +70,7 @@ def add_xml_to_upload(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception()
         raise RuntimeError(f"Add XML to upload error: {e}")
 
 
@@ -98,7 +98,7 @@ def create_delivery(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception()
         raise RuntimeError(f"Deliver uploaded XML error: {e}")
 
 
@@ -115,5 +115,5 @@ def check_delivery_status(
         return r
 
     except requests.RequestException as e:
-        traceback.print_exc()
+        logger.exception()
         raise RuntimeError(f"Delivery info check error: {e}")
