@@ -8,6 +8,7 @@ from api.bro_import import config
 
 logger = logging.getLogger(__name__)
 
+
 class FetchBROIDsError(Exception):
     """Custom exception for errors during BRO IDs fetching."""
 

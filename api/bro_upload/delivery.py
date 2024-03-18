@@ -1,14 +1,15 @@
-import time
 import logging
+import time
 from typing import Any
 
-from django.template.loader import render_to_string
 from django.template.exceptions import TemplateDoesNotExist
+from django.template.loader import render_to_string
 
 from .. import models as api_models
 from . import utils
 
 logger = logging.getLogger(__name__)
+
 
 class XMLGenerationError(Exception):
     """Exception raised when XML generation fails."""
@@ -190,7 +191,7 @@ class XMLGenerator:
             raise XMLGenerationError(
                 "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
             ) from e
-        
+
         except Exception as e:
             logger.exception(e)
             raise XMLGenerationError(e) from e

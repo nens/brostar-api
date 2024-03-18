@@ -7,6 +7,7 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
+
 def validate_xml_file(
     xml_file: bytes, bro_username: str, bro_password: str, project_number: str
 ) -> dict[str, Any]:
