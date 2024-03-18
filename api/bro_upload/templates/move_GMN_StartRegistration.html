@@ -18,7 +18,7 @@ This XML file does not appear to have any style information associated with it. 
             <startDateMonitoring>
                 <brocom:date>{{ sourcedocs_data.startDateMonitoring }}</brocom:date>
             </startDateMonitoring>
-            {% for measuringpoint in sourcedocs_data.measuringPoints %}
+{%          for measuringpoint in sourcedocs_data.measuringPoints %}
             <measuringPoint>
                 <MeasuringPoint gml:id="id_0002">
                     <measuringPointCode>{{ measuringpoint.measuringPointCode }}</measuringPointCode>
@@ -30,7 +30,7 @@ This XML file does not appear to have any style information associated with it. 
                     </monitoringTube>
                 </MeasuringPoint>
             </measuringPoint>
-            {% endfor %}
+{%          endfor %}
         </GMN_StartRegistration>
     </sourceDocument>
     <dateToBeCorrected>

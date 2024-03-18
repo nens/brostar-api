@@ -14,7 +14,8 @@
             <groundwaterAspect codeSpace="urn:bro:gmn:GroundwaterAspect">{{ sourcedocs_data.groundwaterAspect }}</groundwaterAspect>
             <startDateMonitoring>
                 <brocom:date>{{ sourcedocs_data.startDateMonitoring }}</brocom:date>
-            </startDateMonitoring>{% for measuringpoint in sourcedocs_data.measuringPoints %}
+            </startDateMonitoring>
+{%          for measuringpoint in sourcedocs_data.measuringPoints %}
             <measuringPoint>
                 <MeasuringPoint gml:id="measuringpoint_{{ forloop.counter }}">
                     <measuringPointCode>{{ measuringpoint.measuringPointCode }}</measuringPointCode>
@@ -25,7 +26,8 @@
                         </GroundwaterMonitoringTube>
                     </monitoringTube>
                 </MeasuringPoint>
-            </measuringPoint>{% endfor %}
+            </measuringPoint>
+{%          endfor %}
         </GMN_StartRegistration>
     </sourceDocument>
 </registrationRequest>

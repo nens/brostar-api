@@ -19,6 +19,7 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
             <startDateMonitoring>
                 <brocom:date>2024-01-01</brocom:date>
             </startDateMonitoring>
+
             <measuringPoint>
                 <MeasuringPoint gml:id="measuringpoint_1">
                     <measuringPointCode>GMW000000038946</measuringPointCode>
@@ -30,6 +31,7 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
                     </monitoringTube>
                 </MeasuringPoint>
             </measuringPoint>
+
             <measuringPoint>
                 <MeasuringPoint gml:id="measuringpoint_2">
                     <measuringPointCode>GMW000000038946</measuringPointCode>
@@ -41,6 +43,7 @@ expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/
                     </monitoringTube>
                 </MeasuringPoint>
             </measuringPoint>
+
         </GMN_StartRegistration>
     </sourceDocument>
 </registrationRequest>
