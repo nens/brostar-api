@@ -106,7 +106,7 @@ def create_delivery(
 
 def check_delivery_status(
     delivery_url: str, bro_username: str, bro_password: str
-) -> requests.Response:
+) -> dict[str, Any]:
     """Checks the Delivery info. Step 4 of 4 in the upload process."""
     try:
         r = requests.get(
@@ -114,7 +114,7 @@ def check_delivery_status(
             auth=(bro_username, bro_password),
         )
 
-        return r
+        return r.json()
 
     except requests.RequestException as e:
         logger.exception(e)

@@ -139,14 +139,14 @@ class BRODelivery:
             delivery_url, self.bro_username, self.bro_password
         )
 
-        errors = delivery_info.json()["brondocuments"][0]["errors"]
+        errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
             raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
 
         else:
-            delivery_status = delivery_info.json()["status"]
-            delivery_brondocument_status = delivery_info.json()["brondocuments"][0][
+            delivery_status = delivery_info["status"]
+            delivery_brondocument_status = delivery_info["brondocuments"][0][
                 "status"
             ]
 
