@@ -11,17 +11,11 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
-    networks:
-      - backend
 
   redis:
     image: redis:latest
     expose:
       - 6379
-    ports:
-      - "6379:6379"
-    networks:
-      - backend
 
   celery:
     environment:
@@ -36,8 +30,6 @@ services:
     depends_on:
       - db
       - redis
-    networks:
-      - backend
 
   web:
     build: .
@@ -63,15 +55,8 @@ services:
       - db
       - redis
       - celery
-    networks:
-      - backend
-
 
 
 
 volumes:
   pgdata:
-
-networks:
-  backend:
-    name: bro_hub
