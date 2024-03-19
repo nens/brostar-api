@@ -44,3 +44,10 @@ class UrlFieldMixin:
         if url_field:
             data = {"url": url_field, **data}  # Add URL field at the top
         return data
+
+
+class RequiredFieldsMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = True
