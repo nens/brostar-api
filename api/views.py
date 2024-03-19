@@ -1,12 +1,11 @@
 from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
-from django.http import HttpResponseRedirect
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as drf_reverse
-
 
 from . import filters, mixins, models, serializers, tasks
 
