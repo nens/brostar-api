@@ -2,9 +2,11 @@ from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http import HttpResponseRedirect
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework.reverse import reverse as drf_reverse
+
 
 from . import filters, mixins, models, serializers, tasks
 
@@ -137,12 +139,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             )
             full_url = request.build_absolute_uri(url)
 
-            return Response(
-                {
-                    "message": f"Succesfully received the import taks request. Check {full_url} for the status of the import task."
-                },
-                status=status.HTTP_201_CREATED,
-            )
+            return HttpResponseRedirect(full_url)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -244,12 +241,7 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             )
             full_url = request.build_absolute_uri(url)
 
-            return Response(
-                {
-                    "message": f"Succesfully received the upload taks request. Check {full_url} for the status of the import task."
-                },
-                status=status.HTTP_201_CREATED,
-            )
+            return HttpResponseRedirect(full_url)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
