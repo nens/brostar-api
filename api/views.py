@@ -1,7 +1,5 @@
 from django.contrib.auth import logout
-from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
@@ -103,7 +101,9 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         Initialize an import task by posting a BRO object.
         """
 
-        serializer = serializers.ImportTaskSerializer(data=request.data, context={'request': request})
+        serializer = serializers.ImportTaskSerializer(
+            data=request.data, context={"request": request}
+        )
 
         if serializer.is_valid():
             import_task_instance = serializer.save()
@@ -191,7 +191,9 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
 
-        serializer = serializers.UploadTaskSerializer(data=request.data, context={'request': request})
+        serializer = serializers.UploadTaskSerializer(
+            data=request.data, context={"request": request}
+        )
 
         if serializer.is_valid():
             upload_task_instance: models.UploadTask = serializer.save()
