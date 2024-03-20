@@ -1,0 +1,124 @@
+<registrationRequest xmlns="http://www.broservices.nl/xsd/isgar/1.0"
+    xmlns:garcom="http://www.broservices.nl/xsd/garcommon/1.0"
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
+    <brocom:requestReference>TestCase1</brocom:requestReference>
+    <brocom:qualityRegime>IMBRO/A</brocom:qualityRegime>
+    <sourceDocument>
+        <GAR gml:id="id_0001">
+            <objectIdAccountableParty>Pietje_20181023_QR2</objectIdAccountableParty>
+            <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">handboekProvinciesRIVMv2017</qualityControlMethod>
+            <!-- 1 or more repetitions: -->
+                      <garcom:GroundwaterMonitoringNet gml:id="GMN123456789012">
+                         <garcom:broId>?</garcom:broId>
+                      </garcom:GroundwaterMonitoringNet>
+                   </groundwaterMonitoringNet -->
+            <monitoringPoint>
+                <garcom:GroundwaterMonitoringTube gml:id="GMW000000058869_001">
+                    <garcom:broId>GMW000000058869</garcom:broId>
+                    <garcom:tubeNumber>1</garcom:tubeNumber>
+                </garcom:GroundwaterMonitoringTube>
+            </monitoringPoint>
+            <fieldResearch>
+                <garcom:samplingDateTime>2018-10-23T16:59:32+01:00</garcom:samplingDateTime>
+                <garcom:samplingOperator xsi:nil="true"/>
+                        <brocom:chamberOfCommerceNumber>?</brocom:chamberOfCommerceNumber>
+                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">NEN5744v2011-A1v2013</garcom:samplingStandard>
+                <garcom:samplingDevice>
+                    <garcom:pumpType codeSpace="urn:bro:gar:PumpType">onderwaterpomp</garcom:pumpType>
+                </garcom:samplingDevice>
+                <garcom:fieldObservation>
+                    <garcom:primaryColour codeSpace="urn:bro:gar:Colour">wit</garcom:primaryColour>
+                    <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">grijs</garcom:secondaryColour>
+                    <garcom:colourStrength codeSpace="urn:bro:gar:ColourStrength">licht</garcom:colourStrength>
+                    <garcom:abnormalityInCooling>ja</garcom:abnormalityInCooling>
+                    <garcom:abnormalityInDevice>nee</garcom:abnormalityInDevice>
+                    <garcom:pollutedByEngine>nee</garcom:pollutedByEngine>
+                    <garcom:filterAerated>ja</garcom:filterAerated>
+                    <garcom:groundWaterLevelDroppedTooMuch>nee</garcom:groundWaterLevelDroppedTooMuch>
+                    <garcom:abnormalFilter>nee</garcom:abnormalFilter>
+                    <garcom:sampleAerated>ja</garcom:sampleAerated>
+                    <garcom:hoseReused>nee</garcom:hoseReused>
+                    <garcom:temperatureDifficultToMeasure>nee</garcom:temperatureDifficultToMeasure>
+                </garcom:fieldObservation>
+                <!-- 0 or more repetitions: -->
+                <garcom:fieldMeasurement>
+                    <garcom:parameter>1496</garcom:parameter>
+                    <garcom:fieldMeasurementValue uom="mg/l">5.123</garcom:fieldMeasurementValue>
+                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">goedgekeurd</garcom:qualityControlStatus>
+                </garcom:fieldMeasurement>
+                <garcom:fieldMeasurement>
+                    <garcom:parameter>6024</garcom:parameter>
+                    <garcom:fieldMeasurementValue uom="10^-3">3</garcom:fieldMeasurementValue>
+                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">afgekeurd</garcom:qualityControlStatus>
+                </garcom:fieldMeasurement>
+                <garcom:fieldMeasurement>
+                    <garcom:parameter>3548</garcom:parameter>
+                    <garcom:fieldMeasurementValue uom="uS/cm">15.123</garcom:fieldMeasurementValue>
+                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">onbekend</garcom:qualityControlStatus>
+                </garcom:fieldMeasurement>
+            </fieldResearch>
+            <!-- 0 or more repetitions: -->
+            <laboratoryAnalysis>
+                <!-- Optional: -->
+                <garcom:responsibleLaboratory xsi:nil="true"/>
+                        <brocom:chamberOfCommerceNumber>?</brocom:chamberOfCommerceNumber>
+                <!-- 1 or more repetitions: -->
+                <garcom:analysisProcess>
+                    <garcom:analysisDate>
+                        <brocom:date>2018-10-25</brocom:date>
+                    </garcom:analysisDate>
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">AAS</garcom:analyticalTechnique>
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">CIW</garcom:valuationMethod>
+                    <!-- 1 or more repetitions: -->
+                    <garcom:analysis>
+                        <garcom:parameter>1270</garcom:parameter>
+                        <garcom:analysisMeasurementValue uom="mg/l">5</garcom:analysisMeasurementValue>
+                            <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">?</garcom:limitSymbol>
+                        <garcom:reportingLimit uom="mg/l">2</garcom:reportingLimit>
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">goedgekeurd</garcom:qualityControlStatus>
+                    </garcom:analysis>
+                    <garcom:analysis>
+                        <garcom:parameter>441</garcom:parameter>
+                        <garcom:analysisMeasurementValue uom="ug/l">0.1</garcom:analysisMeasurementValue>
+                        <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">LT</garcom:limitSymbol>
+                        <garcom:reportingLimit uom="ug/l">0.1</garcom:reportingLimit>
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">afgekeurd</garcom:qualityControlStatus>
+                    </garcom:analysis>
+                </garcom:analysisProcess>
+                <garcom:analysisProcess>
+                    <garcom:analysisDate>
+                        <brocom:voidReason>onbekend</brocom:voidReason>
+                    </garcom:analysisDate>
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">IR</garcom:analyticalTechnique>
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">AQUOKIT</garcom:valuationMethod>
+                    <!-- 1 or more repetitions: -->
+                    <garcom:analysis>
+                        <garcom:parameter>1522</garcom:parameter>
+                        <garcom:analysisMeasurementValue uom="Cel">12.2</garcom:analysisMeasurementValue>
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">onbeslist</garcom:qualityControlStatus>
+                    </garcom:analysis>
+                </garcom:analysisProcess>
+            </laboratoryAnalysis>
+            <laboratoryAnalysis>
+                <garcom:responsibleLaboratory>
+                    <brocom:chamberOfCommerceNumber>27376655</brocom:chamberOfCommerceNumber>
+                </garcom:responsibleLaboratory>
+                <garcom:analysisProcess>
+                    <garcom:analysisDate>
+                        <brocom:yearMonth>2018-10</brocom:yearMonth>
+                    </garcom:analysisDate>
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">AA</garcom:analyticalTechnique>
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">DESK</garcom:valuationMethod>
+                    <garcom:analysis>
+                        <garcom:parameter>4445</garcom:parameter>
+                        <garcom:analysisMeasurementValue uom="ug/ml">0.7</garcom:analysisMeasurementValue>
+                        <garcom:reportingLimit uom="ug/ml">0.1</garcom:reportingLimit>
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">goedgekeurd</garcom:qualityControlStatus>
+                    </garcom:analysis>
+                </garcom:analysisProcess>
+            </laboratoryAnalysis>
+        </GAR>
+    </sourceDocument>
+</registrationRequest>
