@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_yasg",
+    "corsheaders",
     "django_filters",
     "rest_framework_simplejwt",
     "encrypted_model_fields",
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "bro_hub.urls"
@@ -76,6 +78,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bro_hub.wsgi.application"
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

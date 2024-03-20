@@ -4,6 +4,7 @@
 django == 5.0.1
 psycopg2-binary
 djangorestframework
+django-cors-headers
 drf-yasg
 celery
 redis
