@@ -103,7 +103,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         Initialize an import task by posting a BRO object.
         """
 
-        serializer = serializers.ImportTaskSerializer(data=request.data)
+        serializer = serializers.ImportTaskSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             import_task_instance = serializer.save()
@@ -121,24 +121,10 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             )
             import_task_instance.save()
 
-            if not import_task_instance.kvk_number:
-                return Response(
-                    {
-                        "error": "No KvK found. Please set a kvk number under the Organisation you are linked to."
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
             # Start the celery task
             tasks.import_bro_data_task.delay(import_task_instance_uuid)
 
-            # Get the dynamic URL using reverse
-            url = reverse(
-                "api:importtask-detail", kwargs={"uuid": import_task_instance.uuid}
-            )
-            full_url = request.build_absolute_uri(url)
-
-            return HttpResponseRedirect(full_url)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -202,10 +188,10 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     def post(self, request):
         """
-        Initialize an upload task by posting the bro_domain, registartion_type, request_type, and the sourcedocument_data
+        Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
 
-        serializer = serializers.UploadTaskSerializer(data=request.data)
+        serializer = serializers.UploadTaskSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             upload_task_instance: models.UploadTask = serializer.save()
@@ -221,26 +207,12 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
             upload_task_instance.data_owner = data_owner
             upload_task_instance.save()
 
-            if not upload_task_instance.project_number:
-                return Response(
-                    {
-                        "error": "No project number found. Set a default project number under your user profile, or add one to the POST request data."
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
             # Start the celery task
             tasks.upload_bro_data_task.delay(
                 upload_task_instance.uuid, username, password
             )
 
-            # Get the dynamic URL using reverse
-            url = reverse(
-                "api:uploadtask-detail", kwargs={"uuid": upload_task_instance.uuid}
-            )
-            full_url = request.build_absolute_uri(url)
-
-            return HttpResponseRedirect(full_url)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
