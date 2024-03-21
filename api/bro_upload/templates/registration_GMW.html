@@ -32,7 +32,7 @@
                 <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
                 <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
             </ns:deliveredVerticalPosition>
-{%          for monitoringtube in sourcedocs_data.monitoringtube %}
+{%          for monitoringtube in sourcedocs_data.monitoringTubes %}
                 <ns:monitoringTube>
                     <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
                     <ns:tubeType codeSpace="urn:bro:gmw:TubeType">{{ monitoringtube.tubeType }}</ns:tubeType>
