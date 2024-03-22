@@ -145,9 +145,9 @@ class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIVie
 class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """This endpoint handles the upload of data to the BRO.
 
-    It takes the registration type, request type and the sourcedocument data as input.
-    This API handles the transformation, validation and delivery of the data.
-    The status of this proces can be followed in the generated upload task instance.
+    It takes the registration type, request type, and the sourcedocument data as input.
+    This API handles the transformation, validation, and delivery of the data.
+    The status of this process can be followed in the generated upload task instance.
 
     **POST Parameters**
 
@@ -155,23 +155,22 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         String (*required*) options: 'GMN', 'GMW', 'GLD', 'FRD'
 
     `kvk_number`:
-        string (*optional*) When not filled in, the kvk of the organisation linked to the user is used.
+        string (*optional*) When not filled in, the kvk of the organization linked to the user is used.
 
     `project_number`:
-        String (*optional*) When not filled in, the default project number is used. If that doesnt exist, the upload fails.
+        String (*optional*) When not filled in, the default project number is used. If that doesn't exist, the upload fails.
 
     `registration_type`:
         String (*required*)
 
     `request_type`:
-        String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check out https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb for the possible combinations
+        String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check out [the documentation for this endpoint](https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb) for the possible combinations
 
     `metadata`:
-        dict (*required*) see https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb
+        dict (*required*) see [the documentation for this endpoint](https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb)
 
     `sourcedocument_data`:
-        dict (*required*) see https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb
-
+        dict (*required*) see [the documentation for this endpoint](https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb)
     """
 
     serializer_class = serializers.UploadTaskSerializer
