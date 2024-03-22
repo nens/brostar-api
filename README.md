@@ -1,8 +1,8 @@
-# BRO-Hub
+# BROStar
 
 ## Introductie
 
-BRO-hub is een allomvattend product voor het datamanagement rondom de BRO. Het bestaat uit een API om zowel data uit de BRO te importeren als data naar de BRO op te sturen. De geimporteerde data wordt opgeslagen in een database en is via de API op te vragen.
+BROStar is een allomvattend product voor het datamanagement rondom de BRO. Het bestaat uit een API om zowel data uit de BRO te importeren als data naar de BRO op te sturen. De geimporteerde data wordt opgeslagen in een database en is via de API op te vragen.
 
 De backend is een Django applicatie, en de frontend (voorlopig) een Streamlit dashboard.
 
@@ -35,7 +35,7 @@ Some instructions:
 
 Do the regular migrate, createsuperuser stuff.
 
-TODO: start celery automatically (`celery -A bro_hub worker -l INFO -P solo`)
+TODO: start celery automatically (`celery -A brostar worker -l INFO -P solo`)
 
 7) Maak een organisatie, vul de KvK in
 

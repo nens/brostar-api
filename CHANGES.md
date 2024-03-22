@@ -1,4 +1,4 @@
-# Changelog for broHUB
+# Changelog for BROStar
 
 ## 0.1 (unreleased)
 
