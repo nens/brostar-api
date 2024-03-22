@@ -140,7 +140,6 @@ class BRODelivery:
             delivery_url, self.bro_username, self.bro_password
         )
 
-
         errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
