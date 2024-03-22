@@ -161,16 +161,16 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         String (*optional*) When not filled in, the default project number is used. If that doesnt exist, the upload fails.
 
     `registration_type`:
-        String (*required*) available options are found in the docs
+        String (*required*)
 
     `request_type`:
-        String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check the docs for the possible combinations
+        String (*required*) options: registration, replace, insert, move, delete. Some may not be possible for a given registration_type. Check out https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb for the possible combinations
 
     `metadata`:
-        dict (*required*) check the docs
+        dict (*required*) see https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb
 
     `sourcedocument_data`:
-        dict (*required*) check the docs
+        dict (*required*) see https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb
 
     """
 
