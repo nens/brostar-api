@@ -1,8 +1,13 @@
+import logging
+
+import requests
 from celery import shared_task
 
 from . import models as api_models
-from .bro_import import bulk_import
+from .bro_import import bulk_import, config
 from .bro_upload.delivery import BRODelivery
+
+logger = logging.getLogger(__name__)
 
 
 @shared_task
@@ -58,12 +63,26 @@ def upload_bro_data_task(
 
     try:
         # The actual task
-        uploader.process()
+        bro_id = uploader.process()
 
         # Update upload task instance
+        upload_task_instance.bro_id = bro_id
         upload_task_instance.status = "COMPLETED"
         upload_task_instance.log = "The upload was done successfully"
         upload_task_instance.save()
+
+        # Start import task to keep the data up to date in the api
+        try:
+            object_importer_class = config.object_importer_mapping[upload_task_instance.bro_domain]
+            object_importer_class(
+                bro_domain = upload_task_instance.bro_domain,
+                bro_id = upload_task_instance.bro_id,
+                data_owner = upload_task_instance.data_owner
+            )
+        except requests.RequestException as e:
+                logger.exception(e)
+                raise bulk_import.DataImportError(f"Error while importing data for bro id: {bro_id}: {e}") from e
+        
 
     except Exception as e:
         upload_task_instance.log = e

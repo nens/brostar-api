@@ -53,6 +53,7 @@ class BRODelivery:
         self.upload_task_instance = upload_task_instance
         self.bro_username = bro_username
         self.bro_password = bro_password
+        self.bro_id = None
 
     def process(self) -> None:
         # Generate the XML file.
@@ -69,7 +70,7 @@ class BRODelivery:
 
         while retries_count < 4:
             if self._check_delivery(deliver_url):
-                return
+                return self.bro_id
             else:
                 time.sleep(10)
                 retries_count += 1
@@ -139,6 +140,7 @@ class BRODelivery:
             delivery_url, self.bro_username, self.bro_password
         )
 
+
         errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
@@ -152,6 +154,9 @@ class BRODelivery:
                 delivery_status == "DOORGELEVERD"
                 and delivery_brondocument_status == "OPGENOMEN_LVBRO"
             ):
+                # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
+                self.bro_id = delivery_info["brondocuments"][0]["broId"]
+
                 return True
 
             else:
