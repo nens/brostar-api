@@ -1,5 +1,5 @@
 """
-URL configuration for bro_hub project.
+URL configuration for brostar project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -29,7 +29,7 @@ from api import views
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="BROHub API",
+        title="BROStar API",
         default_version="v1",
         description="Simplify the data management of the BRO",
         terms_of_service="",

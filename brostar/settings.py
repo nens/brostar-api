@@ -58,7 +58,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
-ROOT_URLCONF = "bro_hub.urls"
+ROOT_URLCONF = "brostar.urls"
 
 TEMPLATES = [
     {
@@ -95,7 +95,7 @@ LOGGING = {
     },
 }
 
-WSGI_APPLICATION = "bro_hub.wsgi.application"
+WSGI_APPLICATION = "brostar.wsgi.application"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
@@ -106,9 +106,9 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "bro_hub",
-        "USER": "bro_hub",
-        "PASSWORD": "bro_hub",
+        "NAME": "brostar",
+        "USER": "brostar",
+        "PASSWORD": "brostar",
         "HOST": "db",
     }
 }

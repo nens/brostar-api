@@ -5,9 +5,9 @@ services:
   db:
     image: postgis/postgis:14-3.4
     environment:
-      POSTGRES_USER: 'bro_hub'
-      POSTGRES_PASSWORD: 'bro_hub'
-      POSTGRES_DB: 'bro_hub'
+      POSTGRES_USER: 'brostar'
+      POSTGRES_PASSWORD: 'brostar'
+      POSTGRES_DB: 'brostar'
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
@@ -19,10 +19,10 @@ services:
 
   celery:
     environment:
-      - DJANGO_SETTINGS_MODULE=bro_hub.settings
+      - DJANGO_SETTINGS_MODULE=brostar.settings
       - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
     build: .
-    command: celery -A bro_hub worker --loglevel=INFO
+    command: celery -A brostar worker --loglevel=INFO
     volumes:
       - .:/code
     links:

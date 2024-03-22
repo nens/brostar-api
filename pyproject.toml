@@ -4,7 +4,7 @@
 requires = ["setuptools>=69"]
 
 [project]
-name = "bro-hub"
+name = "brostar"
 requires-python = ">=3.11"
 dependencies = []
 description = "Simplify data management for BRO"
@@ -16,16 +16,16 @@ version = "0.1.dev0"
 test = ["pytest"] # pytest added by nens-meta
 
 [tool.setuptools]
-packages = ["bro_hub", "api", "gmn", "gmw"]
+packages = ["brostar", "api", "gmn", "gmw"]
 
 [tool.pytest.ini_options]
-testpaths = ["bro_hub", "api", "gmn", "gmw"]
+testpaths = ["brostar", "api", "gmn", "gmw"]
 log_level = "DEBUG"
 django_find_project = false
-DJANGO_SETTINGS_MODULE = "bro_hub.settings"
+DJANGO_SETTINGS_MODULE = "brostar.settings"
 
 [tool.coverage.run]
-source = ["bro_hub", "api", "gmn", "gmw"]
+source = ["brostar", "api", "gmn", "gmw"]
 
 [tool.coverage.report]
 show_missing = true
@@ -41,4 +41,4 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "C901"]
 release = false
 
 [tool.pyright]
-include = ["bro_hub", "api", "gmn", "gmw"]
+include = ["brostar", "api", "gmn", "gmw"]
