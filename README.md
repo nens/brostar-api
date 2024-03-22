@@ -1,21 +1,20 @@
 # BROStar
 
-## Introductie
+## Introduction
 
-BROStar is een datamanagement product voor de Basis Registratie Ondergrond. In deze repository staat de code voor de backend. Deze bestaat uit een API om data te importeren, op te slaan en aan te leveren. De backend is open source, en kan dus zelf gehost worden. De frontend is ontwikkeld door Nelen & Schuurmans. Dit is een webapplicatie die op de API gemaakt is, welk het datamanagement van BRO data zeer laagdrempelig maakt. Interesse? Contact info@nelen-schuurmans.nl
+BROStar is a data management product for the Basis Registratie Ondergrond (BRO). The code for the backend is stored in this repository. It consists of an API for importing, storing, and delivering data. The backend is open source, and can be self-hosted. The frontend is developed and hosted by Nelen & Schuurmans. This is a web application created on top of the API, making the data management of BRO data very accessible. Interested? Contact info@nelen-schuurmans.nl.
 
+## Project Description
 
-## Project beschrijving
+The backend consists of an API with:
 
-De backend bestaat uit een api met daarin:
+- An import task endpoint. This can import all current data from a BRO domain based on a KvK and project number.
 
-- Een importtask endpoint. Hiermee kan op basis van een KvK en projectnummer alle actuele data van een BRO domein geimporteerd worden
+- An upload task endpoint. This can send data to the BRO, with a JSON input of all relevant data. The API handles the transformation to XML format and the message traffic to and from the BRO.
 
-- Een uploadtask endpoint. Hiermee kan data naar de BRO gestuurd worden, met als input een json van alle relevante data. De api handelt de transformatie naar XML-formaat en het berichtenverkeer van en naar de BRO af.
+- Endpoints for all assets imported from the BRO.
 
-- Endpoints voor alle assets die uit de BRO worden geimporteerd.
-
-## Installatie backend
+## Backend Installation
 
 To install for development:
 
@@ -34,6 +33,6 @@ Some instructions:
 
 Do the regular migrate, createsuperuser stuff.
 
-7) Maak een organisatie, vul de KvK, en eventueel authenticatie gegevens in
+7) Create an organization, fill in the KvK, and optionally fill in authentication details.
 
-8) Maak een user profile aan voor de superuser
+8) Create a user profile for the superuser.
