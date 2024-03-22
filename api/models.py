@@ -76,6 +76,7 @@ class UploadTask(models.Model):
     metadata = JSONField("Metadata", default=dict, blank=False)
     sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(max_length=500, blank=True, null=True)
+    bro_id = models.CharField(max_length=500, blank=True, null=True)
     log = models.TextField(blank=True)
 
     def __str__(self) -> str:

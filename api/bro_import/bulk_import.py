@@ -46,7 +46,9 @@ class BulkImporter:
                 data_importer.run()
             except requests.RequestException as e:
                 logger.exception(e)
-                raise DataImportError(f"Error fetching BRO IDs from {url}: {e}") from e
+                raise DataImportError(
+                    f"Error while importing data for bro id: {bro_id}: {e}"
+                ) from e
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""
