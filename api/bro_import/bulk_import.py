@@ -43,7 +43,7 @@ class BulkImporter:
 
         for bro_id in bro_ids:
             counter += 1
-            progress = (counter/total_bro_ids) * 100
+            progress = (counter / total_bro_ids) * 100
             self.import_task_instance.log = f"Progress: {progress:.2f}%"
             self.import_task_instance.save()
 
