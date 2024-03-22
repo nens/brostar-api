@@ -1,6 +1,5 @@
-from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
-
+from rest_framework import serializers
 
 from api.mixins import RequiredFieldsMixin, UrlFieldMixin
 from gmw import models as gmw_models
@@ -27,7 +26,9 @@ class MeasuringpointSerializer(
 
     def get_location(self, obj):
         try:
-            return gmw_models.GMW.objects.get(bro_id=obj.gmw_bro_id).standardized_location
+            return gmw_models.GMW.objects.get(
+                bro_id=obj.gmw_bro_id
+            ).standardized_location
         except ObjectDoesNotExist:
             return None
 
