@@ -38,7 +38,15 @@ class BulkImporter:
         url = self._create_bro_ids_import_url()
         bro_ids = self._fetch_bro_ids(url)
 
+        total_bro_ids = len(bro_ids)
+        counter = 0
+
         for bro_id in bro_ids:
+            counter += 1
+            progress = (counter/total_bro_ids) * 100
+            self.import_task_instance.log = f"Progress: {progress:.2f}%"
+            self.import_task_instance.save()
+
             try:
                 data_importer = self.object_importer_class(
                     self.bro_domain, bro_id, self.data_owner
