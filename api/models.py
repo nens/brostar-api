@@ -51,6 +51,7 @@ class ImportTask(models.Model):
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
     )
     log = models.TextField(blank=True)
+    progress = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.bro_domain} import - {self.data_owner}"
