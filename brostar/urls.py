@@ -19,12 +19,8 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from nens_auth_client.urls import override_admin_auth, override_rest_framework_auth
 from rest_framework import permissions
-
-from nens_auth_client.urls import override_admin_auth
-from nens_auth_client.urls import override_rest_framework_auth
-
-from api import views
 
 schema_view = get_schema_view(
     openapi.Info(

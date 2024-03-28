@@ -18,7 +18,6 @@ xmltodict
 python-dotenv
 django-encrypted-model-fields
 django-filter
-djangorestframework-simplejwt
 nens-auth-client
 
 # development tools

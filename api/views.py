@@ -28,9 +28,6 @@ class APIOverview(views.APIView):
 
     def get(self, request, format=None):
         data = {
-            "api-token": drf_reverse(
-                "token_obtain_pair", request=request, format=format
-            ),
             "userprofile": drf_reverse(
                 "api:userprofile-list", request=request, format=format
             ),

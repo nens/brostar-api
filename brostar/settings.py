@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "corsheaders",
     "django_filters",
-    "rest_framework_simplejwt",
     "encrypted_model_fields",
 ]
 
@@ -69,7 +68,6 @@ AUTHENTICATION_BACKENDS = [
     "nens_auth_client.backends.TrustedProviderMigrationBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
-
 
 
 ROOT_URLCONF = "brostar.urls"
@@ -175,9 +173,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 1000,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "nens_auth_client.rest_framework.OAuth2TokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
