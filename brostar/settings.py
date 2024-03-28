@@ -190,6 +190,3 @@ BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
 BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"
 # BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
-}
