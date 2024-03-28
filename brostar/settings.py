@@ -3,6 +3,9 @@ from datetime import timedelta
 from pathlib import Path
 
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
+NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
+NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
+NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 # Environment variables can get a default value from docker-compose itself *or* from a
 # `.env` file, as docker-compose automatically reads that (if the environment variable
 # itself is mentioned in the compose file).
@@ -33,6 +36,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "gmn.apps.GmnConfig",
     "gmw.apps.GmwConfig",
+    "nens_auth_client",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -57,6 +61,16 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    "nens_auth_client.backends.RemoteUserBackend",
+    "nens_auth_client.backends.AcceptNensBackend",
+    "nens_auth_client.backends.TrustedProviderMigrationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+
 
 ROOT_URLCONF = "brostar.urls"
 
