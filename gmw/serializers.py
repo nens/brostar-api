@@ -31,6 +31,8 @@ class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
 class MonitoringTubeSerializer(
     UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
 ):
+    gmw_well_code = serializers.SerializerMethodField()
+
     class Meta:
         model = gmw_models.MonitoringTube
         fields = "__all__"
@@ -39,3 +41,9 @@ class MonitoringTubeSerializer(
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.required = True
+
+    def get_gmw_well_code(self, obj):
+        try:
+            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
+        except ObjectDoesNotExist:
+            return None
