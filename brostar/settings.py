@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
@@ -189,4 +188,3 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
 BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"
 # BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
-
