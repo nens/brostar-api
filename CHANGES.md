@@ -1,4 +1,4 @@
-# Changelog for BROStar
+# Changelog for BROStar API
 
 ## 0.1 (unreleased)
 

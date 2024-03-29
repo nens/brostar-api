@@ -1,4 +1,4 @@
-# BROStar
+# BROStar API
 
 ## Introduction
 
