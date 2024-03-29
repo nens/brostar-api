@@ -1,6 +1,6 @@
 from celery import Celery
 
-app = Celery("brostar")
+app = Celery("brostar_api")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

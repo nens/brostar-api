@@ -73,7 +73,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-ROOT_URLCONF = "brostar.urls"
+ROOT_URLCONF = "brostar_api.urls"
 
 TEMPLATES = [
     {
@@ -110,7 +110,7 @@ LOGGING = {
     },
 }
 
-WSGI_APPLICATION = "brostar.wsgi.application"
+WSGI_APPLICATION = "brostar_api.wsgi.application"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
