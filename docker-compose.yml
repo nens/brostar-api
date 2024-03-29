@@ -20,7 +20,7 @@ services:
   celery:
     environment:
       - DJANGO_SETTINGS_MODULE=brostar.settings
-      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
+      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
@@ -49,7 +49,7 @@ services:
       # # Can be set in .env, we'll pass them on.
       # - SECRET_KEY
       - DEBUG
-      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
+      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
       # - SENTRY_DSN
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
