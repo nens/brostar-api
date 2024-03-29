@@ -21,6 +21,9 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=brostar.settings
       - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
+      - NENS_AUTH_ISSUER
+      - NENS_AUTH_CLIENT_ID
+      - NENS_AUTH_CLIENT_SECRET
     build: .
     command: celery -A brostar worker --loglevel=INFO
     volumes:
@@ -48,9 +51,9 @@ services:
       - DEBUG
       - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4=
       # - SENTRY_DSN
-      # - NENS_AUTH_ISSUER
-      # - NENS_AUTH_CLIENT_ID
-      # - NENS_AUTH_CLIENT_SECRET
+      - NENS_AUTH_ISSUER
+      - NENS_AUTH_CLIENT_ID
+      - NENS_AUTH_CLIENT_SECRET
     depends_on:
       - db
       - redis

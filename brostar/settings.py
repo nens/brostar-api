@@ -1,8 +1,10 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
+NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
+NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
+NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 # Environment variables can get a default value from docker-compose itself *or* from a
 # `.env` file, as docker-compose automatically reads that (if the environment variable
 # itself is mentioned in the compose file).
@@ -26,6 +28,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+]
+
 
 # Application definition
 
@@ -33,6 +39,7 @@ INSTALLED_APPS = [
     "api.apps.ApiConfig",
     "gmn.apps.GmnConfig",
     "gmw.apps.GmwConfig",
+    "nens_auth_client",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,7 +50,6 @@ INSTALLED_APPS = [
     "drf_yasg",
     "corsheaders",
     "django_filters",
-    "rest_framework_simplejwt",
     "encrypted_model_fields",
 ]
 
@@ -57,6 +63,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
 ]
+
+
+AUTHENTICATION_BACKENDS = [
+    "nens_auth_client.backends.RemoteUserBackend",
+    "nens_auth_client.backends.AcceptNensBackend",
+    "nens_auth_client.backends.TrustedProviderMigrationBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 
 ROOT_URLCONF = "brostar.urls"
 
@@ -161,9 +176,9 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 1000,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
+        "nens_auth_client.rest_framework.OAuth2TokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
@@ -177,7 +192,3 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
 BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"
 # BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=5),
-}
