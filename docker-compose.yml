@@ -19,13 +19,13 @@ services:
 
   celery:
     environment:
-      - DJANGO_SETTINGS_MODULE=brostar.settings
+      - DJANGO_SETTINGS_MODULE=brostar_api.settings
       - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
     build: .
-    command: celery -A brostar worker --loglevel=INFO
+    command: celery -A brostar_api worker --loglevel=INFO
     volumes:
       - .:/code
     links:
