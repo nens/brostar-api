@@ -30,6 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS = [".brostar.nl"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
