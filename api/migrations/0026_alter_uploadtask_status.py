@@ -4,15 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0025_alter_importtask_progress'),
+        ("api", "0025_alter_importtask_progress"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='uploadtask',
-            name='status',
-            field=models.CharField(blank=True, choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed')], default='PENDING', max_length=20),
+            model_name="uploadtask",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("PENDING", "Pending"),
+                    ("PROCESSING", "Processing"),
+                    ("COMPLETED", "Completed"),
+                    ("FAILED", "Failed"),
+                ],
+                default="PENDING",
+                max_length=20,
+            ),
         ),
     ]
