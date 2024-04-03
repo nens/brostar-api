@@ -111,6 +111,11 @@ LOGGING = {
             "level": "DEBUG" if DEBUG else "INFO",
             "propagate": True,
         },
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",  # DEBUG level would also print sql statements
+            "propagate": False,
+        },
     },
 }
 
