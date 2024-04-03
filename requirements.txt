@@ -19,6 +19,7 @@ python-dotenv
 django-encrypted-model-fields
 django-filter
 nens-auth-client
+whitenoise
 
 # development tools
 ruff
