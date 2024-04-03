@@ -30,6 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 ALLOWED_HOSTS = []
+if not DEBUG:
+    ALLOWED_HOSTS = [".brostar.nl"]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
@@ -96,19 +98,23 @@ TEMPLATES = [
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "handlers": {
-        "file": {
+        "console": {
             "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "django_log.log"),
+            "class": "logging.StreamHandler",
         },
     },
     "loggers": {
         "": {
-            "handlers": ["file"],
-            "level": "DEBUG",
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
             "propagate": True,
+        },
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",  # DEBUG level would also print sql statements
+            "propagate": False,
         },
     },
 }
