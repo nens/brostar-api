@@ -1,30 +1,29 @@
 import os
 from pathlib import Path
 
-FIELD_ENCRYPTION_KEY = os.getenv("FIELD_ENCRYPTION_KEY")
+# Environment variables can get a default value from an .env file via docker-compose.
+FIELD_ENCRYPTION_KEY = os.getenv(
+    "FIELD_ENCRYPTION_KEY", default="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
+)
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    default="django-insecure-r4_51z=)9re0wxnj(fwanhzi($42k#usdr37z!o2c-a04*4p06",
+)
 NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
 NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
 NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
-# Environment variables can get a default value from docker-compose itself *or* from a
-# `.env` file, as docker-compose automatically reads that (if the environment variable
-# itself is mentioned in the compose file).
+DEBUG_ENV = os.getenv("DEBUG", default="true")
+
+# Convert the environment variable (which is a string) to a boolean.
+DEBUG = (DEBUG_ENV.lower() == "true")  # True is the default
+
 
 TIME_ZONE = "CET"
 USE_TZ = True
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-r4_51z=)9re0wxnj(fwanhzi($42k#usdr37z!o2c-a04*4p06"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
