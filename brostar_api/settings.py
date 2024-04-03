@@ -120,7 +120,7 @@ LOGGING = {
 }
 
 WSGI_APPLICATION = "brostar_api.wsgi.application"
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
 ]
