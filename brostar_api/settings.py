@@ -15,7 +15,7 @@ NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 DEBUG_ENV = os.getenv("DEBUG", default="true")
 
 # Convert the environment variable (which is a string) to a boolean.
-DEBUG = (DEBUG_ENV.lower() == "true")  # True is the default
+DEBUG = DEBUG_ENV.lower() == "true"  # True is the default
 
 
 TIME_ZONE = "CET"
