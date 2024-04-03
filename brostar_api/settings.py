@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 
-# Environment variables can get a default value from an .env file via docker-compose.
+# Environment variables can get a value from an .env file via docker-compose.
+# In development, you'll need to set the NENS_AUTH_* ones.
 FIELD_ENCRYPTION_KEY = os.getenv(
     "FIELD_ENCRYPTION_KEY", default="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
 )
@@ -13,6 +14,9 @@ NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
 NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
 NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 DEBUG_ENV = os.getenv("DEBUG", default="true")
+DATABASE_HOST=os.getenv("DATABASE_HOST", "db")
+DATABASE_USER=os.getenv("DATABASE_USER", "brostar")
+DATABASE_PASSWORD=os.getenv("DATABASE_PASSWORD", "brostar")
 
 # Convert the environment variable (which is a string) to a boolean.
 DEBUG = DEBUG_ENV.lower() == "true"  # True is the default
@@ -121,9 +125,9 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "brostar",
-        "USER": "brostar",
-        "PASSWORD": "brostar",
-        "HOST": "db",
+        "USER": DATABASE_USER,
+        "PASSWORD": DATABASE_PASSWORD,
+        "HOST": DATABASE_HOST,
     }
 }
 
