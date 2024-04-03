@@ -98,18 +98,17 @@ TEMPLATES = [
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disable_existing_loggers": True,
     "handlers": {
-        "file": {
+        "console": {
             "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "django_log.log"),
+            "class": "logging.StreamHandler",
         },
     },
     "loggers": {
         "": {
-            "handlers": ["file"],
-            "level": "DEBUG",
+            "handlers": ["console"],
+            "level": "DEBUG" if DEBUG else "INFO",
             "propagate": True,
         },
     },
