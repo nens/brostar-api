@@ -36,3 +36,8 @@ Do the regular migrate, createsuperuser stuff.
 7) Create an organization, fill in the KvK, and optionally fill in authentication details.
 
 8) Create a user profile for the superuser.
+
+
+## N&S server installation notes
+
+This is a public project, so the actual server deployment scripts with the passwords and so is safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker-compose on https://staging.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
