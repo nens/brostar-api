@@ -14,7 +14,7 @@ class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
         model = gmw_models.GMW
         fields = "__all__"
 
-    def get_linked_gmns(self, obj):
+    def get_linked_gmns(self, obj) ->list:
         try:
             linked_gmns = set(
                 measuringpoint.gmn.uuid
