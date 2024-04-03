@@ -10,7 +10,6 @@ services:
       POSTGRES_DB: 'brostar'
     volumes:
       - pgdata:/var/lib/postgresql/data
-    restart: unless-stopped
 
   redis:
     image: redis:latest
@@ -19,8 +18,9 @@ services:
 
   celery:
     environment:
-      - DJANGO_SETTINGS_MODULE=brostar_api.settings
-      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
+      # # Can be set in .env, we'll pass them on. settings.py has some defaults.
+      - FIELD_ENCRYPTION_KEY
+      - SECRET_KEY
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
@@ -35,6 +35,13 @@ services:
       - redis
 
   web:
+    environment:
+      # # Can be set in .env, we'll pass them on. settings.py has some defaults.
+      - FIELD_ENCRYPTION_KEY
+      - SECRET_KEY
+      - NENS_AUTH_ISSUER
+      - NENS_AUTH_CLIENT_ID
+      - NENS_AUTH_CLIENT_SECRET
     build: .
     # command: "bin/gunicorn -b 0.0.0.0:${PORT:-5000} --workers=3 --timeout 90 --preload --max-requests=10000 trs.wsgi"
     command: "python manage.py runserver 0.0.0.0:8000"
@@ -44,21 +51,10 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
-    restart: unless-stopped
-    environment:
-      # # Can be set in .env, we'll pass them on.
-      # - SECRET_KEY
-      - DEBUG
-      - FIELD_ENCRYPTION_KEY="DUMMY-NEEDS-PROD-SETTING-Xgb1GczqZe909UMNc4="
-      # - SENTRY_DSN
-      - NENS_AUTH_ISSUER
-      - NENS_AUTH_CLIENT_ID
-      - NENS_AUTH_CLIENT_SECRET
     depends_on:
       - db
       - redis
       - celery
-
 
 
 volumes:

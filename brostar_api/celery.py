@@ -1,5 +1,8 @@
+import os
+
 from celery import Celery
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "brostar_api.settings")
 app = Celery("brostar_api")
 
 # Using a string here means the worker doesn't have to serialize
