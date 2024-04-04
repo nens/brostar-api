@@ -213,7 +213,13 @@ if SENTRY_DSN:
     # SENTRY_DSN will only be set on staging/production, btw.
     sentry_sdk.init(dsn=SENTRY_DSN)
 
-# BRO SETTINGS
-BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
-BRONHOUDERSPORTAAL_URL = "https://acc.bronhouderportaal-bro.nl"
-# BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
+# BRO SETTINGS:
+BRO_DEMO_OMGEVING = True
+
+if BRO_DEMO_OMGEVING:
+    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
+    BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
+else:
+    BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
+    BRONHOUDERSPORTAAL_URL = "https://bronhouderportaal-bro.nl"
+    # BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
