@@ -2,24 +2,25 @@
 --extra-index-url https://packages.lizard.net
 
 # TODO: dependencies
-django == 5.0.1
-psycopg2-binary
-djangorestframework
-django-cors-headers
-drf-yasg
 celery
-redis
-flower
-requests
-markdown
-pytest
-pytest-django
-xmltodict
-python-dotenv
+django == 5.0.1
+django-cors-headers
 django-encrypted-model-fields
 django-filter
+djangorestframework
+drf-yasg
+flower
+markdown
 nens-auth-client
+psycopg2-binary
+pytest
+pytest-django
+python-dotenv
+redis
+requests
+sentry-sdk[django]
 whitenoise
+xmltodict
 
 # development tools
 ruff
