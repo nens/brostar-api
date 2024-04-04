@@ -4,30 +4,29 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('gmw', '0010_alter_gmw_construction_standard_and_more'),
+        ("gmw", "0010_alter_gmw_construction_standard_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='gmw',
-            old_name='created_at',
-            new_name='created',
+            model_name="gmw",
+            old_name="created_at",
+            new_name="created",
         ),
         migrations.RenameField(
-            model_name='gmw',
-            old_name='updated_at',
-            new_name='updated',
+            model_name="gmw",
+            old_name="updated_at",
+            new_name="updated",
         ),
         migrations.RenameField(
-            model_name='monitoringtube',
-            old_name='created_at',
-            new_name='created',
+            model_name="monitoringtube",
+            old_name="created_at",
+            new_name="created",
         ),
         migrations.RenameField(
-            model_name='monitoringtube',
-            old_name='updated_at',
-            new_name='updated',
+            model_name="monitoringtube",
+            old_name="updated_at",
+            new_name="updated",
         ),
     ]

@@ -79,7 +79,7 @@ class UploadTask(models.Model):
     )
     bro_id = models.CharField(max_length=500, blank=True, null=True)
     log = models.TextField(blank=True)
-    bro_errors  = models.TextField(blank=True)
+    bro_errors = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
 
     def __str__(self) -> str:

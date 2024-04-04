@@ -4,30 +4,29 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('gmn', '0017_alter_gmn_color'),
+        ("gmn", "0017_alter_gmn_color"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='gmn',
-            old_name='created_at',
-            new_name='created',
+            model_name="gmn",
+            old_name="created_at",
+            new_name="created",
         ),
         migrations.RenameField(
-            model_name='gmn',
-            old_name='updated_at',
-            new_name='updated',
+            model_name="gmn",
+            old_name="updated_at",
+            new_name="updated",
         ),
         migrations.RenameField(
-            model_name='measuringpoint',
-            old_name='created_at',
-            new_name='created',
+            model_name="measuringpoint",
+            old_name="created_at",
+            new_name="created",
         ),
         migrations.RenameField(
-            model_name='measuringpoint',
-            old_name='updated_at',
-            new_name='updated',
+            model_name="measuringpoint",
+            old_name="updated_at",
+            new_name="updated",
         ),
     ]

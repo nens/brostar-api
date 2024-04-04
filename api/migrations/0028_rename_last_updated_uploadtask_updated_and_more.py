@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0027_remove_userprofile_first_name_and_more'),
+        ("api", "0027_remove_userprofile_first_name_and_more"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='uploadtask',
-            old_name='last_updated',
-            new_name='updated',
+            model_name="uploadtask",
+            old_name="last_updated",
+            new_name="updated",
         ),
         migrations.AddField(
-            model_name='uploadtask',
-            name='bro_errors',
+            model_name="uploadtask",
+            name="bro_errors",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='uploadtask',
-            name='progress',
+            model_name="uploadtask",
+            name="progress",
             field=models.FloatField(blank=True, null=True),
         ),
     ]
