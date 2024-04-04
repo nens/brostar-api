@@ -12,8 +12,8 @@ class GMW(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         Organisation,
         on_delete=models.CASCADE,
@@ -52,8 +52,8 @@ class MonitoringTube(models.Model):
     """A monitoringtube is part of a GMW."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         Organisation,
         on_delete=models.CASCADE,

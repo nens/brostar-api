@@ -58,7 +58,7 @@ class ImportTask(models.Model):
 class UploadTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
+    updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -79,6 +79,8 @@ class UploadTask(models.Model):
     )
     bro_id = models.CharField(max_length=500, blank=True, null=True)
     log = models.TextField(blank=True)
+    bro_errors = models.TextField(blank=True)
+    progress = models.FloatField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
