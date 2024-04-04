@@ -171,7 +171,7 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
 
     serializer_class = serializers.UploadTaskSerializer
-    queryset = models.UploadTask.objects.all()
+    queryset = models.UploadTask.objects.all().order_by("-created")
 
     permission_classes = [permissions.IsAuthenticated]
 
