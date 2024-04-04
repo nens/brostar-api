@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0026_alter_uploadtask_status'),
+        ("api", "0026_alter_uploadtask_status"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='userprofile',
-            name='first_name',
+            model_name="userprofile",
+            name="first_name",
         ),
         migrations.RemoveField(
-            model_name='userprofile',
-            name='last_name',
+            model_name="userprofile",
+            name="last_name",
         ),
     ]
