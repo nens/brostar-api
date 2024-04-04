@@ -9,7 +9,7 @@ from . import serializers
 
 class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMNSerializer
-    queryset = gmn_models.GMN.objects.all()
+    queryset = gmn_models.GMN.objects.all().order_by("-created")
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -27,7 +27,7 @@ class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
 class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MeasuringpointSerializer
-    queryset = gmn_models.Measuringpoint.objects.all()
+    queryset = gmn_models.Measuringpoint.objects.all().order_by("-created")
 
     permission_classes = [permissions.IsAuthenticated]
 

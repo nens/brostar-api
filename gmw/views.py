@@ -9,7 +9,7 @@ from . import serializers
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GMWSerializer
-    queryset = gmw_models.GMW.objects.all()
+    queryset = gmw_models.GMW.objects.all().order_by("-created")
 
     permission_classes = [permissions.IsAuthenticated]
 
@@ -27,7 +27,7 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer
-    queryset = gmw_models.MonitoringTube.objects.all()
+    queryset = gmw_models.MonitoringTube.objects.all().order_by("-created")
 
     permission_classes = [permissions.IsAuthenticated]
 
