@@ -1,8 +1,14 @@
+import random
 import uuid
 
 from django.db import models
 
 from api.models import Organisation
+
+
+def generate_random_color():
+    """Generate a random hex color code."""
+    return f"#{random.randint(0, 0xFFFFFF):06x}"
 
 
 class GMN(models.Model):
@@ -25,9 +31,15 @@ class GMN(models.Model):
     start_date_monitoring = models.DateField(null=True)
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
+    color = models.CharField(max_length=7, null=True, blank=True, default=None)
 
     def __str__(self):
         return self.bro_id
+
+    def save(self, *args, **kwargs):
+        if not self.color:
+            self.color = generate_random_color()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "GMN's"
