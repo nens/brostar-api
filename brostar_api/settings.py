@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+import sentry_sdk
+
 # Environment variables can get a value from an .env file via docker-compose.
 # In development, you'll need to set the NENS_AUTH_* ones.
 FIELD_ENCRYPTION_KEY = os.getenv(
@@ -17,6 +19,7 @@ DEBUG_ENV = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
 DATABASE_USER = os.getenv("DATABASE_USER", "brostar")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "brostar")
+SENTRY_DSN = os.getenv("SENTRY_DSN")  # Not required, only used in staging/production.
 
 # Convert the environment variable (which is a string) to a boolean.
 DEBUG = DEBUG_ENV.lower() == "true"  # True is the default
@@ -205,6 +208,10 @@ REST_FRAMEWORK = {
 CELERY_IMPORTS = ("api.tasks",)
 # TODO: fix celery env settings
 CELERY_BROKER_URL = "redis://redis:6379/0"
+
+if SENTRY_DSN:
+    # SENTRY_DSN will only be set on staging/production, btw.
+    sentry_sdk.init(dsn=SENTRY_DSN)
 
 # BRO SETTINGS
 BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
