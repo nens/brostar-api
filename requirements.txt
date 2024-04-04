@@ -23,5 +23,5 @@ whitenoise
 xmltodict
 
 # development tools
-ruff
 coverage
+ruff
