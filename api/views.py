@@ -1,9 +1,12 @@
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, status, views
+from django.contrib.auth.models import User
+from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.response import Response
-from rest_framework.reverse import reverse as drf_reverse
+from rest_framework.reverse import reverse
+from rest_framework.decorators import action
+
 
 from . import filters, mixins, models, serializers, tasks
 
@@ -28,44 +31,86 @@ class APIOverview(views.APIView):
 
     def get(self, request, format=None):
         data = {
-            "userprofile": drf_reverse(
-                "api:userprofile-list", request=request, format=format
-            ),
-            "importtasks": drf_reverse(
+            "users": reverse("api:user-list", request=request, format=format),
+            "importtasks": reverse(
                 "api:importtask-list", request=request, format=format
             ),
-            "uploadtasks": drf_reverse(
+            "uploadtasks": reverse(
                 "api:uploadtask-list", request=request, format=format
             ),
-            "gmns": drf_reverse("api:gmn:gmn-list", request=request, format=format),
-            "measuringpoints": drf_reverse(
+            "gmns": reverse("api:gmn:gmn-list", request=request, format=format),
+            "measuringpoints": reverse(
                 "api:gmn:measuringpoint-list", request=request, format=format
             ),
-            "gmws": drf_reverse("api:gmw:gmw-list", request=request, format=format),
-            "monitoringtubes": drf_reverse(
+            "gmws": reverse("api:gmw:gmw-list", request=request, format=format),
+            "monitoringtubes": reverse(
                 "api:gmw:monitoringtube-list", request=request, format=format
             ),
         }
         return Response(data)
 
-
-class UserProfileListView(mixins.UserOrganizationMixin, generics.ListAPIView):
-    serializer_class = serializers.UserProfileSerializer
-    permission_classes = [permissions.IsAuthenticated]
+class UserViewSet(viewsets.ModelViewSet):
+    model = User
+    serializer_class = serializers.UserSerializer
+    lookup_field = "pk"
 
     def get_queryset(self):
-        return models.UserProfile.objects.filter(user=self.request.user)
+        user = self.request.user
+        queryset = User.objects.filter(pk=user.pk)
+        
+        return queryset
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-
-class UserProfileDetailView(generics.RetrieveUpdateAPIView):
-    queryset = models.UserProfile.objects.all()
-    serializer_class = serializers.UserProfileSerializer
-    lookup_field = "uuid"
-    permission_classes = [permissions.IsAuthenticated]
-
+    @action(
+        detail=False,
+        url_path="logged-in",
+    )
+    def logged_in(self, request):
+        """Endpoint to check whether the use is logged in or not."""
+        user = self.request.user
+        if user.is_anonymous:
+            return Response(
+                {
+                    "logged_in": False,
+                    "login_url": reverse(
+                        f"drf-login-override",
+                        kwargs=None,
+                        request=request,
+                        format=None,
+                    ),
+                    "logout_url": None,
+                    "user_id": None,
+                    "user": None,
+                    "username": None,
+                    "organisation":None,
+                    "first_name": None,
+                    "last_name":None,
+                    "email":None,
+                    "organisation":None,
+                    "kvk": None,
+                }
+            )
+        else:
+            user_profile = models.UserProfile.objects.get(user=user)
+            return Response(
+            {
+                "logged_in": True,
+                "login_url": None,
+                "logout_url": reverse(
+                        f"drf-logout-override",
+                        kwargs=None,
+                        request=request,
+                        format=None,
+                    ),
+                "user_id": user.pk,
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name":user.last_name,
+                "email":user.email,
+                "organisation":user_profile.organisation.name,
+                "kvk": user_profile.organisation.kvk_number,
+            }
+        )
+            
 
 class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
