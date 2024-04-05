@@ -36,11 +36,6 @@ ALLOWED_HOSTS = []
 if not DEBUG:
     ALLOWED_HOSTS = [".brostar.nl"]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:4200",
-    "https://staging.brostar.nl",
-]
-
 
 # Application definition
 
@@ -61,6 +56,13 @@ INSTALLED_APPS = [
     "django_filters",
     "encrypted_model_fields",
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:4200",
+    "https://staging.brostar.nl",
+    "https://www.staging.brostar.nl",
+]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -128,7 +130,6 @@ WSGI_APPLICATION = "brostar_api.wsgi.application"
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
-    "https://staging.brostar.nl",
 ]
 
 # Database
