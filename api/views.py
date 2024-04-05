@@ -1,12 +1,11 @@
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from django.contrib.auth.models import User
 from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.decorators import action
-
 
 from . import filters, mixins, models, serializers, tasks
 
@@ -49,6 +48,7 @@ class APIOverview(views.APIView):
         }
         return Response(data)
 
+
 class UserViewSet(viewsets.ModelViewSet):
     model = User
     serializer_class = serializers.UserSerializer
@@ -57,7 +57,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = User.objects.filter(pk=user.pk)
-        
+
         return queryset
 
     @action(
@@ -72,7 +72,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 {
                     "logged_in": False,
                     "login_url": reverse(
-                        f"drf-login-override",
+                        "drf-login-override",
                         kwargs=None,
                         request=request,
                         format=None,
@@ -81,36 +81,36 @@ class UserViewSet(viewsets.ModelViewSet):
                     "user_id": None,
                     "user": None,
                     "username": None,
-                    "organisation":None,
+                    "organisation": None,
                     "first_name": None,
-                    "last_name":None,
-                    "email":None,
-                    "organisation":None,
+                    "last_name": None,
+                    "email": None,
+                    "organisation": None,
                     "kvk": None,
                 }
             )
         else:
             user_profile = models.UserProfile.objects.get(user=user)
             return Response(
-            {
-                "logged_in": True,
-                "login_url": None,
-                "logout_url": reverse(
-                        f"drf-logout-override",
+                {
+                    "logged_in": True,
+                    "login_url": None,
+                    "logout_url": reverse(
+                        "drf-logout-override",
                         kwargs=None,
                         request=request,
                         format=None,
                     ),
-                "user_id": user.pk,
-                "username": user.username,
-                "first_name": user.first_name,
-                "last_name":user.last_name,
-                "email":user.email,
-                "organisation":user_profile.organisation.name,
-                "kvk": user_profile.organisation.kvk_number,
-            }
-        )
-            
+                    "user_id": user.pk,
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "organisation": user_profile.organisation.name,
+                    "kvk": user_profile.organisation.kvk_number,
+                }
+            )
+
 
 class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
