@@ -1,10 +1,10 @@
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, views, viewsets
-from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -130,7 +130,6 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     queryset = models.ImportTask.objects.all().order_by("-created")
     serializer_class = serializers.ImportTaskSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
@@ -139,7 +138,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         """List of all Import Tasks."""
         return self.list(request, *args, **kwargs)
 
-    @csrf_exempt
+    @method_decorator(csrf_exempt)
     def post(self, request):
         """
         Initialize an import task by posting a BRO object.
@@ -219,7 +218,6 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.UploadTaskSerializer
     queryset = models.UploadTask.objects.all().order_by("-created")
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
@@ -229,7 +227,7 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         """List of all Upload Tasks."""
         return self.list(request, *args, **kwargs)
 
-    @csrf_exempt
+    @method_decorator(csrf_exempt)
     def post(self, request):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
