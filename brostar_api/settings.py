@@ -38,6 +38,7 @@ if not DEBUG:
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
+    "staging.brostar.nl",
 ]
 
 
