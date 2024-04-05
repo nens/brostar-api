@@ -199,9 +199,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 1000,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # "nens_auth_client.rest_framework.OAuth2TokenAuthentication",
-        # "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        "brostar_api.authentication.CustomSessionAuthentication",
     ),
 }
 
