@@ -45,7 +45,7 @@ class APIOverview(views.APIView):
             "monitoringtubes": reverse(
                 "api:gmw:monitoringtube-list", request=request, format=format
             ),
-            "version":"1",
+            "version": "1",
         }
         return Response(data)
 
