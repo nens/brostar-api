@@ -6,4 +6,4 @@ class CustomSessionAuthentication(SessionAuthentication):
         """The default SessionAuthentication class includes CSRF protection; this
         module contains a version that doesn't.
         """
-        return 
+        return
