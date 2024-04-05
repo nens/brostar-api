@@ -215,6 +215,8 @@ if SENTRY_DSN:
     sentry_sdk.init(dsn=SENTRY_DSN)
 
 # BRO SETTINGS:
+# TODO: voor nu is het hardcoded op True. We zouden het zo moeten inrichten dat
+#       de staging standaard op demo staat en productie op de BRO productie omgeving
 BRO_DEMO_OMGEVING = True
 
 if BRO_DEMO_OMGEVING:
