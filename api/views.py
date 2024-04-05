@@ -1,6 +1,8 @@
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
@@ -136,6 +138,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         """List of all Import Tasks."""
         return self.list(request, *args, **kwargs)
 
+    @method_decorator(csrf_exempt)
     def post(self, request):
         """
         Initialize an import task by posting a BRO object.
@@ -225,6 +228,7 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
         """List of all Upload Tasks."""
         return self.list(request, *args, **kwargs)
 
+    @method_decorator(csrf_exempt)
     def post(self, request):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
