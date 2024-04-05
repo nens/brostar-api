@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
@@ -130,6 +131,7 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     queryset = models.ImportTask.objects.all().order_by("-created")
     serializer_class = serializers.ImportTaskSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
@@ -218,7 +220,7 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.UploadTaskSerializer
     queryset = models.UploadTask.objects.all().order_by("-created")
-
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]

@@ -60,7 +60,6 @@ INSTALLED_APPS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:4200",
     "https://staging.brostar.nl",
-    "https://www.staging.brostar.nl",
 ]
 
 
@@ -202,8 +201,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "nens_auth_client.rest_framework.OAuth2TokenAuthentication",
         "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-        # "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ),
 }
 
