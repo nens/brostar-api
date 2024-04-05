@@ -108,6 +108,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     "email": user.email,
                     "organisation": user_profile.organisation.name,
                     "kvk": user_profile.organisation.kvk_number,
+                    "test_to_check_new_build": None,
                 }
             )
 
