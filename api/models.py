@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import JSONField
 from encrypted_model_fields.fields import EncryptedCharField
 
-from . import choices
+from . import choices, tasks
 
 
 class Organisation(models.Model):
@@ -84,3 +84,28 @@ class UploadTask(models.Model):
 
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
+
+    def save_model(self, request, obj, form, change):
+        """
+        Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
+        """
+        if not obj.uuid:
+
+            # Accessing the authenticated user's username and token
+            user_profile = models.UserProfile.objects.get(user=request.user)
+            data_owner = user_profile.organisation
+            username = data_owner.bro_user_token
+            password = data_owner.bro_user_password
+
+            # Update the instance of the new task
+            obj.status = "PENDING"
+            obj.data_owner = data_owner
+            obj.save()
+
+            # Start the celery task
+            tasks.upload_bro_data_task.delay(
+                obj.uuid, username, password
+            )
+        else:
+            # This is an existing object being edited
+            pass

@@ -220,34 +220,3 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
 
-#     def post(self, request):
-#         """
-#         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
-#         """
-
-#         serializer = serializers.UploadTaskSerializer(
-#             data=request.data, context={"request": request}
-#         )
-
-#         if serializer.is_valid():
-#             upload_task_instance: models.UploadTask = serializer.save()
-
-#             # Accessing the authenticated user's username and token
-#             user_profile = models.UserProfile.objects.get(user=request.user)
-#             data_owner = user_profile.organisation
-#             username = data_owner.bro_user_token
-#             password = data_owner.bro_user_password
-
-#             # Update the instance of the new task
-#             upload_task_instance.status = "PENDING"
-#             upload_task_instance.data_owner = data_owner
-#             upload_task_instance.save()
-
-#             # Start the celery task
-#             tasks.upload_bro_data_task.delay(
-#                 upload_task_instance.uuid, username, password
-#             )
-
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
