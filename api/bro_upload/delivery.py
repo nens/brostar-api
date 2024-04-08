@@ -2,6 +2,8 @@ import logging
 import time
 from typing import Any
 
+import requests
+from api.bro_import import bulk_import, config
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
 
@@ -46,39 +48,92 @@ class BRODelivery:
 
     def __init__(
         self,
-        upload_task_instance: api_models.UploadTask,
+        upload_task_instance_uuid: str,
         bro_username: str,
         bro_password: str,
     ) -> None:
-        self.upload_task_instance = upload_task_instance
+        # Lookup and update upload task instance
+        self.upload_task_instance = api_models.UploadTask.objects.get(
+            uuid=upload_task_instance_uuid
+        )
+        self.upload_task_instance.status = "PROCESSING"
+        self.upload_task_instance.save()
+
         self.bro_username = bro_username
         self.bro_password = bro_password
         self.bro_id = None
 
     def process(self) -> None:
         # Generate the XML file.
-        xml_file = self._generate_xml_file()
+        try:
+            xml_file = self._generate_xml_file()
+            self.upload_task_instance.progress = 25.00
+            self.upload_task_instance.progress.save()
+        except Exception as e:
+            self.upload_task_instance.log = e
+            self.upload_task_instance.status = "FAILED"
+            self.upload_task_instance.save()
 
         # Validate with the BRO API
-        self._validate_xml_file(xml_file)
+        try:
+            self._validate_xml_file(xml_file)
+            self.upload_task_instance.progress = 50.00
+            self.upload_task_instance.progress.save()
+        except Exception as e:
+            self.upload_task_instance.log = e
+            self.upload_task_instance.status = "FAILED"
+            self.upload_task_instance.save()
 
         # Deliver the XML file. The deliver_url is returned to use for the check.
-        deliver_url = self._deliver_xml_file(xml_file)
+        try:
+            deliver_url = self._deliver_xml_file(xml_file)
+            self.upload_task_instance.progress = 75.00
+            self.upload_task_instance.progress.save()
+        except Exception as e:
+            self.upload_task_instance.log = e
+            self.upload_task_instance.status = "FAILED"
+            self.upload_task_instance.save()
 
         # Check of the status of the delivery. Retries 3 times before failing
         retries_count = 0
 
         while retries_count < 4:
             if self._check_delivery(deliver_url):
-                return self.bro_id
+                # Update upload task instance
+                self.upload_task_instance.bro_id = self.bro_id
+                self.upload_task_instance.progress = 100.0
+                self.upload_task_instance.status = "COMPLETED"
+                self.upload_task_instance.log = "The upload was done successfully"
+                self.upload_task_instance.save()
+
+                # After the upload was done succesfully, the data should be imported into the API
+                try:
+                    object_importer_class = config.object_importer_mapping[
+                        self.upload_task_instance.bro_domain
+                    ]
+                    importer = object_importer_class(
+                        bro_domain=self.upload_task_instance.bro_domain,
+                        bro_id=self.upload_task_instance.bro_id,
+                        data_owner=self.upload_task_instance.data_owner,
+                    )
+                    importer.run()
+
+                    return
+
+                except requests.RequestException as e:
+                    logger.exception(e)
+                    raise bulk_import.DataImportError(
+                        f"Error while importing data for bro id: {self.bro_id}: {e}"
+                    ) from e
             else:
                 time.sleep(10)
                 retries_count += 1
 
-        self.upload_task_instance.status = "Unfinished"
+        self.upload_task_instance.status = "UNFINISHED"
+        self.upload_task_instance.log = "After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually."
         self.upload_task_instance.save()
 
-        raise DeliveryError("After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually.")
+        return
 
     def _generate_xml_file(self) -> str:
         try:
@@ -88,6 +143,7 @@ class BRODelivery:
                 self.upload_task_instance.metadata,
                 self.upload_task_instance.sourcedocument_data,
             )
+
             return generator.create_xml_file()
 
         except Exception as e:
@@ -103,9 +159,9 @@ class BRODelivery:
         )
 
         if validation_response["status"] != "VALIDE":
-            raise XMLValidationError(
-                f"Errors while validating the XML file: {validation_response['errors']}"
-            )
+            self.upload_task_instance.bro_errors = validation_response["errors"]
+            self.upload_task_instance.save()
+            raise XMLValidationError("Errors while validating the XML file")
         else:
             return
 

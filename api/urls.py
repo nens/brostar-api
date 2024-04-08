@@ -10,7 +10,6 @@ router.register(r"users", views.UserViewSet, basename="user")
 router.register(r"uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
 
 
-
 urlpatterns = [
     path("", views.APIOverview.as_view(), name="overview"),
     path("gmn/", include(("gmn.urls", "gmn"), namespace="gmn")),

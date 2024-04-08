@@ -25,8 +25,14 @@ class BulkImporter:
     Finally, it saves the data in the corresponding datamodel in the database.
     """
 
-    def __init__(self, import_task_instance: models.ImportTask) -> None:
-        self.import_task_instance = import_task_instance
+    def __init__(self, import_task_instance_uuid: str) -> None:
+        # Lookup and update the import task instance
+        self.import_task_instance = models.ImportTask.objects.get(
+            uuid=import_task_instance_uuid
+        )
+        self.import_task_instance.status = "PROCESSING"
+        self.import_task_instance.save()
+
         self.bro_domain = self.import_task_instance.bro_domain
         self.kvk_number = self.import_task_instance.kvk_number
         self.data_owner = self.import_task_instance.data_owner
@@ -35,28 +41,37 @@ class BulkImporter:
         self.object_importer_class = config.object_importer_mapping[self.bro_domain]
 
     def run(self) -> None:
-        url = self._create_bro_ids_import_url()
-        bro_ids = self._fetch_bro_ids(url)
+        try:
+            url = self._create_bro_ids_import_url()
+            bro_ids = self._fetch_bro_ids(url)
 
-        total_bro_ids = len(bro_ids)
-        counter = 0
+            total_bro_ids = len(bro_ids)
+            counter = 0
 
-        for bro_id in bro_ids:
-            counter += 1
-            progress = (counter / total_bro_ids) * 100
-            self.import_task_instance.progress = round(progress, 2)
+            for bro_id in bro_ids:
+                counter += 1
+                progress = (counter / total_bro_ids) * 100
+                self.import_task_instance.progress = round(progress, 2)
+                self.import_task_instance.save()
+
+                try:
+                    data_importer = self.object_importer_class(
+                        self.bro_domain, bro_id, self.data_owner
+                    )
+                    data_importer.run()
+                except requests.RequestException as e:
+                    logger.exception(e)
+                    raise DataImportError(
+                        f"Error while importing data for bro id: {bro_id}: {e}"
+                    ) from e
+
+            self.import_task_instance.status = "COMPLETED"
             self.import_task_instance.save()
 
-            try:
-                data_importer = self.object_importer_class(
-                    self.bro_domain, bro_id, self.data_owner
-                )
-                data_importer.run()
-            except requests.RequestException as e:
-                logger.exception(e)
-                raise DataImportError(
-                    f"Error while importing data for bro id: {bro_id}: {e}"
-                ) from e
+        except Exception as e:
+            self.import_task_instance.log = e
+            self.import_task_instance.status = "FAILED"
+            self.import_task_instance.save()
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""

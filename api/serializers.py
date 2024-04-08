@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from api import models as api_models
+
 from .mixins import UrlFieldMixin
 
 

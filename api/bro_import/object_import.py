@@ -5,7 +5,6 @@ import requests
 import xmltodict
 from django.conf import settings
 
-from api import models
 from api.bro_import import config
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
@@ -33,7 +32,7 @@ class ObjectImporter(ABC):
     """
 
     def __init__(
-        self, bro_domain: str, bro_id: str, data_owner: models.Organisation
+        self, bro_domain: str, bro_id: str, data_owner: str
     ) -> None:
         self.bro_domain = bro_domain
         self.bro_id = bro_id

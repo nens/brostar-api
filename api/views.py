@@ -181,6 +181,7 @@ class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIVie
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """This endpoint handles the upload of data to the BRO.
 
@@ -211,6 +212,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     `sourcedocument_data`:
         dict (*required*) see [the documentation for this endpoint](https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb)
     """
+
     model = models.UploadTask
     serializer_class = serializers.UploadTaskSerializer
     lookup_field = "uuid"
@@ -219,4 +221,3 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
-

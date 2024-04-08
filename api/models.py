@@ -85,12 +85,12 @@ class UploadTask(models.Model):
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
 
-    def save_model(self, request, obj, form, change):
+    def save(self, request=None, *args, **kwargs):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
-        if not obj.uuid:
-
+        super().save(*args, **kwargs)
+        if not self.uuid:
             # Accessing the authenticated user's username and token
             user_profile = models.UserProfile.objects.get(user=request.user)
             data_owner = user_profile.organisation
@@ -98,14 +98,12 @@ class UploadTask(models.Model):
             password = data_owner.bro_user_password
 
             # Update the instance of the new task
-            obj.status = "PENDING"
-            obj.data_owner = data_owner
-            obj.save()
+            self.status = "PENDING"
+            self.data_owner = data_owner
+            self.save()
 
             # Start the celery task
-            tasks.upload_bro_data_task.delay(
-                obj.uuid, username, password
-            )
+            tasks.upload_bro_data_task.delay(self.uuid, username, password)
         else:
             # This is an existing object being edited
             pass
