@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
@@ -7,6 +8,7 @@ from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.views import APIView
 
 from . import filters, mixins, models, serializers, tasks
 
@@ -48,6 +50,16 @@ class APIOverview(views.APIView):
             ),
         }
         return Response(data)
+
+
+class LocalHostRedirectView(APIView):
+    """
+    View that redirects user to localhost:4200.
+    Is used for local frontend development on the stagin environment.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect("http://localhost:4200")
 
 
 class UserViewSet(viewsets.ModelViewSet):
