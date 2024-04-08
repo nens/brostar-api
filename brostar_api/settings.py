@@ -32,7 +32,8 @@ USE_TZ = True
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+
 if not DEBUG:
     ALLOWED_HOSTS = [".brostar.nl"]
 
