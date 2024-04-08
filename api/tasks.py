@@ -67,7 +67,7 @@ def upload_bro_data_task(
 
         # Update upload task instance
         upload_task_instance.bro_id = bro_id
-        upload_task_instance.progess = 100.0
+        upload_task_instance.progress = 100.0
         upload_task_instance.status = "COMPLETED"
         upload_task_instance.log = "The upload was done successfully"
         upload_task_instance.save()

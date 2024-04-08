@@ -75,7 +75,10 @@ class BRODelivery:
                 time.sleep(10)
                 retries_count += 1
 
-        raise DeliveryError("Delivery was unsuccesfull")
+        self.upload_task_instance.status = "Unfinished"
+        self.upload_task_instance.save()
+
+        raise DeliveryError("After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually.")
 
     def _generate_xml_file(self) -> str:
         try:

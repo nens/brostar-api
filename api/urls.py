@@ -7,6 +7,9 @@ app_name = "api"
 
 router = routers.DefaultRouter()
 router.register(r"users", views.UserViewSet, basename="user")
+router.register(r"uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
+
+
 
 urlpatterns = [
     path("", views.APIOverview.as_view(), name="overview"),
@@ -18,12 +21,12 @@ urlpatterns = [
         views.ImportTaskDetailView.as_view(),
         name="importtask-detail",
     ),
-    path("uploadtasks/", views.UploadTaskListView.as_view(), name="uploadtask-list"),
-    path(
-        "uploadtasks/<uuid:uuid>/",
-        views.UploadTaskDetailView.as_view(),
-        name="uploadtask-detail",
-    ),
+    # path("uploadtasks/", views.UploadTaskListView.as_view(), name="uploadtask-list"),
+    # path(
+    #     "uploadtasks/<uuid:uuid>/",
+    #     views.UploadTaskDetailView.as_view(),
+    #     name="uploadtask-detail",
+    # ),
 ]
 
 urlpatterns += router.urls

@@ -181,8 +181,7 @@ class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIVie
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """This endpoint handles the upload of data to the BRO.
 
     It takes the registration type, request type, and the sourcedocument data as input.
@@ -212,59 +211,43 @@ class UploadTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     `sourcedocument_data`:
         dict (*required*) see [the documentation for this endpoint](https://github.com/nens/bro-hub/blob/main/upload_examples.ipynb)
     """
-
+    model = models.UploadTask
     serializer_class = serializers.UploadTaskSerializer
+    lookup_field = "uuid"
     queryset = models.UploadTask.objects.all().order_by("-created")
     permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
 
-    def get(self, request, *args, **kwargs):
-        """List of all Upload Tasks."""
-        return self.list(request, *args, **kwargs)
+#     def post(self, request):
+#         """
+#         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
+#         """
 
-    def post(self, request):
-        """
-        Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
-        """
+#         serializer = serializers.UploadTaskSerializer(
+#             data=request.data, context={"request": request}
+#         )
 
-        serializer = serializers.UploadTaskSerializer(
-            data=request.data, context={"request": request}
-        )
+#         if serializer.is_valid():
+#             upload_task_instance: models.UploadTask = serializer.save()
 
-        if serializer.is_valid():
-            upload_task_instance: models.UploadTask = serializer.save()
+#             # Accessing the authenticated user's username and token
+#             user_profile = models.UserProfile.objects.get(user=request.user)
+#             data_owner = user_profile.organisation
+#             username = data_owner.bro_user_token
+#             password = data_owner.bro_user_password
 
-            # Accessing the authenticated user's username and token
-            user_profile = models.UserProfile.objects.get(user=request.user)
-            data_owner = user_profile.organisation
-            username = data_owner.bro_user_token
-            password = data_owner.bro_user_password
+#             # Update the instance of the new task
+#             upload_task_instance.status = "PENDING"
+#             upload_task_instance.data_owner = data_owner
+#             upload_task_instance.save()
 
-            # Update the instance of the new task
-            upload_task_instance.status = "PENDING"
-            upload_task_instance.data_owner = data_owner
-            upload_task_instance.save()
+#             # Start the celery task
+#             tasks.upload_bro_data_task.delay(
+#                 upload_task_instance.uuid, username, password
+#             )
 
-            # Start the celery task
-            tasks.upload_bro_data_task.delay(
-                upload_task_instance.uuid, username, password
-            )
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UploadTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.UploadTask.objects.all()
-    serializer_class = serializers.UploadTaskSerializer
-    lookup_field = "uuid"
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

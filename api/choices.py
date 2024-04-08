@@ -3,6 +3,7 @@ STATUS_CHOICES = [
     ("PROCESSING", "Processing"),
     ("COMPLETED", "Completed"),
     ("FAILED", "Failed"),
+    ("UNFINISHED", "Unfinished"),
 ]
 
 BRO_DOMAIN_CHOICES = [
