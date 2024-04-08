@@ -2,6 +2,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -60,11 +61,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @swagger_auto_schema(
+        responses={200: serializers.UserLoggedInSerializer()},
+    )
     @action(
         detail=False,
         url_path="logged-in",
     )
-    def logged_in(self, request):
+    def logged_in(self, request) -> Response:
         """Endpoint to check whether the use is logged in or not."""
         user = self.request.user
         if user.is_anonymous:
