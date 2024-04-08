@@ -10,6 +10,7 @@ router.register(r"users", views.UserViewSet, basename="user")
 
 urlpatterns = [
     path("", views.APIOverview.as_view(), name="overview"),
+    path("localhost-redirect", views.LocalHostRedirectView.as_view(), name="localhost"),
     path("gmn/", include(("gmn.urls", "gmn"), namespace="gmn")),
     path("gmw/", include(("gmw.urls", "gmw"), namespace="gmw")),
     path("importtasks/", views.ImportTaskListView.as_view(), name="importtask-list"),
