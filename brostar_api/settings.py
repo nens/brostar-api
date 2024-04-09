@@ -15,23 +15,23 @@ SECRET_KEY = os.getenv(
 NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
 NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
 NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
-DEBUG_ENV = os.getenv("DEBUG", default="true")
+_debug_env = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
 DATABASE_USER = os.getenv("DATABASE_USER", "brostar")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "brostar")
 SENTRY_DSN = os.getenv("SENTRY_DSN")  # Not required, only used in staging/production.
-USE_BRO_PRODUCTION_ENV = os.getenv("USE_BRO_PRODUCTION", default="false")
+_use_bro_production_env = os.getenv("USE_BRO_PRODUCTION", default="false")
 
-# Convert the environment variable (which is a string) to a boolean.
-DEBUG = DEBUG_ENV.lower() == "true"  # default: True
-USE_BRO_PRODUCTION = USE_BRO_PRODUCTION_ENV.lower() == "true"  # Default: False
+# Convert string-based environment variables to booleans.
+DEBUG = _debug_env.lower() == "true"  # default: True
+USE_BRO_PRODUCTION = _use_bro_production_env.lower() == "true"  # Default: False
+
 
 TIME_ZONE = "CET"
 USE_TZ = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
