@@ -51,22 +51,14 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
 
-    def save(self, request=None, *args, **kwargs):
+    def save(self, *args, **kwargs):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
-        if not self.status:
-            super().save(*args, **kwargs)
-            # Update the status of the new task
-            self.status = "PENDING"
-            self.save()
-
+        super().save(*args, **kwargs)
+        if self.status == "PENDING":
             # Start the celery task
             tasks.import_bro_data_task.delay(self.uuid)
-        else:
-            # This is an existing object being edited: no upload celery task required
-            super().save(*args, **kwargs)
-            pass
 
     def __str__(self):
         return f"{self.bro_domain} import - {self.data_owner}"
@@ -100,26 +92,18 @@ class UploadTask(models.Model):
     bro_id = models.CharField(max_length=500, blank=True, null=True)
     bro_delivery_url = models.CharField(max_length=500, blank=True, null=True)
 
-    def save(self, request=None, *args, **kwargs):
+    def save(self, *args, **kwargs):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
-        if not self.status or self.status == "PENDING":
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        if self.status == "PENDING":
             # Accessing the authenticated user's username and token
             username = self.data_owner.bro_user_token
             password = self.data_owner.bro_user_password
-
-            # Update the status of the new task
-            self.status = "PENDING"
-            self.save()
-
+          
             # Start the celery task
             tasks.upload_bro_data_task.delay(self.uuid, username, password)
-        else:
-            # This is an existing object being edited: no upload celery task required
-            super().save(*args, **kwargs)
-            pass
 
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
