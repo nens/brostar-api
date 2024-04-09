@@ -8,6 +8,11 @@ services:
       POSTGRES_USER: 'brostar'
       POSTGRES_PASSWORD: 'brostar'
       POSTGRES_DB: 'brostar'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -28,11 +33,11 @@ services:
     command: celery -A brostar_api worker --loglevel=INFO
     volumes:
       - .:/code
-    links:
-      - redis
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   web:
     environment:
@@ -45,16 +50,17 @@ services:
     build: .
     # command: "bin/gunicorn -b 0.0.0.0:${PORT:-5000} --workers=3 --timeout 90 --preload --max-requests=10000 trs.wsgi"
     command: "python manage.py runserver 0.0.0.0:8000"
-    links:
-      - db
     ports:
       - "8000:8000"
     volumes:
       - .:/code
     depends_on:
-      - db
-      - redis
-      - celery
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      celery:
+        condition: service_started
 
 
 volumes:
