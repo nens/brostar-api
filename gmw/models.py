@@ -2,8 +2,6 @@ import uuid
 
 from django.db import models
 
-from api.models import Organisation
-
 
 class GMW(models.Model):
     """Groundwater Monitoring Well
@@ -15,7 +13,7 @@ class GMW(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
-        Organisation,
+        "api.Organisation",
         on_delete=models.CASCADE,
     )
     bro_id = models.CharField(max_length=18)
@@ -55,7 +53,7 @@ class MonitoringTube(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
-        Organisation,
+        "api.Organisation",
         on_delete=models.CASCADE,
     )
     gmw = models.ForeignKey(GMW, on_delete=models.CASCADE)

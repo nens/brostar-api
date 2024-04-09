@@ -5,7 +5,6 @@ import requests
 import xmltodict
 from django.conf import settings
 
-from api import models
 from api.bro_import import config
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
@@ -32,9 +31,7 @@ class ObjectImporter(ABC):
         4) Save actions into the database
     """
 
-    def __init__(
-        self, bro_domain: str, bro_id: str, data_owner: models.Organisation
-    ) -> None:
+    def __init__(self, bro_domain: str, bro_id: str, data_owner: str) -> None:
         self.bro_domain = bro_domain
         self.bro_id = bro_id
         self.data_owner = data_owner

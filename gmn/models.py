@@ -3,8 +3,6 @@ import uuid
 
 from django.db import models
 
-from api.models import Organisation
-
 
 def generate_random_color():
     """Generate a random hex color code."""
@@ -20,7 +18,7 @@ class GMN(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=50, null=True)
@@ -56,7 +54,7 @@ class Measuringpoint(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     gmn = models.ForeignKey(GMN, on_delete=models.CASCADE)
     measuringpoint_code = models.CharField(max_length=50, null=True)
     measuringpoint_start_date = models.DateField(null=True)
