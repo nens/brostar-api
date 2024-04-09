@@ -13,11 +13,12 @@ dependencies = [
     "requests",
     "nens-auth-client",
     "drf-yasg",
-    "celery",
+    "celery[redis]",
     "django-encrypted-model-fields",
     "django-filter",
     "sentry-sdk[django]",
     "xmltodict",
+    "psycopg2-binary",
 ]
 description = "Simplify data management for BRO"
 authors = []
@@ -58,7 +59,7 @@ djangorestframework = ["rest_framework"]
 django-cors-headers = ["corsheaders"]
 django-filter = ["django_filters"]
 django-encrypted-model-fields = ["encrypted_model_fields"]
-ignore-packages = ["api", "gmn", "gmw"]
+ignore-packages = ["api", "gmn", "gmw", "psycopg2-binary"]
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw"]

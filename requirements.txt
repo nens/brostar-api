@@ -2,13 +2,14 @@
 --extra-index-url https://packages.lizard.net
 
 # TODO: dependencies
-flower
-markdown
-psycopg2-binary
 pytest-django
 python-dotenv
-redis
 whitenoise
+
+# For the jupyter notebook example?
+markdown
+
+
 
 # development tools
 coverage
