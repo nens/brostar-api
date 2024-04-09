@@ -4,25 +4,46 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('api', '0028_rename_last_updated_uploadtask_updated_and_more'),
+        ("api", "0028_rename_last_updated_uploadtask_updated_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='uploadtask',
-            name='bro_delivery_url',
+            model_name="uploadtask",
+            name="bro_delivery_url",
             field=models.CharField(blank=True, max_length=500, null=True),
         ),
         migrations.AlterField(
-            model_name='importtask',
-            name='status',
-            field=models.CharField(blank=True, choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed'), ('UNFINISHED', 'Unfinished')], default='PENDING', max_length=20),
+            model_name="importtask",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("PENDING", "Pending"),
+                    ("PROCESSING", "Processing"),
+                    ("COMPLETED", "Completed"),
+                    ("FAILED", "Failed"),
+                    ("UNFINISHED", "Unfinished"),
+                ],
+                default="PENDING",
+                max_length=20,
+            ),
         ),
         migrations.AlterField(
-            model_name='uploadtask',
-            name='status',
-            field=models.CharField(blank=True, choices=[('PENDING', 'Pending'), ('PROCESSING', 'Processing'), ('COMPLETED', 'Completed'), ('FAILED', 'Failed'), ('UNFINISHED', 'Unfinished')], default='PENDING', max_length=20),
+            model_name="uploadtask",
+            name="status",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("PENDING", "Pending"),
+                    ("PROCESSING", "Processing"),
+                    ("COMPLETED", "Completed"),
+                    ("FAILED", "Failed"),
+                    ("UNFINISHED", "Unfinished"),
+                ],
+                default="PENDING",
+                max_length=20,
+            ),
         ),
     ]
