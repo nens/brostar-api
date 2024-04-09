@@ -110,7 +110,8 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
 
-class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+
+class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """
     This endpoint handles the import of data from the BRO.
     As input, it takes one of the four possible BRO Objects (GMN, GMW, GLD, FRD).
@@ -125,62 +126,28 @@ class ImportTaskListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     `kvk_number`:
         string (*optional*). When not filled in, the kvk of the organisation linked to the user is used.
     """
-
-    queryset = models.ImportTask.objects.all().order_by("-created")
+    model = models.ImportTask
     serializer_class = serializers.ImportTaskSerializer
+    lookup_field = "uuid"
+    queryset = models.ImportTask.objects.all().order_by("-created")
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def get(self, request, *args, **kwargs):
-        """List of all Import Tasks."""
-        return self.list(request, *args, **kwargs)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Accessing the authenticated user's organization
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        data_owner = user_profile.organisation
+        serializer.validated_data['data_owner'] = data_owner
+        serializer.validated_data['kvk_number'] = data_owner.kvk_number
 
-    def post(self, request):
-        """
-        Initialize an import task by posting a BRO object.
-        """
-
-        serializer = serializers.ImportTaskSerializer(
-            data=request.data, context={"request": request}
-        )
-
-        if serializer.is_valid():
-            import_task_instance = serializer.save()
-
-            # Collect the relevant data
-            import_task_instance_uuid = import_task_instance.uuid
-            user_profile = models.UserProfile.objects.get(user=request.user)
-            data_owner = user_profile.organisation
-
-            # Update the instance of the new task
-            import_task_instance.status = "PENDING"
-            import_task_instance.data_owner = data_owner
-            import_task_instance.kvk_number = (
-                import_task_instance.kvk_number or data_owner.kvk_number
-            )
-            import_task_instance.save()
-
-            # Start the celery task
-            tasks.import_bro_data_task.delay(import_task_instance_uuid)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ImportTaskDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
-    queryset = models.ImportTask.objects.all()
-    serializer_class = serializers.ImportTaskSerializer
-    lookup_field = "uuid"
-
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
 
 class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """This endpoint handles the upload of data to the BRO.

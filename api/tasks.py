@@ -16,7 +16,6 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
     The BulkImporter class is used to handle the whole proces.
     The status and logging of the process can be found in the ImportTask instance.
     """
-    # Initialize and run importer
     try:
         importer = bulk_import.BulkImporter(import_task_instance_uuid)
         importer.run()
@@ -36,7 +35,6 @@ def upload_bro_data_task(
     The status and logging of the process can be found in the UploadTask instance.
     """
     try:
-        # Initialize and run importer
         uploader = BRODelivery(upload_task_instance_uuid, bro_username, bro_password)
         uploader.process()
     except Exception as e:
