@@ -6,7 +6,12 @@ requires = ["setuptools>=69"]
 [project]
 name = "brostar-api"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "django-cors-headers",
+    "django==5.0.*",
+    "djangorestframework",
+    "requests",
+]
 description = "Simplify data management for BRO"
 authors = []
 license = {file = "LICENSE.txt"}
@@ -40,6 +45,9 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "C901"]
 
 [tool.zest-releaser]
 release = false
+
+[tool.dependencychecker]
+djangorestframework = ['rest_framework']
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw"]
