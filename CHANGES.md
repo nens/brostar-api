@@ -1,9 +1,15 @@
 # Changelog for BROStar API
 
-## 0.3 (unreleased)
+## 0.4 (unreleased)
 
 
 - Nothing changed yet.
+
+
+## 0.3 (2024-04-09)
+
+
+- Hotfix: savemethods of upload and import tasks were buggy.
 
 
 ## 0.2 (2024-04-09)

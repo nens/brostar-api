@@ -69,7 +69,7 @@ class BRODelivery:
         try:
             xml_file = self._generate_xml_file()
             self.upload_task_instance.progress = 25.00
-            self.upload_task_instance.progress.save()
+            self.upload_task_instance.save()
         except Exception as e:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
@@ -80,7 +80,7 @@ class BRODelivery:
         try:
             self._validate_xml_file(xml_file)
             self.upload_task_instance.progress = 50.00
-            self.upload_task_instance.progress.save()
+            self.upload_task_instance.save()
         except Exception as e:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
@@ -92,7 +92,7 @@ class BRODelivery:
             deliver_url = self._deliver_xml_file(xml_file)
             self.upload_task_instance.bro_delivery_url = deliver_url
             self.upload_task_instance.progress = 75.00
-            self.upload_task_instance.progress.save()
+            self.upload_task_instance.save()
         except Exception as e:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
