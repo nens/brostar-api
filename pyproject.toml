@@ -9,6 +9,7 @@ requires-python = ">=3.11"
 dependencies = []
 description = "Simplify data management for BRO"
 authors = []
+license = {file = "LICENSE.txt"}
 readme = "README.md"
 version = "0.3.dev0"
 
