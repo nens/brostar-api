@@ -2,8 +2,7 @@
 
 ## 0.2 (unreleased)
 
-
-- Nothing changed yet.
+- Made BRO portal (demo/production) configurable. The default is to use the demo portal, of course. Set `USE_BRO_PRODUCTION` environment variable to `true` for production.
 
 
 ## 0.1 (2024-04-09)
