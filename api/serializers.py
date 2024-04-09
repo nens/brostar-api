@@ -22,3 +22,4 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = api_models.UploadTask
         fields = "__all__"
+

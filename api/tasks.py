@@ -17,9 +17,11 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
     The status and logging of the process can be found in the ImportTask instance.
     """
     # Initialize and run importer
-    importer = bulk_import.BulkImporter(import_task_instance_uuid)
-    importer.run()
-
+    try:
+        importer = bulk_import.BulkImporter(import_task_instance_uuid)
+        importer.run()
+    except Exception as e:
+        logger.exception(e)
 
 @shared_task
 def upload_bro_data_task(
@@ -33,6 +35,9 @@ def upload_bro_data_task(
     The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
-    # Initialize and run importer
-    uploader = BRODelivery(upload_task_instance_uuid, bro_username, bro_password)
-    uploader.process()
+    try:
+        # Initialize and run importer
+        uploader = BRODelivery(upload_task_instance_uuid, bro_username, bro_password)
+        uploader.process()
+    except Exception as e:
+        logger.exception(e)

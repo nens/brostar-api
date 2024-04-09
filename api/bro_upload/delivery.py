@@ -73,6 +73,7 @@ class BRODelivery:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
             self.upload_task_instance.save()
+            return
 
         # Validate with the BRO API
         try:
@@ -83,6 +84,7 @@ class BRODelivery:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
             self.upload_task_instance.save()
+            return
 
         # Deliver the XML file. The deliver_url is returned to use for the check.
         try:
@@ -93,6 +95,7 @@ class BRODelivery:
             self.upload_task_instance.log = e
             self.upload_task_instance.status = "FAILED"
             self.upload_task_instance.save()
+            return
 
         # Check of the status of the delivery. Retries 3 times before failing
         retries_count = 0

@@ -221,3 +221,17 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        # Accessing the authenticated user's organization
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        data_owner = user_profile.organisation
+        serializer.validated_data['data_owner'] = data_owner
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
