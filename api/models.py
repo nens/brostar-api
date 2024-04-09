@@ -46,15 +46,12 @@ class ImportTask(models.Model):
     )
     kvk_number = models.CharField(max_length=8, blank=True, null=True)
     status = models.CharField(
-        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
+        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )
     log = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        """
-        Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
-        """
         super().save(*args, **kwargs)
         if self.status == "PENDING":
             # Start the celery task
@@ -84,7 +81,7 @@ class UploadTask(models.Model):
     metadata = JSONField("Metadata", default=dict, blank=False)
     sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(
-        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=True
+        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )
     log = models.TextField(blank=True)
     bro_errors = models.TextField(blank=True)
@@ -93,9 +90,6 @@ class UploadTask(models.Model):
     bro_delivery_url = models.CharField(max_length=500, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        """
-        Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
-        """
         super().save(*args, **kwargs)
         if self.status == "PENDING":
             # Accessing the authenticated user's username and token
