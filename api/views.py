@@ -211,10 +211,14 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     def check_status(self, request, uuid=None):
         """Check the status of the upload task.
         
-        Returns:
+        **Returns**:
+
             - 202 when the task was stuck on PENDING. Start the task.
+
             - 303 when the task finished with a status of COMPLETED, FAILED, or PROCESSING
+
             - 200 when the task was UNFINISHED and successfully checked its status
+
             - 304 when the task was UNFINISHED, but remains UNFINISHED after a check with the BRO
          """
         upload_task = self.get_object()
