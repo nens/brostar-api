@@ -3,9 +3,10 @@ import time
 from typing import Any
 
 import requests
-from api.bro_import import bulk_import, config
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import render_to_string
+
+from api.bro_import import bulk_import, config
 
 from .. import models as api_models
 from . import utils
@@ -89,6 +90,7 @@ class BRODelivery:
         # Deliver the XML file. The deliver_url is returned to use for the check.
         try:
             deliver_url = self._deliver_xml_file(xml_file)
+            self.upload_task_instance.bro_delivery_url = deliver_url
             self.upload_task_instance.progress = 75.00
             self.upload_task_instance.progress.save()
         except Exception as e:

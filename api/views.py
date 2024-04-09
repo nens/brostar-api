@@ -2,12 +2,13 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework import permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-from . import filters, mixins, models, serializers, tasks
+from api import filters, mixins, models, serializers
+from api.bro_upload import utils
 
 
 class LogoutView(views.APIView):
@@ -110,7 +111,6 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
 
-
 class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """
     This endpoint handles the import of data from the BRO.
@@ -126,6 +126,7 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     `kvk_number`:
         string (*optional*). When not filled in, the kvk of the organisation linked to the user is used.
     """
+
     model = models.ImportTask
     serializer_class = serializers.ImportTaskSerializer
     lookup_field = "uuid"
@@ -137,17 +138,19 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
         data_owner = user_profile.organisation
-        serializer.validated_data['data_owner'] = data_owner
-        serializer.validated_data['kvk_number'] = data_owner.kvk_number
+        serializer.validated_data["data_owner"] = data_owner
+        serializer.validated_data["kvk_number"] = data_owner.kvk_number
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
 
 class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """This endpoint handles the upload of data to the BRO.
@@ -192,13 +195,96 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
         data_owner = user_profile.organisation
-        serializer.validated_data['data_owner'] = data_owner
+        serializer.validated_data["data_owner"] = data_owner
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
     
+    @action(detail=True, methods=['post'])
+    def check_status(self, request, uuid=None):
+        """Check the status of the upload task.
+        
+        Returns:
+            - 202 when the task was stuck on PENDING. Start the task.
+            - 303 when the task finished with a status of COMPLETED, FAILED, or PROCESSING
+            - 200 when the task was UNFINISHED and successfully checked its status
+            - 304 when the task was UNFINISHED, but remains UNFINISHED after a check with the BRO
+         """
+        upload_task = self.get_object()
+        
+        # Restart the task when its stuck on pending
+        if upload_task.status == "PENDING":
+            upload_task.save()
+            return Response(
+                {"message":"The task has been started after being stuck on PENDING"},
+                status=status.HTTP_201_CREATED
+            )
+        
+        # If task is still processing, return 303
+        if upload_task.status == "PROCESSING":
+            return Response(
+                {"message":"The task is still running"},
+                status=status.HTTP_303_SEE_OTHER
+            )
+
+        # If task was finished allready, return 303
+        if upload_task.status in ["COMPLETED", "FAILED"]:
+            return Response(
+                {"message":f"The upload task has allready finished with status: {upload_task.status}. Check the detail for more info."},
+                status=status.HTTP_303_SEE_OTHER
+            )
+        
+        # If task failed, Check its status and return 
+        if upload_task.status == "UNFINISHED":
+            # Get relevant data to check status
+            delivery_url = upload_task.bro_delivery_url
+            user_profile = models.UserProfile.objects.get(user=request.user)
+            data_owner = user_profile.organisation
+            bro_username, bro_password = data_owner.bro_user_token, data_owner.bro_user_password
+            delivery_info = utils.check_delivery_status(
+                delivery_url, bro_username, bro_password
+            )
+            errors = delivery_info["brondocuments"][0]["errors"]
+
+            # Check restuls in FAILED
+            if errors:
+                upload_task.bro_errors = errors
+                upload_task.log = "The delivery failed"
+                upload_task.status = "FAILED"
+                return Response(
+                {"message":"The upload failed. Check the detail page for more info."},
+                status=status.HTTP_303_SEE_OTHER
+            )
+
+            else:
+                delivery_status = delivery_info["status"]
+                delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
+                
+                # Check results in FINISHED
+                if (
+                    delivery_status == "DOORGELEVERD"
+                    and delivery_brondocument_status == "OPGENOMEN_LVBRO"
+                ):
+                    # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
+                    upload_task.bro_id = delivery_info["brondocuments"][0]["broId"]
+                    upload_task.status == "FINISHED"
+                    upload_task.save()
+
+                    return Response(
+                        {"message":"The upload was succesfull and the status is now FINISHED."},
+                        status=status.HTTP_200_OK
+                    )
+                # Check remains UNFINISHED
+                else:
+                    return Response(
+                        {"message":"The upload is still not completely handled in the BRO. Check the status later again."},
+                        status=status.HTTP_304_NOT_MODIFIED
+                    )
+            

@@ -68,7 +68,6 @@ class ImportTask(models.Model):
             super().save(*args, **kwargs)
             pass
 
-
     def __str__(self):
         return f"{self.bro_domain} import - {self.data_owner}"
 
@@ -99,12 +98,13 @@ class UploadTask(models.Model):
     bro_errors = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
     bro_id = models.CharField(max_length=500, blank=True, null=True)
+    bro_delivery_url = models.CharField(max_length=500, blank=True, null=True)
 
     def save(self, request=None, *args, **kwargs):
         """
         Initialize an upload task by posting the bro_domain, registration_type, request_type, and the sourcedocument_data
         """
-        if not self.status:
+        if not self.status or self.status == "PENDING":
             super().save(*args, **kwargs)
             # Accessing the authenticated user's username and token
             username = self.data_owner.bro_user_token

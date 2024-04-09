@@ -22,6 +22,7 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
     except Exception as e:
         logger.exception(e)
 
+
 @shared_task
 def upload_bro_data_task(
     upload_task_instance_uuid: str,
