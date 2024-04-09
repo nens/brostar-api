@@ -15,14 +15,16 @@ SECRET_KEY = os.getenv(
 NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
 NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
 NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
-DEBUG_ENV = os.getenv("DEBUG", default="true")
+_debug_env = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
 DATABASE_USER = os.getenv("DATABASE_USER", "brostar")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "brostar")
 SENTRY_DSN = os.getenv("SENTRY_DSN")  # Not required, only used in staging/production.
+_use_bro_production_env = os.getenv("USE_BRO_PRODUCTION", default="false")
 
-# Convert the environment variable (which is a string) to a boolean.
-DEBUG = DEBUG_ENV.lower() == "true"  # True is the default
+# Convert string-based environment variables to booleans.
+DEBUG = _debug_env.lower() == "true"  # default: True
+USE_BRO_PRODUCTION = _use_bro_production_env.lower() == "true"  # Default: False
 
 
 TIME_ZONE = "CET"
@@ -30,7 +32,6 @@ USE_TZ = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
@@ -214,14 +215,9 @@ if SENTRY_DSN:
     # SENTRY_DSN will only be set on staging/production, btw.
     sentry_sdk.init(dsn=SENTRY_DSN)
 
-# BRO SETTINGS:
-# TODO: voor nu is het hardcoded op True. We zouden het zo moeten inrichten dat
-#       de staging standaard op demo staat en productie op de BRO productie omgeving
-BRO_DEMO_OMGEVING = True
-
-if BRO_DEMO_OMGEVING:
-    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
-    BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
-else:
+if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://bronhouderportaal-bro.nl"
+else:
+    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
+    BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
