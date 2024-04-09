@@ -3,7 +3,7 @@
 ## 0.3 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: savemethods of upload and import tasks were buggy.
 
 
 ## 0.2 (2024-04-09)
