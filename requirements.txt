@@ -2,21 +2,13 @@
 --extra-index-url https://packages.lizard.net
 
 # TODO: dependencies
-celery
-django-encrypted-model-fields
-django-filter
-drf-yasg
 flower
 markdown
-nens-auth-client
 psycopg2-binary
-pytest
 pytest-django
 python-dotenv
 redis
-sentry-sdk[django]
 whitenoise
-xmltodict
 
 # development tools
 coverage

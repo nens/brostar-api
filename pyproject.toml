@@ -11,6 +11,13 @@ dependencies = [
     "django==5.0.*",
     "djangorestframework",
     "requests",
+    "nens-auth-client",
+    "drf-yasg",
+    "celery",
+    "django-encrypted-model-fields",
+    "django-filter",
+    "sentry-sdk[django]",
+    "xmltodict",
 ]
 description = "Simplify data management for BRO"
 authors = []
@@ -47,7 +54,11 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "C901"]
 release = false
 
 [tool.dependencychecker]
-djangorestframework = ['rest_framework']
+djangorestframework = ["rest_framework"]
+django-cors-headers = ["corsheaders"]
+django-filter = ["django_filters"]
+django-encrypted-model-fields = ["encrypted_model_fields"]
+ignore-packages = ["api", "gmn", "gmw"]
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw"]
