@@ -10,7 +10,7 @@ dependencies = []
 description = "Simplify data management for BRO"
 authors = []
 readme = "README.md"
-version = "0.1.dev0"
+version = "0.1"
 
 [project.optional-dependencies]
 test = ["pytest"] # pytest added by nens-meta
