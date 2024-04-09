@@ -19,7 +19,7 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GMN_MeasuringPointEndDate", "GMN_MeasuringPointEndDate"),
     ("GMN_TubeReference", "GMN_TubeReference"),
     ("GMN_Closure", "GMN_Closure"),
-    ("GMW", "GWM"),
+    ("GMW_Construction", "GMW_Construction"),
 ]
 
 REQUEST_TYPE_OPTIONS = [
