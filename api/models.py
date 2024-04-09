@@ -95,7 +95,7 @@ class UploadTask(models.Model):
             # Accessing the authenticated user's username and token
             username = self.data_owner.bro_user_token
             password = self.data_owner.bro_user_password
-          
+
             # Start the celery task
             tasks.upload_bro_data_task.delay(self.uuid, username, password)
 
