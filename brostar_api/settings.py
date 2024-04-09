@@ -20,10 +20,11 @@ DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
 DATABASE_USER = os.getenv("DATABASE_USER", "brostar")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD", "brostar")
 SENTRY_DSN = os.getenv("SENTRY_DSN")  # Not required, only used in staging/production.
+USE_BRO_PRODUCTION_ENV = os.getenv("USE_BRO_PRODUCTION", default="false")
 
 # Convert the environment variable (which is a string) to a boolean.
-DEBUG = DEBUG_ENV.lower() == "true"  # True is the default
-
+DEBUG = DEBUG_ENV.lower() == "true"  # default: True
+USE_BRO_PRODUCTION = USE_BRO_PRODUCTION_ENV.lower() == "true"  # Default: False
 
 TIME_ZONE = "CET"
 USE_TZ = True
@@ -214,15 +215,9 @@ if SENTRY_DSN:
     # SENTRY_DSN will only be set on staging/production, btw.
     sentry_sdk.init(dsn=SENTRY_DSN)
 
-# BRO SETTINGS:
-# TODO: voor nu is het hardcoded op True. We zouden het zo moeten inrichten dat
-#       de staging standaard op demo staat en productie op de BRO productie omgeving
-BRO_DEMO_OMGEVING = True
-
-if BRO_DEMO_OMGEVING:
-    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
-    BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
-else:
+if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://bronhouderportaal-bro.nl"
-    # BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
+else:
+    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
+    BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
