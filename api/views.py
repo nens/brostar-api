@@ -1,11 +1,16 @@
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions, status, views, viewsets
+
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import generics, permissions, status, views, viewsets
+
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from rest_framework.views import APIView
 
 from api import filters, mixins, models, serializers
 from api.bro_upload import utils
@@ -50,6 +55,16 @@ class APIOverview(views.APIView):
         return Response(data)
 
 
+class LocalHostRedirectView(APIView):
+    """
+    View that redirects user to localhost:4200.
+    Is used for local frontend development on the stagin environment.
+    """
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect("http://localhost:4200")
+
+
 class UserViewSet(viewsets.ModelViewSet):
     model = User
     serializer_class = serializers.UserSerializer
@@ -61,11 +76,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    @swagger_auto_schema(
+        responses={200: serializers.UserLoggedInSerializer()},
+    )
     @action(
         detail=False,
         url_path="logged-in",
     )
-    def logged_in(self, request):
+    def logged_in(self, request) -> Response:
         """Endpoint to check whether the use is logged in or not."""
         user = self.request.user
         if user.is_anonymous:

@@ -13,6 +13,7 @@ router.register(r"ImportTaskViewSet", views.ImportTaskViewSet, basename="importt
 
 urlpatterns = [
     path("", views.APIOverview.as_view(), name="overview"),
+    path("localhost-redirect", views.LocalHostRedirectView.as_view(), name="localhost"),
     path("gmn/", include(("gmn.urls", "gmn"), namespace="gmn")),
     path("gmw/", include(("gmw.urls", "gmw"), namespace="gmw")),
 ]
