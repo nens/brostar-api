@@ -2,4 +2,7 @@
 
 ## 0.1 (unreleased)
 
-- Started the project.
+- Initial set of functionality, including API.
+- Added login functionality.
+- Building docker images for use in the N&S deployment.
+- Added basic tests and formatting checks.
