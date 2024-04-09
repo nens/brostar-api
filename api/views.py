@@ -228,12 +228,13 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         """Check the status of the upload task.
 
         **Returns**:
-
+            - 200 when the task was UNFINISHED and successfully checked its status
+        
             - 202 when the task was stuck on PENDING. Start the task.
 
-            - 303 when the task finished with a status of COMPLETED, FAILED, or PROCESSING
+            - 303 when the task finished with a status of COMPLETED or FAILED
 
-            - 200 when the task was UNFINISHED and successfully checked its status
+            - 303 when the task was still running
 
             - 304 when the task was UNFINISHED, but remains UNFINISHED after a check with the BRO
         """
