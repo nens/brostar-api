@@ -12,6 +12,8 @@ on:
     branches:
       - master
       - main
+    tags:
+      - "*"
   pull_request:
     branches:
       - master
@@ -50,3 +52,10 @@ jobs:
           docker push ghcr.io/nens/brostar-api:main
         if: github.ref == 'refs/heads/main'
         # Running this job only for main branch.
+
+      - name: Publish tag as production docker image
+        run: |
+          docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker tag brostar-api_web ghcr.io/nens/brostar-api:production
+          docker push ghcr.io/nens/brostar-api:production
+        if: startsWith(github.event.ref, 'refs/tags')
