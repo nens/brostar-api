@@ -35,7 +35,7 @@ jobs:
       - name: Cache docker images.
         uses: ScribeMD/docker-cache@0.5.0
         with:
-          key: docker-${{ runner.os }}-${{ hashFiles(docker-compose.yml, requirements.txt, pyproject.toml) }}
+          key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', 'requirements.txt', 'pyproject.toml') }}
       - name: Build/pull docker
         run: |
           docker-compose build
