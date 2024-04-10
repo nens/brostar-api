@@ -7,18 +7,19 @@ requires = ["setuptools>=69"]
 name = "brostar-api"
 requires-python = ">=3.11"
 dependencies = [
-    "django-cors-headers",
-    "django==5.0.*",
-    "djangorestframework",
-    "requests",
-    "nens-auth-client",
-    "drf-yasg",
     "celery[redis]",
+    "django-cors-headers",
     "django-encrypted-model-fields",
     "django-filter",
+    "django==5.0.*",
+    "djangorestframework",
+    "drf-yasg",
+    "markdown > 3",  # DRF api docs
+    "nens-auth-client",
+    "psycopg2-binary",
+    "requests",
     "sentry-sdk[django]",
     "xmltodict",
-    "psycopg2-binary",
 ]
 description = "Simplify data management for BRO"
 authors = []
@@ -59,7 +60,7 @@ djangorestframework = ["rest_framework"]
 django-cors-headers = ["corsheaders"]
 django-filter = ["django_filters"]
 django-encrypted-model-fields = ["encrypted_model_fields"]
-ignore-packages = ["api", "gmn", "gmw", "psycopg2-binary"]
+ignore-packages = ["api", "gmn", "gmw", "psycopg2-binary", "markdown"]
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw"]
