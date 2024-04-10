@@ -3,8 +3,8 @@
 ## 0.4 (unreleased)
 
 
-- Nothing changed yet.
-
+- Hotfix: importtasks endpoint was accidentaly renamed to ImportTaskViewSet. Back to importtasks
+- added tests for api views and serializers
 
 ## 0.3 (2024-04-09)
 
