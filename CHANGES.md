@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.4 (unreleased)
+## 0.4 (2024-04-10)
 
 
 - Hotfix: importtasks endpoint was accidentaly renamed to ImportTaskViewSet. Back to importtasks
