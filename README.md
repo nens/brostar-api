@@ -16,7 +16,7 @@ The backend consists of an API with:
 
 - Endpoints for all assets imported from the BRO.
 
-## Backend installation
+## Backend development instructions
 
 To install for development:
 
@@ -38,6 +38,11 @@ Do the regular django "migrate", "createsuperuser" stuff.
 7) Create an organization, fill in the KvK, and optionally fill in authentication details.
 
 8) Create a user profile for the superuser.
+
+If a requirement has changed (either dependency in `pyproject.toml` or an extra development package in `requirements.in`:
+
+    $ docker-compose run --rm web pip-compile
+    $ docker-compose run --rm web pip-compile --upgrade  # to grab new versions
 
 
 ## Internal N&S server installation notes

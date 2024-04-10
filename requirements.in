@@ -1,0 +1,7 @@
+-e .[test]
+--extra-index-url https://packages.lizard.net
+
+# development tools
+coverage
+pip-tools
+ruff
