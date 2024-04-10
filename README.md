@@ -41,8 +41,9 @@ Do the regular django "migrate", "createsuperuser" stuff.
 
 If a requirement has changed (either dependency in `pyproject.toml` or an extra development package in `requirements.in`:
 
-    $ docker-compose run --rm web pip-compile
-    $ docker-compose run --rm web pip-compile --upgrade  # to grab new versions
+    $ docker-compose run --rm web pip-compile --extra=test \
+      --output-file=requirements.txt dev-requirements.in pyproject.toml
+    $ docker-compose run ...same command... --upgrade  # to grab new versions
 
 
 ## Internal N&S server installation notes
