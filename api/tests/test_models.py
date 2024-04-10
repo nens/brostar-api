@@ -3,7 +3,6 @@ import pytest
 from api import models as api_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
-from api.tests.fixtures import organisation, gmn, gmw
 
 
 @pytest.mark.django_db

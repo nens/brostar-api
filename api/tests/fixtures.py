@@ -1,7 +1,9 @@
 import pytest
+
 from api import models as api_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
+
 
 @pytest.fixture
 def organisation():
@@ -30,15 +32,16 @@ def gmw(organisation):
         bro_id="GMW123456789",
     )
 
+
 @pytest.fixture
 def upload_task_valid_input_data(organisation):
     return {
-        "data_owner": organisation, 
+        "data_owner": organisation,
         "bro_domain": "GMN",
         "project_number": "1",
         "registration_type": "GMN_StartRegistration",
         "request_type": "registration",
         "status": "PENDING",
-        "metadata":{},
-        "sourcedocument_data":{},
+        "metadata": {},
+        "sourcedocument_data": {},
     }
