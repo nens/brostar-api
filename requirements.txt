@@ -1,11 +1,6 @@
 -e .[test]
 --extra-index-url https://packages.lizard.net
 
-# TODO: dependencies
-pytest-django
-whitenoise
-
-
 # development tools
 coverage
 ruff
