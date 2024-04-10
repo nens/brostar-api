@@ -1,13 +1,15 @@
-from rest_framework import status
-from django.urls import reverse
-from rest_framework.test import APIClient
-import pytest
-from api.tests import fixtures
-from api import models as api_models
 from unittest.mock import patch
 
+import pytest
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from api import models as api_models
+from api.tests import fixtures
+
 user = fixtures.user
-organisation = fixtures.organisation # imported, even though not used in this file, because required for userprofile fixture
+organisation = fixtures.organisation  # imported, even though not used in this file, because required for userprofile fixture
 userprofile = fixtures.userprofile
 
 
@@ -24,6 +26,7 @@ def test_host_redirect_view(api_client):
 
     assert r.status_code == status.HTTP_302_FOUND
 
+
 @pytest.mark.django_db
 def test_user_view_set_list(api_client, user):
     """Test the UserViewSet listview"""
@@ -33,6 +36,7 @@ def test_user_view_set_list(api_client, user):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
+
 
 @pytest.mark.django_db
 def test_user_view_set_logged_in(api_client, user, userprofile):
@@ -59,6 +63,7 @@ def test_user_view_set_logged_in(api_client, user, userprofile):
     }
     assert response.data == expected_data
 
+
 @pytest.mark.django_db
 def test_user_view_set_not_logged_in(api_client):
     """Test the logged_in action of UserViewSet with no logged in user"""
@@ -81,6 +86,7 @@ def test_user_view_set_not_logged_in(api_client):
     }
     assert response.data == expected_data
 
+
 @pytest.mark.django_db
 def test_importtask_view_set_list_not_logged_in(api_client):
     """Test the importtask list endpoint"""
@@ -88,6 +94,7 @@ def test_importtask_view_set_list_not_logged_in(api_client):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
+
 
 @pytest.mark.django_db
 def test_importtask_view_set_list_logged_in(api_client, user, userprofile):
@@ -100,6 +107,7 @@ def test_importtask_view_set_list_logged_in(api_client, user, userprofile):
 
     assert response.status_code == status.HTTP_200_OK
 
+
 @pytest.mark.django_db
 def test_importtask_view_post_valid_data(api_client, user, userprofile, organisation):
     """Test posting on the importtask enpoint
@@ -111,12 +119,13 @@ def test_importtask_view_post_valid_data(api_client, user, userprofile, organisa
     data = {
         "bro_domain": "GMN",
         "kvk_number": organisation.kvk_number,
-        "data_owner": organisation.uuid
+        "data_owner": organisation.uuid,
     }
 
-    response = api_client.post(url, data, format='json')
+    response = api_client.post(url, data, format="json")
 
     assert response.status_code == status.HTTP_201_CREATED
+
 
 @pytest.mark.django_db
 def test_importtask_view_post_invalid_data(api_client, user, userprofile, organisation):
@@ -129,10 +138,10 @@ def test_importtask_view_post_invalid_data(api_client, user, userprofile, organi
     data = {
         "bro_domain": "non-existing",
         "kvk_number": organisation.kvk_number,
-        "data_owner": organisation.uuid
+        "data_owner": organisation.uuid,
     }
 
-    response = api_client.post(url, data, format='json')
+    response = api_client.post(url, data, format="json")
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -145,6 +154,7 @@ def test_uploadtask_view_set_list_not_logged_in(api_client):
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
+
 @pytest.mark.django_db
 def test_uploadtask_view_set_list_logged_in(api_client, user, userprofile):
     """Test the uploadtask list endpoint
@@ -155,6 +165,7 @@ def test_uploadtask_view_set_list_logged_in(api_client, user, userprofile):
     response = api_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
+
 
 @pytest.mark.django_db
 def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisation):
@@ -171,12 +182,13 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
         "request_type": "registration",
         "metadata": {},
         "sourcedocument_data": {},
-        "data_owner": organisation.uuid
+        "data_owner": organisation.uuid,
     }
 
-    response = api_client.post(url, data, format='json')
+    response = api_client.post(url, data, format="json")
 
     assert response.status_code == status.HTTP_201_CREATED
+
 
 @pytest.mark.django_db
 def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organisation):
@@ -193,33 +205,38 @@ def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organi
         "request_type": "non-existing",
         "metadata": {},
         "sourcedocument_data": {},
-        "data_owner": organisation.uuid
+        "data_owner": organisation.uuid,
     }
 
-    response = api_client.post(url, data, format='json')
+    response = api_client.post(url, data, format="json")
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
+
 @pytest.mark.django_db
-@patch('api.bro_upload.utils.check_delivery_status')
-def test_uploadtask_check_status(mock_check_delivery_status, api_client, user, userprofile, organisation):
+@patch("api.bro_upload.utils.check_delivery_status")
+def test_uploadtask_check_status(
+    mock_check_delivery_status, api_client, user, userprofile, organisation
+):
     """Test post on uploadtasks/check-status endpoint
     Note: userprofile needs to be used as fixture for this test
     """
     api_client.force_authenticate(user=user)
 
     upload_task_instance = api_models.UploadTask.objects.create(
-        bro_domain = "GMN",
-        project_number = "1",
-        registration_type = "GMN_StartRegistration",
-        request_type = "registration",
-        metadata = {},
-        sourcedocument_data = {},
-        data_owner = organisation,
-        status="PENDING"
+        bro_domain="GMN",
+        project_number="1",
+        registration_type="GMN_StartRegistration",
+        request_type="registration",
+        metadata={},
+        sourcedocument_data={},
+        data_owner=organisation,
+        status="PENDING",
     )
 
-    url = reverse("api:uploadtask-check-status", kwargs={'uuid': upload_task_instance.uuid})
+    url = reverse(
+        "api:uploadtask-check-status", kwargs={"uuid": upload_task_instance.uuid}
+    )
 
     # Check 201 response for status = PENDING
     response = api_client.post(url)
@@ -253,12 +270,12 @@ def test_uploadtask_check_status(mock_check_delivery_status, api_client, user, u
     mock_check_delivery_status.return_value = {
         "brondocuments": [
             {
-                "errors": ["ERROR!!!"], 
+                "errors": ["ERROR!!!"],
                 "status": "OPGENOMEN_LVBRO",
-                "broId":"GMN1234",
+                "broId": "GMN1234",
             }
         ],
-        "status": "DOORGELEVERD"
+        "status": "DOORGELEVERD",
     }
 
     response = api_client.post(url)
@@ -268,12 +285,12 @@ def test_uploadtask_check_status(mock_check_delivery_status, api_client, user, u
     mock_check_delivery_status.return_value = {
         "brondocuments": [
             {
-                "errors": [], 
+                "errors": [],
                 "status": "OPGENOMEN_LVBRO",
-                "broId":"GMN1234",
+                "broId": "GMN1234",
             }
         ],
-        "status": "DOORGELEVERD"
+        "status": "DOORGELEVERD",
     }
 
     response = api_client.post(url)
@@ -283,12 +300,12 @@ def test_uploadtask_check_status(mock_check_delivery_status, api_client, user, u
     mock_check_delivery_status.return_value = {
         "brondocuments": [
             {
-                "errors": [], 
+                "errors": [],
                 "status": "NOTFINISHEDYET",
-                "broId":"GMN1234",
+                "broId": "GMN1234",
             }
         ],
-        "status": "DOORGELEVERD"
+        "status": "DOORGELEVERD",
     }
 
     response = api_client.post(url)
