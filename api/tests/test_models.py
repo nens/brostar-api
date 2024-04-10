@@ -1,8 +1,14 @@
 import pytest
 
 from api import models as api_models
+from api.tests import fixtures
 from gmn import models as gmn_models
 from gmw import models as gmw_models
+
+# this setup is chosen because ruff removes the fixture imports in other methods
+organisation = fixtures.organisation
+gmw = fixtures.gmw
+gmn = fixtures.gmn
 
 
 @pytest.mark.django_db

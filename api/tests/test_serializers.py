@@ -3,6 +3,10 @@ from rest_framework.exceptions import ValidationError
 
 from api import models as api_models
 from api import serializers as api_serializers
+from api.tests import fixtures
+
+# this setup is chosen because ruff removes the fixture imports in other methods
+organisation = fixtures.organisation
 
 
 @pytest.mark.django_db
