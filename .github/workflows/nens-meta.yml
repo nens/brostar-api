@@ -32,6 +32,13 @@ jobs:
         with:
           python-version: 3.11
       - uses: pre-commit/action@v3.0.1
+      - name: Build
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Build/pull docker
         run: |
           docker-compose build
