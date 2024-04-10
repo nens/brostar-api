@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import User
 
 from api import models as api_models
 from gmn import models as gmn_models
@@ -13,8 +14,24 @@ def organisation():
         bro_user_token="secret",
         bro_user_password="secret",
     )
-    organisation.save()
     return organisation
+
+
+@pytest.fixture
+def user():
+    user = User.objects.create_user(
+        username="test_user", email="test@example.com", password="test_password"
+    )
+    return user
+
+
+@pytest.fixture
+def userprofile(user, organisation):
+    userprofile = api_models.UserProfile.objects.create(
+        user=user,
+        organisation=organisation,
+    )
+    return userprofile
 
 
 @pytest.fixture

@@ -8,7 +8,7 @@ app_name = "api"
 router = routers.DefaultRouter()
 router.register(r"users", views.UserViewSet, basename="user")
 router.register(r"uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
-router.register(r"ImportTaskViewSet", views.ImportTaskViewSet, basename="importtask")
+router.register(r"importtasks", views.ImportTaskViewSet, basename="importtask")
 
 
 urlpatterns = [
