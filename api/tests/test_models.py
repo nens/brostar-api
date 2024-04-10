@@ -1,36 +1,14 @@
 import pytest
 
 from api import models as api_models
+from api.tests import fixtures
 from gmn import models as gmn_models
 from gmw import models as gmw_models
 
-
-@pytest.fixture
-def organisation():
-    organisation = api_models.Organisation.objects.create(
-        name="Nieuwegein",
-        kvk_number="12345678",
-        bro_user_token="secret",
-        bro_user_password="secret",
-    )
-    organisation.save()
-    return organisation
-
-
-@pytest.fixture
-def gmn(organisation):
-    return gmn_models.GMN(
-        data_owner=organisation,
-        bro_id="GMN123456789",
-    )
-
-
-@pytest.fixture
-def gmw(organisation):
-    return gmw_models.GMW(
-        data_owner=organisation,
-        bro_id="GMW123456789",
-    )
+# this setup is chosen because ruff removes the fixture imports in other methods
+organisation = fixtures.organisation
+gmw = fixtures.gmw
+gmn = fixtures.gmn
 
 
 @pytest.mark.django_db
