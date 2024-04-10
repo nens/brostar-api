@@ -1,4 +1,4 @@
--e .[test]
+# Setting for nens-auth-client and so
 --extra-index-url https://packages.lizard.net
 
 # development tools
