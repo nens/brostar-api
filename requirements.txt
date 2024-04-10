@@ -3,4 +3,5 @@
 
 # development tools
 coverage
+pip-tools
 ruff
