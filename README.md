@@ -1,10 +1,12 @@
 # BROStar API
 
+
 ## Introduction
 
-BROStar is a data management product for the Basis Registratie Ondergrond (BRO). The code for the backend is stored in this repository. It consists of an API for importing, storing, and delivering data. The backend is open source, and can be self-hosted. The frontend is developed and hosted by Nelen & Schuurmans. This is a web application created on top of the API, making the data management of BRO data very accessible. Interested? Contact info@nelen-schuurmans.nl.
+BROStar is a data management product for the Dutch *Basis Registratie Ondergrond* (BRO). The code for the backend is stored in this repository. It consists of an API for importing, storing, and delivering data. The backend is open source, and can be self-hosted. The frontend is developed and hosted by Nelen & Schuurmans. This is a web application created on top of the API, making the data management of BRO data very accessible. Interested? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl).
 
-## Project Description
+
+## Project description
 
 The backend consists of an API with:
 
@@ -14,7 +16,7 @@ The backend consists of an API with:
 
 - Endpoints for all assets imported from the BRO.
 
-## Backend Installation
+## Backend development instructions
 
 To install for development:
 
@@ -22,7 +24,7 @@ To install for development:
     $ docker-compose pull
     $ pip install pre-commit  # Just needed once for your laptop.
 
-It uses a database within docker-compose. TODO: add celery/redis.
+The development setup includes a postgres database and redis.
 
 Some instructions:
 
@@ -31,13 +33,19 @@ Some instructions:
     $ docker-compose run --rm web python manage.py migrate
     $ pre-commit run --all  # runs the formatter, checks, etc.
 
-Do the regular migrate, createsuperuser stuff.
+Do the regular django "migrate", "createsuperuser" stuff.
 
 7) Create an organization, fill in the KvK, and optionally fill in authentication details.
 
 8) Create a user profile for the superuser.
 
+If a requirement has changed (either dependency in `pyproject.toml` or an extra development package in `requirements.in`:
 
-## N&S server installation notes
+    $ docker-compose run --rm web pip-compile --extra=test \
+      --output-file=requirements.txt dev-requirements.in pyproject.toml
+    $ docker-compose run ...same command... --upgrade  # to grab new versions
 
-This is a public project, so the actual server deployment scripts with the passwords and so is safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker-compose on https://staging.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
+
+## Internal N&S server installation notes
+
+This is a public project, so the actual server deployment scripts with the passwords and so are safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker-compose on https://staging.brostar.nl and https://www.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
