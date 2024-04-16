@@ -5,3 +5,4 @@
 coverage
 pip-tools
 ruff
+mypy
