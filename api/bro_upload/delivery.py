@@ -54,15 +54,15 @@ class BRODelivery:
         bro_password: str,
     ) -> None:
         # Lookup and update upload task instance
-        self.upload_task_instance = api_models.UploadTask.objects.get(
-            uuid=upload_task_instance_uuid
+        self.upload_task_instance: api_models.UploadTask = (
+            api_models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
         )
         self.upload_task_instance.status = "PROCESSING"
         self.upload_task_instance.save()
 
-        self.bro_username = bro_username
-        self.bro_password = bro_password
-        self.bro_id = None
+        self.bro_username: str = bro_username
+        self.bro_password: str = bro_password
+        self.bro_id: str = ""
 
     def process(self) -> None:
         # Generate the XML file.

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def validate_xml_file(
-    xml_file: bytes, bro_username: str, bro_password: str, project_number: str
+    xml_file: str, bro_username: str, bro_password: str, project_number: str
 ) -> dict[str, Any]:
     """Validates a XML file with the Bronhouderportaal api."""
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"

@@ -62,6 +62,15 @@ python_version = "3.12"
 check_untyped_defs = true
 disallow_untyped_defs = true
 ignore_missing_imports = true
+exclude = '''
+    (?x)
+    (
+      \/migrations\/         # Directories named 'migrations'
+      |\/tests\/             # Directories named 'tests'
+      |\/celery\.py$         # Files named 'celery.py'
+      |\/mixins\.py$         # Files named 'mixins.py'
+    )
+'''
 
 [tool.dependencychecker]
 djangorestframework = ["rest_framework"]
