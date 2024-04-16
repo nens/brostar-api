@@ -132,7 +132,7 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
 
-class ImportTaskViewSet(mixins.UserOrganizationMixin):
+class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """
     This endpoint handles the import of data from the BRO.
     As input, it takes one of the four possible BRO Objects (GMN, GMW, GLD, FRD).
@@ -173,7 +173,7 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin):
         )
 
 
-class UploadTaskViewSet(mixins.UserOrganizationMixin):
+class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     """This endpoint handles the upload of data to the BRO.
 
     It takes the registration type, request type, and the sourcedocument data as input.
