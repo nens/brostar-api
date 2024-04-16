@@ -1,13 +1,21 @@
+from typing import Any
+
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
 from rest_framework.reverse import reverse
+
+from api import models as api_models
 
 
 class UserOrganizationMixin:
-    def get_user_organisation(self):
+    request: HttpRequest
+
+    def get_user_organisation(self) -> api_models.Organisation:
         return self.request.user.userprofile.organisation
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         user_organization = self.get_user_organisation()
-        queryset = super().get_queryset()
+        queryset = super().get_queryset()  # type: ignore
         return queryset.filter(data_owner=user_organization)
 
 
@@ -16,10 +24,13 @@ class UrlFieldMixin:
     Mixin to add a URL field to serialized data.
     """
 
-    def get_url_field(self, obj):
+    context: dict[str, Any]
+
+    def get_url_field(self, obj: Any) -> HttpResponse | None:
         """
         Method to get the URL field.
         """
+
         request = self.context.get("request")
         if request and obj:
             app_name = obj._meta.app_label
@@ -35,11 +46,11 @@ class UrlFieldMixin:
             )
         return None
 
-    def to_representation(self, instance):
+    def to_representation(self, instance: Any) -> dict[str, str]:
         """
         Method to include the URL field in serialized data.
         """
-        data = super().to_representation(instance)
+        data = super().to_representation(instance)  # type: ignore
         url_field = self.get_url_field(instance)  # Get the URL field using the mixin
         if url_field:
             data = {"url": url_field, **data}  # Add URL field at the top
@@ -47,7 +58,9 @@ class UrlFieldMixin:
 
 
 class RequiredFieldsMixin:
-    def __init__(self, *args, **kwargs):
+    fields: Any
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.required = True
