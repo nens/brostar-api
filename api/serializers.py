@@ -26,13 +26,13 @@ class UserLoggedInSerializer(serializers.Serializer):
     kvk = serializers.CharField()
 
 
-class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
+class ImportTaskSerializer(UrlFieldMixin):
     class Meta:
         model = api_models.ImportTask
         fields = "__all__"
 
 
-class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
+class UploadTaskSerializer(UrlFieldMixin):
     class Meta:
         model = api_models.UploadTask
         fields = "__all__"

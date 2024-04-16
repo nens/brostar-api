@@ -1,22 +1,34 @@
+from typing import Any
+
+from django.db.models import QuerySet
+from django.http import HttpResponse
+from rest_framework import serializers, viewsets
 from rest_framework.reverse import reverse
 
 
-class UserOrganizationMixin:
-    def get_user_organisation(self):
+class UserOrganizationMixin(viewsets.ModelViewSet):
+    def get_user_organisation(self: Any) -> str:
         return self.request.user.userprofile.organisation
 
-    def get_queryset(self):
+    def get_queryset(self: Any) -> QuerySet:
         user_organization = self.get_user_organisation()
         queryset = super().get_queryset()
         return queryset.filter(data_owner=user_organization)
 
 
-class UrlFieldMixin:
+class RequiredFieldsMixin:
+    def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.required = True
+
+
+class UrlFieldMixin(serializers.ModelSerializer, RequiredFieldsMixin):
     """
     Mixin to add a URL field to serialized data.
     """
 
-    def get_url_field(self, obj):
+    def get_url_field(self: Any, obj: Any) -> HttpResponse | None:
         """
         Method to get the URL field.
         """
@@ -35,7 +47,7 @@ class UrlFieldMixin:
             )
         return None
 
-    def to_representation(self, instance):
+    def to_representation(self: Any, instance: Any) -> dict[str, str]:
         """
         Method to include the URL field in serialized data.
         """
@@ -44,10 +56,3 @@ class UrlFieldMixin:
         if url_field:
             data = {"url": url_field, **data}  # Add URL field at the top
         return data
-
-
-class RequiredFieldsMixin:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.required = True
