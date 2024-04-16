@@ -1,10 +1,11 @@
 import random
 import uuid
+from typing import Any
 
 from django.db import models
 
 
-def generate_random_color():
+def generate_random_color() -> str:
     """Generate a random hex color code."""
     return f"#{random.randint(0, 0xFFFFFF):06x}"
 
@@ -31,10 +32,10 @@ class GMN(models.Model):
     registration_status = models.CharField(max_length=50, null=True)
     color = models.CharField(max_length=7, null=True, blank=True, default=None)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.bro_id
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         if not self.color:
             self.color = generate_random_color()
         super().save(*args, **kwargs)
@@ -62,5 +63,5 @@ class Measuringpoint(models.Model):
     tube_number = models.CharField(max_length=50, null=True)
     tube_start_date = models.DateField(null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.measuringpoint_code

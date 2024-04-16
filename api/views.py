@@ -1,6 +1,9 @@
+from typing import Any
+
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
@@ -24,7 +27,7 @@ class LogoutView(views.APIView):
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get(self, request):
+    def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
         return redirect("/api")
 
@@ -32,7 +35,7 @@ class LogoutView(views.APIView):
 class APIOverview(views.APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get(self, request, format=None):
+    def get(self, request: HttpRequest, format: Any = None) -> HttpResponse:
         data = {
             "users": reverse("api:user-list", request=request, format=format),
             "importtasks": reverse(
@@ -59,7 +62,9 @@ class LocalHostRedirectView(APIView):
     Is used for local frontend development on the stagin environment.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponseRedirect:
         return HttpResponseRedirect("http://localhost:4200")
 
 
@@ -68,7 +73,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     lookup_field = "pk"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         user = self.request.user
         queryset = User.objects.filter(pk=user.pk)
 
@@ -81,7 +86,7 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         url_path="logged-in",
     )
-    def logged_in(self, request) -> Response:
+    def logged_in(self, request: HttpRequest) -> Response:
         """Endpoint to check whether the use is logged in or not."""
         user = self.request.user
         if user.is_anonymous:
@@ -151,7 +156,7 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -208,7 +213,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -224,7 +229,9 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         )
 
     @action(detail=True, methods=["post"])
-    def check_status(self, request, uuid=None):
+    def check_status(
+        self, request: HttpRequest, uuid: str | None = None
+    ) -> HttpResponse:
         """Check the status of the upload task.
 
         **Returns**:

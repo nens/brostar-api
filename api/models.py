@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -17,7 +18,7 @@ class Organisation(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -30,7 +31,7 @@ class UserProfile(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.user.username
 
 
@@ -51,13 +52,13 @@ class ImportTask(models.Model):
     log = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
         if self.status == "PENDING":
             # Start the celery task
             tasks.import_bro_data_task.delay(self.uuid)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.bro_domain} import - {self.data_owner}"
 
 
@@ -89,7 +90,7 @@ class UploadTask(models.Model):
     bro_id = models.CharField(max_length=500, blank=True, null=True)
     bro_delivery_url = models.CharField(max_length=500, blank=True, null=True)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
         if self.status == "PENDING":
             # Accessing the authenticated user's username and token

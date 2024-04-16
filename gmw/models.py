@@ -39,7 +39,7 @@ class GMW(models.Model):
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.bro_id
 
     class Meta:
@@ -78,5 +78,5 @@ class MonitoringTube(models.Model):
     screen_bottom_position = models.CharField(max_length=100, null=True)
     plain_tube_part_length = models.CharField(max_length=100, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.gmw}-{self.tube_number}"

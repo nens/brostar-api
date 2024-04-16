@@ -5,15 +5,8 @@ import requests
 import xmltodict
 from django.conf import settings
 
-from api.bro_import import config
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
-
-
-def import_single_object(bro_domain: str, bro_id: str, data_owner: str) -> None:
-    """Imports a single object, based on the domain and its bro_id"""
-    object_importer_class = config.object_importer_mapping[bro_domain]
-    object_importer_class(bro_domain, bro_id, data_owner).run()
 
 
 class ObjectImporter(ABC):
@@ -61,7 +54,7 @@ class ObjectImporter(ABC):
         return json_data
 
     @abstractmethod
-    def _save_data_to_database(self, json_data: dict[str, Any]):
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         """Saves the downloaded BRO data into the Django database."""
         pass
 
@@ -128,7 +121,9 @@ class GMNObjectImporter(ObjectImporter):
 
         self.gmn_obj.save()
 
-    def _save_measuringpoint_data(self, measuringpoint_data: dict[str, Any]) -> None:
+    def _save_measuringpoint_data(
+        self, measuringpoint_data: list[dict[str, Any]]
+    ) -> None:
         for measuringpoint in measuringpoint_data:
             mp_data = measuringpoint.get("MeasuringPoint", {})
             monitoring_tube_data = mp_data.get("monitoringTube", {}).get(
@@ -246,7 +241,9 @@ class GMWObjectImporter(ObjectImporter):
 
         self.gmw_obj.save()
 
-    def _save_monitoringtubes_data(self, monitoringtubes_data) -> None:
+    def _save_monitoringtubes_data(
+        self, monitoringtubes_data: list[dict[str, Any]]
+    ) -> None:
         # If only one monitoringtube data, the monitoringtubes_data is not in a list
         if not isinstance(monitoringtubes_data, list):
             monitoringtubes_data = [monitoringtubes_data]
@@ -310,11 +307,3 @@ class GMWObjectImporter(ObjectImporter):
             )
 
             monitoringtube_obj.save()
-
-
-class GLDObjectImporter(ObjectImporter):
-    pass
-
-
-class FRDObjectImporter(ObjectImporter):
-    pass

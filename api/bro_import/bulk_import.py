@@ -79,7 +79,7 @@ class BulkImporter:
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
         return url
 
-    def _fetch_bro_ids(self, url) -> list:
+    def _fetch_bro_ids(self, url: str) -> list:
         """Fetch BRO IDs from the provided URL.
 
         Returns:
