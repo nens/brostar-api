@@ -3,7 +3,7 @@
 ## 0.5 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: fixed the import bug for GMN's with a single measuringpoint
 
 
 ## 0.4 (2024-04-10)
