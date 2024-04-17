@@ -59,7 +59,7 @@ class BulkImporter:
                         self.bro_domain, bro_id, self.data_owner
                     )
                     data_importer.run()
-                except requests.RequestException as e:
+                except Exception as e:
                     logger.exception(e)
                     raise DataImportError(
                         f"Error while importing data for bro id: {bro_id}: {e}"
