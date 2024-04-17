@@ -3,7 +3,7 @@
 ## 0.6 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: fixed 4 non working endpoints. Changed mixin/serializer setup.
 
 
 ## 0.5 (2024-04-17)
