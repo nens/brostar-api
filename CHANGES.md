@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.6 (unreleased)
+## 0.6 (2024-04-17)
 
 
 - Hotfix: fixed 4 non working endpoints. Changed mixin/serializer setup.
