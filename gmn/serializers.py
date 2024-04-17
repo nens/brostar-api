@@ -1,19 +1,19 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from api.mixins import UrlFieldMixin
+from api.mixins import UrlFieldMixin, RequiredFieldsMixin
 from gmw import models as gmw_models
 
 from . import models as gmn_models
 
 
-class GMNSerializer(UrlFieldMixin):
+class GMNSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = gmn_models.GMN
         fields = "__all__"
 
 
-class MeasuringpointSerializer(UrlFieldMixin):
+class MeasuringpointSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
     gmw_uuid = serializers.SerializerMethodField()
     monitoringtube_uuid = serializers.SerializerMethodField()
     location = serializers.SerializerMethodField()

@@ -3,13 +3,13 @@ from typing import Any
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from api.mixins import UrlFieldMixin
+from api.mixins import UrlFieldMixin, RequiredFieldsMixin
 from gmn import models as gmn_models
 
 from . import models as gmw_models
 
 
-class GMWSerializer(UrlFieldMixin):
+class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
     linked_gmns = serializers.SerializerMethodField()
 
     class Meta:
@@ -31,7 +31,7 @@ class GMWSerializer(UrlFieldMixin):
 
 
 class MonitoringTubeSerializer(
-    UrlFieldMixin,
+    UrlFieldMixin,RequiredFieldsMixin, serializers.ModelSerializer
 ):
     gmw_well_code = serializers.SerializerMethodField()
 
