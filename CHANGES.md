@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.5 (unreleased)
+## 0.5 (2024-04-17)
 
 
 - Hotfix: fixed the import bug for GMN's with a single measuringpoint
