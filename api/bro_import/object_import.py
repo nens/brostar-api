@@ -84,7 +84,7 @@ class GMNObjectImporter(ObjectImporter):
         )
 
         # Whenever the GMN exists of 1 measuringpoint, it is a single object. We want a list
-        if type(measuringpoint_data) == dict:
+        if isinstance(measuringpoint_data, dict):
             measuringpoint_data = [measuringpoint_data]
 
         gmn_data = dispatch_document_data["GMN_PPO"]
