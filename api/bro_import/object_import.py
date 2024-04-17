@@ -83,6 +83,10 @@ class GMNObjectImporter(ObjectImporter):
             "measuringPoint", []
         )
 
+        # Whenever the GMN exists of 1 measuringpoint, it is a single object. We want a list
+        if isinstance(measuringpoint_data, dict):
+            measuringpoint_data = [measuringpoint_data]
+
         gmn_data = dispatch_document_data["GMN_PPO"]
         gmn_data.pop("measuringPoint", None)
 
