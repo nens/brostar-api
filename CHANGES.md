@@ -3,7 +3,7 @@
 ## 0.7 (unreleased)
 
 
-- Nothing changed yet.
+- Changed the bronhouder-api url by adding www. Didn't work without.
 
 
 ## 0.6 (2024-04-17)
