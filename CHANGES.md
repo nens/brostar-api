@@ -3,7 +3,7 @@
 ## 0.8 (unreleased)
 
 
-- Nothing changed yet.
+- Made internal brostar_api version number available.
 
 
 ## 0.7 (2024-04-18)

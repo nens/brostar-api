@@ -15,6 +15,7 @@ from rest_framework.views import APIView
 
 from api import filters, mixins, models, serializers
 from api.bro_upload import utils
+from brostar_api import __version__
 
 
 class LogoutView(views.APIView):
@@ -54,6 +55,9 @@ class APIOverview(views.APIView):
             ),
         }
         return Response(data)
+
+
+APIOverview.__doc__ = f"**BROstar version**: *{__version__}*"
 
 
 class LocalHostRedirectView(APIView):
