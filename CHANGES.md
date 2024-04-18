@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.8 (unreleased)
+## 0.8 (2024-04-18)
 
 
 - Made internal brostar_api version number available.
