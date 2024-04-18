@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.7 (unreleased)
+## 0.7 (2024-04-18)
 
 
 - Changed the bronhouder-api url by adding www. Didn't work without.
