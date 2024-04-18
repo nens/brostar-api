@@ -217,7 +217,7 @@ if SENTRY_DSN:
 
 if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
-    BRONHOUDERSPORTAAL_URL = "https://bronhouderportaal-bro.nl"
+    BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 else:
     BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
