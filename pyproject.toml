@@ -18,6 +18,7 @@ dependencies = [
     "nens-auth-client",
     "psycopg2-binary",
     "pytest-django",
+    "pytest-mock",
     "requests",
     "sentry-sdk[django]",
     "whitenoise",
