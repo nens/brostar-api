@@ -81,7 +81,6 @@ def test_xml_generator1():
         },
     )
 
-
     assert generator.create_xml_file() == expected_xml_str
 
 

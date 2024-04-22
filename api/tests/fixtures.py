@@ -56,6 +56,5 @@ def importtask(organisation):
         data_owner=organisation,
         bro_domain="GMN",
         kvk_number=organisation.kvk_number,
-        status="PENDING"
+        status="PENDING",
     )
-
