@@ -23,6 +23,7 @@ To install for development:
     $ docker-compose build
     $ docker-compose pull
     $ pip install pre-commit  # Just needed once for your laptop.
+    $ pre-commit install # Just needed once to make sure that pre-commit runs on each commit for this project
 
 The development setup includes a postgres database and redis.
 
