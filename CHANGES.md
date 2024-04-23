@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.9 (unreleased)
+## 0.9 (2024-04-23)
 
 
 - Added bulk import tests.
