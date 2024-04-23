@@ -186,19 +186,19 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
             "qualityRegime": "IMBRO",
         },
         "sourcedocument_data": {
-            "objectIdAccountableParty":"test",
-            "name":"test",
-            "deliveryContext":"kaderrichtlijnWater",
-            "monitoringPurpose":"strategischBeheerKwaliteitRegionaal",
-            "groundwaterAspect":"kwantiteit",
-            "startDateMonitoring":"2024-01-01",
-            "measuringPoints":[
+            "objectIdAccountableParty": "test",
+            "name": "test",
+            "deliveryContext": "kaderrichtlijnWater",
+            "monitoringPurpose": "strategischBeheerKwaliteitRegionaal",
+            "groundwaterAspect": "kwantiteit",
+            "startDateMonitoring": "2024-01-01",
+            "measuringPoints": [
                 {
-                "measuringPointCode":"GMW000000038946",
-                "broId":"GMW000000038946",
-                "tubeNumber":"1"
+                    "measuringPointCode": "GMW000000038946",
+                    "broId": "GMW000000038946",
+                    "tubeNumber": "1",
                 }
-            ]
+            ],
         },
         "data_owner": organisation.uuid,
     }
@@ -215,7 +215,7 @@ def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organi
     """
     api_client.force_authenticate(user=user)
     url = "/api/uploadtasks/"
-    
+
     # test the serializer check
     data = {
         "bro_domain": "non-existing",

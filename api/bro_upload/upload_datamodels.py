@@ -5,14 +5,16 @@ class Metadata(BaseModel):
     requestReference: str
     deliveryAccountableParty: str
     qualityRegime: str
-    broId: str| None = None
+    broId: str | None = None
     underPrivilege: str | None = None
     correctionReason: str | None = None
+
 
 class MeasuringPoint(BaseModel):
     measuringPointCode: str
     broId: str
     tubeNumber: str
+
 
 class GMNStartregistration(BaseModel):
     objectIdAccountableParty: str
@@ -23,11 +25,13 @@ class GMNStartregistration(BaseModel):
     startDateMonitoring: str
     measuringPoints: list[MeasuringPoint]
 
+
 class GMNMeasuringPoint(BaseModel):
     eventDate: str
     measuringPointCode: str
     broId: str
     tubeNumber: str
+
 
 class GMNMeasuringPointEndDate(BaseModel):
     eventDate: str
@@ -35,12 +39,15 @@ class GMNMeasuringPointEndDate(BaseModel):
     broId: str
     tubeNumber: str
 
+
 class GMNTubeReference(BaseModel):
     eventDate: str
     measuringPointCode: str
 
+
 class GMNClosure(BaseModel):
     endDateMonitoring: str
+
 
 class Electrode(BaseModel):
     electrodeNumber: str
@@ -48,9 +55,11 @@ class Electrode(BaseModel):
     electrodeStatus: str
     electrodeStatus: str
 
+
 class GeoOhmCable(BaseModel):
     cableNumber: str
     electrodes: list[Electrode]
+
 
 class MonitoringTube(BaseModel):
     tubeNumber: str
@@ -72,6 +81,7 @@ class MonitoringTube(BaseModel):
     sedimentSumpLength: str
     geoohmcables: list[GeoOhmCable] | None = None
 
+
 class GMWConstruction(BaseModel):
     objectIdAccountableParty: str
     deliveryContext: str
@@ -91,9 +101,3 @@ class GMWConstruction(BaseModel):
     groundLevelPosition: str
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
-
-
-
-
-
-
