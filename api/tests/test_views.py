@@ -88,6 +88,27 @@ def test_user_view_set_not_logged_in(api_client):
 
 
 @pytest.mark.django_db
+def test_organisation_list_logged_in(api_client, user):
+    """Test the organisation list endpoint"""
+    api_client.force_authenticate(user=user)
+    url = "/api/organisations/"
+    response = api_client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_organisation_list_not_logged_in(
+    api_client,
+):
+    """Test the organisation list endpoint"""
+    url = "/api/organisations/"
+    response = api_client.get(url)
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
 def test_importtask_view_set_list_not_logged_in(api_client):
     """Test the importtask list endpoint"""
     url = "/api/importtasks/"

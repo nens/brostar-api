@@ -10,6 +10,19 @@ organisation = fixtures.organisation
 
 
 @pytest.mark.django_db
+def test_organisation_serialization(organisation):
+    serializer = api_serializers.OrganisationSerializer(instance=organisation)
+    assert serializer.data["name"] == organisation.name
+
+
+@pytest.mark.django_db
+def test_organisation_deserialization(organisation):
+    input_data = {"name": "Test Org", "kvk_number": "12345678"}
+    serializer = api_serializers.OrganisationSerializer(data=input_data)
+    assert serializer.is_valid(), serializer.errors
+
+
+@pytest.mark.django_db
 def test_valid_data_importtask_serialization(organisation):
     data = {
         "data_owner": organisation.uuid,

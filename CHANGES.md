@@ -6,6 +6,7 @@
 - Added bulk import tests.
 - Added pydantic to dependencies.
 - Added validation on the metadata and srcdocdata input of the uploadtask endpoint.
+- Added an organisation list endpoint, which can be used as organisation_name:kvk_number mapping.
 
 
 ## 0.8 (2024-04-18)
