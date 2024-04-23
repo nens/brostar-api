@@ -12,6 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["username", "first_name", "last_name", "email"]
 
 
+class OrganisationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = api_models.Organisation
+        fields = ["name", "kvk_number"]
+
+
 # Only used for swagger definitions
 class UserLoggedInSerializer(serializers.Serializer):
     logged_in = serializers.BooleanField()
