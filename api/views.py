@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
+from pydantic import ValidationError
 from rest_framework import permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,6 +16,8 @@ from rest_framework.views import APIView
 
 from api import filters, mixins, models, serializers
 from api.bro_upload import utils
+from api.bro_upload.upload_datamodels import Metadata
+from api.choices import registration_type_datamodel_mapping
 from brostar_api import __version__
 
 
@@ -220,6 +223,24 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        # Validate the metadata input
+        try:
+            Metadata(**serializer.validated_data["metadata"])
+        except ValidationError as e:
+            errors = utils.simplify_validation_errors(e.errors())
+            return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate the sourcedocument_data input
+        validation_class = registration_type_datamodel_mapping.get(
+            serializer.validated_data["registration_type"]
+        )
+
+        try:
+            validation_class(**serializer.validated_data["sourcedocument_data"])
+        except ValidationError as e:
+            errors = utils.simplify_validation_errors(e.errors())
+            return Response({"detail": e.errors()}, status=status.HTTP_400_BAD_REQUEST)
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)

@@ -180,7 +180,11 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
         "project_number": "1",
         "registration_type": "GMN_StartRegistration",
         "request_type": "registration",
-        "metadata": {},
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+        },
         "sourcedocument_data": {},
         "data_owner": organisation.uuid,
     }
