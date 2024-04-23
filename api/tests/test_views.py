@@ -180,8 +180,26 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
         "project_number": "1",
         "registration_type": "GMN_StartRegistration",
         "request_type": "registration",
-        "metadata": {},
-        "sourcedocument_data": {},
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+        },
+        "sourcedocument_data": {
+            "objectIdAccountableParty": "test",
+            "name": "test",
+            "deliveryContext": "kaderrichtlijnWater",
+            "monitoringPurpose": "strategischBeheerKwaliteitRegionaal",
+            "groundwaterAspect": "kwantiteit",
+            "startDateMonitoring": "2024-01-01",
+            "measuringPoints": [
+                {
+                    "measuringPointCode": "GMW000000038946",
+                    "broId": "GMW000000038946",
+                    "tubeNumber": "1",
+                }
+            ],
+        },
         "data_owner": organisation.uuid,
     }
 
@@ -198,12 +216,31 @@ def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organi
     api_client.force_authenticate(user=user)
     url = "/api/uploadtasks/"
 
+    # test the serializer check
     data = {
         "bro_domain": "non-existing",
         "project_number": "1",
         "registration_type": "GMN_StartRegistration",
         "request_type": "non-existing",
         "metadata": {},
+        "sourcedocument_data": {},
+        "data_owner": organisation.uuid,
+    }
+
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    # Test the pydantic model validation by sending an incomplete metadata
+    data = {
+        "bro_domain": "non-existing",
+        "project_number": "1",
+        "registration_type": "GMN_StartRegistration",
+        "request_type": "GMN_StartRegistration",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+        },
         "sourcedocument_data": {},
         "data_owner": organisation.uuid,
     }

@@ -8,6 +8,11 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
+def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
+    """Transforms the verbose pydantic errors to a readable format"""
+    return {err["loc"][-1]: err["msg"] for err in errors}
+
+
 def validate_xml_file(
     xml_file: str, bro_username: str, bro_password: str, project_number: str
 ) -> dict[str, Any]:

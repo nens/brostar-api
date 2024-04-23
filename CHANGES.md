@@ -3,7 +3,9 @@
 ## 0.9 (unreleased)
 
 
-- Nothing changed yet.
+- Added bulk import tests.
+- Added pydantic to dependencies.
+- Added validation on the metadata and srcdocdata input of the uploadtask endpoint.
 
 
 ## 0.8 (2024-04-18)

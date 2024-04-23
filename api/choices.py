@@ -1,3 +1,12 @@
+from api.bro_upload.upload_datamodels import (
+    GMNClosure,
+    GMNMeasuringPoint,
+    GMNMeasuringPointEndDate,
+    GMNStartregistration,
+    GMNTubeReference,
+    GMWConstruction,
+)
+
 STATUS_CHOICES = [
     ("PENDING", "Pending"),
     ("PROCESSING", "Processing"),
@@ -13,6 +22,7 @@ BRO_DOMAIN_CHOICES = [
     ("FRD", "FRD"),
 ]
 
+# NOTE: Add new registration types to the registration_type_datamodel_mapping below
 REGISTRATION_TYPE_OPTIONS = [
     ("GMN_StartRegistration", "GMN_StartRegistration"),
     ("GMN_MeasuringPoint", "GMN_MeasuringPoint"),
@@ -21,6 +31,17 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GMN_Closure", "GMN_Closure"),
     ("GMW_Construction", "GMW_Construction"),
 ]
+
+
+registration_type_datamodel_mapping = {
+    "GMN_StartRegistration": GMNStartregistration,
+    "GMN_MeasuringPoint": GMNMeasuringPoint,
+    "GMN_MeasuringPointEndDate": GMNMeasuringPointEndDate,
+    "GMN_TubeReference": GMNTubeReference,
+    "GMN_Closure": GMNClosure,
+    "GMW_Construction": GMWConstruction,
+}
+
 
 REQUEST_TYPE_OPTIONS = [
     ("registration", "registration"),

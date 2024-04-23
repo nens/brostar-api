@@ -17,6 +17,7 @@ dependencies = [
     "markdown > 3",  # DRF api docs
     "nens-auth-client",
     "psycopg2-binary",
+    "pydantic",
     "pytest-django",
     "pytest-mock",
     "requests",
