@@ -8,18 +8,16 @@ from api.tests import fixtures
 # this setup is chosen because ruff removes the fixture imports in other methods
 organisation = fixtures.organisation
 
+
 @pytest.mark.django_db
 def test_organisation_serialization(organisation):
     serializer = api_serializers.OrganisationSerializer(instance=organisation)
-    assert serializer.data['name'] == organisation.name
+    assert serializer.data["name"] == organisation.name
 
 
 @pytest.mark.django_db
 def test_organisation_deserialization(organisation):
-    input_data = {
-        'name': "Test Org",
-        'kvk_number': "12345678"
-    }
+    input_data = {"name": "Test Org", "kvk_number": "12345678"}
     serializer = api_serializers.OrganisationSerializer(data=input_data)
     assert serializer.is_valid(), serializer.errors
 
@@ -116,4 +114,3 @@ def test_invalid_data_uploadtask_validation(organisation):
     serializer = api_serializers.UploadTaskSerializer(data=data)
     with pytest.raises(ValidationError):
         serializer.is_valid(raise_exception=True)
-
