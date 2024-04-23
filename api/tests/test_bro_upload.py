@@ -1,6 +1,6 @@
 import pytest
 
-from api.bro_upload import delivery
+from api.bro_upload import delivery, utils
 
 expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
     xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
@@ -94,3 +94,38 @@ def test_xml_generator2():
             sourcedocs_data={},
         )
         generator.create_xml_file()
+
+
+def test_simlify_validation_errors():
+    input_data = [
+        {
+            "type": "missing",
+            "loc": ["requestReference"],
+            "msg": "Field required",
+            "input": {},
+            "url": "https://errors.pydantic.dev/2.7/v/missing",
+        },
+        {
+            "type": "missing",
+            "loc": ["deliveryAccountableParty"],
+            "msg": "Field required",
+            "input": {},
+            "url": "https://errors.pydantic.dev/2.7/v/missing",
+        },
+        {
+            "type": "missing",
+            "loc": ["qualityRegime"],
+            "msg": "Field required",
+            "input": {},
+            "url": "https://errors.pydantic.dev/2.7/v/missing",
+        },
+    ]
+    expected_output = {
+        "requestReference": "Field required",
+        "deliveryAccountableParty": "Field required",
+        "qualityRegime": "Field required",
+    }
+
+    output = utils.simplify_validation_errors(input_data)
+
+    assert output == expected_output
