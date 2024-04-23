@@ -3,7 +3,7 @@
 ## 0.10 (unreleased)
 
 
-- Nothing changed yet.
+- Added gmw/gmn/upload/import
 
 
 ## 0.9 (2024-04-23)
