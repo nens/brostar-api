@@ -13,7 +13,7 @@ class Metadata(BaseModel):
 class MeasuringPoint(BaseModel):
     measuringPointCode: str
     broId: str
-    tubeNumber: str
+    tubeNumber: str | int
 
 
 class GMNStartregistration(BaseModel):
@@ -30,14 +30,14 @@ class GMNMeasuringPoint(BaseModel):
     eventDate: str
     measuringPointCode: str
     broId: str
-    tubeNumber: str
+    tubeNumber: str | int
 
 
 class GMNMeasuringPointEndDate(BaseModel):
     eventDate: str
     measuringPointCode: str
     broId: str
-    tubeNumber: str
+    tubeNumber: str | int
 
 
 class GMNTubeReference(BaseModel):
@@ -50,35 +50,35 @@ class GMNClosure(BaseModel):
 
 
 class Electrode(BaseModel):
-    electrodeNumber: str
+    electrodeNumber: str | int
     electrodePackingMaterial: str
     electrodeStatus: str
-    electrodeStatus: str
+    electrodePosition: str
 
 
 class GeoOhmCable(BaseModel):
-    cableNumber: str
+    cableNumber: str | int
     electrodes: list[Electrode]
 
 
 class MonitoringTube(BaseModel):
-    tubeNumber: str
+    tubeNumber: str | int
     tubeType: str
     artesianWellCapPresent: str
     sedimentSumpPresent: str
-    numberOfGeoOhmCables: str
-    tubeTopDiameter: str
-    variableDiameter: str
+    numberOfGeoOhmCables: str | int
+    tubeTopDiameter: str | float
+    variableDiameter: str | float
     tubeStatus: str
-    tubeTopPosition: str
+    tubeTopPosition: str | float
     tubeTopPositioningMethod: str
     tubePackingMaterial: str
     tubeMaterial: str
     glue: str
-    screenLength: str
+    screenLength: str | float
     sockMaterial: str
-    plainTubePartLength: str
-    sedimentSumpLength: str
+    plainTubePartLength: str | float
+    sedimentSumpLength: str | float
     geoohmcables: list[GeoOhmCable] | None = None
 
 
@@ -87,7 +87,7 @@ class GMWConstruction(BaseModel):
     deliveryContext: str
     constructionStandard: str
     initialFunction: str
-    numberOfMonitoringTubes: str
+    numberOfMonitoringTubes: str | int
     groundLevelStable: str
     owner: str
     maintenanceResponsibleParty: str
@@ -96,8 +96,8 @@ class GMWConstruction(BaseModel):
     deliveredLocation: str
     horizontalPositioningMethod: str
     localVerticalReferencePoint: str
-    offset: str
+    offset: str | float
     verticalDatum: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
