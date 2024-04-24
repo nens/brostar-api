@@ -11,9 +11,11 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>test</objectIdAccountableParty>
             <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">handboekProvinciesRIVMv2017</qualityControlMethod>
+
             <garcom:GroundwaterMonitoringNet gml:id="GMN1234567890">
                 <garcom:broId>GMN1234567890</garcom:broId>
             </garcom:GroundwaterMonitoringNet>
+
             <monitoringPoint>
                 <garcom:GroundwaterMonitoringTube gml:id="GMW1234567890_1">
                     <garcom:broId>GMW1234567890_1</garcom:broId>
@@ -29,8 +31,13 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
                     <garcom:pumpType codeSpace="urn:bro:gar:PumpType">test</garcom:pumpType>
                 </garcom:samplingDevice>
                 <garcom:fieldObservation>
+
                     <garcom:primaryColour codeSpace="urn:bro:gar:Colour">test</garcom:primaryColour>
+
+
                     <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">test</garcom:secondaryColour>
+
+
                     <garcom:abnormalityInCooling>test</garcom:abnormalityInCooling>
                     <garcom:abnormalityInDevice>test</garcom:abnormalityInDevice>
                     <garcom:pollutedByEngine>test</garcom:pollutedByEngine>
@@ -41,34 +48,51 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
                     <garcom:hoseReused>test</garcom:hoseReused>
                     <garcom:temperatureDifficultToMeasure>test</garcom:temperatureDifficultToMeasure>
                 </garcom:fieldObservation>
+
                 <garcom:fieldMeasurement>
                     <garcom:parameter>1234</garcom:parameter>
                     <garcom:fieldMeasurementValue uom="m/s">3.0</garcom:fieldMeasurementValue>
                     <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">goed</garcom:qualityControlStatus>
                 </garcom:fieldMeasurement>
+
             </fieldResearch>
+
+
             <laboratoryAnalysis>
+
                 <garcom:responsibleLaboratory>
                         <brocom:chamberOfCommerceNumber>123456789</brocom:chamberOfCommerceNumber>
                 </garcom:responsibleLaboratory>
+
+
                 <garcom:analysisProcess>
                 <garcom:analysisDate>
                         <brocom:date>2018-10-25</brocom:date>
                     </garcom:analysisDate>
                     <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">AAS</garcom:analyticalTechnique>
                     <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">CIW</garcom:valuationMethod>
+
                     <garcom:analysis>
                         <garcom:parameter>1234</garcom:parameter>
                         <garcom:analysisMeasurementValue uom="m/s">0.1</garcom:analysisMeasurementValue>
+
                         <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">LT</garcom:limitSymbol>
+
+
                         <garcom:reportingLimit uom="m/s">1</garcom:reportingLimit>
+
                         <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">goed</garcom:qualityControlStatus>
                     </garcom:analysis>
+
                 </garcom:analysisProcess>
+
             </laboratoryAnalysis>
+
+
         </GAR>
     </sourceDocument>
 </registrationRequest>
+
 """
 
 
@@ -137,4 +161,8 @@ def test_gar_xml_creation():
         },
     )
 
-    assert generator.create_xml_file() == expected_gar_xml_str
+    xml = generator.create_xml_file()
+
+    print(xml)
+
+    assert xml == expected_gar_xml_str
