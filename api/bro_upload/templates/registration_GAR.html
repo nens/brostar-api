@@ -10,19 +10,19 @@
             <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
             <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod }}</qualityControlMethod>
 {%          for net in sourcedocs_data.groundwaterMonitoringNet %}
-            <garcom:GroundwaterMonitoringNet gml:id="GMN123456789012">
-                <garcom:broId>net.broId</garcom:broId>
+            <garcom:GroundwaterMonitoringNet gml:id="{{ net }}">
+                <garcom:broId>{{ net }} </garcom:broId>
             </garcom:GroundwaterMonitoringNet>
 {%          endfor %}
             <monitoringPoint>
-                <garcom:GroundwaterMonitoringTube gml:id="GMW000000058869_001">
+                <garcom:GroundwaterMonitoringTube gml:id="{{sourcedocs_data.gmwBroId}}_{{ sourcedocs_data.tubeNumber }}">
                     <garcom:broId>{{ sourcedocs_data.gmwBroId }}</garcom:broId>
-                    <garcom:tubeNumber>{{ sourcedocs_data.tubenumber }}</garcom:tubeNumber>
+                    <garcom:tubeNumber>{{ sourcedocs_data.tubeNumber }}</garcom:tubeNumber>
                 </garcom:GroundwaterMonitoringTube>
             </monitoringPoint>
             <fieldResearch>
                 <garcom:samplingDateTime>{{ sourcedocs_data.fieldResearch.samplingDateTime }}</garcom:samplingDateTime>
-                <garcom:samplingOperator xsi:nil="true"/>
+                <garcom:samplingOperator/>
                         <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.chamberOfCommerceNumber }}</brocom:chamberOfCommerceNumber>
                 <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{ sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
                 <garcom:samplingDevice>
@@ -67,7 +67,7 @@
 {%              for process in lab_analysis.analysisProcesses %}
                 <garcom:analysisProcess>
                     <garcom:analysisDate>
-                        <brocom:date>process.date</brocom:date>
+                        <brocom:date>{{ process.date }}</brocom:date>
                     </garcom:analysisDate>
                     <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{ process.analyticalTechnique }}</garcom:analyticalTechnique>
                     <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}</garcom:valuationMethod>
@@ -75,12 +75,15 @@
                     <garcom:analysis>
                         <garcom:parameter>{{ analysis.parameter }}</garcom:parameter>
                         <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue }}</garcom:analysisMeasurementValue>
-{%                          if analysis.limitSymbol %}
-                            <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}</garcom:limitSymbol>
-{%                          endif %}
-                            <garcom:reportingLimit uom="mg/l">{{ analysis.reportingLimit }}</garcom:reportingLimit>
+{%                      if analysis.limitSymbol %}
+                        <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}</garcom:limitSymbol>
+{%                      endif %}
+{%                      if analysis.reportingLimit %}
+                        <garcom:reportingLimit uom="{{ analysis.unit }}">{{ analysis.reportingLimit }}</garcom:reportingLimit>
+{%                      endif %}
                         <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{ analysis.qualityControlStatus }}</garcom:qualityControlStatus>
                     </garcom:analysis>
+{%                  endfor %}
                 </garcom:analysisProcess>
 {%              endfor %}
             </laboratoryAnalysis>

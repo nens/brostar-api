@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class Metadata(BaseModel):
     requestReference: str
-    deliveryAccountableParty: str
+    deliveryAccountableParty: str | None = None
     qualityRegime: str
     broId: str | None = None
     underPrivilege: str | None = None
@@ -105,10 +105,6 @@ class GMWConstruction(BaseModel):
     monitoringTubes: list[MonitoringTube]
 
 
-class groundwaterMonitoringNet(BaseModel):
-    broId: str | int
-
-
 class FieldMeasurement(BaseModel):
     parameter: str | int
     unit: str
@@ -139,6 +135,9 @@ class Analysis(BaseModel):
     parameter: str | int
     unit: str
     analysisMeasurementValue: str | float
+    limitSymbol: str | None = None
+    reportingLimit: str | float = None
+    qualityControlStatus: str
 
 
 class AnalysisProcess(BaseModel):
@@ -146,9 +145,6 @@ class AnalysisProcess(BaseModel):
     analyticalTechnique: str
     valuationMethod: str
     analyses: list[Analysis]
-    limitSymbol: str | None = None
-    reportingLimit: str | float
-    qualityControlStatus: str
 
 
 class LaboratoryAnalysis(BaseModel):
@@ -158,6 +154,9 @@ class LaboratoryAnalysis(BaseModel):
 
 class GAR(BaseModel):
     objectIdAccountableParty: str
-    groundwaterMonitoringNets: list[groundwaterMonitoringNet]
+    qualityControlMethod: str
+    groundwaterMonitoringNets: list[str]
+    gmwBroId: str
+    tubeNumber: str | int
     fieldResearch: FieldResearch
     laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
