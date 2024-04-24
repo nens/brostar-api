@@ -145,7 +145,7 @@ class AnalysisProcess(BaseModel):
     date: str | date
     analyticalTechnique: str
     valuationMethod: str
-    analyses = list[Analysis]
+    analyses: list[Analysis]
     limitSymbol: str | None = None
     reportingLimit: str | float
     qualityControlStatus: str
