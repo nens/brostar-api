@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 from pydantic import BaseModel
 
 
@@ -101,3 +103,61 @@ class GMWConstruction(BaseModel):
     groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
+
+
+class groundwaterMonitoringNet(BaseModel):
+    broId: str | int
+
+
+class FieldMeasurement(BaseModel):
+    parameter: str | int
+    unit: str
+    fieldMeasurementValue: str | float
+    qualityControlStatus: str
+
+
+class FieldResearch(BaseModel):
+    samplingDateTime: str | datetime
+    chamberOfCommerceNumber: str
+    pumpType: str
+    primaryColour: str | None = None
+    secondaryColour: str | None = None
+    colourStrength: str | None = None
+    abnormalityInCooling: str
+    abnormalityInDevice: str
+    pollutedByEngine: str
+    filterAerated: str
+    groundWaterLevelDroppedTooMuch: str
+    abnormalFilter: str
+    sampleAerated: str
+    hoseReused: str
+    temperatureDifficultToMeasure: str
+    fieldMeasurements: list[FieldMeasurement] | None = None
+
+
+class Analysis(BaseModel):
+    parameter: str | int
+    unit: str
+    analysisMeasurementValue: str | float
+
+
+class AnalysisProcess(BaseModel):
+    date: str | date
+    analyticalTechnique: str
+    valuationMethod: str
+    analyses = list[Analysis]
+    limitSymbol: str | None = None
+    reportingLimit: str | float
+    qualityControlStatus: str
+
+
+class LaboratoryAnalysis(BaseModel):
+    responsibleLaboratoryKvk: str | None = None
+    analysisProcesses: list[AnalysisProcess]
+
+
+class GAR(BaseModel):
+    objectIdAccountableParty: str
+    groundwaterMonitoringNets: list[groundwaterMonitoringNet]
+    fieldResearch: FieldResearch
+    laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
