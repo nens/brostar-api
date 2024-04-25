@@ -155,7 +155,7 @@ class LaboratoryAnalysis(BaseModel):
 class GAR(BaseModel):
     objectIdAccountableParty: str
     qualityControlMethod: str
-    groundwaterMonitoringNets: list[str]
+    groundwaterMonitoringNets: list[str] | None = None
     gmwBroId: str
     tubeNumber: str | int
     fieldResearch: FieldResearch
