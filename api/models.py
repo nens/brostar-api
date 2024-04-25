@@ -102,3 +102,32 @@ class UploadTask(models.Model):
 
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
+
+
+class BulkUpload(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    bro_domain = models.CharField(
+        max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
+    )
+    bulk_upload_type = models.CharField(
+        max_length=3,
+        choices=choices.BULK_UPLOAD_TYPES,
+        default=None,
+        help_text="Determines which process/task to start.",
+    )
+    metadata = JSONField(
+        "Metadata",
+        default=dict,
+        blank=True,
+        help_text="Optional json field to add extra data that is not provided within the files, but is required in the processing of the files.",
+    )
+    status = models.CharField(
+        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
+    )
+    log = models.TextField(blank=True)
+    progress = models.FloatField(blank=True, null=True)
