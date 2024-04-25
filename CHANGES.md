@@ -3,7 +3,9 @@
 ## 0.10 (unreleased)
 
 
-- Added gmw/gmn/upload/import
+- Added gmw/gmn/upload/import tests.
+- Added GAR Template + tests.
+
 
 
 ## 0.9 (2024-04-23)
