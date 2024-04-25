@@ -18,7 +18,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
             <monitoringPoint>
                 <garcom:GroundwaterMonitoringTube gml:id="GMW1234567890_1">
-                    <garcom:broId>GMW1234567890_1</garcom:broId>
+                    <garcom:broId>GMW1234567890</garcom:broId>
                     <garcom:tubeNumber>1</garcom:tubeNumber>
                 </garcom:GroundwaterMonitoringTube>
             </monitoringPoint>
@@ -26,7 +26,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
                 <garcom:samplingDateTime>2018-10-23T16:59:32+01:00</garcom:samplingDateTime>
                 <garcom:samplingOperator/>
                         <brocom:chamberOfCommerceNumber>123456789</brocom:chamberOfCommerceNumber>
-                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">test</garcom:samplingStandard>
+                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">NEN5744v2011-A1v2013</garcom:samplingStandard>
                 <garcom:samplingDevice>
                     <garcom:pumpType codeSpace="urn:bro:gar:PumpType">test</garcom:pumpType>
                 </garcom:samplingDevice>
@@ -66,7 +66,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
 
                 <garcom:analysisProcess>
-                <garcom:analysisDate>
+                    <garcom:analysisDate>
                         <brocom:date>2018-10-25</brocom:date>
                     </garcom:analysisDate>
                     <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">AAS</garcom:analyticalTechnique>
@@ -92,7 +92,6 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
         </GAR>
     </sourceDocument>
 </registrationRequest>
-
 """
 
 
@@ -115,6 +114,7 @@ def test_gar_xml_creation():
             "fieldResearch": {
                 "samplingDateTime": "2018-10-23T16:59:32+01:00",
                 "chamberOfCommerceNumber": "123456789",
+                "samplingStandard": "NEN5744v2011-A1v2013",
                 "pumpType": "test",
                 "primaryColour": "test",
                 "secondaryColour": "test",

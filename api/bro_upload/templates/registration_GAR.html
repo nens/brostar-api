@@ -9,9 +9,9 @@
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
             <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod }}</qualityControlMethod>
-{%          for net in sourcedocs_data.groundwaterMonitoringNet %}
+{%          for net in sourcedocs_data.groundwaterMonitoringNets %}
             <garcom:GroundwaterMonitoringNet gml:id="{{ net }}">
-                <garcom:broId>{{ net }} </garcom:broId>
+                <garcom:broId>{{ net }}</garcom:broId>
             </garcom:GroundwaterMonitoringNet>
 {%          endfor %}
             <monitoringPoint>
