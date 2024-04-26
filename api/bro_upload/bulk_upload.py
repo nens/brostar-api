@@ -72,7 +72,19 @@ class GARBulkUploader:
             # Merge the 2 dfs
             merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
 
-            print(merged_df)
+            # Remove some useless columns
+            substrings_to_exclude = [
+                "NITG",
+                "Putcode",
+                "Bijzonderheden",
+                "coördinaat",
+                "MeetpuntId",
+                "Projectcode lab",
+                "Monsternummer lab",
+            ]
+            trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
+
+            print(trimmed_df)
 
         except Exception as e:
             self.bulk_upload_instance.log = e
@@ -109,3 +121,10 @@ def merge_fieldwork_and_lab_dfs(
     return pd.merge(
         fieldwork_df, lab_df, on=["bro_id", "date", "filter_num"], how="inner"
     )
+
+
+def remove_df_columns(
+    df: pd.DataFrame, substrings_to_exclude: list[str]
+) -> pd.DataFrame:
+    substring_pattern = "|".join(substrings_to_exclude)
+    return df.loc[:, ~df.columns.str.contains(substring_pattern)]
