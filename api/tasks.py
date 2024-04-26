@@ -1,7 +1,6 @@
 import logging
 
 from celery import shared_task
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from api.bro_import import bulk_import
 from api.bro_upload.bulk_upload import GARBulkUploader
@@ -47,19 +46,19 @@ def upload_bro_data_task(
 @shared_task
 def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
+    fieldwork_upload_file_uuid: str,
+    lab_upload_file_uuid: str,
     bro_username: str,
     bro_password: str,
-    fieldwork_file: InMemoryUploadedFile,
-    lab_file: InMemoryUploadedFile,
 ) -> None:
     """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
     try:
         uploader = GARBulkUploader(
             bulk_upload_instance_uuid,
+            fieldwork_upload_file_uuid,
+            lab_upload_file_uuid,
             bro_username,
             bro_password,
-            fieldwork_file,
-            lab_file,
         )
         uploader.process()
     except Exception as e:

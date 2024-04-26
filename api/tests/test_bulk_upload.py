@@ -52,14 +52,27 @@ def test_gar_bulk_upload_valid_input(
 
     d = tmp_path / "sub"
     d.mkdir()
-    file_path = d / "test.csv"
-    csv_data = {"test1": ["test1", "test2"], "test2": ["test1", "test3"]}
-    df = pd.DataFrame(csv_data)
-    df.to_csv(file_path, index=False)
+    fieldwork_file_path = d / "fieldwork_test.csv"
+    lab_file_path = d / "lab_test.csv"
 
-    with file_path.open("rb") as fp:
-        data["fieldwork_file"] = fp
-        data["lab_file"] = fp
+    # Data for fieldwork file
+    fieldwork_data = {"test1": ["test1", "test2"], "test2": ["test1", "test3"]}
+    df_fieldwork = pd.DataFrame(fieldwork_data)
+    df_fieldwork.to_csv(fieldwork_file_path, index=False)
+
+    # Data for lab file
+    lab_data = {"test3": ["test4", "test5"], "test4": ["test6", "test7"]}
+    df_lab = pd.DataFrame(lab_data)
+    df_lab.to_csv(lab_file_path, index=False)
+
+    with fieldwork_file_path.open("rb") as fp_fieldwork, lab_file_path.open(
+        "rb"
+    ) as fp_lab:
+        data = {
+            "bulk_upload_type": "GAR",
+            "fieldwork_file": fp_fieldwork,
+            "lab_file": fp_lab,
+        }
         with patch("api.tasks.gar_bulk_upload_task.delay") as mock_task:
             r = api_client.post(url, data, format="multipart")
 

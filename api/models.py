@@ -105,11 +105,6 @@ class UploadTask(models.Model):
 
 
 class BulkUpload(models.Model):
-    """Files are deliberately not saved in the model to avoid complications and unnecessary data storage.
-
-    This means that bulk uploads, that actually trigger a celery task, can only be created via the api endpoint.
-    """
-
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -136,3 +131,16 @@ class BulkUpload(models.Model):
 
     def __str__(self) -> str:
         return f"{self.data_owner}: Bulk upload {self.bulk_upload_type}"
+
+
+class UploadFile(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    bulk_upload = models.ForeignKey(BulkUpload, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="bulk_uploads/")
+
+    def __str__(self) -> str:
+        return str(self.uuid)

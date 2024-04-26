@@ -376,7 +376,7 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     This endpoint interfaces with the BulkUpload model and supports the following POST parameters:
 
     `bulk_upload_type`:
-        str (*required*): the supported bulk upload options
+        str (*required*): Options: 'GAR'
 
     `metadata`:
         json (*optional*): Open json field that can be filled in with information that cannot be provided through the upload files
@@ -418,18 +418,34 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 if fieldwork_file and lab_file:
                     # The BulkUpload instance is created here, because the uuid needs to be passed to the celery task.
                     self.perform_create(serializer)
+                    bulk_upload_instance = serializer.instance
 
+                    # the files are saved, so that the uuid of those instances can be passed to the task
+                    fieldwork_upload_file_instance = models.UploadFile(
+                        bulk_upload=bulk_upload_instance,
+                        data_owner=data_owner,
+                        file=fieldwork_file,
+                    )
+                    fieldwork_upload_file_instance.save()
+
+                    lab_upload_file_instance = models.UploadFile(
+                        bulk_upload=bulk_upload_instance,
+                        data_owner=data_owner,
+                        file=lab_file,
+                    )
+                    lab_upload_file_instance.save()
+
+                    # Fetch users bro credentials
                     bro_username = data_owner.bro_user_token
                     bro_password = data_owner.bro_user_password
-                    bulk_upload_instance_uuid = serializer.instance.uuid
 
                     # Start celery task
                     tasks.gar_bulk_upload_task.delay(
-                        bulk_upload_instance_uuid,
+                        bulk_upload_instance.uuid,
+                        fieldwork_upload_file_instance.uuid,
+                        lab_upload_file_instance.uuid,
                         bro_username,
                         bro_password,
-                        fieldwork_file,
-                        lab_file,
                     )
                 else:
                     return Response(
