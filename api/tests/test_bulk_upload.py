@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pandas as pd
 import pytest
 from rest_framework.test import APIClient
@@ -58,6 +60,8 @@ def test_gar_bulk_upload_valid_input(
     with file_path.open("rb") as fp:
         data["fieldwork_file"] = fp
         data["lab_file"] = fp
-        r = api_client.post(url, data, format="multipart")
+        with patch("api.tasks.gar_bulk_upload_task.delay") as mock_task:
+            r = api_client.post(url, data, format="multipart")
 
+    assert mock_task.called
     assert r.status_code == 201

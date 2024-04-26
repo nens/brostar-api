@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import JSONField
 from encrypted_model_fields.fields import EncryptedCharField
 
-from . import choices, tasks
+from api import choices, tasks
 
 
 class Organisation(models.Model):

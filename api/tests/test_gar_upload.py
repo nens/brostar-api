@@ -1,4 +1,4 @@
-from api.bro_upload import delivery
+from api.bro_upload import object_upload
 
 expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgar/1.0"
     xmlns:garcom="http://www.broservices.nl/xsd/garcommon/1.0"
@@ -96,7 +96,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
 
 def test_gar_xml_creation():
-    generator = delivery.XMLGenerator(
+    generator = object_upload.XMLGenerator(
         registration_type="GAR",
         request_type="registration",
         metadata={

@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
-from api import filters, mixins, models, serializers
+from api import filters, mixins, models, serializers, tasks
 from api.bro_upload import utils
 from api.bro_upload.upload_datamodels import UploadTaskMetadata
 from api.choices import registration_type_datamodel_mapping
@@ -414,9 +414,23 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             try:
                 fieldwork_file = request.FILES.get("fieldwork_file", None)
                 lab_file = request.FILES.get("lab_file", None)
+
                 if fieldwork_file and lab_file:
-                    # Start celery task here
-                    ...
+                    # The BulkUpload instance is created here, because the uuid needs to be passed to the celery task.
+                    self.perform_create(serializer)
+
+                    bro_username = data_owner.bro_user_token
+                    bro_password = data_owner.bro_user_password
+                    bulk_upload_instance_uuid = serializer.instance.uuid
+
+                    # Start celery task
+                    tasks.gar_bulk_upload_task.delay(
+                        bulk_upload_instance_uuid,
+                        bro_username,
+                        bro_password,
+                        fieldwork_file,
+                        lab_file,
+                    )
                 else:
                     return Response(
                         {
@@ -427,8 +441,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the metadata in a BulkUpload instance.
-        self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
         return Response(
