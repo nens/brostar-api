@@ -90,11 +90,15 @@ mypy-extensions==1.0.0
     # via mypy
 nens-auth-client==1.6.0
     # via brostar-api (pyproject.toml)
+numpy==1.26.4
+    # via pandas
 packaging==24.0
     # via
     #   build
     #   drf-yasg
     #   pytest
+pandas==2.2.2
+    # via brostar-api (pyproject.toml)
 pip-tools==7.4.1
     # via -r dev-requirements.in
 pluggy==1.4.0
@@ -123,9 +127,13 @@ pytest-django==4.8.0
 pytest-mock==3.14.0
     # via brostar-api (pyproject.toml)
 python-dateutil==2.9.0.post0
-    # via celery
+    # via
+    #   celery
+    #   pandas
 pytz==2024.1
-    # via drf-yasg
+    # via
+    #   drf-yasg
+    #   pandas
 pyyaml==6.0.1
     # via drf-yasg
 redis==5.0.3
@@ -148,7 +156,9 @@ typing-extensions==4.11.0
     #   pydantic
     #   pydantic-core
 tzdata==2024.1
-    # via celery
+    # via
+    #   celery
+    #   pandas
 uritemplate==4.1.1
     # via drf-yasg
 urllib3==2.2.1

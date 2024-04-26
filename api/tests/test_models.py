@@ -96,3 +96,14 @@ def test_monitoringtube_name(organisation, gmw):
     )
 
     assert str(monitoring_tube) == "GMW123456789-1"
+
+
+@pytest.mark.django_db
+def test_bulk_upload_name(organisation):
+    bulk_upload_task = api_models.BulkUpload(
+        bro_domain="GAR",
+        data_owner=organisation,
+        bulk_upload_type="GAR",
+    )
+
+    assert str(bulk_upload_task) == "Nieuwegein: Bulk upload GAR"

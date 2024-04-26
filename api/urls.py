@@ -6,9 +6,10 @@ from . import views
 app_name = "api"
 
 router = routers.DefaultRouter()
-router.register(r"users", views.UserViewSet, basename="user")
-router.register(r"uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
-router.register(r"importtasks", views.ImportTaskViewSet, basename="importtask")
+router.register("users", views.UserViewSet, basename="user")
+router.register("importtasks", views.ImportTaskViewSet, basename="importtask")
+router.register("uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
+router.register("bulkuploads", views.BulkUploadViewSet, basename="bulkupload")
 
 
 urlpatterns = [

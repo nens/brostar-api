@@ -10,13 +10,14 @@ from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
 from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from api import filters, mixins, models, serializers
 from api.bro_upload import utils
-from api.bro_upload.upload_datamodels import Metadata
+from api.bro_upload.upload_datamodels import UploadTaskMetadata
 from api.choices import registration_type_datamodel_mapping
 from brostar_api import __version__
 
@@ -50,6 +51,9 @@ class APIOverview(views.APIView):
             ),
             "uploadtasks": reverse(
                 "api:uploadtask-list", request=request, format=format
+            ),
+            "bulk-uploads": reverse(
+                "api:bulkupload-list", request=request, format=format
             ),
             "gmns": reverse("api:gmn:gmn-list", request=request, format=format),
             "measuringpoints": reverse(
@@ -201,7 +205,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     **POST Parameters**
 
     `bro_domain`:
-        String (*required*) options: 'GMN', 'GMW', 'GLD', 'FRD'
+        String (*required*) options: 'GMN', 'GMW', 'GLD', 'FRD', 'GAR'
 
     `kvk_number`:
         string (*optional*) When not filled in, the kvk of the organization linked to the user is used.
@@ -237,7 +241,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         # Validate the metadata input
         try:
-            Metadata(**serializer.validated_data["metadata"])
+            UploadTaskMetadata(**serializer.validated_data["metadata"])
         except ValidationError as e:
             errors = utils.simplify_validation_errors(e.errors())
             return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
@@ -364,3 +368,69 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                         },
                         status=status.HTTP_304_NOT_MODIFIED,
                     )
+
+
+class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
+    """Endpoint that handles the bulk uploads of files and related data.
+
+    This endpoint interfaces with the BulkUpload model and supports the following POST parameters:
+
+    `bulk_upload_type`:
+        str (*required*): the supported bulk upload options
+
+    `metadata`:
+        json (*optional*): Open json field that can be filled in with information that cannot be provided through the upload files
+
+    `files`:
+        file (*required*): Accepts one or more files in either Excel or CSV format.
+
+
+
+        When the bulk_upload_type is GAR, these 2 files are required:
+            - fieldwork_file
+            - lab_file
+
+    """
+
+    model = models.BulkUpload
+    serializer_class = serializers.BulkUploadSerializer
+    lookup_field = "uuid"
+    queryset = models.BulkUpload.objects.all().order_by("-created")
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = (MultiPartParser,)
+    filter_backends = [DjangoFilterBackend]
+
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Fill up missing data
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        data_owner = user_profile.organisation
+        serializer.validated_data["data_owner"] = data_owner
+
+        # Handle the request based on the bulk_upload_type
+        if serializer.validated_data["bulk_upload_type"] == "GAR":
+            try:
+                fieldwork_file = request.FILES.get("fieldwork_file", None)
+                lab_file = request.FILES.get("lab_file", None)
+                if fieldwork_file and lab_file:
+                    # Start celery task here
+                    ...
+                else:
+                    return Response(
+                        {
+                            "error": "You are trying to initiate a GAR bulk upload process, but did not provide a combination of a fieldwork and lab analysis file."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the metadata in a BulkUpload instance.
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
