@@ -101,7 +101,6 @@ def test_monitoringtube_name(organisation, gmw):
 @pytest.mark.django_db
 def test_bulk_upload_name(organisation):
     bulk_upload_task = api_models.BulkUpload(
-        bro_domain="GAR",
         data_owner=organisation,
         bulk_upload_type="GAR",
     )
