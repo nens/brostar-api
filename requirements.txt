@@ -74,6 +74,8 @@ djangorestframework==3.15.1
     #   drf-yasg
 drf-yasg==1.21.7
     # via brostar-api (pyproject.toml)
+et-xmlfile==1.1.0
+    # via openpyxl
 idna==3.6
     # via requests
 inflection==0.5.1
@@ -92,6 +94,8 @@ nens-auth-client==1.6.0
     # via brostar-api (pyproject.toml)
 numpy==1.26.4
     # via pandas
+openpyxl==3.1.2
+    # via brostar-api (pyproject.toml)
 packaging==24.0
     # via
     #   build

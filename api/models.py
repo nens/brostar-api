@@ -2,6 +2,7 @@ import uuid
 from typing import Any
 
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import JSONField
 from encrypted_model_fields.fields import EncryptedCharField
@@ -140,7 +141,10 @@ class UploadFile(models.Model):
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
     bulk_upload = models.ForeignKey(BulkUpload, on_delete=models.CASCADE)
-    file = models.FileField(upload_to="bulk_uploads/")
+    file = models.FileField(
+        upload_to="bulk_uploads/",
+        validators=[FileExtensionValidator(allowed_extensions=["csv", "xls", "xlsx"])],
+    )
 
     def __str__(self) -> str:
         return str(self.uuid)
