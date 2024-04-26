@@ -1,5 +1,10 @@
+from typing import TypeVar
+
+import pandas as pd
+
 from api import models as api_models
-from api.bro_upload import utils
+
+T = TypeVar("T", bound="api_models.UploadFile")
 
 
 class GARBulkUploader:
@@ -36,10 +41,10 @@ class GARBulkUploader:
         self.bro_password: str = bro_password
 
     def process(self) -> None:
-        # Step 1; open the files and transform to a pd df
+        # Step 1: open the files and transform to a pd df
         try:
-            fieldwork_df = utils.csv_or_excel_to_df(self.fieldwork_file)
-            lab_df = utils.csv_or_excel_to_df(self.lab_file)
+            fieldwork_df = csv_or_excel_to_df(self.fieldwork_file)
+            lab_df = csv_or_excel_to_df(self.lab_file)
 
             self.bulk_upload_instance.progress = 10.00
             self.bulk_upload_instance.save()
@@ -48,5 +53,59 @@ class GARBulkUploader:
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save()
 
-        print(fieldwork_df)
-        print(lab_df)
+        # Step 2: transform the pandas files to a useable format
+        try:
+            # Rename headers
+            fieldwork_df_rename_dict = {
+                "BRO-ID": "bro_id",
+                "Datum bemonsterd": "date",
+                "Filter nr": "filter_num",
+            }
+            fieldwork_df = rename_df_columns(fieldwork_df, fieldwork_df_rename_dict)
+            lab_df_rename_dict = {
+                "GMW BRO ID": "bro_id",
+                "Datum veldwerk": "date",
+                "filter/buisnr": "filter_num",
+            }
+            lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
+
+            # Merge the 2 dfs
+            merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
+
+            print(merged_df)
+
+        except Exception as e:
+            self.bulk_upload_instance.log = e
+            self.bulk_upload_instance.status = "FAILED"
+            self.bulk_upload_instance.save()
+
+
+def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
+    """Reads out csv or excel files and returns a pandas df."""
+    filetype = file_instance.file.name.split(".")[-1].lower()
+
+    if filetype == "csv":
+        df = pd.read_csv(file_instance.file)
+    elif filetype in ["xls", "xlsx"]:
+        df = pd.read_excel(file_instance.file)
+    else:
+        raise ValueError(
+            "Unsupported file type. Only CSV and Excel files are supported."
+        )
+
+    return df
+
+
+def rename_df_columns(df: pd.DataFrame, rename_dict: dict[str, str]) -> pd.DataFrame:
+    return df.rename(columns=rename_dict)
+
+
+def merge_fieldwork_and_lab_dfs(
+    fieldwork_df: pd.DataFrame, lab_df: pd.DataFrame
+) -> pd.DataFrame:
+    """Merges the files into 1 big df.
+
+    This filters out the location/date combinations that are only present in 1 file."""
+    return pd.merge(
+        fieldwork_df, lab_df, on=["bro_id", "date", "filter_num"], how="inner"
+    )

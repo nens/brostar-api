@@ -1,16 +1,11 @@
 import json
 import logging
-from typing import Any, TypeVar
+from typing import Any
 
-import pandas as pd
 import requests
 from django.conf import settings
 
-from api import models
-
 logger = logging.getLogger(__name__)
-
-T = TypeVar("T", bound="models.UploadFile")
 
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
@@ -129,19 +124,3 @@ def check_delivery_status(
     except requests.RequestException as e:
         logger.exception(e)
         raise RuntimeError(f"Delivery info check error: {e}")
-
-
-def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
-    """Reads out csv or excel files and returns a pandas df."""
-    filetype = file_instance.file.name.split(".")[-1].lower()
-
-    if filetype == "csv":
-        df = pd.read_csv(file_instance.file)
-    elif filetype in ["xls", "xlsx"]:
-        df = pd.read_excel(file_instance.file)
-    else:
-        raise ValueError(
-            "Unsupported file type. Only CSV and Excel files are supported."
-        )
-
-    return df
