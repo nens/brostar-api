@@ -24,6 +24,10 @@ BRO_DOMAIN_CHOICES = [
     ("GAR", "GAR"),
 ]
 
+BULK_UPLOAD_TYPES = [
+    ("GAR", "GAR"),
+]
+
 # NOTE: Add new registration types to the registration_type_datamodel_mapping below
 REGISTRATION_TYPE_OPTIONS = [
     ("GMN_StartRegistration", "GMN_StartRegistration"),

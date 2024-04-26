@@ -42,3 +42,9 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = api_models.UploadTask
         fields = "__all__"
+
+
+class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    class Meta:
+        model = api_models.BulkUpload
+        fields = "__all__"

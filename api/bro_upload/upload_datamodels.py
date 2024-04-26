@@ -2,8 +2,11 @@ from datetime import date, datetime
 
 from pydantic import BaseModel
 
+## Uploadtask models
 
-class Metadata(BaseModel):
+
+# Upload task metadata
+class UploadTaskMetadata(BaseModel):
     requestReference: str
     deliveryAccountableParty: str | None = None
     qualityRegime: str
@@ -12,6 +15,7 @@ class Metadata(BaseModel):
     correctionReason: str | None = None
 
 
+# GMN sourcedocs_data
 class MeasuringPoint(BaseModel):
     measuringPointCode: str
     broId: str
@@ -51,6 +55,7 @@ class GMNClosure(BaseModel):
     endDateMonitoring: str
 
 
+# GMW sourcedocs_data
 class Electrode(BaseModel):
     electrodeNumber: str | int
     electrodePackingMaterial: str
@@ -105,6 +110,7 @@ class GMWConstruction(BaseModel):
     monitoringTubes: list[MonitoringTube]
 
 
+# GAR sourcedocs_data
 class FieldMeasurement(BaseModel):
     parameter: str | int
     unit: str
@@ -155,7 +161,7 @@ class LaboratoryAnalysis(BaseModel):
 class GAR(BaseModel):
     objectIdAccountableParty: str
     qualityControlMethod: str
-    groundwaterMonitoringNets: list[str]
+    groundwaterMonitoringNets: list[str] | None = None
     gmwBroId: str
     tubeNumber: str | int
     fieldResearch: FieldResearch
