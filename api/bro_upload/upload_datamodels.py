@@ -19,9 +19,9 @@ class GARBulkUploadMetadata(BaseModel):
     requestReference: str
     qualityRegime: str
     deliveryAccountableParty: str | None = None
-    qualityControlMethod: str  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
-    groundwaterMonitoringNets: list[str]
-    samplingOperator: str | int
+    qualityControlMethod: str | None = None  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
+    groundwaterMonitoringNets: list[str] | None = None
+    samplingOperator: str | int | None = None
 
 
 # GMN sourcedocs_data

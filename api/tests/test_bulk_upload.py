@@ -44,7 +44,7 @@ def test_gar_bulk_upload_invalid_input(
 def test_gar_bulk_upload_valid_input(
     api_client, organisation, user, userprofile, tmp_path
 ):
-    """Testing the 400 response on a request with just 1 file."""
+    """Testing the 201 response on a valid request."""
     api_client.force_authenticate(user=user)
     url = "/api/bulkuploads/"
 
