@@ -113,7 +113,7 @@ def test_gar_xml_creation():
             "tubeNumber": 1,
             "fieldResearch": {
                 "samplingDateTime": "2018-10-23T16:59:32+01:00",
-                "chamberOfCommerceNumber": "123456789",
+                "samplingOperator": "123456789",
                 "samplingStandard": "NEN5744v2011-A1v2013",
                 "pumpType": "test",
                 "primaryColour": "test",

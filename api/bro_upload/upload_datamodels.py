@@ -15,6 +15,15 @@ class UploadTaskMetadata(BaseModel):
     correctionReason: str | None = None
 
 
+class GARBulkUploadMetadata(BaseModel):
+    requestReference: str
+    qualityRegime: str
+    deliveryAccountableParty: str | None = None
+    qualityControlMethod: str  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
+    groundwaterMonitoringNets: list[str]
+    samplingOperator: str | int
+
+
 # GMN sourcedocs_data
 class MeasuringPoint(BaseModel):
     measuringPointCode: str
@@ -120,7 +129,7 @@ class FieldMeasurement(BaseModel):
 
 class FieldResearch(BaseModel):
     samplingDateTime: str | datetime
-    chamberOfCommerceNumber: str
+    samplingOperator: str
     pumpType: str
     primaryColour: str | None = None
     secondaryColour: str | None = None
