@@ -16,6 +16,7 @@ dependencies = [
     "drf-yasg",
     "markdown > 3",  # DRF api docs
     "nens-auth-client",
+    "openpyxl",
     "pandas",
     "psycopg2-binary",
     "pydantic",

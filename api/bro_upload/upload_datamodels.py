@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 ## Uploadtask models
 
@@ -13,6 +13,15 @@ class UploadTaskMetadata(BaseModel):
     broId: str | None = None
     underPrivilege: str | None = None
     correctionReason: str | None = None
+
+
+class GARBulkUploadMetadata(BaseModel):
+    requestReference: str
+    qualityRegime: str
+    deliveryAccountableParty: str | None = None
+    qualityControlMethod: str | None = None  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
+    groundwaterMonitoringNets: list[str] | None = None
+    samplingOperator: str | int | None = None
 
 
 # GMN sourcedocs_data
@@ -120,7 +129,7 @@ class FieldMeasurement(BaseModel):
 
 class FieldResearch(BaseModel):
     samplingDateTime: str | datetime
-    chamberOfCommerceNumber: str
+    samplingOperator: str
     pumpType: str
     primaryColour: str | None = None
     secondaryColour: str | None = None
@@ -135,6 +144,13 @@ class FieldResearch(BaseModel):
     hoseReused: str
     temperatureDifficultToMeasure: str
     fieldMeasurements: list[FieldMeasurement] | None = None
+
+    @validator("samplingDateTime", pre=True, always=True)
+    def format_datetime(cls, value):
+        """Ensure datetime is always serialized as BRO required format"""
+        if isinstance(value, datetime):
+            return value.isoformat()
+        return value
 
 
 class Analysis(BaseModel):
@@ -152,10 +168,17 @@ class AnalysisProcess(BaseModel):
     valuationMethod: str
     analyses: list[Analysis]
 
+    @validator("date", pre=True, always=True)
+    def format_date(cls, value):
+        """Ensure date is always serialized as a string, in BRO required format"""
+        if isinstance(value, date):
+            return value.strftime("%Y-%m-%d")
+        return value
+
 
 class LaboratoryAnalysis(BaseModel):
     responsibleLaboratoryKvk: str | None = None
-    analysisProcesses: list[AnalysisProcess]
+    analysisProcesses: list[AnalysisProcess] = []
 
 
 class GAR(BaseModel):

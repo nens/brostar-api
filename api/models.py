@@ -2,11 +2,12 @@ import uuid
 from typing import Any
 
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import JSONField
 from encrypted_model_fields.fields import EncryptedCharField
 
-from . import choices, tasks
+from api import choices, tasks
 
 
 class Organisation(models.Model):
@@ -105,17 +106,13 @@ class UploadTask(models.Model):
 
 
 class BulkUpload(models.Model):
-    """Files are deliberately not saved in the model to avoid complications and unnecessary data storage.
-
-    This means that bulk uploads, that actually trigger a celery task, can only be created via the api endpoint.
-    """
-
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
+    project_number = models.CharField(max_length=20, blank=False)
     bulk_upload_type = models.CharField(
         max_length=3,
         choices=choices.BULK_UPLOAD_TYPES,
@@ -136,3 +133,19 @@ class BulkUpload(models.Model):
 
     def __str__(self) -> str:
         return f"{self.data_owner}: Bulk upload {self.bulk_upload_type}"
+
+
+class UploadFile(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    bulk_upload = models.ForeignKey(BulkUpload, on_delete=models.CASCADE)
+    file = models.FileField(
+        upload_to="bulk_uploads/",
+        validators=[FileExtensionValidator(allowed_extensions=["csv", "xls", "xlsx"])],
+    )
+
+    def __str__(self) -> str:
+        return str(self.uuid)

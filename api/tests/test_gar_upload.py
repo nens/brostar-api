@@ -1,4 +1,4 @@
-from api.bro_upload import delivery
+from api.bro_upload import object_upload
 
 expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgar/1.0"
     xmlns:garcom="http://www.broservices.nl/xsd/garcommon/1.0"
@@ -96,7 +96,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
 
 def test_gar_xml_creation():
-    generator = delivery.XMLGenerator(
+    generator = object_upload.XMLGenerator(
         registration_type="GAR",
         request_type="registration",
         metadata={
@@ -113,7 +113,7 @@ def test_gar_xml_creation():
             "tubeNumber": 1,
             "fieldResearch": {
                 "samplingDateTime": "2018-10-23T16:59:32+01:00",
-                "chamberOfCommerceNumber": "123456789",
+                "samplingOperator": "123456789",
                 "samplingStandard": "NEN5744v2011-A1v2013",
                 "pumpType": "test",
                 "primaryColour": "test",
@@ -162,7 +162,5 @@ def test_gar_xml_creation():
     )
 
     xml = generator.create_xml_file()
-
-    print(xml)
 
     assert xml == expected_gar_xml_str

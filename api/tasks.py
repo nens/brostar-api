@@ -2,8 +2,9 @@ import logging
 
 from celery import shared_task
 
-from .bro_import import bulk_import
-from .bro_upload.delivery import BRODelivery
+from api.bro_import import bulk_import
+from api.bro_upload.bulk_upload import GARBulkUploader
+from api.bro_upload.object_upload import BRODelivery
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,28 @@ def upload_bro_data_task(
     """
     try:
         uploader = BRODelivery(upload_task_instance_uuid, bro_username, bro_password)
+        uploader.process()
+    except Exception as e:
+        logger.exception(e)
+
+
+@shared_task
+def gar_bulk_upload_task(
+    bulk_upload_instance_uuid: str,
+    fieldwork_upload_file_uuid: str,
+    lab_upload_file_uuid: str,
+    bro_username: str,
+    bro_password: str,
+) -> None:
+    """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
+    try:
+        uploader = GARBulkUploader(
+            bulk_upload_instance_uuid,
+            fieldwork_upload_file_uuid,
+            lab_upload_file_uuid,
+            bro_username,
+            bro_password,
+        )
         uploader.process()
     except Exception as e:
         logger.exception(e)

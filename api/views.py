@@ -15,9 +15,9 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
-from api import filters, mixins, models, serializers
+from api import filters, mixins, models, serializers, tasks
 from api.bro_upload import utils
-from api.bro_upload.upload_datamodels import UploadTaskMetadata
+from api.bro_upload.upload_datamodels import GARBulkUploadMetadata, UploadTaskMetadata
 from api.choices import registration_type_datamodel_mapping
 from brostar_api import __version__
 
@@ -376,7 +376,7 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     This endpoint interfaces with the BulkUpload model and supports the following POST parameters:
 
     `bulk_upload_type`:
-        str (*required*): the supported bulk upload options
+        str (*required*): Options: 'GAR'
 
     `metadata`:
         json (*optional*): Open json field that can be filled in with information that cannot be provided through the upload files
@@ -412,11 +412,51 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         # Handle the request based on the bulk_upload_type
         if serializer.validated_data["bulk_upload_type"] == "GAR":
             try:
+                # Check data with pydantic models:
+                try:
+                    GARBulkUploadMetadata(**serializer.validated_data["metadata"])
+                except ValidationError as e:
+                    errors = utils.simplify_validation_errors(e.errors())
+                    return Response(
+                        {"detail": errors}, status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # Read files
                 fieldwork_file = request.FILES.get("fieldwork_file", None)
                 lab_file = request.FILES.get("lab_file", None)
+
                 if fieldwork_file and lab_file:
-                    # Start celery task here
-                    ...
+                    # The BulkUpload instance is created here, because the uuid needs to be passed to the celery task.
+                    self.perform_create(serializer)
+                    bulk_upload_instance = serializer.instance
+
+                    # the files are saved, so that the uuid of those instances can be passed to the task
+                    fieldwork_upload_file_instance = models.UploadFile(
+                        bulk_upload=bulk_upload_instance,
+                        data_owner=data_owner,
+                        file=fieldwork_file,
+                    )
+                    fieldwork_upload_file_instance.save()
+
+                    lab_upload_file_instance = models.UploadFile(
+                        bulk_upload=bulk_upload_instance,
+                        data_owner=data_owner,
+                        file=lab_file,
+                    )
+                    lab_upload_file_instance.save()
+
+                    # Fetch users bro credentials
+                    bro_username = data_owner.bro_user_token
+                    bro_password = data_owner.bro_user_password
+
+                    # Start celery task
+                    tasks.gar_bulk_upload_task.delay(
+                        bulk_upload_instance.uuid,
+                        fieldwork_upload_file_instance.uuid,
+                        lab_upload_file_instance.uuid,
+                        bro_username,
+                        bro_password,
+                    )
                 else:
                     return Response(
                         {
@@ -427,8 +467,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Save the metadata in a BulkUpload instance.
-        self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
 
         return Response(
