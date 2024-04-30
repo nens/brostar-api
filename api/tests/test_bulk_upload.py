@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 import pandas as pd
@@ -48,8 +49,6 @@ def test_gar_bulk_upload_valid_input(
     api_client.force_authenticate(user=user)
     url = "/api/bulkuploads/"
 
-    data = {"bulk_upload_type": "GAR"}
-
     d = tmp_path / "sub"
     d.mkdir()
     fieldwork_file_path = d / "fieldwork_test.csv"
@@ -65,11 +64,19 @@ def test_gar_bulk_upload_valid_input(
     df_lab = pd.DataFrame(lab_data)
     df_lab.to_csv(lab_file_path, index=False)
 
+    metadata_json = json.dumps(
+        {
+            "requestReference": "test",
+            "qualityRegime": "IMBRO",
+        }
+    )
+
     with fieldwork_file_path.open("rb") as fp_fieldwork, lab_file_path.open(
         "rb"
     ) as fp_lab:
         data = {
             "bulk_upload_type": "GAR",
+            "metadata": metadata_json,
             "fieldwork_file": fp_fieldwork,
             "lab_file": fp_lab,
         }
