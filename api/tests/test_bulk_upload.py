@@ -76,6 +76,7 @@ def test_gar_bulk_upload_valid_input(
     ) as fp_lab:
         data = {
             "bulk_upload_type": "GAR",
+            "project_number": 1,
             "metadata": metadata_json,
             "fieldwork_file": fp_fieldwork,
             "lab_file": fp_lab,
