@@ -112,6 +112,7 @@ class BulkUpload(models.Model):
     data_owner = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
+    project_number = models.CharField(max_length=20, blank=False)
     bulk_upload_type = models.CharField(
         max_length=3,
         choices=choices.BULK_UPLOAD_TYPES,

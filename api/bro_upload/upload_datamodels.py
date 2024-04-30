@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 ## Uploadtask models
 
@@ -145,6 +145,13 @@ class FieldResearch(BaseModel):
     temperatureDifficultToMeasure: str
     fieldMeasurements: list[FieldMeasurement] | None = None
 
+    @validator("samplingDateTime", pre=True, always=True)
+    def format_datetime(cls, value):
+        """Ensure datetime is always serialized as BRO required format"""
+        if isinstance(value, datetime):
+            return value.isoformat()
+        return value
+
 
 class Analysis(BaseModel):
     parameter: str | int
@@ -160,6 +167,13 @@ class AnalysisProcess(BaseModel):
     analyticalTechnique: str
     valuationMethod: str
     analyses: list[Analysis]
+
+    @validator("date", pre=True, always=True)
+    def format_date(cls, value):
+        """Ensure date is always serialized as a string, in BRO required format"""
+        if isinstance(value, date):
+            return value.strftime("%Y-%m-%d")
+        return value
 
 
 class LaboratoryAnalysis(BaseModel):

@@ -100,15 +100,29 @@ class GARBulkUploader:
             self.bulk_upload_instance.save()
 
         # Step 3: Prepare data for uploadtask per row
-        uploadtask_metadata = self.bulk_upload_instance.metadata
+        uploadtask_metadata = {
+            "qualityRegime": self.bulk_upload_instance.metadata["qualityRegime"],
+            "requestReference": self.bulk_upload_instance.metadata["requestReference"],
+        }
 
         for index, row in trimmed_df.iterrows():
-            uploadtask_sourcedocs_data = create_gar_sourcesdocs_data(
-                row, uploadtask_metadata
+            uploadtask_sourcedocument_data: GAR = create_gar_sourcesdocs_data(
+                row, self.bulk_upload_instance.metadata
             )
-            print(uploadtask_sourcedocs_data)
 
-            ####TODO: Create a UploadTask here with the metadata and sourcedocs_data
+            uploadtask_sourcedocument_data_dict = (
+                uploadtask_sourcedocument_data.model_dump()
+            )
+
+            api_models.UploadTask.objects.create(
+                data_owner=self.bulk_upload_instance.data_owner,
+                bro_domain="GAR",
+                project_number=self.bulk_upload_instance.project_number,
+                registration_type="GAR",
+                request_type="registration",
+                metadata=uploadtask_metadata,
+                sourcedocument_data=uploadtask_sourcedocument_data_dict,
+            )
 
 
 def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
@@ -123,7 +137,6 @@ def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
         raise ValueError(
             "Unsupported file type. Only CSV and Excel files are supported."
         )
-
     return df
 
 
@@ -277,7 +290,6 @@ def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
             }
 
             analysis_process = AnalysisProcess(**analysis_process_dict)
-
             analysis_processes.append(analysis_process)
 
     return analysis_processes
