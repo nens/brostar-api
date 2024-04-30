@@ -1,9 +1,18 @@
+import re
 from typing import TypeVar
 
 import pandas as pd
 
 from api import models as api_models
-from api.bro_upload.upload_datamodels import GAR, FieldMeasurement, FieldResearch
+from api.bro_upload import config
+from api.bro_upload.upload_datamodels import (
+    GAR,
+    Analysis,
+    AnalysisProcess,
+    FieldMeasurement,
+    FieldResearch,
+    LaboratoryAnalysis,
+)
 
 T = TypeVar("T", bound="api_models.UploadFile")
 
@@ -148,7 +157,7 @@ def create_gar_sourcesdocs_data(row: pd.Series, metadata: dict[str, any]) -> GAR
         "gmwBroId": row["bro_id"],
         "tubeNumber": row["filter_num"],
         "fieldResearch": create_gar_field_research(row, metadata),
-        # TODO: HIER LAB ANALYSES TOEVOEGEN
+        "laboratoryAnalyses": create_gar_lab_analysis(row, metadata),
     }
 
     if "groundwaterMonitoringNets" in metadata:
@@ -197,42 +206,78 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
     If the options for other organisations differ, this should be redesigned"""
     field_measurement_list = []
 
-    parameter_options_dict = {
-        "pH": {
-            "parameter_id": 1,
-            "unit": "-",
-        },
-        "Zuurstof (mg/l)": {
-            "parameter_id": 2,
-            "unit": "mg/l",
-        },
-        "Geleidbaarheid (mS/m)": {
-            "parameter_id": 3,
-            "unit": "mS/m",
-        },
-        "Temperatuur (°C)": {
-            "parameter_id": 4,
-            "unit": "°C",
-        },
-        "Troebelheid (NTU)": {
-            "parameter_id": 5,
-            "unit": "NTU",
-        },
-        "Alkaliniteit (HCO3 - mg/l)": {
-            "parameter_id": 6,
-            "unit": "HCO3 - mg/l",
-        },
-    }
-    for parameter, details in parameter_options_dict.items():
+    for parameter, details in config.FIELD_PARAMETER_OPTIONS.items():
         if parameter in row and row[parameter] != "niet bepaald":
             parameter_dict = {
                 "parameter": details["parameter_id"],
                 "unit": details["unit"],
                 "fieldMeasurementValue": row[parameter],
-                "qualityControlStatus": "goed",
+                "qualityControlStatus": "onbekend",
             }
 
         field_measurement = FieldMeasurement(**parameter_dict)
         field_measurement_list.append(field_measurement)
 
     return field_measurement_list
+
+
+def create_gar_lab_analysis(
+    row: pd.Series, metadata: dict[str, any]
+) -> list[LaboratoryAnalysis]:
+    """Creates the LaboratoryAnalysis pydantic model based on a row of the merged df of the GAR bulk upload input."""
+    lab_analysis = {
+        "responsibleLaboratoryKvk": metadata["responsibleLaboratoryKvk"],
+        "analysisProcesses": create_analysis_process(row),
+    }
+
+    return [LaboratoryAnalysis(**lab_analysis)]
+
+
+def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
+    analysis_processes = []
+
+    for parameter, details in config.LAB_PARAMETER_OPTIONS.items():
+        value_column_pattern = rf"^\s*{parameter}\s+\(.*\)\s*$"
+        value_column = next(
+            (col for col in row.index if re.search(value_column_pattern, col)), None
+        )
+
+        if value_column and pd.notna(row[value_column]):
+            reporting_limit_column_pattern = (
+                rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
+            )
+            reporting_limit_column = next(
+                (
+                    col
+                    for col in row.index
+                    if re.search(reporting_limit_column_pattern, col)
+                ),
+                None,
+            )
+
+            date_column_pattern = rf"^\s*Analysedatum\s+{parameter}\s+\(.*\)\s*$"
+            date_column = next(
+                (col for col in row.index if re.search(date_column_pattern, col)), None
+            )
+
+            analysis_dict = {
+                "parameter": details["parameter_id"],
+                "unit": details["unit"],
+                "analysisMeasurementValue": row[value_column],
+                "reportingLimit": row[reporting_limit_column],
+                "qualityControlStatus": "onbeslist",
+            }
+            analysis = Analysis(**analysis_dict)
+
+            analysis_process_dict = {
+                "date": row[date_column],
+                "analyticalTechnique": details["analyticalTechnique"],
+                "valuationMethod": details["validationMethod"],
+                "analyses": [analysis],
+            }
+
+            analysis_process = AnalysisProcess(**analysis_process_dict)
+
+            analysis_processes.append(analysis_process)
+
+    return analysis_processes

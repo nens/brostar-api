@@ -164,7 +164,7 @@ class AnalysisProcess(BaseModel):
 
 class LaboratoryAnalysis(BaseModel):
     responsibleLaboratoryKvk: str | None = None
-    analysisProcesses: list[AnalysisProcess]
+    analysisProcesses: list[AnalysisProcess] = []
 
 
 class GAR(BaseModel):
