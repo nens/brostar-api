@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
@@ -7,8 +6,8 @@ import sys
 def main() -> None:
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "brostar_api.settings")
-
     try:
+        from django.conf import settings  # Correctly import settings from django.conf
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
@@ -16,6 +15,11 @@ def main() -> None:
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+
+    # Ensure MEDIA_ROOT exists
+    if not os.path.exists(settings.MEDIA_ROOT):
+        os.makedirs(settings.MEDIA_ROOT)
+
     execute_from_command_line(sys.argv)
 
 
