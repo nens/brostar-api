@@ -67,6 +67,7 @@ class GARBulkUploader:
             self.bulk_upload_instance.log = e
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save()
+            return
 
         # Step 2: transform the pandas files to a useable format
         try:
@@ -106,6 +107,7 @@ class GARBulkUploader:
             self.bulk_upload_instance.log = e
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save()
+            return
 
         # Step 3: Prepare data for uploadtask per row
         uploadtask_metadata = {
