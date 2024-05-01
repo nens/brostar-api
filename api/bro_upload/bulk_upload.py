@@ -1,5 +1,6 @@
 import logging
 import re
+import time
 from typing import TypeVar
 
 import pandas as pd
@@ -144,8 +145,12 @@ class GARBulkUploader:
                 self.bulk_upload_instance.save()
                 # Skipping this row as it failed.
                 continue
+            finally:
+                # Give your BRO some rest mate
+                time.sleep(10)
 
         self.bulk_upload_instance.progress = 100.00
+        self.bulk_upload_instance.status = "FINISHED"
         self.bulk_upload_instance.save()
 
 

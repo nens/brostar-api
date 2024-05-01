@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_api_key",
     "drf_yasg",
     "corsheaders",
     "django_filters",
@@ -205,9 +206,14 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 1000,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "brostar_api.authentication.CustomSessionAuthentication",
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "api.api_keys.authentication.APIKeyBasicAuthentication",
+        "api.api_keys.authentication.CustomSessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "api.api_keys.permissions.InScope",
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 
 

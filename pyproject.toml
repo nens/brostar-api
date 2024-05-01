@@ -13,6 +13,7 @@ dependencies = [
     "django-filter",
     "django==5.0.*",
     "djangorestframework",
+    "djangorestframework-api-key",
     "drf-yasg",
     "markdown > 3",  # DRF api docs
     "nens-auth-client",
