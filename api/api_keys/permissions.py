@@ -11,7 +11,7 @@ class InScope(permissions.BasePermission):
     setting request.user and tls.request.user.
 
     See also:
-    - lizard_nxt.authentication.APIKeyBasicAuthentication: authentication_class
+    - api.api_keys.authentication.APIKeyBasicAuthentication: authentication_class
     """
 
     def has_permission(self, request, view):

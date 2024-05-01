@@ -24,7 +24,7 @@ class APIKeyBasicAuthentication(BasicAuthentication):
     - rest_framework.exceptions.AuthenticationFailed: key is invalid or expired
 
     See also:
-    - InScope: permission_class that uses request.auth
+    - api.api_keys_permissions.InScope: permission_class that uses request.auth
 
     """
 
