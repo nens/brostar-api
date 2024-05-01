@@ -6,6 +6,7 @@
 - Added gmw/gmn/upload/import tests.
 - Added GAR Template + tests.
 - Added BulkUpload model & Endpoint. Currently it supports the GAR bulk upload, where csv/excel files can be uploaded.
+- Added Api_tokens.
 
 
 

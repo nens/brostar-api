@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
-from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework import generics, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -30,16 +30,12 @@ class LogoutView(views.APIView):
     Details: https://github.com/encode/django-rest-framework/issues/9206
     """
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
         return redirect("/api")
 
 
 class APIOverview(views.APIView):
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
     def get(self, request: HttpRequest, format: Any = None) -> HttpResponse:
         data = {
             "users": reverse("api:user-list", request=request, format=format),
@@ -149,7 +145,6 @@ class UserViewSet(viewsets.ModelViewSet):
 class OrganisationListView(generics.ListAPIView):
     queryset = models.Organisation.objects.all().order_by("name")
     serializer_class = serializers.OrganisationSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
@@ -174,7 +169,6 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     serializer_class = serializers.ImportTaskSerializer
     lookup_field = "uuid"
     queryset = models.ImportTask.objects.all().order_by("-created")
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
 
@@ -230,7 +224,6 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     serializer_class = serializers.UploadTaskSerializer
     lookup_field = "uuid"
     queryset = models.UploadTask.objects.all().order_by("-created")
-    permission_classes = [permissions.IsAuthenticated]
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.UploadTaskFilter
@@ -396,7 +389,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     serializer_class = serializers.BulkUploadSerializer
     lookup_field = "uuid"
     queryset = models.BulkUpload.objects.all().order_by("-created")
-    permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser,)
     filter_backends = [DjangoFilterBackend]
 

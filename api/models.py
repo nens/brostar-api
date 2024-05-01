@@ -1,13 +1,72 @@
 import uuid
+from datetime import date
 from typing import Any
 
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import JSONField, Q, UniqueConstraint
 from encrypted_model_fields.fields import EncryptedCharField
+from rest_framework_api_key.models import AbstractAPIKey
 
 from api import choices, tasks
+
+
+class PersonalAPIKey(AbstractAPIKey):
+    """Personal API Key class
+
+    id: {key}.{prefix} primary key
+    prefix: for key lookups, unique, max_lenght=8
+    hashed_key: max_lenght=100
+    created: datetime
+    name: description of this key's usage
+    revoked: boolean
+    expiry_date: datetime
+    is_password: for migrating username/password combinations, boolean
+    user: foreign key to user
+    """
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="api_keys")
+
+    scope = models.TextField(
+        help_text="A space-separated list of {endpoint|*}:{read|readwrite}.",
+        default="*:readwrite",
+    )
+
+    is_password = models.BooleanField(
+        help_text="Whether this key was migrated from a former password.",
+        default=False,
+    )
+
+    # Monitor the usage of the key
+    last_used = models.DateField(
+        help_text="Last time the API key was used.",
+        default=None,
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = "Personal API Key"
+        verbose_name_plural = "Personal API Keys"
+
+        constraints = [
+            # Every user has at most 1 key with is_password=True
+            UniqueConstraint(
+                fields=["user"],
+                condition=Q(is_password=True),
+                name="unique_password_user",
+            ),
+        ]
+
+    def update_last_used(self):
+        """Update the last time the API key has been used,
+        don't override if that day is today.
+        """
+        today = date.today()
+        if self.last_used != today:
+            self.last_used = today
+            super().save(update_fields=["last_used"])
 
 
 class Organisation(models.Model):
