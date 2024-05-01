@@ -1,3 +1,4 @@
+import logging
 import re
 from typing import TypeVar
 
@@ -13,6 +14,9 @@ from api.bro_upload.upload_datamodels import (
     FieldResearch,
     LaboratoryAnalysis,
 )
+
+logger = logging.getLogger(__name__)
+
 
 T = TypeVar("T", bound="api_models.UploadFile")
 
@@ -94,6 +98,9 @@ class GARBulkUploader:
             ]
             trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
 
+            self.bulk_upload_instance.progress = 20.00
+            self.bulk_upload_instance.save()
+
         except Exception as e:
             self.bulk_upload_instance.log = e
             self.bulk_upload_instance.status = "FAILED"
@@ -105,24 +112,41 @@ class GARBulkUploader:
             "requestReference": self.bulk_upload_instance.metadata["requestReference"],
         }
 
+        progress_per_row = round((80 / len(trimmed_df)), 2)
+
         for index, row in trimmed_df.iterrows():
-            uploadtask_sourcedocument_data: GAR = create_gar_sourcesdocs_data(
-                row, self.bulk_upload_instance.metadata
-            )
+            try:
+                uploadtask_sourcedocument_data: GAR = create_gar_sourcesdocs_data(
+                    row, self.bulk_upload_instance.metadata
+                )
 
-            uploadtask_sourcedocument_data_dict = (
-                uploadtask_sourcedocument_data.model_dump()
-            )
+                uploadtask_sourcedocument_data_dict = (
+                    uploadtask_sourcedocument_data.model_dump()
+                )
 
-            api_models.UploadTask.objects.create(
-                data_owner=self.bulk_upload_instance.data_owner,
-                bro_domain="GAR",
-                project_number=self.bulk_upload_instance.project_number,
-                registration_type="GAR",
-                request_type="registration",
-                metadata=uploadtask_metadata,
-                sourcedocument_data=uploadtask_sourcedocument_data_dict,
-            )
+                api_models.UploadTask.objects.create(
+                    data_owner=self.bulk_upload_instance.data_owner,
+                    bro_domain="GAR",
+                    project_number=self.bulk_upload_instance.project_number,
+                    registration_type="GAR",
+                    request_type="registration",
+                    metadata=uploadtask_metadata,
+                    sourcedocument_data=uploadtask_sourcedocument_data_dict,
+                )
+
+                self.bulk_upload_instance.progress += progress_per_row
+                self.bulk_upload_instance.save()
+            except Exception as e:
+                logger.warning(
+                    f"Failed to upload GAR ({row.bro_id}) in bulk upload: {e}"
+                )
+                self.bulk_upload_instance.progress += progress_per_row
+                self.bulk_upload_instance.save()
+                # Skipping this row as it failed.
+                continue
+
+        self.bulk_upload_instance.progress = 100.00
+        self.bulk_upload_instance.save()
 
 
 def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
