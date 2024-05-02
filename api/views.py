@@ -6,6 +6,7 @@ from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
 from rest_framework import generics, status, views, viewsets
@@ -392,6 +393,14 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     parser_classes = (MultiPartParser,)
     filter_backends = [DjangoFilterBackend]
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                "fieldwork_file", openapi.IN_FORM, type=openapi.TYPE_FILE
+            ),
+            openapi.Parameter("lab_file", openapi.IN_FORM, type=openapi.TYPE_FILE),
+        ]
+    )
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

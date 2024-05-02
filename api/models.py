@@ -176,12 +176,13 @@ class BulkUpload(models.Model):
         max_length=3,
         choices=choices.BULK_UPLOAD_TYPES,
         default=None,
+        blank=False,
         help_text="Determines which process/task to start.",
     )
     metadata = JSONField(
         "Metadata",
         default=dict,
-        blank=True,
+        blank=False,
         help_text="Optional json field to add extra data that is not provided within the files, but is required in the processing of the files.",
     )
     status = models.CharField(
