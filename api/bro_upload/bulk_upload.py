@@ -224,7 +224,8 @@ def create_gar_field_research(
         "samplingDateTime": f"{samplingdate}T00:00:00+00:00",
         "samplingOperator": metadata["samplingOperator"],
         "samplingStandard": metadata["samplingStandard"],
-        "pumpType": row["Pomptype"],
+        "pumpType": row["Pomptype"][0].lower()
+        + row["Pomptype"][1:],  # fixes upper cases
         "primaryColour": row["Hoofdkleur"],
         "secondaryColour": row["Bijkleur"],
         "colourStrength": row["Kleursterkte"],
@@ -256,7 +257,7 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
                 "parameter": details["parameter_id"],
                 "unit": details["unit"],
                 "fieldMeasurementValue": row[parameter],
-                "qualityControlStatus": "onbekend",
+                "qualityControlStatus": "onbeslist",
             }
 
         field_measurement = FieldMeasurement(**parameter_dict)
