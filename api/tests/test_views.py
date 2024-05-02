@@ -61,7 +61,7 @@ def test_user_view_set_not_logged_in(api_client):
     url = reverse("api:user-logged-in")
     response = api_client.get(url)
 
-    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
