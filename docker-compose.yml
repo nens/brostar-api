@@ -33,6 +33,7 @@ services:
     command: celery -A brostar_api worker --loglevel=INFO
     volumes:
       - .:/code
+      - ./media:/media
     depends_on:
       db:
         condition: service_healthy
@@ -54,6 +55,7 @@ services:
       - "8000:8000"
     volumes:
       - .:/code
+      - ./media:/media
     depends_on:
       db:
         condition: service_healthy

@@ -193,7 +193,10 @@ STORAGES = {
     },
 }
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# User-uploaded files. The docker compose mounts the media dir ("./media" in the current
+# dir for development, for instance).
+MEDIA_ROOT = "/media"
+MEDIA_URL = "/media/"
 
 
 # Default primary key field type
