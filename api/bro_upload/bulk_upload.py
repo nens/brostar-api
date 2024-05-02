@@ -104,7 +104,7 @@ class GARBulkUploader:
             self.bulk_upload_instance.save()
 
         except Exception as e:
-            self.bulk_upload_instance.log = e
+            self.bulk_upload_instance.log = f"Failed to transform the csv files: {e}"
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save()
             return
@@ -198,8 +198,8 @@ def create_gar_sourcesdocs_data(row: pd.Series, metadata: dict[str, any]) -> GAR
     sourcedocs_data_dict = {
         "objectIdAccountableParty": f"{row['bro_id']}-{int(row['Meetronde'])}",
         "qualityControlMethod": metadata["qualityControlMethod"],
-        "gmwBroId": row["bro_id"],
-        "tubeNumber": row["filter_num"],
+        "gmwBroId": row["bro_id"].strip(),
+        "tubeNumber": row["filter_num"].strip(),
         "fieldResearch": create_gar_field_research(row, metadata),
         "laboratoryAnalyses": create_gar_lab_analysis(row, metadata),
     }
@@ -221,22 +221,24 @@ def create_gar_field_research(
     samplingdate = row["date"].strftime("%Y-%m-%d")
 
     field_research_dict = {
-        "samplingDateTime": f"{samplingdate}T00:00:00+00:00",
-        "samplingOperator": metadata["samplingOperator"],
-        "samplingStandard": metadata["samplingStandard"],
-        "pumpType": row["Pomptype"],
-        "primaryColour": row["Hoofdkleur"],
-        "secondaryColour": row["Bijkleur"],
-        "colourStrength": row["Kleursterkte"],
-        "abnormalityInCooling": row["Afwijkend gekoeld"],
-        "abnormalityInDevice": row["Afwijking in meetapparatuur"],
-        "pollutedByEngine": row["Contaminatie door verbrandingsmotor"],
-        "filterAerated": row["Filter belucht/ drooggevallen"],
-        "groundWaterLevelDroppedTooMuch": row["Grondwaterstand > 50 cm verlaagd"],
-        "abnormalFilter": row["Inline filter afwijkend"],
-        "sampleAerated": row["Monster belucht"],
-        "hoseReused": row["Slang hergebruikt"],
-        "temperatureDifficultToMeasure": row["Temperatuur moeilijk te bepalen"],
+        "samplingDateTime": f"{samplingdate}T00:00:00+00:00".strip(),
+        "samplingOperator": metadata["samplingOperator"].strip(),
+        "samplingStandard": metadata["samplingStandard"].strip(),
+        "pumpType": row["Pomptype"].strip(),
+        "primaryColour": row["Hoofdkleur"].strip(),
+        "secondaryColour": row["Bijkleur"].strip(),
+        "colourStrength": row["Kleursterkte"].strip(),
+        "abnormalityInCooling": row["Afwijkend gekoeld"].strip(),
+        "abnormalityInDevice": row["Afwijking in meetapparatuur"].strip(),
+        "pollutedByEngine": row["Contaminatie door verbrandingsmotor"].strip(),
+        "filterAerated": row["Filter belucht/ drooggevallen"].strip(),
+        "groundWaterLevelDroppedTooMuch": row[
+            "Grondwaterstand > 50 cm verlaagd"
+        ].strip(),
+        "abnormalFilter": row["Inline filter afwijkend"].strip(),
+        "sampleAerated": row["Monster belucht"].strip(),
+        "hoseReused": row["Slang hergebruikt"].strip(),
+        "temperatureDifficultToMeasure": row["Temperatuur moeilijk te bepalen"].strip(),
         "fieldMeasurements": create_gar_field_measurements(row),
     }
 
@@ -255,7 +257,7 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
             parameter_dict = {
                 "parameter": details["parameter_id"],
                 "unit": details["unit"],
-                "fieldMeasurementValue": row[parameter],
+                "fieldMeasurementValue": row[parameter].strip(),
                 "qualityControlStatus": "onbekend",
             }
 
@@ -307,14 +309,14 @@ def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
             analysis_dict = {
                 "parameter": details["parameter_id"],
                 "unit": details["unit"],
-                "analysisMeasurementValue": row[value_column],
-                "reportingLimit": row[reporting_limit_column],
+                "analysisMeasurementValue": row[value_column].strip(),
+                "reportingLimit": row[reporting_limit_column].strip(),
                 "qualityControlStatus": "onbeslist",
             }
             analysis = Analysis(**analysis_dict)
 
             analysis_process_dict = {
-                "date": row[date_column],
+                "date": row[date_column].strip(),
                 "analyticalTechnique": details["analyticalTechnique"],
                 "valuationMethod": details["validationMethod"],
                 "analyses": [analysis],

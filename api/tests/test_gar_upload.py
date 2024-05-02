@@ -12,9 +12,11 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
             <objectIdAccountableParty>test</objectIdAccountableParty>
             <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">handboekProvinciesRIVMv2017</qualityControlMethod>
 
-            <garcom:GroundwaterMonitoringNet gml:id="GMN1234567890">
-                <garcom:broId>GMN1234567890</garcom:broId>
-            </garcom:GroundwaterMonitoringNet>
+            <groundwaterMonitoringNet>
+                <garcom:GroundwaterMonitoringNet gml:id="GMN1234567890">
+                    <garcom:broId>GMN1234567890</garcom:broId>
+                </garcom:GroundwaterMonitoringNet>
+            </groundwaterMonitoringNet>
 
             <monitoringPoint>
                 <garcom:GroundwaterMonitoringTube gml:id="GMW1234567890_1">
@@ -24,8 +26,9 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
             </monitoringPoint>
             <fieldResearch>
                 <garcom:samplingDateTime>2018-10-23T16:59:32+01:00</garcom:samplingDateTime>
-                <garcom:samplingOperator/>
+                <garcom:samplingOperator>
                         <brocom:chamberOfCommerceNumber>123456789</brocom:chamberOfCommerceNumber>
+                </garcom:samplingOperator>
                 <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">NEN5744v2011-A1v2013</garcom:samplingStandard>
                 <garcom:samplingDevice>
                     <garcom:pumpType codeSpace="urn:bro:gar:PumpType">test</garcom:pumpType>
@@ -162,5 +165,5 @@ def test_gar_xml_creation():
     )
 
     xml = generator.create_xml_file()
-
+    print(xml)
     assert xml == expected_gar_xml_str
