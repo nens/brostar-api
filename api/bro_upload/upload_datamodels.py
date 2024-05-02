@@ -130,6 +130,7 @@ class FieldMeasurement(BaseModel):
 class FieldResearch(BaseModel):
     samplingDateTime: str | datetime
     samplingOperator: str
+    samplingStandard: str
     pumpType: str
     primaryColour: str | None = None
     secondaryColour: str | None = None

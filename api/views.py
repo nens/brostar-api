@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
-from rest_framework import generics, status, views, viewsets
+from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -31,12 +31,16 @@ class LogoutView(views.APIView):
     Details: https://github.com/encode/django-rest-framework/issues/9206
     """
 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request: HttpRequest) -> HttpResponse:
         logout(request)
         return redirect("/api")
 
 
 class APIOverview(views.APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request: HttpRequest, format: Any = None) -> HttpResponse:
         data = {
             "users": reverse("api:user-list", request=request, format=format),
@@ -83,6 +87,8 @@ class UserViewSet(viewsets.ModelViewSet):
     model = User
     serializer_class = serializers.UserSerializer
     lookup_field = "pk"
+
+    permission_classes = []
 
     def get_queryset(self) -> QuerySet:
         user = self.request.user
