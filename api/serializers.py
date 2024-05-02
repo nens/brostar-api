@@ -45,6 +45,23 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
 
 class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    fieldwork_file = serializers.FileField(write_only=True, required=True)
+    lab_file = serializers.FileField(write_only=True, required=True)
+
     class Meta:
         model = api_models.BulkUpload
         fields = "__all__"
+
+    def create(self, validated_data):
+        fieldwork_file = validated_data.pop("fieldwork_file", None)
+        lab_file = validated_data.pop("lab_file", None)
+        bulk_upload = api_models.BulkUpload.objects.create(**validated_data)
+
+        if fieldwork_file:
+            api_models.UploadFile.objects.create(
+                bulk_upload=bulk_upload, file=fieldwork_file
+            )
+        if lab_file:
+            api_models.UploadFile.objects.create(bulk_upload=bulk_upload, file=lab_file)
+
+        return bulk_upload
