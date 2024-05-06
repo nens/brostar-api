@@ -32,20 +32,20 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         organisation_uuid = "49c39ce8-3df8-4fe7-847f-33a647e100d0"
         gar_data_file_uuid = "25293571-991b-4eec-b991-03cd61c3c9f3"
-        # parameter_mapping_uuid = "90a4cc27-87e3-4d6b-8d8e-21dd4bc5af33"
+        parameter_mapping_uuid = "90a4cc27-87e3-4d6b-8d8e-21dd4bc5af33"
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
         gar_data_file_instance = get_django_instance(UploadFile, gar_data_file_uuid)
-        # parameter_mapping_file_instance = get_django_instance(
-        #     UploadFile, parameter_mapping_uuid
-        # )
+        parameter_mapping_file_instance = get_django_instance(
+            UploadFile, parameter_mapping_uuid
+        )
 
         # Read csv files
         dawaco_gar_data_df = read_csv_file(gar_data_file_instance, delimiter=";")
-        # parameter_mapping_df = read_csv_file(
-        #     parameter_mapping_file_instance, delimiter=";"
-        # )
+        parameter_mapping_df = read_csv_file(
+            parameter_mapping_file_instance, delimiter=";"
+        )
 
         # Transform df
         gar_df = transform_gar_data(dawaco_gar_data_df)
@@ -58,10 +58,14 @@ class Command(BaseCommand):
         # Filter gar_df
         filtered_gar_df = filter_out_delivered_gars(gar_df, gar_queryset)
 
-        print(filtered_gar_df)
+        # Group df per part that should result in 1 GAR uploadtask.
+        grouped_gar_df = group_gar_df(filtered_gar_df)
+
+        grouped_gar_df.apply(handle_gar_delivery, parameter_mapping_df)
 
 
 def get_django_instance(model: type[T], uuid: str) -> T:
+    """Returns the django instance of a given model based on the uuid"""
     try:
         return model.objects.get(uuid=uuid)
     except model.DoesNotExist:
@@ -70,6 +74,7 @@ def get_django_instance(model: type[T], uuid: str) -> T:
 
 
 def read_csv_file(upload_file_instance: UploadFile, delimiter: str) -> pd.DataFrame:
+    """Reads an UploadFile file and returns it as df"""
     try:
         return pd.read_csv(upload_file_instance.file.path, delimiter=delimiter)
     except OSError as e:
@@ -78,6 +83,7 @@ def read_csv_file(upload_file_instance: UploadFile, delimiter: str) -> pd.DataFr
 
 
 def transform_gar_data(df: pd.DataFrame) -> pd.DataFrame:
+    """Handles the required transformation of the raw dawaco csv"""
     try:
         # Date column to datetime type
         df["Resultaatdatum"] = pd.to_datetime(df["Resultaatdatum"])
@@ -115,6 +121,7 @@ def transform_gar_data(df: pd.DataFrame) -> pd.DataFrame:
 def filter_out_delivered_gars(
     df: pd.DataFrame, gar_queryset: QuerySet[GAR]
 ) -> pd.DataFrame:
+    """Filters out the rows that have allready been delivered to the bro"""
     try:
         for gar in gar_queryset:
             df = df[
@@ -129,3 +136,25 @@ def filter_out_delivered_gars(
     except Exception as e:
         logger.error(f"Failed to filter gar csv file: - {e}")
         raise
+
+
+def group_gar_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Groups the df per GAR. Each group is later on used to deliver 1 GAR message."""
+    try:
+        df = df.groupby(
+            [
+                "nitg_code",
+                "tube_number",
+                "Resultaatdatum",
+            ]
+        )
+        return df
+    except Exception as e:
+        logger.error(f"Failed to group gar csv file: - {e}")
+        raise
+
+
+def handle_gar_delivery(gar_df: pd.DataFrame, mapping_df: pd.DataFrame) -> None:
+    """This apply function handles the delivery of a single GAR delivery."""
+    ...
+    # use the pydantic models to fill the data. Use the bulk upload as example
