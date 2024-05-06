@@ -5,6 +5,7 @@ import requests
 import xmltodict
 from django.conf import settings
 
+from gar.models import GAR
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
 
@@ -311,3 +312,86 @@ class GMWObjectImporter(ObjectImporter):
             )
 
             monitoringtube_obj.save()
+
+
+class GARObjectImporter(ObjectImporter):
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If GAR_O  is not found, it basically means that the object is not relevant anymore
+        if "GAR_O" not in dispatch_document_data:
+            return
+
+        gar_data = dispatch_document_data.get("GAR_O")
+        monitoring_point_data = gar_data.get("monitoringPoint", None).get(
+            "garcommon:GroundwaterMonitoringTube", None
+        )
+        field_research_data = gar_data.get("fieldResearch", None)
+        field_observation_data = field_research_data.get(
+            "garcommon:fieldObservation", None
+        )
+        lab_analysis = gar_data.get("laboratoryAnalysis", None)
+
+        if lab_analysis:
+            lab_analysis_date = (
+                lab_analysis.get("garcommon:analysisProcess", None)
+                .get("garcommon:analysisDate", None)
+                .get("brocom:date")
+            )
+        else:
+            lab_analysis_date = None
+
+        self.gar_obj, created = GAR.objects.update_or_create(
+            bro_id=gar_data.get("brocom:broId", None),
+            data_owner=self.data_owner,
+            defaults={
+                "delivery_accountable_party": gar_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": gar_data.get("brocom:qualityRegime", None),
+                "quality_control_method": gar_data.get(
+                    "qualityControlMethod", None
+                ).get("#text", None),
+                "gmw_bro_id": monitoring_point_data.get("garcommon:broId", None),
+                "tube_number": monitoring_point_data.get("tubeNumber", None),
+                "sampling_datetime": field_research_data.get(
+                    "garcommon:samplingDateTime", None
+                ),
+                "sampling_standard": field_research_data.get(
+                    "garcommon:samplingStandard", None
+                ).get("#text", None),
+                "pump_type": field_research_data.get("garcommon:samplingDevice", None)
+                .get("garcommon:pumpType", None)
+                .get("#text", None),
+                "abnormality_in_cooling": field_observation_data.get(
+                    "garcommon:abnormalityInCooling", None
+                ),
+                "abnormality_in_device": field_observation_data.get(
+                    "garcommon:abnormalityInDevice", None
+                ),
+                "polluted_by_engine": field_observation_data.get(
+                    "garcommon:pollutedByEngine", None
+                ),
+                "filter_aerated": field_observation_data.get(
+                    "garcommon:filterAerated", None
+                ),
+                "groundwater_level_dropped_too_much": field_observation_data.get(
+                    "garcommon:groundWaterLevelDroppedTooMuch", None
+                ),
+                "abnormal_filter": field_observation_data.get(
+                    "garcommon:abnormalFilter", None
+                ),
+                "sample_aerated": field_observation_data.get(
+                    "garcommon:sampleAerated", None
+                ),
+                "hose_reused": field_observation_data.get("garcommon:hoseReused", None),
+                "temperature_difficult_to_measure": field_observation_data.get(
+                    "garcommon:temperatureDifficultToMeasure", None
+                ),
+                "lab_analysis_date": lab_analysis_date,
+            },
+        )
+
+        self.gar_obj.save()

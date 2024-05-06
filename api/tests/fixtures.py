@@ -2,6 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from api import models as api_models
+from gar import models as gar_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
 
@@ -47,6 +48,14 @@ def gmw(organisation):
     return gmw_models.GMW(
         data_owner=organisation,
         bro_id="GMW123456789",
+    )
+
+
+@pytest.fixture
+def gar(organisation):
+    return gar_models.GAR(
+        data_owner=organisation,
+        bro_id="GMW987654321",
     )
 
 
