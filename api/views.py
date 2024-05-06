@@ -188,7 +188,8 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         user_profile = models.UserProfile.objects.get(user=request.user)
         data_owner = user_profile.organisation
         serializer.validated_data["data_owner"] = data_owner
-        serializer.validated_data["kvk_number"] = data_owner.kvk_number
+        if not serializer.validated_data["kvk_number"]:
+            serializer.validated_data["kvk_number"] = data_owner.kvk_number
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
