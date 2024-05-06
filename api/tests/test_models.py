@@ -9,6 +9,7 @@ from gmw import models as gmw_models
 organisation = fixtures.organisation
 gmw = fixtures.gmw
 gmn = fixtures.gmn
+gar = fixtures.gar
 
 
 @pytest.mark.django_db
@@ -87,6 +88,11 @@ def test_measuringpoint_name(organisation, gmn):
 @pytest.mark.django_db
 def test_gmw_name(gmw):
     assert str(gmw) == "GMW123456789"
+
+
+@pytest.mark.django_db
+def test_gar_name(gar):
+    assert str(gar) == "GMW987654321"
 
 
 @pytest.mark.django_db

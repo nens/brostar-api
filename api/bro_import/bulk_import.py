@@ -38,7 +38,17 @@ class BulkImporter:
         self.data_owner = self.import_task_instance.data_owner
 
         # Lookup the right importer class to initiate for object
-        self.object_importer_class = config.object_importer_mapping[self.bro_domain]
+        try:
+            self.object_importer_class = config.object_importer_mapping[self.bro_domain]
+        except Exception as e:
+            self.import_task_instance.status = "FAILED"
+            self.import_task_instance.log = (
+                "The import for this BRO domain is not available yet."
+            )
+            self.import_task_instance.save()
+            raise DataImportError(
+                "The import for this BRO domain is not available yet."
+            ) from e
 
     def run(self) -> None:
         try:
