@@ -129,7 +129,7 @@ class FieldMeasurement(BaseModel):
 
 class FieldResearch(BaseModel):
     samplingDateTime: str | datetime
-    samplingOperator: str
+    samplingOperator: str | None = None
     samplingStandard: str
     pumpType: str
     primaryColour: str | None = None
@@ -159,7 +159,7 @@ class Analysis(BaseModel):
     unit: str
     analysisMeasurementValue: str | float
     limitSymbol: str | None = None
-    reportingLimit: str | float = None
+    reportingLimit: str | float | None = None
     qualityControlStatus: str
 
 

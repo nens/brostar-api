@@ -2,6 +2,8 @@ import uuid
 
 from django.db import models
 
+from gmw import models as gmw_models
+
 
 class GAR(models.Model):
     """Groundwater Analysis Research
@@ -35,6 +37,10 @@ class GAR(models.Model):
 
     def __str__(self) -> str:
         return self.bro_id
+
+    @property
+    def gmw_nitg_code(self):
+        return gmw_models.GMW.objects.get(bro_id=self.gmw_bro_id).nitg_code
 
     class Meta:
         verbose_name_plural = "GAR's"

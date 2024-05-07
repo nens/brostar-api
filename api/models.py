@@ -201,7 +201,7 @@ class UploadFile(models.Model):
     data_owner = models.ForeignKey(
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
-    bulk_upload = models.ForeignKey(BulkUpload, on_delete=models.CASCADE)
+    bulk_upload = models.ForeignKey(BulkUpload, on_delete=models.CASCADE, blank=True)
     file = models.FileField(
         upload_to="bulk_uploads/",
         validators=[FileExtensionValidator(allowed_extensions=["csv", "xls", "xlsx"])],

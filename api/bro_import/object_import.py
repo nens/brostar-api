@@ -355,7 +355,7 @@ class GARObjectImporter(ObjectImporter):
                     "qualityControlMethod", None
                 ).get("#text", None),
                 "gmw_bro_id": monitoring_point_data.get("garcommon:broId", None),
-                "tube_number": monitoring_point_data.get("tubeNumber", None),
+                "tube_number": monitoring_point_data.get("garcommon:tubeNumber", None),
                 "sampling_datetime": field_research_data.get(
                     "garcommon:samplingDateTime", None
                 ),
