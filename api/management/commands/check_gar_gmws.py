@@ -6,8 +6,10 @@ from django.core.management.base import BaseCommand
 from django.db import models
 from django.db.models.query import QuerySet
 
+from api import models as api_models
+from api.bro_upload import upload_datamodels as datamodels
 from api.models import Organisation, UploadFile
-from gar.models import GAR
+from gar import models as gar_models
 
 logger = logging.getLogger(__name__)
 
@@ -30,9 +32,11 @@ class Command(BaseCommand):
     help = "Uploads GAR data based on DAWACO exports."
 
     def handle(self, *args, **options):
+        # INPUT DATA
         organisation_uuid = "49c39ce8-3df8-4fe7-847f-33a647e100d0"
         gar_data_file_uuid = "25293571-991b-4eec-b991-03cd61c3c9f3"
         parameter_mapping_uuid = "90a4cc27-87e3-4d6b-8d8e-21dd4bc5af33"
+        project_number = 1
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
@@ -51,7 +55,7 @@ class Command(BaseCommand):
         gar_df = transform_gar_data(dawaco_gar_data_df)
 
         # Get all current BRO GARs
-        gar_queryset: QuerySet[GAR] = GAR.objects.filter(
+        gar_queryset: QuerySet[gar_models.GAR] = gar_models.GAR.objects.filter(
             data_owner=organisation_instance,
         )
 
@@ -61,7 +65,12 @@ class Command(BaseCommand):
         # Group df per part that should result in 1 GAR uploadtask.
         grouped_gar_df = group_gar_df(filtered_gar_df)
 
-        grouped_gar_df.apply(handle_gar_delivery, parameter_mapping_df)
+        grouped_gar_df.apply(
+            handle_gar_delivery,
+            parameter_mapping_df,
+            organisation_instance,
+            project_number,
+        )
 
 
 def get_django_instance(model: type[T], uuid: str) -> T:
@@ -119,7 +128,7 @@ def transform_gar_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def filter_out_delivered_gars(
-    df: pd.DataFrame, gar_queryset: QuerySet[GAR]
+    df: pd.DataFrame, gar_queryset: QuerySet[gar_models.GAR]
 ) -> pd.DataFrame:
     """Filters out the rows that have allready been delivered to the bro"""
     try:
@@ -154,7 +163,38 @@ def group_gar_df(df: pd.DataFrame) -> pd.DataFrame:
         raise
 
 
-def handle_gar_delivery(gar_df: pd.DataFrame, mapping_df: pd.DataFrame) -> None:
+def handle_gar_delivery(
+    gar_df: pd.DataFrame,
+    mapping_df: pd.DataFrame,
+    organisation_instance: T,
+    project_number: int,
+) -> None:
     """This apply function handles the delivery of a single GAR delivery."""
+    uploadtask_metadata = {
+        "qualityRegime": "IMBRO/A",
+        "requestReference": "dawaco_export_gar_data_bulk_upload_brostar",
+    }
+
+    uploadtask_sourcedocument_data: datamodels.GAR = create_gar_sourcedocs_data(
+        gar_df,
+        mapping_df,
+    )
+
+    uploadtask_sourcedocument_data_dict = uploadtask_sourcedocument_data.model_dump()
+
+    api_models.UploadTask.objects.create(
+        data_owner=organisation_instance,
+        bro_domain="GAR",
+        project_number=project_number,
+        registration_type="GAR",
+        request_type="registration",
+        metadata=uploadtask_metadata,
+        sourcedocument_data=uploadtask_sourcedocument_data_dict,
+    )
+
+
+def create_gar_sourcedocs_data(
+    df: pd.DataFrame, mapping_df: pd.DataFrame
+) -> datamodels.GAR:
+    """Creates a pydantic GAR instance, based on the data from a grouped df."""
     ...
-    # use the pydantic models to fill the data. Use the bulk upload as example
