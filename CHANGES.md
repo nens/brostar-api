@@ -3,7 +3,7 @@
 ## 0.11 (unreleased)
 
 
-- Nothing changed yet.
+- Dawaco gar bulk upload
 
 
 ## 0.10 (2024-05-02)
