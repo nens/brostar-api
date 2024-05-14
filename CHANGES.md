@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.11 (unreleased)
+## 0.11 (2024-05-14)
 
 
 - Dawaco gar bulk upload
