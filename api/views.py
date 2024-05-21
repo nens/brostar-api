@@ -91,6 +91,36 @@ class UserViewSet(viewsets.ModelViewSet):
 
     permission_classes = []
 
+    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """
+        Allows the user to POST BRO auth credentials.
+        These are saved in the organisation model.
+        """
+        user = request.user
+        data = request.data
+
+        bro_user_token = data.get("bro_user_token")
+        bro_user_password = data.get("bro_user_password")
+
+        print(bro_user_password, bro_user_token)
+
+        if not bro_user_token or not bro_user_password:
+            return Response(
+                {"error": "bro_user_token and bro_user_password are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        organisation = models.UserProfile.objects.get(user=user).organisation
+        print(organisation)
+        organisation.bro_user_token = bro_user_token
+        organisation.bro_user_password = bro_user_password
+        organisation.save()
+
+        return Response(
+            {"message": "BRO credentials updated successfully"},
+            status=status.HTTP_200_OK,
+        )
+
     def get_queryset(self) -> QuerySet:
         user = self.request.user
         queryset = User.objects.filter(pk=user.pk)
