@@ -136,6 +136,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 request=request,
                 format=None,
             )
+
             return Response(
                 {
                     "logged_in": True,
