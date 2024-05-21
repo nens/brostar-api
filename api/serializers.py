@@ -22,6 +22,7 @@ class OrganisationSerializer(serializers.ModelSerializer):
         # Exclude sensitive fields
         representation.pop("bro_user_token", None)
         representation.pop("bro_user_password", None)
+        representation.pop("request_count", None)
         return representation
 
 
