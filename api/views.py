@@ -129,6 +129,13 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         else:
             user_profile = models.UserProfile.objects.get(user=user)
+            organisation = user_profile.organisation
+            organisation_url = reverse(
+                "api:organisation-list",
+                kwargs=None,
+                request=request,
+                format=None,
+            )
             return Response(
                 {
                     "logged_in": True,
@@ -144,7 +151,8 @@ class UserViewSet(viewsets.ModelViewSet):
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "email": user.email,
-                    "organisation": user_profile.organisation.name,
+                    "organisation": organisation.name,
+                    "organisation_url": f"{organisation_url}{organisation.uuid}",
                     "kvk": user_profile.organisation.kvk_number,
                 }
             )
