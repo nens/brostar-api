@@ -100,6 +100,10 @@ class GARBulkUploader:
             ]
             trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
 
+            assert (
+                len(trimmed_df) > 0
+            ), "The combination of the lab and field files gave no resulting possible GARs"
+
             self.bulk_upload_instance.progress = 20.00
             self.bulk_upload_instance.save()
 
