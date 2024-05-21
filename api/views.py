@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
-from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework import permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -91,36 +91,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     permission_classes = []
 
-    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        """
-        Allows the user to POST BRO auth credentials.
-        These are saved in the organisation model.
-        """
-        user = request.user
-        data = request.data
-
-        bro_user_token = data.get("bro_user_token")
-        bro_user_password = data.get("bro_user_password")
-
-        print(bro_user_password, bro_user_token)
-
-        if not bro_user_token or not bro_user_password:
-            return Response(
-                {"error": "bro_user_token and bro_user_password are required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        organisation = models.UserProfile.objects.get(user=user).organisation
-        print(organisation)
-        organisation.bro_user_token = bro_user_token
-        organisation.bro_user_password = bro_user_password
-        organisation.save()
-
-        return Response(
-            {"message": "BRO credentials updated successfully"},
-            status=status.HTTP_200_OK,
-        )
-
     def get_queryset(self) -> QuerySet:
         user = self.request.user
         queryset = User.objects.filter(pk=user.pk)
@@ -180,11 +150,47 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
 
-class OrganisationListView(generics.ListAPIView):
-    queryset = models.Organisation.objects.all().order_by("name")
+class OrganisationViewSet(viewsets.ModelViewSet):
+    model = models.Organisation
     serializer_class = serializers.OrganisationSerializer
+    lookup_field = "uuid"
+    queryset = models.Organisation.objects.all().order_by("name")
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
+
+    def update(self, request, *args, **kwargs):
+        # validate that the user requests the change for own organisation
+        user = request.user
+        user_profile = models.UserProfile.objects.get(user=user)
+        user_organisation = user_profile.organisation
+
+        if self.get_object() != user_organisation:
+            return Response(
+                {"message": "Please change the credentials of your own organisation"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+
+        # Check if request data contains credentials
+        if "bro_user_token" in request.data or "bro_user_password" in request.data:
+            credential_serializer = serializers.OrganisationCredentialSerializer(
+                instance, data=request.data, partial=partial
+            )
+            credential_serializer.is_valid(raise_exception=True)
+            credential_serializer.save()
+
+        # Update the rest of the data
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(
+            {"message": "BRO credentials updated successfully"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
