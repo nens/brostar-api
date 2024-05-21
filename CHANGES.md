@@ -3,7 +3,7 @@
 ## 0.12 (unreleased)
 
 
-- Nothing changed yet.
+- Added option to post/patch bro credentials to own organisation.
 
 
 ## 0.11 (2024-05-14)
