@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
-from rest_framework import generics, permissions, status, views, viewsets
+from rest_framework import permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -129,6 +129,14 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         else:
             user_profile = models.UserProfile.objects.get(user=user)
+            organisation = user_profile.organisation
+            organisation_url = reverse(
+                "api:organisation-list",
+                kwargs=None,
+                request=request,
+                format=None,
+            )
+
             return Response(
                 {
                     "logged_in": True,
@@ -144,17 +152,54 @@ class UserViewSet(viewsets.ModelViewSet):
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "email": user.email,
-                    "organisation": user_profile.organisation.name,
+                    "organisation": organisation.name,
+                    "organisation_url": f"{organisation_url}{organisation.uuid}",
                     "kvk": user_profile.organisation.kvk_number,
                 }
             )
 
 
-class OrganisationListView(generics.ListAPIView):
-    queryset = models.Organisation.objects.all().order_by("name")
+class OrganisationViewSet(viewsets.ModelViewSet):
+    model = models.Organisation
     serializer_class = serializers.OrganisationSerializer
+    lookup_field = "uuid"
+    queryset = models.Organisation.objects.all().order_by("name")
+
     filter_backends = [DjangoFilterBackend]
     filterset_fields = "__all__"
+
+    def update(self, request, *args, **kwargs):
+        # validate that the user requests the change for own organisation
+        user = request.user
+        user_profile = models.UserProfile.objects.get(user=user)
+        user_organisation = user_profile.organisation
+
+        if self.get_object() != user_organisation:
+            return Response(
+                {"message": "Please change the credentials of your own organisation"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+
+        # Check if request data contains credentials
+        if "bro_user_token" in request.data or "bro_user_password" in request.data:
+            credential_serializer = serializers.OrganisationCredentialSerializer(
+                instance, data=request.data, partial=partial
+            )
+            credential_serializer.is_valid(raise_exception=True)
+            credential_serializer.save()
+
+        # Update the rest of the data
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(
+            {"message": "BRO credentials updated successfully"},
+            status=status.HTTP_200_OK,
+        )
 
 
 class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):

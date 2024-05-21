@@ -15,7 +15,20 @@ class UserSerializer(serializers.ModelSerializer):
 class OrganisationSerializer(serializers.ModelSerializer):
     class Meta:
         model = api_models.Organisation
-        fields = ["name", "kvk_number"]
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Exclude sensitive fields
+        representation.pop("bro_user_token", None)
+        representation.pop("bro_user_password", None)
+        return representation
+
+
+class OrganisationCredentialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = api_models.Organisation
+        fields = ["bro_user_token", "bro_user_password"]
 
 
 # Only used for swagger definitions

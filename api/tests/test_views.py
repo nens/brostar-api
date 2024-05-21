@@ -50,6 +50,7 @@ def test_user_view_set_logged_in(api_client, user, userprofile):
         "last_name": user.last_name,
         "email": user.email,
         "organisation": userprofile.organisation.name,
+        "organisation_url": f"http://testserver/api/organisations/{userprofile.organisation.uuid}",
         "kvk": userprofile.organisation.kvk_number,
     }
     assert response.data == expected_data
