@@ -155,6 +155,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     "organisation": organisation.name,
                     "organisation_url": f"{organisation_url}{organisation.uuid}",
                     "kvk": user_profile.organisation.kvk_number,
+                    "organisation_current_request_count": organisation.request_count,
                 }
             )
 
