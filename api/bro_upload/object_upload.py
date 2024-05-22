@@ -111,12 +111,17 @@ class BRODelivery:
                 self.upload_task_instance.log = "The upload was done successfully"
                 self.upload_task_instance.save()
 
-                # Add 1 to the organisations request count
-                organisation = api_models.Organisation.objects.get(
-                    uuid=self.upload_task_instance.data_owner
-                )
-                organisation.request_count += 1
-                organisation.save()
+                try:
+                    # Add 1 to the organisations request count
+                    organisation = api_models.Organisation.objects.get(
+                        uuid=self.upload_task_instance.data_owner
+                    )
+                    organisation.request_count += 1
+                    organisation.save()
+                except Exception as e:
+                    self.upload_task_instance.log = (
+                        f"The upload was done successfully. BUT: {e}"
+                    )
 
                 # After the upload was done succesfully, the data should be imported into the API
                 try:
