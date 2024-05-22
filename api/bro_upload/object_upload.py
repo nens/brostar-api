@@ -122,6 +122,7 @@ class BRODelivery:
                     self.upload_task_instance.log = (
                         f"The upload was done successfully. BUT: {e}"
                     )
+                    self.upload_task_instance.save()
 
                 # After the upload was done succesfully, the data should be imported into the API
                 try:
