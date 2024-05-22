@@ -114,8 +114,8 @@ class BRODelivery:
                 try:
                     # Add 1 to the organisations request count
                     organisation = api_models.Organisation.objects.get(
-                        uuid=self.upload_task_instance.data_owner
-                    ).uuid
+                        uuid=self.upload_task_instance.data_owner.uuid
+                    )
                     organisation.request_count += 1
                     organisation.save()
                 except Exception as e:
