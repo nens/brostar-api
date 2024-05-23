@@ -4,6 +4,8 @@
 
 
 - Added option to post/patch bro credentials to own organisation.
+- Fixed GAR import
+- Added request counter
 
 
 ## 0.11 (2024-05-14)
