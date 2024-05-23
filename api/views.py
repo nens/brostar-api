@@ -124,7 +124,10 @@ class UserViewSet(viewsets.ModelViewSet):
                     "last_name": None,
                     "email": None,
                     "organisation": None,
+                    "organisation_url": None,
                     "kvk": None,
+                    "organisation_current_request_count": None,
+                    "bro_credentials_set": None,
                 }
             )
         else:
@@ -135,6 +138,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 kwargs=None,
                 request=request,
                 format=None,
+            )
+            bro_credentials_set = (
+                True
+                if organisation.bro_user_password and organisation.bro_user_token
+                else False
             )
 
             return Response(
@@ -156,6 +164,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     "organisation_url": f"{organisation_url}{organisation.uuid}",
                     "kvk": user_profile.organisation.kvk_number,
                     "organisation_current_request_count": organisation.request_count,
+                    "bro_credentials_set": bro_credentials_set,
                 }
             )
 
