@@ -43,7 +43,10 @@ class UserLoggedInSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     email = serializers.CharField()
     organisation = serializers.CharField()
+    organisation_url = serializers.CharField()
     kvk = serializers.CharField()
+    organisation_current_request_count = serializers.IntegerField()
+    bro_credentials_set = serializers.BooleanField()
 
 
 class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
