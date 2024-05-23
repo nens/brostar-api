@@ -335,11 +335,19 @@ class GARObjectImporter(ObjectImporter):
         lab_analysis = gar_data.get("laboratoryAnalysis", None)
 
         if lab_analysis:
-            lab_analysis_date = (
-                lab_analysis.get("garcommon:analysisProcess", None)
-                .get("garcommon:analysisDate", None)
-                .get("brocom:date")
-            )
+            analysis_process = lab_analysis.get("garcommon:analysisProcess", None)
+            if isinstance(analysis_process, list):
+                lab_analysis_date = (
+                    lab_analysis.get("garcommon:analysisProcess", None)[0]
+                    .get("garcommon:analysisDate", None)
+                    .get("brocom:date")
+                )
+            else:
+                lab_analysis_date = (
+                    lab_analysis.get("garcommon:analysisProcess", None)
+                    .get("garcommon:analysisDate", None)
+                    .get("brocom:date")
+                )
         else:
             lab_analysis_date = None
 
