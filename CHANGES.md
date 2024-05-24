@@ -6,6 +6,7 @@
 - Added option to post/patch bro credentials to own organisation.
 - Fixed GAR import
 - Added request counter
+- Added data flush before importing. This makes sure that deleted data in the BRO doesnt stay forever in the BROSTAR API.
 
 
 ## 0.11 (2024-05-14)

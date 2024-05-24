@@ -3,8 +3,11 @@ import logging
 import requests
 from django.conf import settings
 
-from api import models
+from api import models as api_models
 from api.bro_import import config
+from gar.models import GAR
+from gmn.models import GMN
+from gmw.models import GMW
 
 logger = logging.getLogger(__name__)
 
@@ -20,14 +23,15 @@ class DataImportError(Exception):
 class BulkImporter:
     """Imports bulk data from the BRO for a given KVK and BRO domain.
 
-    It first fetches all BRO id's for the given BRO domain and KVK number.
+    It first flushes the current data.
+    Then it fetches all BRO id's for the given BRO domain and KVK number.
     Then loops over all id's to import the data if its object.
     Finally, it saves the data in the corresponding datamodel in the database.
     """
 
     def __init__(self, import_task_instance_uuid: str) -> None:
         # Lookup and update the import task instance
-        self.import_task_instance = models.ImportTask.objects.get(
+        self.import_task_instance = api_models.ImportTask.objects.get(
             uuid=import_task_instance_uuid
         )
         self.import_task_instance.status = "PROCESSING"
@@ -52,6 +56,8 @@ class BulkImporter:
 
     def run(self) -> None:
         try:
+            self._flush_existing_data()
+
             url = self._create_bro_ids_import_url()
             bro_ids = self._fetch_bro_ids(url)
 
@@ -82,6 +88,15 @@ class BulkImporter:
             self.import_task_instance.log = e
             self.import_task_instance.status = "FAILED"
             self.import_task_instance.save()
+
+    def _flush_existing_data(self) -> None:
+        """Flushes the current data to avoid removed data in the BRO to remain in this db."""
+        if self.bro_domain == "GMN":
+            GMN.objects.filter(data_owner=self.data_owner).delete()
+        if self.bro_domain == "GMW":
+            GMW.objects.filter(data_owner=self.data_owner).delete()
+        if self.bro_domain == "GAR":
+            GAR.objects.filter(data_owner=self.data_owner).delete()
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""
