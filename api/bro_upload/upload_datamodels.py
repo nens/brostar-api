@@ -190,3 +190,18 @@ class GAR(BaseModel):
     tubeNumber: str | int
     fieldResearch: FieldResearch
     laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
+
+
+class GLDStartregistration(BaseModel):
+    objectIdAccountableParty: str | None = None
+    groundwaterMonitoringNets: list[str] | None = None
+    gmwBroId: str
+    tubeNumber: str | int
+
+
+class GLDAddition(BaseModel):
+    ...
+
+
+class GLDClosure(BaseModel):
+    ...
