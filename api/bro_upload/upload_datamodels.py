@@ -202,6 +202,7 @@ class GLDStartregistration(BaseModel):
 class TimeValuePair(BaseModel):
     time: str | datetime
     value: float | str
+    statusQualityControl: str
 
     @validator("samplingDateTime", pre=True, always=True)
     def format_datetime(cls, value):
