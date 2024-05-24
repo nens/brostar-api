@@ -1,7 +1,6 @@
 from api.bro_upload.upload_datamodels import (
     GAR,
     GLDAddition,
-    GLDClosure,
     GLDStartregistration,
     GMNClosure,
     GMNMeasuringPoint,
@@ -56,7 +55,7 @@ registration_type_datamodel_mapping = {
     "GAR": GAR,
     "GLD_StartRegistration": GLDStartregistration,
     "GLD_Addition": GLDAddition,
-    "GLD_Closure": GLDClosure,
+    "GLD_Closure": None,
 }
 
 

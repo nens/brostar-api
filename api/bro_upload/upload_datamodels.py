@@ -201,7 +201,3 @@ class GLDStartregistration(BaseModel):
 
 class GLDAddition(BaseModel):
     ...
-
-
-class GLDClosure(BaseModel):
-    ...
