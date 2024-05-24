@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.12 (unreleased)
+## 0.12 (2024-05-24)
 
 
 - Added option to post/patch bro credentials to own organisation.
