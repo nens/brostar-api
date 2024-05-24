@@ -3,7 +3,7 @@
 ## 0.13 (unreleased)
 
 
-- Nothing changed yet.
+- Added GLD
 
 
 ## 0.12 (2024-05-24)
