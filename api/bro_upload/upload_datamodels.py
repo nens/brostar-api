@@ -204,7 +204,7 @@ class TimeValuePair(BaseModel):
     value: float | str
     statusQualityControl: str
 
-    @validator("samplingDateTime", pre=True, always=True)
+    @validator("time", pre=True, always=True)
     def format_datetime(cls, value):
         """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
