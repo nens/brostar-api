@@ -6,6 +6,7 @@ import xmltodict
 from django.conf import settings
 
 from gar.models import GAR
+from gld.models import GLD
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
 
@@ -403,3 +404,34 @@ class GARObjectImporter(ObjectImporter):
         )
 
         self.gar_obj.save()
+
+
+class GLDObjectImporter(ObjectImporter):
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If GLD_O  is not found, it basically means that the object is not relevant anymore
+        if "GLD_O" not in dispatch_document_data:
+            return
+
+        gld_data = dispatch_document_data.get("GLD_O")
+        monitoring_point_data = gld_data.get("monitoringPoint").get(
+            "gldcommon:GroundwaterMonitoringTube"
+        )
+
+        self.gld_obj, created = GLD.objects.update_or_create(
+            bro_id=gld_data.get("brocom:broId", None),
+            data_owner=self.data_owner,
+            defaults={
+                "delivery_accountable_party": gld_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": gld_data.get("brocom:qualityRegime", None),
+                "gmw_bro_id": monitoring_point_data.get("gldcommon:broId", None),
+                "tube_number": monitoring_point_data.get("gldcommon:tubeNumber", None),
+                "research_first_date": gld_data.get("researchFirstDate", None),
+                "research_last_date": gld_data.get("researchLastDate", None),
+            },
+        )

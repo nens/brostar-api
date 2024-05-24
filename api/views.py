@@ -65,6 +65,7 @@ class APIOverview(views.APIView):
                 "api:gmw:monitoringtube-list", request=request, format=format
             ),
             "gars": reverse("api:gar:gar-list", request=request, format=format),
+            "glds": reverse("api:gld:gld-list", request=request, format=format),
         }
         return Response(data)
 
