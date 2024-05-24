@@ -190,3 +190,36 @@ class GAR(BaseModel):
     tubeNumber: str | int
     fieldResearch: FieldResearch
     laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
+
+
+class GLDStartregistration(BaseModel):
+    objectIdAccountableParty: str | None = None
+    groundwaterMonitoringNets: list[str] | None = None
+    gmwBroId: str
+    tubeNumber: str | int
+
+
+class TimeValuePair(BaseModel):
+    time: str | datetime
+    value: float | str
+    statusQualityControl: str
+
+    @validator("time", pre=True, always=True)
+    def format_datetime(cls, value):
+        """Ensure datetime is always serialized as BRO required format"""
+        if isinstance(value, datetime):
+            return value.isoformat()
+        return value
+
+
+class GLDAddition(BaseModel):
+    principalInvestigator: str
+    date: str
+    investigatorKvk: str
+    observationType: str
+    beginPosition: str
+    endPosition: str
+    resultTime: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
+    timeValuePairs: list[TimeValuePair]

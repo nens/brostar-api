@@ -65,6 +65,7 @@ class APIOverview(views.APIView):
                 "api:gmw:monitoringtube-list", request=request, format=format
             ),
             "gars": reverse("api:gar:gar-list", request=request, format=format),
+            "glds": reverse("api:gld:gld-list", request=request, format=format),
         }
         return Response(data)
 
@@ -309,12 +310,14 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         validation_class = registration_type_datamodel_mapping.get(
             serializer.validated_data["registration_type"]
         )
-
-        try:
-            validation_class(**serializer.validated_data["sourcedocument_data"])
-        except ValidationError as e:
-            errors = utils.simplify_validation_errors(e.errors())
-            return Response({"detail": e.errors()}, status=status.HTTP_400_BAD_REQUEST)
+        if validation_class:
+            try:
+                validation_class(**serializer.validated_data["sourcedocument_data"])
+            except ValidationError as e:
+                errors = utils.simplify_validation_errors(e.errors())
+                return Response(
+                    {"detail": e.errors()}, status=status.HTTP_400_BAD_REQUEST
+                )
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
