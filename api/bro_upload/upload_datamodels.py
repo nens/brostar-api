@@ -192,6 +192,9 @@ class GAR(BaseModel):
     laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
 
 
+# GLD
+
+
 class GLDStartregistration(BaseModel):
     objectIdAccountableParty: str | None = None
     groundwaterMonitoringNets: list[str] | None = None
@@ -223,3 +226,46 @@ class GLDAddition(BaseModel):
     evaluationProcedure: str
     measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
+
+
+# FRD
+class FRDStartRegistration(BaseModel):
+    objectIdAccountableParty: str | None = None
+    groundwaterMonitoringNets: list[str] | None = None
+    gmwBroId: str
+    tubeNumber: str | int
+
+
+class MeasurementConfiguration(BaseModel):
+    measurementConfigurationID: str
+    measurementE1CableNumber: str | int
+    measurementE1ElectrodeNumber: str | int
+    measurementE2CableNumber: str | int
+    measurementE2ElectrodeNumber: str | int
+    currentE1CableNumber: str | int
+    currentE1ElectrodeNumber: str | int
+    currentE2CableNumber: str | int
+    currentE2ElectrodeNumber: str | int
+
+
+class FRDGemMeasurementConfiguration(BaseModel):
+    measurementConfigurations: list[MeasurementConfiguration]
+
+
+class FRDGemMeasurement(BaseModel):
+    instrumentConfigurationID: str
+    relativePositionTransmitterCoil: str | int
+    relativePositionPrimaryReceiverCoil: str | int
+    secondaryReceiverCoilAvailable: str
+    relativePositionSecondaryReceiverCoil: str | int | None = None
+    coilFrequencyKnown: str
+    coilFrequency: str | int | None = None
+    instrumentLength: str | int
+
+
+class FRDEmmMeasurementConfiguration(BaseModel):
+    ...
+
+
+class FRDEmmMeasurement(BaseModel):
+    ...
