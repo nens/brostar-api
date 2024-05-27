@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "gmw.apps.GmwConfig",
     "gar.apps.GarConfig",
     "gld.apps.GldConfig",
+    "frd.apps.FrdConfig",
     "nens_auth_client",
     "django.contrib.admin",
     "django.contrib.auth",

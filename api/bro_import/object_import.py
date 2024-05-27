@@ -5,6 +5,7 @@ import requests
 import xmltodict
 from django.conf import settings
 
+from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD
 from gmn.models import GMN, Measuringpoint
@@ -433,5 +434,36 @@ class GLDObjectImporter(ObjectImporter):
                 "tube_number": monitoring_point_data.get("gldcommon:tubeNumber", None),
                 "research_first_date": gld_data.get("researchFirstDate", None),
                 "research_last_date": gld_data.get("researchLastDate", None),
+            },
+        )
+
+
+class FRDObjectImporter(ObjectImporter):
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If FRD_O  is not found, it basically means that the object is not relevant anymore
+        if "FRD_O" not in dispatch_document_data:
+            return
+
+        frd_data = dispatch_document_data.get("FRD_O")
+        tube_data = frd_data.get("groundwaterMonitoringTube").get(
+            "frdcom:MonitoringTube"
+        )
+
+        self.frd_obj, created = FRD.objects.update_or_create(
+            bro_id=frd_data.get("brocom:broId", None),
+            data_owner=self.data_owner,
+            defaults={
+                "delivery_accountable_party": frd_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": frd_data.get("brocom:qualityRegime", None),
+                "gmw_bro_id": tube_data.get("frdcom:broId", None),
+                "tube_number": tube_data.get("frdcom:tubeNumber", None),
+                "research_first_date": frd_data.get("researchFirstDate", None),
+                "research_last_date": frd_data.get("researchLastDate", None),
             },
         )

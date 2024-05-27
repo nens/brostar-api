@@ -5,4 +5,5 @@ object_importer_mapping = {
     "GMW": object_import.GMWObjectImporter,
     "GAR": object_import.GARObjectImporter,
     "GLD": object_import.GLDObjectImporter,
+    "FRD": object_import.FRDObjectImporter,
 }
