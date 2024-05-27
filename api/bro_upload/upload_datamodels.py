@@ -13,6 +13,7 @@ class UploadTaskMetadata(BaseModel):
     broId: str | None = None
     underPrivilege: str | None = None
     correctionReason: str | None = None
+    dateToBeCorrected: str | date | None = None
 
 
 class GARBulkUploadMetadata(BaseModel):
@@ -252,7 +253,7 @@ class FRDGemMeasurementConfiguration(BaseModel):
     measurementConfigurations: list[MeasurementConfiguration]
 
 
-class FRDGemMeasurement(BaseModel):
+class FRDEmmInstrumentConfiguration(BaseModel):
     instrumentConfigurationID: str
     relativePositionTransmitterCoil: str | int
     relativePositionPrimaryReceiverCoil: str | int
@@ -263,9 +264,37 @@ class FRDGemMeasurement(BaseModel):
     instrumentLength: str | int
 
 
-class FRDEmmMeasurementConfiguration(BaseModel):
-    ...
-
-
 class FRDEmmMeasurement(BaseModel):
-    ...
+    measurementDate = date | str
+    measurementOperatorKvk: str
+    determinationProcedure: str
+    measurementEvaluationProcedure: str
+    measurementSeriesCount: str | int
+    measurementSeriesValues: str
+    relatedInstrumentConfigurationId: str
+    calculationOperatorKvk: str
+    calculationEvaluationProcedure: str
+    calculationCount: str | int
+    calculationValues: str
+
+
+class GemMeasurement(BaseModel):
+    value: str | int
+    unit: str
+    configuration: str
+
+
+class RelatedCalculatedApparentFormationResistance(BaseModel):
+    calculationOperatorKvk: str
+    evaluationProcedure: str
+    elementCount: str | int
+    values: str
+
+
+class FRDGemMeasurement(BaseModel):
+    measurementDate: str | date
+    measurementOperatorKvk: str
+    determinationProcedure: str
+    evaluationProcedure: str
+    measurements: list[GemMeasurement]
+    relatedCalculatedApparentFormationResistance: RelatedCalculatedApparentFormationResistance | None = None
