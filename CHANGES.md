@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.13 (unreleased)
+## 0.13 (2024-05-27)
 
 
 - Added GLD
