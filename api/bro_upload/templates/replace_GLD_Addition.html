@@ -1,4 +1,4 @@
-<registrationRequest xmlns="http://www.broservices.nl/xsd/isgld/1.0"
+<replaceRequest xmlns="http://www.broservices.nl/xsd/isgld/1.0"
     xmlns:wml2="http://www.opengis.net/waterml/2.0"
     xmlns:gmd="http://www.isotc211.org/2005/gmd"
     xmlns:gco="http://www.isotc211.org/2005/gco"
@@ -14,7 +14,7 @@
     <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
     <brocom:broId>{{ metadata.broId }}</brocom:broId>
     <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-    <correctionReason codeSpace="urn:bro:gmn:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
+    <correctionReason codeSpace="urn:bro:gld:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
     <sourceDocument>
       <GLD_Addition gml:id="id_0001">
         <observation>
@@ -111,4 +111,4 @@
         </observation>
       </GLD_Addition>
     </sourceDocument>
-  </registrationRequest>
+  </replaceRequest>

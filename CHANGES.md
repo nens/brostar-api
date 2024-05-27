@@ -4,6 +4,7 @@
 
 
 - Added GLD
+- Added FRD
 
 
 ## 0.12 (2024-05-24)

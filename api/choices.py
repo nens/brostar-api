@@ -1,5 +1,10 @@
 from api.bro_upload.upload_datamodels import (
     GAR,
+    FRDEmmInstrumentConfiguration,
+    FRDEmmMeasurement,
+    FRDGemMeasurement,
+    FRDGemMeasurementConfiguration,
+    FRDStartRegistration,
     GLDAddition,
     GLDStartregistration,
     GMNClosure,
@@ -42,6 +47,12 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GLD_StartRegistration", "GLD_StartRegistration"),
     ("GLD_Addition", "GLD_Addition"),
     ("GLD_Closure", "GLD_Closure"),
+    ("FRD_StartRegistration", "FRD_StartRegistration"),
+    ("FRD_GEM_MeasurementConfiguration", "FRD_GEM_MeasurementConfiguration"),
+    ("FRD_GEM_Measurement", "GLD_CloFRD_GEM_Measurementsure"),
+    ("FRD_EMM_InstrumentConfiguration", "FRD_EMM_InstrumentConfiguration"),
+    ("FRD_EMM_Measurement", "FRD_EMM_Measurement"),
+    ("FRD_Closure", "FRD_Closure"),
 ]
 
 
@@ -56,6 +67,12 @@ registration_type_datamodel_mapping = {
     "GLD_StartRegistration": GLDStartregistration,
     "GLD_Addition": GLDAddition,
     "GLD_Closure": None,
+    "FRD_StartRegistration": FRDStartRegistration,
+    "FRD_GEM_MeasurementConfiguration": FRDGemMeasurementConfiguration,
+    "FRD_GEM_Measurement": FRDGemMeasurement,
+    "FRD_EMM_InstrumentConfiguration": FRDEmmInstrumentConfiguration,
+    "FRD_EMM_Measurement": FRDEmmMeasurement,
+    "FRD_Closure": None,
 }
 
 

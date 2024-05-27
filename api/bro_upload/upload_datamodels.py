@@ -13,6 +13,7 @@ class UploadTaskMetadata(BaseModel):
     broId: str | None = None
     underPrivilege: str | None = None
     correctionReason: str | None = None
+    dateToBeCorrected: str | date | None = None
 
 
 class GARBulkUploadMetadata(BaseModel):
@@ -192,6 +193,9 @@ class GAR(BaseModel):
     laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
 
 
+# GLD
+
+
 class GLDStartregistration(BaseModel):
     objectIdAccountableParty: str | None = None
     groundwaterMonitoringNets: list[str] | None = None
@@ -223,3 +227,74 @@ class GLDAddition(BaseModel):
     evaluationProcedure: str
     measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
+
+
+# FRD
+class FRDStartRegistration(BaseModel):
+    objectIdAccountableParty: str | None = None
+    groundwaterMonitoringNets: list[str] | None = None
+    gmwBroId: str
+    tubeNumber: str | int
+
+
+class MeasurementConfiguration(BaseModel):
+    measurementConfigurationID: str
+    measurementE1CableNumber: str | int
+    measurementE1ElectrodeNumber: str | int
+    measurementE2CableNumber: str | int
+    measurementE2ElectrodeNumber: str | int
+    currentE1CableNumber: str | int
+    currentE1ElectrodeNumber: str | int
+    currentE2CableNumber: str | int
+    currentE2ElectrodeNumber: str | int
+
+
+class FRDGemMeasurementConfiguration(BaseModel):
+    measurementConfigurations: list[MeasurementConfiguration]
+
+
+class FRDEmmInstrumentConfiguration(BaseModel):
+    instrumentConfigurationID: str
+    relativePositionTransmitterCoil: str | int
+    relativePositionPrimaryReceiverCoil: str | int
+    secondaryReceiverCoilAvailable: str
+    relativePositionSecondaryReceiverCoil: str | int | None = None
+    coilFrequencyKnown: str
+    coilFrequency: str | int | None = None
+    instrumentLength: str | int
+
+
+class FRDEmmMeasurement(BaseModel):
+    measurementDate: date | str
+    measurementOperatorKvk: str
+    determinationProcedure: str
+    measurementEvaluationProcedure: str
+    measurementSeriesCount: str | int
+    measurementSeriesValues: str
+    relatedInstrumentConfigurationId: str
+    calculationOperatorKvk: str
+    calculationEvaluationProcedure: str
+    calculationCount: str | int
+    calculationValues: str
+
+
+class GemMeasurement(BaseModel):
+    value: str | int
+    unit: str
+    configuration: str
+
+
+class RelatedCalculatedApparentFormationResistance(BaseModel):
+    calculationOperatorKvk: str
+    evaluationProcedure: str
+    elementCount: str | int
+    values: str
+
+
+class FRDGemMeasurement(BaseModel):
+    measurementDate: str | date
+    measurementOperatorKvk: str
+    determinationProcedure: str
+    evaluationProcedure: str
+    measurements: list[GemMeasurement]
+    relatedCalculatedApparentFormationResistance: RelatedCalculatedApparentFormationResistance | None = None

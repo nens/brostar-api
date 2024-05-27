@@ -5,7 +5,9 @@ from django.conf import settings
 
 from api import models as api_models
 from api.bro_import import config
+from frd.models import FRD
 from gar.models import GAR
+from gld.models import GLD
 from gmn.models import GMN
 from gmw.models import GMW
 
@@ -97,6 +99,10 @@ class BulkImporter:
             GMW.objects.filter(data_owner=self.data_owner).delete()
         if self.bro_domain == "GAR":
             GAR.objects.filter(data_owner=self.data_owner).delete()
+        if self.bro_domain == "GLD":
+            GLD.objects.filter(data_owner=self.data_owner).delete()
+        if self.bro_domain == "FRD":
+            FRD.objects.filter(data_owner=self.data_owner).delete()
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""

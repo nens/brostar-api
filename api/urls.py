@@ -20,6 +20,7 @@ urlpatterns = [
     path("gmw/", include(("gmw.urls", "gmw"), namespace="gmw")),
     path("gar/", include(("gar.urls", "gar"), namespace="gar")),
     path("gld/", include(("gld.urls", "gld"), namespace="gld")),
+    path("frd/", include(("frd.urls", "frd"), namespace="frd")),
 ]
 
 urlpatterns += router.urls
