@@ -1,7 +1,7 @@
 from api.bro_upload.upload_datamodels import (
     GAR,
+    FRDEmmInstrumentConfiguration,
     FRDEmmMeasurement,
-    FRDEmmMeasurementConfiguration,
     FRDGemMeasurement,
     FRDGemMeasurementConfiguration,
     FRDStartRegistration,
@@ -70,7 +70,7 @@ registration_type_datamodel_mapping = {
     "FRD_StartRegistration": FRDStartRegistration,
     "FRD_GEM_MeasurementConfiguration": FRDGemMeasurementConfiguration,
     "FRD_GEM_Measurement": FRDGemMeasurement,
-    "FRD_EMM_InstrumentConfiguration": FRDEmmMeasurementConfiguration,
+    "FRD_EMM_InstrumentConfiguration": FRDEmmInstrumentConfiguration,
     "FRD_EMM_Measurement": FRDEmmMeasurement,
     "FRD_Closure": None,
 }

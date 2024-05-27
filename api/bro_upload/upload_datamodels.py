@@ -265,7 +265,7 @@ class FRDEmmInstrumentConfiguration(BaseModel):
 
 
 class FRDEmmMeasurement(BaseModel):
-    measurementDate = date | str
+    measurementDate: date | str
     measurementOperatorKvk: str
     determinationProcedure: str
     measurementEvaluationProcedure: str
