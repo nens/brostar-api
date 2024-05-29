@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import JSONField
 
 
 class GMW(models.Model):
@@ -62,6 +63,7 @@ class MonitoringTube(models.Model):
     artesian_well_cap_present = models.CharField(max_length=100, null=True)
     sediment_sump_present = models.CharField(max_length=100, null=True)
     number_of_geo_ohm_cables = models.CharField(max_length=100, null=True)
+    geo_ohm_cables = JSONField("Geoohm Cables", default=dict, blank=True)
     tube_top_diameter = models.CharField(max_length=100, null=True)
     variable_diameter = models.CharField(max_length=100, null=True)
     tube_status = models.CharField(max_length=100, null=True)

@@ -256,6 +256,46 @@ class GMWObjectImporter(ObjectImporter):
             monitoringtubes_data = [monitoringtubes_data]
 
         for monitoringtube in monitoringtubes_data:
+            geo_ohm_data = []
+            geo_ohm_cables = monitoringtube.get("geoOhmCable", [])
+
+            # If geoOhmCable is not in a list, make it a list
+            if not isinstance(geo_ohm_cables, list):
+                geo_ohm_cables = [geo_ohm_cables]
+
+            for cable in geo_ohm_cables:
+                electrodes = cable.get("electrode", [])
+                # If electrodes is not in a list, make it a list
+                if not isinstance(electrodes, list):
+                    electrodes = [electrodes]
+
+                electrode_data = []
+                for electrode in electrodes:
+                    electrode_data.append(
+                        {
+                            "electrode_number": electrode.get(
+                                "gmwcommon:electrodeNumber", None
+                            ),
+                            "electrode_packing_material": electrode.get(
+                                "gmwcommon:electrodePackingMaterial", {}
+                            ).get("#text", None),
+                            "electrode_status": electrode.get(
+                                "gmwcommon:electrodeStatus", {}
+                            ).get("#text", None),
+                            "electrode_position": electrode.get(
+                                "gmwcommon:electrodePosition", {}
+                            ).get("#text", None),
+                        }
+                    )
+
+                geo_ohm_data.append(
+                    {
+                        "cable_number": cable.get("cableNumber", None),
+                        "cable_in_use": cable.get("cableInUse", None),
+                        "electrodes": electrode_data,
+                    }
+                )
+
             monitoringtube_obj, created = MonitoringTube.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
@@ -271,6 +311,7 @@ class GMWObjectImporter(ObjectImporter):
                     "number_of_geo_ohm_cables": monitoringtube.get(
                         "numberOfGeoOhmCables", None
                     ),
+                    "geo_ohm_cables": geo_ohm_data or [],
                     "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
                         "@xsi:nil", None
                     ),
