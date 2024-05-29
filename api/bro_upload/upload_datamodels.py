@@ -70,7 +70,7 @@ class Electrode(BaseModel):
     electrodeNumber: str | int
     electrodePackingMaterial: str
     electrodeStatus: str
-    electrodePosition: str
+    electrodePosition: str | int
 
 
 class GeoOhmCable(BaseModel):
