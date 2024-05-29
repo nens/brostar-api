@@ -3,8 +3,8 @@ from rest_framework import generics
 
 from api import mixins
 
+from . import filters, serializers
 from . import models as gmw_models
-from . import serializers
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -26,7 +26,7 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     queryset = gmw_models.MonitoringTube.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_class = filters.MonitoringTubeFilter
 
 
 class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
