@@ -34,6 +34,7 @@ class MonitoringTubeSerializer(
     UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
 ):
     gmw_well_code = serializers.SerializerMethodField()
+    linked_gmns = serializers.SerializerMethodField()
 
     class Meta:
         model = gmw_models.MonitoringTube
@@ -49,5 +50,20 @@ class MonitoringTubeSerializer(
     ) -> gmw_models.GMW | None:
         try:
             return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
+        except ObjectDoesNotExist:
+            return None
+
+    def get_linked_gmns(
+        self, obj: gmw_models.MonitoringTube
+    ) -> list[gmn_models.GMN] | None:
+        try:
+            linked_gmns = set(
+                measuringpoint.gmn.uuid
+                for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                    gmw_bro_id=obj.gmw.bro_id
+                )
+            )
+            return list(linked_gmns)
+
         except ObjectDoesNotExist:
             return None
