@@ -133,7 +133,15 @@ class GMNObjectImporter(ObjectImporter):
     ) -> None:
         for measuringpoint in measuringpoint_data:
             mp_data = measuringpoint.get("MeasuringPoint", {})
-            monitoring_tube_data = mp_data.get("monitoringTube", {}).get(
+
+            monitoring_tubes_data = mp_data.get("monitoringTube", {})
+
+            # If a measuringpoint has old monitoringtube references, mp_data is a list
+            # The last one is the active one, and therefore the one of interest
+            if isinstance(monitoring_tubes_data, list):
+                monitoring_tubes_data = monitoring_tubes_data[-1]
+
+            monitoring_tube_data = monitoring_tubes_data.get(
                 "GroundwaterMonitoringTube", {}
             )
 
