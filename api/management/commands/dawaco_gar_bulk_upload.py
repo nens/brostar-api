@@ -4,7 +4,6 @@ from typing import TypeVar
 
 import numpy as np
 import pandas as pd
-from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db import models
 from django.db.models.query import QuerySet
@@ -37,16 +36,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # INPUT DATA
-        organisation_uuid = "49c39ce8-3df8-4fe7-847f-33a647e100d0"  # hardcoded
-        gar_data_file_uuid = "25293571-991b-4eec-b991-03cd61c3c9f3"  # hardcoded
+        organisation_uuid = "4253c513-d845-40a5-afd3-0c55b1e64165"  # hardcoded
+        gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
+        field_research_data_uuid = "3bd84329-5711-45a0-8d78-54e782aad88f"  # hardcoded
         project_number = 1  # hardcoded
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
         gar_data_file_instance = get_django_instance(UploadFile, gar_data_file_uuid)
+        field_data_file_instance = get_django_instance(
+            UploadFile, field_research_data_uuid
+        )
 
         # Read csv file
         dawaco_gar_data_df = read_csv_file(gar_data_file_instance, delimiter=";")
+        field_data_df = read_csv_file(field_data_file_instance, delimiter=";")
+        field_data_df["tube_number"] = field_data_df["tube_number"].astype(str)
 
         # Transform df
         gar_df = transform_gar_data(dawaco_gar_data_df)
@@ -66,6 +71,7 @@ class Command(BaseCommand):
             handle_gar_delivery,
             organisation_instance,
             project_number,
+            field_data_df,
         )
 
 
@@ -172,6 +178,7 @@ def handle_gar_delivery(
     gar_df: pd.DataFrame,
     organisation_instance: T,
     project_number: int,
+    field_data_df: pd.DataFrame,
 ) -> None:
     """This apply function handles the delivery of a single GAR delivery."""
 
@@ -185,6 +192,7 @@ def handle_gar_delivery(
 
     uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
         gar_df,
+        field_data_df,
     )
 
     if not uploadtask_sourcedocument_data:
@@ -193,9 +201,6 @@ def handle_gar_delivery(
         return
 
     uploadtask_sourcedocument_data_dict = uploadtask_sourcedocument_data.model_dump()
-
-    logger.info(uploadtask_metadata)
-    logger.info(uploadtask_sourcedocument_data_dict)
 
     UploadTask.objects.create(
         data_owner=organisation_instance,
@@ -210,6 +215,7 @@ def handle_gar_delivery(
 
 def setup_gar_sourcedocs_data(
     df: pd.DataFrame,
+    field_data_df: pd.DataFrame,
 ) -> datamodels.GAR | None:
     """Creates a pydantic GAR instance, based on the data from a grouped df."""
     nitg_code = df["nitg_code"].iloc[0]
@@ -219,23 +225,26 @@ def setup_gar_sourcedocs_data(
     field_data = df[df["LocatieTypeWaardeBepaling.id"] == 2]
     lab_data = df[df["LocatieTypeWaardeBepaling.id"] == 1]
 
-    try:
-        bro_id = gmw_models.GMW.objects.get(nitg_code=nitg_code).bro_id
-    except ObjectDoesNotExist:
+    gmw_objects = gmw_models.GMW.objects.filter(nitg_code=nitg_code)
+    if gmw_objects.count() == 1:
+        bro_id = gmw_objects.first().bro_id
+
+    if gmw_objects.count() == 0:
         logger.error(f"No GMW found for {nitg_code}.")
         return None
-    except MultipleObjectsReturned:
-        logger.error(
-            f"Multiple GMWs found for {nitg_code}. Please check why thats the case."
-        )
-        return None
+    else:
+        rivm_gmw = gmw_objects.order_by("owner").first()
+        bro_id = rivm_gmw.bro_id
+        logger.info(f"Double GMWS found for {nitg_code}. Using RIVM GMW.")
 
     sourcedocs_data_dict = {
         "objectIdAccountableParty": f"{nitg_code}_{tube_number}",
         "qualityControlMethod": "qCProtocolProvinciesEnRIVMv2021",  # hardcoded
         "gmwBroId": bro_id,
         "tubeNumber": tube_number,
-        "fieldResearch": setup_field_research_data(field_data, samplingdate),
+        "fieldResearch": setup_field_research_data(
+            field_data, field_data_df, samplingdate, nitg_code, tube_number
+        ),
         "laboratoryAnalyses": setup_lab_data(lab_data, samplingdate),
     }
 
@@ -244,10 +253,19 @@ def setup_gar_sourcedocs_data(
     return sourcedocs_data
 
 
+def convert_date_format(date: pd.Timestamp, target_format: str) -> str:
+    return date.strftime(target_format)
+
+
 def setup_field_research_data(
-    field_data: pd.DataFrame, samplingdate: str
+    field_data: pd.DataFrame,
+    field_data_df: pd.DataFrame,
+    samplingdate: pd.Timestamp,
+    nitg_code: str,
+    tube_number: str,
 ) -> datamodels.FieldResearch:
     """Fills the fieldResearch part of the GAR, using the pydantic model FieldResearch."""
+
     field_research_dict = {
         "samplingDateTime": samplingdate,
         "samplingStandard": "onbekend",  # hardcoded
@@ -263,6 +281,67 @@ def setup_field_research_data(
         "temperatureDifficultToMeasure": "onbekend",  # hardcoded
         "fieldMeasurements": setup_gar_field_measurements(field_data),
     }
+
+    samplingdate_converted = convert_date_format(samplingdate, "%-d-%-m-%Y")
+
+    # Filter the field_data_df to check whether a row is present for the provided combination of data
+    row = field_data_df[
+        (field_data_df["samplingdate"] == samplingdate_converted)
+        & (field_data_df["nitg_code"] == nitg_code)
+        & (field_data_df["tube_number"] == tube_number)
+    ]
+
+    if not row.empty:
+        row_data = row.iloc[0]
+        field_research_dict["samplingStandard"] = "NTA8017v2016"
+        field_research_dict["pumpType"] = (
+            row_data["pumpType"] if not pd.isna(row_data["pumpType"]) else "onbekend"
+        )
+        field_research_dict["abnormalityInCooling"] = (
+            row_data["abnormalityInCooling"]
+            if not pd.isna(row_data["abnormalityInCooling"])
+            else "onbekend"
+        )
+        field_research_dict["abnormalityInDevice"] = (
+            row_data["abnormalityInDevice"]
+            if not pd.isna(row_data["abnormalityInDevice"])
+            else "onbekend"
+        )
+        field_research_dict["pollutedByEngine"] = (
+            row_data["pollutedByEngine"]
+            if not pd.isna(row_data["pollutedByEngine"])
+            else "onbekend"
+        )
+        field_research_dict["filterAerated"] = (
+            row_data["filterAerated"]
+            if not pd.isna(row_data["filterAerated"])
+            else "onbekend"
+        )
+        field_research_dict["groundWaterLevelDroppedTooMuch"] = (
+            row_data["groundWaterLevelDroppedTooMuch"]
+            if not pd.isna(row_data["groundWaterLevelDroppedTooMuch"])
+            else "onbekend"
+        )
+        field_research_dict["abnormalFilter"] = (
+            row_data["abnormalFilter"]
+            if not pd.isna(row_data["abnormalFilter"])
+            else "onbekend"
+        )
+        field_research_dict["sampleAerated"] = (
+            row_data["sampleAerated"]
+            if not pd.isna(row_data["sampleAerated"])
+            else "onbekend"
+        )
+        field_research_dict["hoseReused"] = (
+            row_data["hoseReused"]
+            if not pd.isna(row_data["hoseReused"])
+            else "onbekend"
+        )
+        field_research_dict["temperatureDifficultToMeasure"] = (
+            row_data["temperatureDifficultToMeasure"]
+            if not pd.isna(row_data["temperatureDifficultToMeasure"])
+            else "onbekend"
+        )
 
     field_research = datamodels.FieldResearch(**field_research_dict)
 
@@ -296,7 +375,7 @@ def setup_gar_field_measurements(
 
 
 def setup_lab_data(
-    lab_data: pd.DataFrame, samplingdate: str
+    lab_data: pd.DataFrame, samplingdate: pd.Timestamp
 ) -> list[datamodels.LaboratoryAnalysis] | None:
     """Fills the laboratoryAnalyses part of the GAR."""
     if lab_data.empty:
@@ -310,7 +389,7 @@ def setup_lab_data(
 
 
 def setup_analysis_processes(
-    lab_data: pd.DataFrame, samplingdate: str
+    lab_data: pd.DataFrame, samplingdate: pd.Timestamp
 ) -> list[datamodels.AnalysisProcess]:
     """Fills the analysisProcesses data of a LaboratoryAnalysis."""
     analysis_process_dict = {

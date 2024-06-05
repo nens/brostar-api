@@ -94,15 +94,25 @@ class BulkImporter:
     def _flush_existing_data(self) -> None:
         """Flushes the current data to avoid removed data in the BRO to remain in this db."""
         if self.bro_domain == "GMN":
-            GMN.objects.filter(data_owner=self.data_owner).delete()
+            GMN.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
         if self.bro_domain == "GMW":
-            GMW.objects.filter(data_owner=self.data_owner).delete()
+            GMW.objects.filter(
+                data_owner=self.data_owner, owner=self.kvk_number
+            ).delete()
         if self.bro_domain == "GAR":
-            GAR.objects.filter(data_owner=self.data_owner).delete()
+            GAR.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
         if self.bro_domain == "GLD":
-            GLD.objects.filter(data_owner=self.data_owner).delete()
+            GLD.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
         if self.bro_domain == "FRD":
-            FRD.objects.filter(data_owner=self.data_owner).delete()
+            FRD.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""
