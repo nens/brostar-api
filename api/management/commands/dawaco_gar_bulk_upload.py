@@ -34,7 +34,15 @@ class Command(BaseCommand):
 
     help = "Uploads GAR data based on DAWACO exports."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "gmn_bro_id",
+            type=str,
+            help="GMN BRO ID to use for the command",
+        )
+
     def handle(self, *args, **options):
+        gmn_bro_id = options["gmn_bro_id"]
         # INPUT DATA
         organisation_uuid = "4253c513-d845-40a5-afd3-0c55b1e64165"  # hardcoded
         gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
@@ -72,6 +80,7 @@ class Command(BaseCommand):
             organisation_instance,
             project_number,
             field_data_df,
+            gmn_bro_id,
         )
 
 
@@ -179,6 +188,7 @@ def handle_gar_delivery(
     organisation_instance: T,
     project_number: int,
     field_data_df: pd.DataFrame,
+    gmn_bro_id: str,
 ) -> None:
     """This apply function handles the delivery of a single GAR delivery."""
 
@@ -191,8 +201,7 @@ def handle_gar_delivery(
     }
 
     uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
-        gar_df,
-        field_data_df,
+        gar_df, field_data_df, gmn_bro_id
     )
 
     if not uploadtask_sourcedocument_data:
@@ -214,8 +223,7 @@ def handle_gar_delivery(
 
 
 def setup_gar_sourcedocs_data(
-    df: pd.DataFrame,
-    field_data_df: pd.DataFrame,
+    df: pd.DataFrame, field_data_df: pd.DataFrame, gmn_bro_id: str
 ) -> datamodels.GAR | None:
     """Creates a pydantic GAR instance, based on the data from a grouped df."""
     nitg_code = df["nitg_code"].iloc[0]
@@ -240,6 +248,7 @@ def setup_gar_sourcedocs_data(
     sourcedocs_data_dict = {
         "objectIdAccountableParty": f"{nitg_code}_{tube_number}",
         "qualityControlMethod": "qCProtocolProvinciesEnRIVMv2021",  # hardcoded
+        "groundwaterMonitoringNets": [gmn_bro_id],
         "gmwBroId": bro_id,
         "tubeNumber": tube_number,
         "fieldResearch": setup_field_research_data(
