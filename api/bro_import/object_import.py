@@ -64,12 +64,12 @@ class ObjectImporter(ABC):
 
 class GMNObjectImporter(ObjectImporter):
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
-        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
-            "dispatchDocument", {}
+        dispatch_document_data = json_data.get("dispatchDataResponseType", {}).get(
+            "ns6:dispatchDocument", {}
         )
 
         # If GMN_PPO is not found, it basically means that the object is not relevant anymore
-        if "GMN_PPO" not in dispatch_document_data:
+        if "ns6:GMN_PPO" not in dispatch_document_data:
             return
 
         gmn_data, measuringpoint_data = self._split_json_data(dispatch_document_data)
@@ -82,16 +82,16 @@ class GMNObjectImporter(ObjectImporter):
     ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         """Takes in the json data and splits it up into GMN and Measuringpoint data"""
 
-        measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
-            "measuringPoint", []
+        measuringpoint_data = dispatch_document_data["ns6:GMN_PPO"].get(
+            "ns6:measuringPoint", []
         )
 
         # Whenever the GMN exists of 1 measuringpoint, it is a single object. We want a list
         if isinstance(measuringpoint_data, dict):
             measuringpoint_data = [measuringpoint_data]
 
-        gmn_data = dispatch_document_data["GMN_PPO"]
-        gmn_data.pop("measuringPoint", None)
+        gmn_data = dispatch_document_data["ns6:GMN_PPO"]
+        gmn_data.pop("ns6:measuringPoint", None)
 
         return gmn_data, measuringpoint_data
 
@@ -104,23 +104,23 @@ class GMNObjectImporter(ObjectImporter):
                     "brocom:deliveryAccountableParty", None
                 ),
                 "quality_regime": gmn_data.get("brocom:qualityRegime", None),
-                "name": gmn_data.get("name", None),
-                "delivery_context": gmn_data.get("deliveryContext", {}).get(
+                "name": gmn_data.get("ns6:name", None),
+                "delivery_context": gmn_data.get("ns6:deliveryContext", {}).get(
                     "#text", None
                 ),
-                "monitoring_purpose": gmn_data.get("monitoringPurpose", {}).get(
+                "monitoring_purpose": gmn_data.get("ns6:monitoringPurpose", {}).get(
                     "#text", None
                 ),
-                "groundwater_aspect": gmn_data.get("groundwaterAspect", {}).get(
+                "groundwater_aspect": gmn_data.get("ns6:groundwaterAspect", {}).get(
                     "#text", None
                 ),
-                "start_date_monitoring": gmn_data.get("monitoringNetHistory", {})
-                .get("startDateMonitoring", {})
+                "start_date_monitoring": gmn_data.get("ns6:monitoringNetHistory", {})
+                .get("ns6:startDateMonitoring", {})
                 .get("brocom:date", None),
-                "object_registration_time": gmn_data.get("registrationHistory", {}).get(
-                    "brocom:objectRegistrationTime", None
-                ),
-                "registration_status": gmn_data.get("registrationHistory", {})
+                "object_registration_time": gmn_data.get(
+                    "ns6:registrationHistory", {}
+                ).get("brocom:objectRegistrationTime", None),
+                "registration_status": gmn_data.get("ns6:registrationHistory", {})
                 .get("brocom:registrationStatus", {})
                 .get("#text", None),
             },
@@ -132,9 +132,9 @@ class GMNObjectImporter(ObjectImporter):
         self, measuringpoint_data: list[dict[str, Any]]
     ) -> None:
         for measuringpoint in measuringpoint_data:
-            mp_data = measuringpoint.get("MeasuringPoint", {})
+            mp_data = measuringpoint.get("ns6:MeasuringPoint", {})
 
-            monitoring_tubes_data = mp_data.get("monitoringTube", {})
+            monitoring_tubes_data = mp_data.get("ns6:monitoringTube", {})
 
             # If a measuringpoint has old monitoringtube references, mp_data is a list
             # The last one is the active one, and therefore the one of interest
@@ -142,22 +142,22 @@ class GMNObjectImporter(ObjectImporter):
                 monitoring_tubes_data = monitoring_tubes_data[-1]
 
             monitoring_tube_data = monitoring_tubes_data.get(
-                "GroundwaterMonitoringTube", {}
+                "ns6:GroundwaterMonitoringTube", {}
             )
 
             measuringpoint_obj, created = Measuringpoint.objects.update_or_create(
                 gmn=self.gmn_obj,
                 data_owner=self.data_owner,
-                measuringpoint_code=mp_data.get("measuringPointCode", None),
+                measuringpoint_code=mp_data.get("ns6:measuringPointCode", None),
                 defaults={
                     "measuringpoint_start_date": mp_data.get("startDate", {}).get(
                         "brocom:date", None
                     ),
-                    "gmw_bro_id": monitoring_tube_data.get("broId", None),
-                    "tube_number": monitoring_tube_data.get("tubeNumber", None),
-                    "tube_start_date": monitoring_tube_data.get("startDate", None).get(
-                        "brocom:date", None
-                    ),
+                    "gmw_bro_id": monitoring_tube_data.get("ns6:broId", None),
+                    "tube_number": monitoring_tube_data.get("ns6:tubeNumber", None),
+                    "tube_start_date": monitoring_tube_data.get(
+                        "ns6:startDate", None
+                    ).get("brocom:date", None),
                 },
             )
 
