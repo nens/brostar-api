@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.14 (unreleased)
+## 0.14 (2024-06-14)
 
 
 - Monitoringpoint endpoint updates
