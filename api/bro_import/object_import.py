@@ -316,6 +316,13 @@ class GMWObjectImporter(ObjectImporter):
                     "sediment_sump_present": monitoringtube.get(
                         "sedimentSumpPresent", None
                     ),
+                    "sediment_sump_length": monitoringtube.get("sedimentSump", {})
+                    .get("gmwcommon:sedimentSumpLength", {})
+                    .get("#text")
+                    if monitoringtube.get("sedimentSump", {}).get(
+                        "gmwcommon:sedimentSumpLength"
+                    )
+                    else None,
                     "number_of_geo_ohm_cables": monitoringtube.get(
                         "numberOfGeoOhmCables", None
                     ),
