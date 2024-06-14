@@ -3,7 +3,8 @@
 ## 0.14 (unreleased)
 
 
-- Nothing changed yet.
+- Monitoringpoint endpoint updates
+- BRO update broke the import: fixed it
 
 
 ## 0.13 (2024-05-27)
