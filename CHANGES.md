@@ -3,7 +3,8 @@
 ## 0.15 (unreleased)
 
 
-- Nothing changed yet.
+- Added gmw bro_id to monitoringtube endpoint
+- Added replace gmw construction template
 
 
 ## 0.14 (2024-06-14)
