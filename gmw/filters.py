@@ -7,6 +7,7 @@ from .models import MonitoringTube
 
 class MonitoringTubeFilter(filters.FilterSet):
     gmn_bro_id = filters.CharFilter(method="filter_by_gmn_bro_id")
+    gmw_bro_id = filters.CharFilter(method="filter_by_gmw_bro_id")
 
     class Meta:
         model = MonitoringTube
@@ -16,3 +17,6 @@ class MonitoringTubeFilter(filters.FilterSet):
         measuringpoints = Measuringpoint.objects.filter(gmn__bro_id=value)
         gmw_ids = measuringpoints.values_list("gmw_bro_id", flat=True)
         return queryset.filter(gmw__bro_id__in=gmw_ids)
+
+    def filter_by_gmw_bro_id(self, queryset, name, value) -> any:
+        return queryset.filter(gmw__bro_id=value)
