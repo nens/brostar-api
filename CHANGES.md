@@ -3,7 +3,7 @@
 ## 0.16 (unreleased)
 
 
-- Nothing changed yet.
+- GLD import improvements contained 1 small issue. Fixed this one in this update.
 
 
 ## 0.15 (2024-07-18)
