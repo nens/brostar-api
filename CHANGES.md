@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.16 (unreleased)
+## 0.16 (2024-07-18)
 
 
 - GLD import improvements contained 1 small issue. Fixed this one in this update.
