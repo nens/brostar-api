@@ -45,7 +45,7 @@ class ObjectImporter(ABC):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
 
         # For GLD, all timeserie events are also found in the response if no time period filter is set. This avoids slow imports:
-        if bro_domain == "GLD":
+        if bro_domain == "gld":
             today = date.today().strftime("%Y-%m-%d")
             url = f"{url}&observationPeriodBeginDate={today}&observationPeriodEndDate={today}"
 
