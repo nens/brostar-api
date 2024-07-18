@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from datetime import date
 from typing import IO, Any
 
 import requests
@@ -42,6 +43,12 @@ class ObjectImporter(ABC):
         """Creates the import url for a given bro object."""
         bro_domain = self.bro_domain.lower()
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
+
+        # For GLD, all timeserie events are also found in the response if no time period filter is set. This avoids slow imports:
+        if bro_domain == "GLD":
+            today = date.today().strftime("%Y-%m-%d")
+            url = f"{url}&observationPeriodBeginDate={today}&observationPeriodEndDate={today}"
+
         return url
 
     def _download_xml(self, url: str) -> IO[bytes]:
