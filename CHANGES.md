@@ -5,6 +5,7 @@
 
 - Added gmw bro_id to monitoringtube endpoint
 - Added replace gmw construction template
+- Improved performance on GLD import.
 
 
 ## 0.14 (2024-06-14)
