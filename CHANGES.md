@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.15 (unreleased)
+## 0.15 (2024-07-18)
 
 
 - Added gmw bro_id to monitoringtube endpoint
