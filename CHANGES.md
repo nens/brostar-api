@@ -3,7 +3,7 @@
 ## 0.17 (unreleased)
 
 
-- Nothing changed yet.
+- Yet another improvement on import tasks performance
 
 
 ## 0.16 (2024-07-18)
