@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.17 (unreleased)
+## 0.17 (2024-07-19)
 
 
 - Yet another improvement on import tasks performance
