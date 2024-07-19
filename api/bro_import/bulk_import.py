@@ -65,12 +65,10 @@ class BulkImporter:
 
             total_bro_ids = len(bro_ids)
             counter = 0
+            update_interval = max(total_bro_ids // 10, 1)
 
             for bro_id in bro_ids:
                 counter += 1
-                progress = (counter / total_bro_ids) * 100
-                self.import_task_instance.progress = round(progress, 2)
-                self.import_task_instance.save()
 
                 try:
                     data_importer = self.object_importer_class(
@@ -82,6 +80,11 @@ class BulkImporter:
                     raise DataImportError(
                         f"Error while importing data for bro id: {bro_id}: {e}"
                     ) from e
+
+                if counter % update_interval == 0 or counter == total_bro_ids:
+                    progress = (counter / total_bro_ids) * 100
+                    self.import_task_instance.progress = round(progress, 2)
+                    self.import_task_instance.save()
 
             self.import_task_instance.status = "COMPLETED"
             self.import_task_instance.save()
