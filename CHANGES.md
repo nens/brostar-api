@@ -3,7 +3,7 @@
 ## 0.18 (unreleased)
 
 
-- Nothing changed yet.
+- Simplified the signup proces with an InviteUser model
 
 
 ## 0.17 (2024-07-19)
