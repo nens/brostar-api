@@ -47,6 +47,7 @@ jobs:
 
       - name: Publish the Docker image
         run: |
+          docker compose build web
           docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
           docker tag brostar-api_web ghcr.io/nens/brostar-api:main
           docker push ghcr.io/nens/brostar-api:main
