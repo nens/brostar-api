@@ -27,5 +27,4 @@ def create_user_profile(sender, instance: User, created, **kwargs):
             user=instance, organisation=invite_user.organisation
         )
     except InviteUser.DoesNotExist:
-        # UserProfile.objects.create(user=instance)
-        print("this happened..")
+        UserProfile.objects.create(user=instance)
