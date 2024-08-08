@@ -49,7 +49,7 @@ jobs:
         run: |
           docker compose build web
           docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker tag brostar-api_web ghcr.io/nens/brostar-api:main
+          docker tag brostar-api_web:latest ghcr.io/nens/brostar-api:main
           docker push ghcr.io/nens/brostar-api:main
         if: github.ref == 'refs/heads/main'
         # Running this job only for main branch.
@@ -57,6 +57,6 @@ jobs:
       - name: Publish tag as production docker image
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker tag brostar-api_web ghcr.io/nens/brostar-api:production
+          docker tag brostar-api_web:latest ghcr.io/nens/brostar-api:production
           docker push ghcr.io/nens/brostar-api:production
         if: startsWith(github.event.ref, 'refs/tags')
