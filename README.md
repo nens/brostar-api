@@ -20,8 +20,8 @@ The backend consists of an API with:
 
 To install for development:
 
-    $ docker-compose build
-    $ docker-compose pull
+    $ docker compose build
+    $ docker compose pull
     $ pip install pre-commit  # Just needed once for your laptop.
     $ pre-commit install # Just needed once to make sure that pre-commit runs on each commit for this project
 
@@ -29,9 +29,9 @@ The development setup includes a postgres database and redis.
 
 Some instructions:
 
-    $ docker-compose up  # Starts the site on localhost:8000
-    $ docker-compose run --rm web pytest
-    $ docker-compose run --rm web python manage.py migrate
+    $ docker compose up  # Starts the site on localhost:8000
+    $ docker compose run --rm web pytest
+    $ docker compose run --rm web python manage.py migrate
     $ pre-commit run --all  # runs the formatter, checks, etc.
 
 Do the regular django "migrate", "createsuperuser" stuff.
@@ -42,11 +42,11 @@ Do the regular django "migrate", "createsuperuser" stuff.
 
 If a requirement has changed (either dependency in `pyproject.toml` or an extra development package in `requirements.in`:
 
-    $ docker-compose run --rm web pip-compile --extra=test \
+    $ docker compose run --rm web pip-compile --extra=test \
       --output-file=requirements.txt dev-requirements.in pyproject.toml
-    $ docker-compose run ...same command... --upgrade  # to grab new versions
+    $ docker compose run ...same command... --upgrade  # to grab new versions
 
 
 ## Internal N&S server installation notes
 
-This is a public project, so the actual server deployment scripts with the passwords and so are safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker-compose on https://staging.brostar.nl and https://www.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
+This is a public project, so the actual server deployment scripts with the passwords and so are safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker compose on https://staging.brostar.nl and https://www.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
