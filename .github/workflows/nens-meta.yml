@@ -48,7 +48,7 @@ jobs:
       - name: Publish the Docker image
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker tag brostar-api_web ghcr.io/nens/brostar-api:main
+          docker tag docker.io/library/brostar-api-web ghcr.io/nens/brostar-api:main
           docker push ghcr.io/nens/brostar-api:main
         if: github.ref == 'refs/heads/main'
         # Running this job only for main branch.
