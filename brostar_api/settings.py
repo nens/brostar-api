@@ -238,3 +238,8 @@ if USE_BRO_PRODUCTION:
 else:
     BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
+
+if not DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = "int-smtp.nens"
+    DEFAULT_FROM_EMAIL = "Brostar <noreply@nelen-schuurmans.nl>"
