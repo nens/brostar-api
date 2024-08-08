@@ -7,6 +7,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import JSONField, Q, UniqueConstraint
 from encrypted_model_fields.fields import EncryptedCharField
+from nens_auth_client.models import Invitation
 from rest_framework_api_key.models import AbstractAPIKey
 
 from api import choices, tasks
@@ -94,6 +95,46 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
+
+
+class InviteUser(models.Model):
+    """This model is used as top level orchestrator of the invitation process.
+    When an instance is created, a nens_auth_client.models.Invitation is created.
+    After the user has accepted the invitation, a UserProfile is created,
+    with the organisation set to the organisation of the InviteUser.
+
+    This was done to prevent the need for changes in the nens_auth_client app.
+    """
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField(unique=True)
+    organisation = models.ForeignKey(
+        Organisation, on_delete=models.CASCADE, null=True, blank=False
+    )
+    nens_auth_client_invitation = models.ForeignKey(
+        Invitation,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+        help_text="Do not fill in this one.",
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.email
+
+    def get_status(self):
+        INVITATION_STATUS_CHOICES = [
+            (0, "Pending"),
+            (1, "Accepted"),
+            (2, "Rejected"),
+            (3, "Revoked"),
+            (4, "Failed"),
+        ]
+
+        return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
 
 
 class ImportTask(models.Model):

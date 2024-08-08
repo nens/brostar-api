@@ -38,7 +38,15 @@ class OrganisationAdmin(admin.ModelAdmin):
     form = OrganisationAdminForm
 
 
+class InviteUserAdmin(admin.ModelAdmin):
+    list_display = ("email", "organisation", "invitation_status", "created", "updated")
+
+    def invitation_status(self, obj):
+        return obj.get_status()
+
+
 admin.site.register(api_models.UserProfile)
+admin.site.register(api_models.InviteUser, InviteUserAdmin)
 admin.site.register(api_models.Organisation, OrganisationAdmin)
 admin.site.register(api_models.ImportTask)
 admin.site.register(api_models.UploadTask)
