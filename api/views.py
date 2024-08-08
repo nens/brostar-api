@@ -348,7 +348,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
             - 304 when the task was UNFINISHED, but remains UNFINISHED after a check with the BRO
         """
-        upload_task = self.get_object()
+        upload_task = models.UploadTask.objects.get(uuid=uuid)
 
         # Restart the task when its stuck on pending
         if upload_task.status == "PENDING":

@@ -28,10 +28,11 @@ def user():
 
 @pytest.fixture
 def userprofile(user, organisation):
-    userprofile = api_models.UserProfile.objects.create(
+    userprofile = api_models.UserProfile.objects.get(
         user=user,
-        organisation=organisation,
     )
+    userprofile.organisation = organisation
+    userprofile.save()
     return userprofile
 
 
