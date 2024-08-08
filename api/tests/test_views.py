@@ -271,7 +271,6 @@ def test_uploadtask_check_status(
         data_owner=organisation,
         status="PENDING",
     )
-    print(upload_task_instance.uuid)
 
     url = reverse(
         "api:uploadtask-check-status", kwargs={"uuid": upload_task_instance.uuid}
@@ -279,7 +278,6 @@ def test_uploadtask_check_status(
 
     # Check 201 response for status = PENDING
     response = api_client.post(url)
-    print(response.data)
     assert response.status_code == status.HTTP_201_CREATED
 
     # Check 303 response for status = PROCESSING
