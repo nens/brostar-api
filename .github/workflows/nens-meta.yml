@@ -56,6 +56,6 @@ jobs:
       - name: Publish tag as production docker image
         run: |
           docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker tag brostar-api_web ghcr.io/nens/brostar-api:production
+          docker tag docker.io/library/brostar-api-web ghcr.io/nens/brostar-api:production
           docker push ghcr.io/nens/brostar-api:production
         if: startsWith(github.event.ref, 'refs/tags')
