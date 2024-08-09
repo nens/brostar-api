@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.19 (unreleased)
+## 0.18.1 (2024-08-09)
 
 
 - Release process fix.
