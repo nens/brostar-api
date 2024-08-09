@@ -11,6 +11,7 @@ def create_invitation(sender, instance, created, **kwargs):
     """Create an nens auth client Invitation when an InviteUser is created."""
     if created:
         invitation = Invitation.objects.create(email=instance.email)
+        invitation.send_email(context={"invitation_language": "nl"})
         instance.nens_auth_client_invitation = invitation
         instance.save()
 
