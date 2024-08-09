@@ -3,7 +3,7 @@
 ## 0.19 (unreleased)
 
 
-- Nothing changed yet.
+- Release process fix.
 
 
 ## 0.18 (2024-08-09)
