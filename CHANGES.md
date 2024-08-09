@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.18 (unreleased)
+## 0.18 (2024-08-09)
 
 
 - Simplified the signup proces with an InviteUser model
