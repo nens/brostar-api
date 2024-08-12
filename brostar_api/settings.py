@@ -242,5 +242,5 @@ else:
 if not DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = "int-smtp.nens"
-    DEFAULT_FROM_EMAIL = "Brostar <noreply@nelen-schuurmans.nl>"
+    DEFAULT_FROM_EMAIL = "BROSTAR <noreply@nelen-schuurmans.nl>"
     NENS_AUTH_INVITATION_EMAIL_SUBJECT = "Uitnodiging voor BROSTAR"
