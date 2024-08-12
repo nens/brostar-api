@@ -1,11 +1,17 @@
+import logging
+
 from django import forms
+from django.conf import settings
 from django.contrib import admin
+from nens_auth_client.models import Invitation
 from rest_framework_api_key.admin import APIKeyModelAdmin
 from rest_framework_api_key.models import APIKey
 
 from . import models as api_models
 
 admin.site.unregister(APIKey)  # unused model
+
+logger = logging.getLogger(__name__)
 
 
 @admin.register(api_models.PersonalAPIKey)
@@ -39,7 +45,35 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 class InviteUserAdmin(admin.ModelAdmin):
-    list_display = ("email", "organisation", "invitation_status", "created", "updated")
+    list_display = (
+        "email",
+        "organisation",
+        "invitation_status",
+        "created",
+        "updated",
+    )
+
+    def save_model(self, request, obj, form, change):
+        """
+        Override save_model to create an Invitation when a new InviteUser is created.
+        """
+        super().save_model(request, obj, form, change)
+
+        if not change:
+            invitation = Invitation.objects.create(email=obj.email)
+
+            if not settings.DEBUG:
+                invitation.send_email(
+                    request=request,
+                    context={
+                        "invitation_language": "nl",
+                    },
+                )
+            else:
+                logger.debug("No mails are sent in development mode.")
+
+            obj.nens_auth_client_invitation = invitation
+            obj.save()
 
     def invitation_status(self, obj):
         return obj.get_status()

@@ -1,18 +1,8 @@
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from nens_auth_client.models import Invitation
 
 from .models import InviteUser, UserProfile
-
-
-@receiver(post_save, sender=InviteUser)
-def create_invitation(sender, instance, created, **kwargs):
-    """Create an nens auth client Invitation when an InviteUser is created."""
-    if created:
-        invitation = Invitation.objects.create(email=instance.email)
-        instance.nens_auth_client_invitation = invitation
-        instance.save()
 
 
 @receiver(post_save, sender=User)
