@@ -3,7 +3,7 @@
 ## 0.19 (unreleased)
 
 
-- Nothing changed yet.
+- Installed mails
 
 
 ## 0.18.1 (2024-08-09)
