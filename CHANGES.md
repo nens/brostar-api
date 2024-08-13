@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.19 (unreleased)
+## 0.19 (2024-08-13)
 
 
 - Installed mails
