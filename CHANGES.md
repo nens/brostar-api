@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.21 (unreleased)
+## 0.21 (2024-08-14)
 
 
 - hotfix on hotfix: top diameter -> top position in gmw import
