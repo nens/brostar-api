@@ -3,7 +3,7 @@
 ## 0.21 (unreleased)
 
 
-- Nothing changed yet.
+- hotfix on hotfix: top diameter -> top position in gmw import
 
 
 ## 0.20 (2024-08-14)
