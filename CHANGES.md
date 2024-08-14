@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.20 (unreleased)
+## 0.20 (2024-08-14)
 
 
 - Hotfix: GMW import failed to show most recent data. Now the event history is used to lookup the most recent top positions.
