@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from datetime import date
 from typing import IO, Any
@@ -11,6 +12,8 @@ from gar.models import GAR
 from gld.models import GLD
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, MonitoringTube
+
+logger = logging.getLogger(__name__)
 
 
 class ObjectImporter(ABC):
@@ -183,8 +186,10 @@ class GMWObjectImporter(ObjectImporter):
 
         gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)
 
+        event_data = gmw_data.get("wellHistory", [])
+
         self._save_gmw_data(gmw_data)
-        self._save_monitoringtubes_data(monitoringtubes_data)
+        self._save_monitoringtubes_data(monitoringtubes_data, event_data)
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
@@ -264,7 +269,9 @@ class GMWObjectImporter(ObjectImporter):
         self.gmw_obj.save()
 
     def _save_monitoringtubes_data(
-        self, monitoringtubes_data: list[dict[str, Any]]
+        self,
+        monitoringtubes_data: list[dict[str, Any]] | dict[str, Any],
+        event_data: list[dict[str, any]],
     ) -> None:
         # If only one monitoringtube data, the monitoringtubes_data is not in a list
         if not isinstance(monitoringtubes_data, list):
@@ -334,8 +341,8 @@ class GMWObjectImporter(ObjectImporter):
                         "numberOfGeoOhmCables", None
                     ),
                     "geo_ohm_cables": geo_ohm_data or [],
-                    "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
-                        "@xsi:nil", None
+                    "tube_top_diameter": self._lookup_most_recent_top_position(
+                        monitoringtube, event_data
                     ),
                     "variable_diameter": monitoringtube.get("variableDiameter", None),
                     "tube_status": monitoringtube.get("tubeStatus", {}).get(
@@ -377,6 +384,57 @@ class GMWObjectImporter(ObjectImporter):
             )
 
             monitoringtube_obj.save()
+
+    def _lookup_most_recent_top_position(
+        self, monitoringtube: list[dict[str, any]], event_data: list[dict[str, any]]
+    ):
+        """In the BRO uigifteservice, the most recent top position is not always found in the metadata.
+        Instead, the eventdata has to be checked for any changes.
+        This function checks if the most recent value is found in the event history.
+        If not, the initial value is returned."""
+
+        initial_top_position = monitoringtube.get("tubeTopPosition", {}).get("#text")
+        tube_number = monitoringtube.get("tubeNumber")
+        most_recent_date = None
+        most_recent_position = None
+
+        intermediate_events = event_data.get("intermediateEvent", [])
+        if isinstance(intermediate_events, dict):
+            intermediate_events = [intermediate_events]
+
+        for intermediate_event in intermediate_events:
+            print(type(intermediate_event))
+            print(intermediate_event)
+            if (
+                intermediate_event.get("eventName", {}).get("#text")
+                == "nieuweInmetingPosities"
+            ):
+                event_date = intermediate_event.get("eventDate", {}).get(
+                    "brocom:date"
+                ) or intermediate_event.get("eventDate", {}).get("brocom:year")
+
+                # If event_date is a year, convert it to a date
+                if event_date:
+                    event_date = (
+                        event_date + "-01-01" if len(event_date) == 4 else event_date
+                    )
+                else:
+                    continue
+                tube_data = intermediate_event.get("eventData", {}).get("tubeData")
+
+                # Ensure tube_data is a list
+                if isinstance(tube_data, dict):
+                    tube_data = [tube_data]
+
+                for tube in tube_data:
+                    if tube.get("tubeNumber") == tube_number:
+                        if most_recent_date is None or event_date > most_recent_date:
+                            most_recent_date = event_date
+                            most_recent_position = tube.get("tubeTopPosition", {}).get(
+                                "#text"
+                            )
+
+        return most_recent_position or initial_top_position
 
 
 class GARObjectImporter(ObjectImporter):

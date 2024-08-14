@@ -3,7 +3,7 @@
 ## 0.20 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: GMW import failed to show most recent data. Now the event history is used to lookup the most recent top positions.
 
 
 ## 0.19 (2024-08-13)
