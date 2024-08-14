@@ -341,15 +341,15 @@ class GMWObjectImporter(ObjectImporter):
                         "numberOfGeoOhmCables", None
                     ),
                     "geo_ohm_cables": geo_ohm_data or [],
-                    "tube_top_diameter": self._lookup_most_recent_top_position(
-                        monitoringtube, event_data
+                    "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
+                        "@xsi:nil", None
                     ),
                     "variable_diameter": monitoringtube.get("variableDiameter", None),
                     "tube_status": monitoringtube.get("tubeStatus", {}).get(
                         "#text", None
                     ),
-                    "tube_top_position": monitoringtube.get("tubeTopPosition", {}).get(
-                        "#text", None
+                    "tube_top_position": self._lookup_most_recent_top_position(
+                        monitoringtube, event_data
                     ),
                     "tube_top_positioning_method": monitoringtube.get(
                         "tubeTopPositioningMethod", {}
@@ -403,8 +403,6 @@ class GMWObjectImporter(ObjectImporter):
             intermediate_events = [intermediate_events]
 
         for intermediate_event in intermediate_events:
-            print(type(intermediate_event))
-            print(intermediate_event)
             if (
                 intermediate_event.get("eventName", {}).get("#text")
                 == "nieuweInmetingPosities"
