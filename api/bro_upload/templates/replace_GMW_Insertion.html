@@ -1,0 +1,25 @@
+<ns:replaceRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+    xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+    xmlns:ns3="http://www.opengis.net/gml/3.2">
+    <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+    <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+    <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
+    <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">{{ metadata.correctionReason }}</ns:correctionReason>
+    <ns:sourceDocument>
+        <ns:GMW_Insertion>
+            <ns:eventDate>
+                <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+            </ns:eventDate>
+            <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+            <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+            <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.topTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+            <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
+            <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
+            <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}</ns:insertedPartMaterial>
+        </ns:GMW_Insertion>
+    </ns:sourceDocument>
+</ns:replaceRequest>
+
+
