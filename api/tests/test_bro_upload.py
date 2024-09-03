@@ -1,53 +1,7 @@
 import pytest
+from xml_strings import gmn_startregistration_xml, gmw_lengthening_xml
 
 from api.bro_upload import object_upload, utils
-
-expected_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgmn/1.0"
-    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-    xmlns:gml="http://www.opengis.net/gml/3.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgmn/1.0 https://schema.broservices.nl/xsd/isgmn/1.0/isgmn-messages.xsd">
-    <brocom:requestReference>test</brocom:requestReference>
-    <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
-    <brocom:qualityRegime>IMBRO/A</brocom:qualityRegime>
-    <sourceDocument>
-        <GMN_StartRegistration gml:id="id_0001">
-            <objectIdAccountableParty>test</objectIdAccountableParty>
-            <name>test</name>
-            <deliveryContext codeSpace="urn:bro:gmn:DeliveryContext">kaderrichtlijnWater</deliveryContext>
-            <monitoringPurpose codeSpace="urn:bro:gmn:MonitoringPurpose">strategischBeheerKwaliteitRegionaal</monitoringPurpose>
-            <groundwaterAspect codeSpace="urn:bro:gmn:GroundwaterAspect">kwantiteit</groundwaterAspect>
-            <startDateMonitoring>
-                <brocom:date>2024-01-01</brocom:date>
-            </startDateMonitoring>
-
-            <measuringPoint>
-                <MeasuringPoint gml:id="measuringpoint_1">
-                    <measuringPointCode>GMW000000038946</measuringPointCode>
-                    <monitoringTube>
-                        <GroundwaterMonitoringTube gml:id="tube_1">
-                            <broId>GMW000000038946</broId>
-                            <tubeNumber>1</tubeNumber>
-                        </GroundwaterMonitoringTube>
-                    </monitoringTube>
-                </MeasuringPoint>
-            </measuringPoint>
-
-            <measuringPoint>
-                <MeasuringPoint gml:id="measuringpoint_2">
-                    <measuringPointCode>GMW000000038946</measuringPointCode>
-                    <monitoringTube>
-                        <GroundwaterMonitoringTube gml:id="tube_2">
-                            <broId>GMW000000038946</broId>
-                            <tubeNumber>2</tubeNumber>
-                        </GroundwaterMonitoringTube>
-                    </monitoringTube>
-                </MeasuringPoint>
-            </measuringPoint>
-
-        </GMN_StartRegistration>
-    </sourceDocument>
-</registrationRequest>
-"""
 
 
 def test_xml_generator1():
@@ -81,7 +35,7 @@ def test_xml_generator1():
         },
     )
 
-    assert generator.create_xml_file() == expected_xml_str
+    assert generator.create_xml_file() == gmn_startregistration_xml
 
 
 def test_xml_generator2():
@@ -94,6 +48,39 @@ def test_xml_generator2():
             sourcedocs_data={},
         )
         generator.create_xml_file()
+
+
+def test_xml_generator3():
+    generator = object_upload.XMLGenerator(
+        registration_type="GMW_Lengthening",
+        request_type="registration",
+        metadata={
+            "requestReference": "GMW000000050650_Lengthening_1",
+            "deliveryAccountableParty": "27376655",
+            "broId": "GMW000000050650",
+            "qualityRegime": "IMBRO/A",
+            "underPrivilige": "ja",
+        },
+        sourcedocs_data={
+            "eventDate": "1986-09-12",
+            "monitoringTubes": [
+                {
+                    "tubeNumber": 2,
+                    "variableDiameter": "nee",
+                    "tubeStatus": "onbekend",
+                    "tubeTopPosition": "1.700",
+                    "tubeTopPositioningMethod": "onbekend",
+                    "tubeMaterial": "pvc",
+                    "glue": "onbekend",
+                    "plainTubePartLength": 19.510,
+                }
+            ],
+        },
+    )
+
+    print(generator.create_xml_file())
+    print(gmw_lengthening_xml)
+    assert generator.create_xml_file() == gmw_lengthening_xml
 
 
 def test_simplify_validation_errors():
