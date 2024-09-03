@@ -1,7 +1,8 @@
 import pytest
-from xml_strings import gmn_startregistration_xml, gmw_lengthening_xml
 
 from api.bro_upload import object_upload, utils
+from api.tests.xml_strings.GMN_StartRegistration_XML import gmn_startregistration_xml
+from api.tests.xml_strings.GMW_Lenghtening_XML import gmw_lengthening_xml
 
 
 def test_xml_generator1():
@@ -59,7 +60,7 @@ def test_xml_generator3():
             "deliveryAccountableParty": "27376655",
             "broId": "GMW000000050650",
             "qualityRegime": "IMBRO/A",
-            "underPrivilige": "ja",
+            "underPrivilege": "ja",
         },
         sourcedocs_data={
             "eventDate": "1986-09-12",
@@ -72,7 +73,7 @@ def test_xml_generator3():
                     "tubeTopPositioningMethod": "onbekend",
                     "tubeMaterial": "pvc",
                     "glue": "onbekend",
-                    "plainTubePartLength": 19.510,
+                    "plainTubePartLength": "19.510",
                 }
             ],
         },

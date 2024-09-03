@@ -12,7 +12,9 @@ gmw_lengthening_xml = """<ns:registrationRequest xmlns:ns="http://www.broservice
             <ns:eventDate>
                 <ns1:date>1986-09-12</ns1:date>
             </ns:eventDate>
+
             <ns:numberOfTubesLengthened>1</ns:numberOfTubesLengthened>
+
             <ns:monitoringTube>
                 <ns:tubeNumber>2</ns:tubeNumber>
                 <ns:variableDiameter>nee</ns:variableDiameter>
@@ -23,6 +25,7 @@ gmw_lengthening_xml = """<ns:registrationRequest xmlns:ns="http://www.broservice
                 <ns:glue codeSpace="urn:bro:gmw:Glue">onbekend</ns:glue>
                 <ns:plainTubePartLength uom="m">19.510</ns:plainTubePartLength>
             </ns:monitoringTube>
+
         </ns:GMW_Lengthening>
     </ns:sourceDocument>
 </ns:registrationRequest>
