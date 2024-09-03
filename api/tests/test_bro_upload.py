@@ -96,7 +96,7 @@ def test_xml_generator2():
         generator.create_xml_file()
 
 
-def test_simlify_validation_errors():
+def test_simplify_validation_errors():
     input_data = [
         {
             "type": "missing",
