@@ -4,6 +4,7 @@
     xmlns:ns3="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:broId>{{ metadata.broId }}</ns1:broId>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
     <ns:sourceDocument>
@@ -11,9 +12,7 @@
             <ns:eventDate>
                 <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
             </ns:eventDate>
-{%          if sourcedocs_data.wellHeadProtector %}
-            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
-{%          endif %}
+            {% if sourcedocs_data.wellHeadProtector %}<ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>{% endif %}
             <ns:numberOfTubesLengthened>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesLengthened>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
             <ns:monitoringTube>
@@ -21,7 +20,7 @@
                 <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
                 <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
                 <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.topTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
                 <ns:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.tubeMaterial }}</ns:tubeMaterial>
                 <ns:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns:glue>
                 <ns:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns:plainTubePartLength>
