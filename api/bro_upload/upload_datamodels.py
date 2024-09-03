@@ -1,5 +1,4 @@
 from datetime import date, datetime
-from typing import Optional
 
 from pydantic import BaseModel, validator
 
@@ -120,11 +119,14 @@ class GMWConstruction(BaseModel):
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
 
+
 class GMWEvent(BaseModel):
     eventDate: str
 
+
 class GMWElectrodeStatus(GMWEvent):
     electrodes: list[Electrode]
+
 
 class GMWGroundLevel(GMWEvent):
     wellStability: str
@@ -132,17 +134,20 @@ class GMWGroundLevel(GMWEvent):
     groundLevelPosition: str
     groundLevelPositioningMethod: str
 
+
 class GMWGroundLevelMeasuring(GMWEvent):
     groundLevelPosition: str
     groundLevelPositioningMethod: str
 
+
 class GMWInsertion(GMWEvent):
     tubeNumber: str
     tubeTopPosition: str
-    tubeTopPositioningMethod:str
+    tubeTopPositioningMethod: str
     insertedPartLength: str
     insertedPartDiameter: str
     insertedPartMaterial: str
+
 
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
@@ -154,20 +159,25 @@ class MonitoringTubeLengthening(BaseModel):
     glue: str
     plainTubePartLength: str | float
 
+
 class GMWLengthening(GMWEvent):
     wellHeadProtector: str | None = None
     monitoringTubes: list[MonitoringTubeLengthening]
 
+
 class GMWMaintainer(GMWEvent):
     maintenanceResponsibleParty: str
 
+
 class GMWOwner(GMWEvent):
     owner: str
+
 
 class MonitoringTubePositions(BaseModel):
     tubeNumber: str | int
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
+
 
 class GMWPositions(GMWEvent):
     wellStability: str
@@ -176,14 +186,18 @@ class GMWPositions(GMWEvent):
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTubePositions]
 
+
 class GMWPositionsMeasuring(GMWEvent):
     def __init__(
-            self, groundLevelPosition: str | None = None, groundLevelPositioningMethod: str | None = None, monitoringTubes: list[MonitoringTube] | None = None
-        ):
+        self,
+        groundLevelPosition: str | None = None,
+        groundLevelPositioningMethod: str | None = None,
+        monitoringTubes: list[MonitoringTube] | None = None,
+    ):
         self._groundLevelPosition = None
         self._groundLevelPositioningMethod = None
         self.monitoringTubes = monitoringTubes if monitoringTubes is not None else []
-        
+
         if groundLevelPosition is not None:
             self.groundLevelPosition = groundLevelPosition
         if groundLevelPositioningMethod is not None:
@@ -202,7 +216,9 @@ class GMWPositionsMeasuring(GMWEvent):
             self._groundLevelPosition = value
             # Validate and enforce that groundLevelPositioningMethod must be set if groundLevelPosition is set
             if self._groundLevelPositioningMethod is None:
-                raise ValueError("groundLevelPositioningMethod must be set when groundLevelPosition is provided.")
+                raise ValueError(
+                    "groundLevelPositioningMethod must be set when groundLevelPosition is provided."
+                )
 
     @property
     def groundLevelPositioningMethod(self):
@@ -211,18 +227,24 @@ class GMWPositionsMeasuring(GMWEvent):
     @groundLevelPositioningMethod.setter
     def groundLevelPositioningMethod(self, value):
         if self._groundLevelPosition is None:
-            raise ValueError("Cannot set groundLevelPositioningMethod when groundLevelPosition is None.")
+            raise ValueError(
+                "Cannot set groundLevelPositioningMethod when groundLevelPosition is None."
+            )
         if value is None and self._groundLevelPosition is not None:
-            raise ValueError("groundLevelPositioningMethod cannot be None when groundLevelPosition is provided.")
+            raise ValueError(
+                "groundLevelPositioningMethod cannot be None when groundLevelPosition is provided."
+            )
         self._groundLevelPositioningMethod = value
 
 
 class GMWRemoval(GMWEvent):
     pass
 
+
 class GMWShift(GMWEvent):
     groundLevelPosition: str
     groundLevelPositioningMethod: str
+
 
 class MonitoringTubeShortening(BaseModel):
     tubeNumber: str | int
@@ -230,19 +252,24 @@ class MonitoringTubeShortening(BaseModel):
     tubeTopPositioningMethod: str
     plainTubePartLength: str | float
 
+
 class GMWShortening(GMWEvent):
     wellHeadProtector: str | None = None
     monitoringTubes: list[MonitoringTubeShortening]
+
 
 class MonitoringTubeStatus(BaseModel):
     tubeNumber: str | int
     tubeStatus: str
 
+
 class GMWTubeStatus(GMWEvent):
     monitoringTubes: list[MonitoringTubeStatus]
 
+
 class GMWWellHeadProtector(GMWEvent):
     wellHeadProtector: str
+
 
 # GAR sourcedocs_data
 class FieldMeasurement(BaseModel):
