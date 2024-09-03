@@ -4,6 +4,7 @@
     xmlns:ns3="http://www.opengis.net/gml/3.2">
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:broId>{{ metadata.broId }}</ns1:broId>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
     <ns:sourceDocument>
@@ -11,14 +12,14 @@
             <ns:eventDate>
                 <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
             </ns:eventDate>
-            <ns:numberOfElectrodesChanged>{{ len(sourcedocs_data.electrodes) }}</ns:numberOfElectrodesChanged>
-            for electrode in sourcedocs_data.electrodes %}
-                <ns:electrode>
-                    <ns:electrodeNumber>{{ monitoringtube.electrodeNumber }}</ns:electrodeNumber>
-                    <ns:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ monitoringtube.electrodePackingMaterial }}</ns:electrodePackingMaterial>
-                    <ns:electrodePosition>{{ monitoringtube.electrodePosition }}</ns:electrodePosition>
-                    <ns:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ monitoringtube.electrodeStatus }}</ns:electrodeStatus>
-                </ns:electrode>
+            <ns:numberOfElectrodesChanged>{{ sourcedocs_data.electrodes | length }}</ns:numberOfElectrodesChanged>
+{%          for electrode in sourcedocs_data.electrodes %}
+            <ns:electrode>
+                <ns:electrodeNumber>{{ monitoringtube.electrodeNumber }}</ns:electrodeNumber>
+                <ns:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ monitoringtube.electrodePackingMaterial }}</ns:electrodePackingMaterial>
+                <ns:electrodePosition>{{ monitoringtube.electrodePosition }}</ns:electrodePosition>
+                <ns:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ monitoringtube.electrodeStatus }}</ns:electrodeStatus>
+            </ns:electrode>
 {%          endfor %}
         </ns:GMW_ElectrodeStatus>
     </ns:sourceDocument>

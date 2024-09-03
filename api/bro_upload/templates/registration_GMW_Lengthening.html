@@ -12,7 +12,9 @@
             <ns:eventDate>
                 <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
             </ns:eventDate>
-            {% if sourcedocs_data.wellHeadProtector %}<ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>{% endif %}
+{%          if sourcedocs_data.wellHeadProtector %}
+            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
+{%          endif %}
             <ns:numberOfTubesLengthened>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesLengthened>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
             <ns:monitoringTube>

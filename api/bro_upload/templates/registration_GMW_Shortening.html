@@ -4,6 +4,7 @@
     xmlns:ns3="http://www.opengis.net/gml/3.2">
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:broId>{{ metadata.broId }}</ns1:broId>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
     <ns:sourceDocument>
@@ -12,16 +13,16 @@
                 <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
             </ns:eventDate>
 {%          if sourcedocs_data.wellHeadProtector %}
-                <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
+            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
 {%          endif %}
-            <ns:numberOfTubesShortened>{{ len(sourcedocs_data.monitoringTubes) }}</ns:numberOfTubesShortened>
+            <ns:numberOfTubesShortened>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesShortened>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
-                <ns:monitoringTube>
-                    <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-                    <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-                    <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.topTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-                    <ns:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns:plainTubePartLength>
-                </ns:monitoringTube>
+            <ns:monitoringTube>
+                <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+                <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+                <ns:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns:plainTubePartLength>
+            </ns:monitoringTube>
 {%          endfor %}
         </ns:GMW_Shortening>
     </ns:sourceDocument>

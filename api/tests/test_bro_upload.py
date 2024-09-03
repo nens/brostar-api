@@ -79,8 +79,6 @@ def test_xml_generator3():
         },
     )
 
-    print(generator.create_xml_file())
-    print(gmw_lengthening_xml)
     assert generator.create_xml_file() == gmw_lengthening_xml
 
 
