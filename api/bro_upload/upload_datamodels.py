@@ -106,6 +106,7 @@ class GMWConstruction(BaseModel):
     initialFunction: str
     numberOfMonitoringTubes: str | int
     groundLevelStable: str
+    wellStability: str | None = None
     owner: str
     maintenanceResponsibleParty: str
     wellHeadProtector: str
@@ -129,7 +130,7 @@ class GMWElectrodeStatus(GMWEvent):
 
 
 class GMWGroundLevel(GMWEvent):
-    wellStability: str
+    wellStability: str | None = None
     groundLevelStable: str
     groundLevelPosition: str
     groundLevelPositioningMethod: str
@@ -180,7 +181,7 @@ class MonitoringTubePositions(BaseModel):
 
 
 class GMWPositions(GMWEvent):
-    wellStability: str
+    wellStability: str | None = None
     groundLevelStable: str
     groundLevelPosition: str
     groundLevelPositioningMethod: str
@@ -188,53 +189,9 @@ class GMWPositions(GMWEvent):
 
 
 class GMWPositionsMeasuring(GMWEvent):
-    def __init__(
-        self,
-        groundLevelPosition: str | None = None,
-        groundLevelPositioningMethod: str | None = None,
-        monitoringTubes: list[MonitoringTube] | None = None,
-    ):
-        self._groundLevelPosition = None
-        self._groundLevelPositioningMethod = None
-        self.monitoringTubes = monitoringTubes if monitoringTubes is not None else []
-
-        if groundLevelPosition is not None:
-            self.groundLevelPosition = groundLevelPosition
-        if groundLevelPositioningMethod is not None:
-            self.groundLevelPositioningMethod = groundLevelPositioningMethod
-
-    @property
-    def groundLevelPosition(self):
-        return self._groundLevelPosition
-
-    @groundLevelPosition.setter
-    def groundLevelPosition(self, value):
-        if value is None:
-            self._groundLevelPosition = None
-            self._groundLevelPositioningMethod = None
-        else:
-            self._groundLevelPosition = value
-            # Validate and enforce that groundLevelPositioningMethod must be set if groundLevelPosition is set
-            if self._groundLevelPositioningMethod is None:
-                raise ValueError(
-                    "groundLevelPositioningMethod must be set when groundLevelPosition is provided."
-                )
-
-    @property
-    def groundLevelPositioningMethod(self):
-        return self._groundLevelPositioningMethod
-
-    @groundLevelPositioningMethod.setter
-    def groundLevelPositioningMethod(self, value):
-        if self._groundLevelPosition is None:
-            raise ValueError(
-                "Cannot set groundLevelPositioningMethod when groundLevelPosition is None."
-            )
-        if value is None and self._groundLevelPosition is not None:
-            raise ValueError(
-                "groundLevelPositioningMethod cannot be None when groundLevelPosition is provided."
-            )
-        self._groundLevelPositioningMethod = value
+    monitoringTubes: list[MonitoringTube]
+    groundLevelPosition: str | None = None
+    groundLevelPositioningMethod: str | None = None
 
 
 class GMWRemoval(GMWEvent):
