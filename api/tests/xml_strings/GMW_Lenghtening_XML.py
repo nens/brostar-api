@@ -6,7 +6,9 @@ gmw_lengthening_xml = """<ns:registrationRequest xmlns:ns="http://www.broservice
     <ns1:deliveryAccountableParty>27376655</ns1:deliveryAccountableParty>
     <ns1:broId>GMW000000050650</ns1:broId>
     <ns1:qualityRegime>IMBRO/A</ns1:qualityRegime>
+
     <ns1:underPrivilege>ja</ns1:underPrivilege>
+
     <ns:sourceDocument>
         <ns:GMW_Lengthening>
             <ns:eventDate>
