@@ -1,6 +1,7 @@
 import pytest
 
 from api import models as api_models
+from api.choices import REGISTRATION_TYPE_OPTIONS
 from api.tests import fixtures
 from gmn import models as gmn_models
 from gmw import models as gmw_models
@@ -55,20 +56,19 @@ def test_upload_task_name(organisation):
 
 
 @pytest.mark.django_db
-def test_upload_task_save_method(organisation):
-    upload_task = api_models.UploadTask.objects.create(
-        data_owner=organisation,
-        bro_domain="gmn",
-        project_number="1",
-        status="PENDING",
-        registration_type="GMN_StartRegistration",
-        request_type="registration",
-        metadata={},
-        sourcedocument_data={},
-    )
-    upload_task.save()
-    upload_task.refresh_from_db()
-    assert api_models.UploadTask.objects.count() == 1
+def test_upload_task_registration_types(organisation):
+    for registration_type_option in REGISTRATION_TYPE_OPTIONS:
+        upload_task = api_models.UploadTask(
+            bro_domain="GMW",
+            data_owner=organisation,
+            project_number="1",
+            registration_type=registration_type_option,
+            request_type="registration",
+        )
+
+        assert (
+            str(upload_task) == f"Nieuwegein: {registration_type_option} (registration)"
+        )
 
 
 @pytest.mark.django_db

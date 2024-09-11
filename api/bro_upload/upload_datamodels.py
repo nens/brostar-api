@@ -106,6 +106,7 @@ class GMWConstruction(BaseModel):
     initialFunction: str
     numberOfMonitoringTubes: str | int
     groundLevelStable: str
+    wellStability: str | None = None
     owner: str
     maintenanceResponsibleParty: str
     wellHeadProtector: str
@@ -118,6 +119,113 @@ class GMWConstruction(BaseModel):
     groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
+
+
+class GMWEvent(BaseModel):
+    eventDate: str
+
+
+class GMWElectrodeStatus(GMWEvent):
+    electrodes: list[Electrode]
+
+
+class GMWGroundLevel(GMWEvent):
+    wellStability: str | None = None
+    groundLevelStable: str
+    groundLevelPosition: str
+    groundLevelPositioningMethod: str
+
+
+class GMWGroundLevelMeasuring(GMWEvent):
+    groundLevelPosition: str
+    groundLevelPositioningMethod: str
+
+
+class GMWInsertion(GMWEvent):
+    tubeNumber: str
+    tubeTopPosition: str
+    tubeTopPositioningMethod: str
+    insertedPartLength: str
+    insertedPartDiameter: str
+    insertedPartMaterial: str
+
+
+class MonitoringTubeLengthening(BaseModel):
+    tubeNumber: str | int
+    variableDiameter: str | float
+    tubeStatus: str
+    tubeTopPosition: str | float
+    tubeTopPositioningMethod: str
+    tubeMaterial: str
+    glue: str
+    plainTubePartLength: str | float
+
+
+class GMWLengthening(GMWEvent):
+    wellHeadProtector: str | None = None
+    monitoringTubes: list[MonitoringTubeLengthening]
+
+
+class GMWMaintainer(GMWEvent):
+    maintenanceResponsibleParty: str
+
+
+class GMWOwner(GMWEvent):
+    owner: str
+
+
+class MonitoringTubePositions(BaseModel):
+    tubeNumber: str | int
+    tubeTopPosition: str | float
+    tubeTopPositioningMethod: str
+
+
+class GMWPositions(GMWEvent):
+    wellStability: str | None = None
+    groundLevelStable: str
+    groundLevelPosition: str
+    groundLevelPositioningMethod: str
+    monitoringTubes: list[MonitoringTubePositions]
+
+
+class GMWPositionsMeasuring(GMWEvent):
+    monitoringTubes: list[MonitoringTube]
+    groundLevelPosition: str | None = None
+    groundLevelPositioningMethod: str | None = None
+
+
+class GMWRemoval(GMWEvent):
+    pass
+
+
+class GMWShift(GMWEvent):
+    groundLevelPosition: str
+    groundLevelPositioningMethod: str
+
+
+class MonitoringTubeShortening(BaseModel):
+    tubeNumber: str | int
+    tubeTopPosition: str | float
+    tubeTopPositioningMethod: str
+    plainTubePartLength: str | float
+
+
+class GMWShortening(GMWEvent):
+    wellHeadProtector: str | None = None
+    monitoringTubes: list[MonitoringTubeShortening]
+
+
+class MonitoringTubeStatus(BaseModel):
+    tubeNumber: str | int
+    tubeStatus: str
+
+
+class GMWTubeStatus(GMWEvent):
+    monitoringTubes: list[MonitoringTubeStatus]
+
+
+class GMWWellHeadProtector(GMWEvent):
+    wellHeadProtector: str
 
 
 # GAR sourcedocs_data

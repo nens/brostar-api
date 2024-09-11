@@ -1,9 +1,10 @@
-<ns:registrationRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+<ns:replaceRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
     xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
     xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
     xmlns:ns3="http://www.opengis.net/gml/3.2">
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:broId>{{ metadata.broId }}</ns1:broId>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
     <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">{{ metadata.correctionReason }}</ns:correctionReason>
@@ -15,6 +16,9 @@
             <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
             <ns:numberOfMonitoringTubes>{{ sourcedocs_data.numberOfMonitoringTubes }}</ns:numberOfMonitoringTubes>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+{%          if sourcedocs_data.wellStability %}
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
+{%          endif %}
             <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
             <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
             <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
@@ -35,47 +39,47 @@
                 <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
             </ns:deliveredVerticalPosition>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
-                <ns:monitoringTube>
-                    <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-                    <ns:tubeType codeSpace="urn:bro:gmw:TubeType">{{ monitoringtube.tubeType }}</ns:tubeType>
-                    <ns:artesianWellCapPresent>{{ monitoringtube.artesianWellCapPresent }}</ns:artesianWellCapPresent>
-                    <ns:sedimentSumpPresent>{{ monitoringtube.sedimentSumpPresent }}</ns:sedimentSumpPresent>
-                    <ns:numberOfGeoOhmCables>{{ monitoringtube.numberOfGeoOhmCables }}</ns:numberOfGeoOhmCables>
-                    <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
-                    <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
-                    <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
-                    <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-                    <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-                    <ns:materialUsed>
-                        <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">{{ monitoringtube.tubePackingMaterial }}</ns2:tubePackingMaterial>
-                        <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.tubeMaterial }}</ns2:tubeMaterial>
-                        <ns2:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns2:glue>
-                    </ns:materialUsed>
-                    <ns:screen>
-                        <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
-                        <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
-                    </ns:screen>
-                    <ns:plainTubePart>
-                        <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
-                    </ns:plainTubePart>
-                    <ns:sedimentSump>
-                        <ns2:sedimentSumpLength uom="m">{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength>
-                    </ns:sedimentSump>
-{%                  for geoohmcable in monitoringtube.geoohmcables %}
-                        <ns:geoOhmCable>
-                            <ns:cableNumber>{{ geoohmcable.cableNumber }}</ns:cableNumber>
-{%                              for electrode in geoohmcable.electrodes %}
-                                    <ns:electrode>
-                                        <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
-                                        <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
-                                        <ns2:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ electrode.electrodeStatus }}</ns2:electrodeStatus>
-                                        <ns2:electrodePosition uom="m">{{ electrode.electrodePosition }}</ns2:electrodePosition>
-                                    </ns:electrode>
-{%                              endfor %}
-                        </ns:geoOhmCable>
-{%                  endfor %}
-                </ns:monitoringTube>
+            <ns:monitoringTube>
+                <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+                <ns:tubeType codeSpace="urn:bro:gmw:TubeType">{{ monitoringtube.tubeType }}</ns:tubeType>
+                <ns:artesianWellCapPresent>{{ monitoringtube.artesianWellCapPresent }}</ns:artesianWellCapPresent>
+                <ns:sedimentSumpPresent>{{ monitoringtube.sedimentSumpPresent }}</ns:sedimentSumpPresent>
+                <ns:numberOfGeoOhmCables>{{ monitoringtube.numberOfGeoOhmCables }}</ns:numberOfGeoOhmCables>
+                <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
+                <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
+                <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
+                <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+                <ns:materialUsed>
+                    <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">{{ monitoringtube.tubePackingMaterial }}</ns2:tubePackingMaterial>
+                    <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.tubeMaterial }}</ns2:tubeMaterial>
+                    <ns2:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns2:glue>
+                </ns:materialUsed>
+                <ns:screen>
+                    <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
+                    <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
+                </ns:screen>
+                <ns:plainTubePart>
+                    <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
+                </ns:plainTubePart>
+                <ns:sedimentSump>
+                    <ns2:sedimentSumpLength uom="m">{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength>
+                </ns:sedimentSump>
+{%              for geoohmcable in monitoringtube.geoohmcables %}
+                <ns:geoOhmCable>
+                    <ns:cableNumber>{{ geoohmcable.cableNumber }}</ns:cableNumber>
+{%                      for electrode in geoohmcable.electrodes %}
+                        <ns:electrode>
+                            <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
+                            <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
+                            <ns2:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ electrode.electrodeStatus }}</ns2:electrodeStatus>
+                            <ns2:electrodePosition uom="m">{{ electrode.electrodePosition }}</ns2:electrodePosition>
+                        </ns:electrode>
+{%                      endfor %}
+                </ns:geoOhmCable>
+{%              endfor %}
+            </ns:monitoringTube>
 {%          endfor %}
         </ns:GMW_Construction>
     </ns:sourceDocument>
-</ns:registrationRequest>
+</ns:replaceRequest>
