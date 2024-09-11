@@ -5,7 +5,9 @@
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+{%  if metadata.underPrivilege %}
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
+{%  endif %}
     <ns:sourceDocument>
         <ns:GMW_Construction>
             <ns:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</ns:objectIdAccountableParty>
