@@ -84,7 +84,7 @@ class MonitoringTube(BaseModel):
     artesianWellCapPresent: str
     sedimentSumpPresent: str
     numberOfGeoOhmCables: str | int
-    tubeTopDiameter: str | float
+    tubeTopDiameter: str | float | None = None
     variableDiameter: str | float
     tubeStatus: str
     tubeTopPosition: str | float
@@ -95,7 +95,7 @@ class MonitoringTube(BaseModel):
     screenLength: str | float
     sockMaterial: str
     plainTubePartLength: str | float
-    sedimentSumpLength: str | float
+    sedimentSumpLength: str | float | None = None
     geoohmcables: list[GeoOhmCable] | None = None
 
 
@@ -116,7 +116,7 @@ class GMWConstruction(BaseModel):
     localVerticalReferencePoint: str
     offset: str | float
     verticalDatum: str
-    groundLevelPosition: str | float
+    groundLevelPosition: str | float | None = None
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTube]
 
