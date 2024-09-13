@@ -3,7 +3,7 @@
 ## 0.23 (unreleased)
 
 
-- Nothing changed yet.
+- Updated GAR bulk upload command.
 
 
 ## 0.22 (2024-09-13)
