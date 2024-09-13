@@ -44,9 +44,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         gmn_bro_id = options["gmn_bro_id"]
         # INPUT DATA
-        organisation_uuid = "4253c513-d845-40a5-afd3-0c55b1e64165"  # hardcoded
+        organisation_uuid = "7f4d3e6e-aab8-4594-a553-2a68ac345c58"  # hardcoded
         gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
-        field_research_data_uuid = "3bd84329-5711-45a0-8d78-54e782aad88f"  # hardcoded
+        field_research_data_uuid = "06d703a3-e7bc-4a06-a136-da38eaef0af7"  # hardcoded
         project_number = 1  # hardcoded
 
         # Get instances
