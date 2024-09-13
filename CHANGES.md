@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.22 (unreleased)
+## 0.22 (2024-09-13)
 
 
 - Updated GAR bulk upload command.
