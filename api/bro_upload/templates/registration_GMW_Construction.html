@@ -5,7 +5,9 @@
     <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+{%  if metadata.underPrivilege %}
     <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
+{%  endif %}
     <ns:sourceDocument>
         <ns:GMW_Construction>
             <ns:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</ns:objectIdAccountableParty>
@@ -14,6 +16,9 @@
             <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
             <ns:numberOfMonitoringTubes>{{ sourcedocs_data.numberOfMonitoringTubes }}</ns:numberOfMonitoringTubes>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+{%          if sourcedocs_data.wellStability %}
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
+{%          endif %}
             <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
             <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
             <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
