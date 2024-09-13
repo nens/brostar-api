@@ -3,7 +3,8 @@
 ## 0.22 (unreleased)
 
 
-- Nothing changed yet.
+- Updated GAR bulk upload command.
+- Added a lot templates (GMW registrations and replaces)
 
 
 ## 0.21 (2024-08-14)
