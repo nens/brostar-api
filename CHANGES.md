@@ -4,6 +4,7 @@
 
 
 - Updated GAR bulk upload command.
+- Fixed GLD template bugs.
 
 
 ## 0.22 (2024-09-13)
