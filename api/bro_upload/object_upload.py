@@ -68,6 +68,7 @@ class BRODelivery:
         # Generate the XML file.
         try:
             xml_file = self._generate_xml_file()
+            print(xml_file)
             self.upload_task_instance.progress = 25.00
             self.upload_task_instance.save()
         except Exception as e:
