@@ -3,7 +3,7 @@
 ## 0.24 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Fixed the GMN import
 
 
 ## 0.23 (2024-09-17)
