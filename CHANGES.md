@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.24 (unreleased)
+## 0.24 (2024-09-17)
 
 
 - Hotfix: Fixed the GMN import
