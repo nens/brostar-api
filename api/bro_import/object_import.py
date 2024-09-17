@@ -79,7 +79,7 @@ class GMNObjectImporter(ObjectImporter):
         )
 
         # If GMN_PPO is not found, it basically means that the object is not relevant anymore
-        if "ns6:GMN_PPO" not in dispatch_document_data:
+        if "GMN_PPO" not in dispatch_document_data:
             return
 
         gmn_data, measuringpoint_data = self._split_json_data(dispatch_document_data)
