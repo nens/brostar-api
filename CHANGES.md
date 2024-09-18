@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.25 (unreleased)
+## 0.25 (2024-09-18)
 
 
 - After a 200 on the check status action on upload task instance, the log and process are now correctly updated.
