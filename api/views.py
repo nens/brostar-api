@@ -313,7 +313,13 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         )
         if validation_class:
             try:
-                validation_class(**serializer.validated_data["sourcedocument_data"])
+                validated_sourcedocument_data = validation_class(
+                    **serializer.validated_data["sourcedocument_data"]
+                )
+                # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
+                serializer.validated_data[
+                    "sourcedocument_data"
+                ] = validated_sourcedocument_data.dict()
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
                 return Response(
