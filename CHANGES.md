@@ -3,7 +3,7 @@
 ## 0.26 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: GLD Additions now work.
 
 
 ## 0.25 (2024-09-18)

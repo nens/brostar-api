@@ -325,7 +325,6 @@ class TimeValuePair(BaseModel):
 
 
 class GLDAddition(BaseModel):
-    principalInvestigator: str
     date: str
     investigatorKvk: str
     observationType: str
