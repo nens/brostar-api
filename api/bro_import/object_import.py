@@ -74,12 +74,10 @@ class ObjectImporter(ABC):
 
 class GMNObjectImporter(ObjectImporter):
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
-        print(json_data)
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
         )
 
-        print(dispatch_document_data)
         # If GMN_PPO is not found, it basically means that the object is not relevant anymore
         if "GMN_PPO" not in dispatch_document_data:
             return

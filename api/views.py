@@ -414,7 +414,8 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 ):
                     # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
                     upload_task.bro_id = delivery_info["brondocuments"][0]["broId"]
-                    upload_task.status == "FINISHED"
+                    upload_task.status == "COMPLETED"
+                    upload_task.log == "COMPLETED"
                     upload_task.save()
 
                     return Response(

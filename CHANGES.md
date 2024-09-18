@@ -3,7 +3,7 @@
 ## 0.25 (unreleased)
 
 
-- Nothing changed yet.
+- After a 200 on the check status action on upload task instance, the log and process are now correctly updated.
 
 
 ## 0.24 (2024-09-17)
