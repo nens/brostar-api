@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.26 (2024-09-18)
+## 0.26 (2024-09-19)
 
 
 - Hotfix: GLD Additions now work.
