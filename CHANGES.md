@@ -3,7 +3,7 @@
 ## 0.32 (unreleased)
 
 
-- Nothing changed yet.
+- added deliveryAccountableParty to GAR template and bulk upload
 
 
 ## 0.31 (2024-09-19)
