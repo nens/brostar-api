@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.30 (unreleased)
+## 0.30 (2024-09-19)
 
 
 - undo last update
