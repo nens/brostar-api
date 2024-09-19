@@ -3,7 +3,7 @@
 ## 0.31 (unreleased)
 
 
-- Nothing changed yet.
+- Small fix for gelderland Gar bulk upload
 
 
 ## 0.30 (2024-09-19)
