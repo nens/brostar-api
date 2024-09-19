@@ -7,6 +7,7 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
     <brocom:requestReference>test</brocom:requestReference>
     <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+    <brocom:deliveryAccountableParty>test</brocom:deliveryAccountableParty>
     <sourceDocument>
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>test</objectIdAccountableParty>
@@ -105,6 +106,7 @@ def test_gar_xml_creation():
         metadata={
             "requestReference": "test",
             "qualityRegime": "IMBRO",
+            "deliveryAccountableParty": "test",
         },
         sourcedocs_data={
             "objectIdAccountableParty": "test",
