@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.36 (unreleased)
+## 0.36 (2024-09-19)
 
 
 - Gar upload test
