@@ -3,7 +3,7 @@
 ## 0.34 (unreleased)
 
 
-- Nothing changed yet.
+- Fixed bug: only backfill sourcedocs if registration type = gld addition. Otherwise just the old method.
 
 
 ## 0.33 (2024-09-19)
