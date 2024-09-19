@@ -3,7 +3,7 @@
 ## 0.27 (unreleased)
 
 
-- Nothing changed yet.
+- Gar bulk upload: hardcoded to input parameters.
 
 
 ## 0.26 (2024-09-19)

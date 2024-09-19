@@ -37,6 +37,10 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "gmn_bro_id",
+            "organisation_uuid",
+            "gar_data_file_uuid",
+            "field_research_data_uuid",
+            "project_number",
             type=str,
             help="GMN BRO ID to use for the command",
         )
@@ -44,10 +48,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         gmn_bro_id = options["gmn_bro_id"]
         # INPUT DATA
-        organisation_uuid = "7f4d3e6e-aab8-4594-a553-2a68ac345c58"  # hardcoded
-        gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
-        field_research_data_uuid = "06d703a3-e7bc-4a06-a136-da38eaef0af7"  # hardcoded
-        project_number = 764  # hardcoded
+        organisation_uuid = options["organisation_uuid"]
+        gar_data_file_uuid = options["gar_data_file_uuid"]
+        field_research_data_uuid = options["field_research_data_uuid"]
+        project_number = options["project_number"]
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
