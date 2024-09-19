@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.31 (unreleased)
+## 0.31 (2024-09-19)
 
 
 - Small fix for gelderland Gar bulk upload
