@@ -3,7 +3,7 @@
 ## 0.35 (unreleased)
 
 
-- Nothing changed yet.
+- Addded underprivelage to gar
 
 
 ## 0.34 (2024-09-19)
