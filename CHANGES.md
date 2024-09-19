@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.35 (unreleased)
+## 0.35 (2024-09-19)
 
 
 - Addded underprivelage to gar
