@@ -8,10 +8,10 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
     <brocom:requestReference>test</brocom:requestReference>
     <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
 
-    <brocom:deliveryAccountableParty>test</brocom:deliveryAccountableParty>
-
-
     <brocom:underPrivilege>ja</brocom:underPrivilege>
+
+
+    <brocom:deliveryAccountableParty>test</brocom:deliveryAccountableParty>
 
     <sourceDocument>
         <GAR gml:id="id_0001">
