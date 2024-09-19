@@ -3,7 +3,7 @@
 ## 0.30 (unreleased)
 
 
-- Nothing changed yet.
+- undo last update
 
 
 ## 0.29 (2024-09-19)
