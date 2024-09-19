@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.32 (unreleased)
+## 0.32 (2024-09-19)
 
 
 - added deliveryAccountableParty to GAR template and bulk upload
