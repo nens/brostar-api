@@ -3,7 +3,7 @@
 ## 0.33 (unreleased)
 
 
-- Nothing changed yet.
+- fixed gar test
 
 
 ## 0.32 (2024-09-19)
