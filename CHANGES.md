@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.27 (unreleased)
+## 0.27 (2024-09-19)
 
 
 - Gar bulk upload: hardcoded to input parameters.
