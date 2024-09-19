@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.29 (unreleased)
+## 0.29 (2024-09-19)
 
 
 - return 1st nitg code for gmw
