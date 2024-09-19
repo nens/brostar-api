@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.34 (unreleased)
+## 0.34 (2024-09-19)
 
 
 - Fixed bug: only backfill sourcedocs if registration type = gld addition. Otherwise just the old method.
