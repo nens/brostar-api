@@ -37,17 +37,32 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "gmn_bro_id",
-            "organisation_uuid",
-            "gar_data_file_uuid",
-            "field_research_data_uuid",
-            "project_number",
             type=str,
             help="GMN BRO ID to use for the command",
+        )
+        parser.add_argument(
+            "organisation_uuid",
+            type=str,
+            help="UUID of the organisation",
+        )
+        parser.add_argument(
+            "gar_data_file_uuid",
+            type=str,
+            help="UUID of the GAR data file",
+        )
+        parser.add_argument(
+            "field_research_data_uuid",
+            type=str,
+            help="UUID of the field research data",
+        )
+        parser.add_argument(
+            "project_number",
+            type=str,
+            help="Project number",
         )
 
     def handle(self, *args, **options):
         gmn_bro_id = options["gmn_bro_id"]
-        # INPUT DATA
         organisation_uuid = options["organisation_uuid"]
         gar_data_file_uuid = options["gar_data_file_uuid"]
         field_research_data_uuid = options["field_research_data_uuid"]

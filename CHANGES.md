@@ -3,7 +3,7 @@
 ## 0.28 (unreleased)
 
 
-- Nothing changed yet.
+- hotfix gar bulk upload command.
 
 
 ## 0.27 (2024-09-19)
