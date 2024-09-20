@@ -20,7 +20,6 @@ gmw_lengthening_xml = """<ns:registrationRequest xmlns:ns="http://www.broservice
             <ns:monitoringTube>
                 <ns:tubeNumber>2</ns:tubeNumber>
                 <ns:variableDiameter>nee</ns:variableDiameter>
-                <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">onbekend</ns:tubeStatus>
                 <ns:tubeTopPosition uom="m">1.700</ns:tubeTopPosition>
                 <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">onbekend</ns:tubeTopPositioningMethod>
                 <ns:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">pvc</ns:tubeMaterial>

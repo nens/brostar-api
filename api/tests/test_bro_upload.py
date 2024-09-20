@@ -68,7 +68,6 @@ def test_xml_generator3():
                 {
                     "tubeNumber": 2,
                     "variableDiameter": "nee",
-                    "tubeStatus": "onbekend",
                     "tubeTopPosition": "1.700",
                     "tubeTopPositioningMethod": "onbekend",
                     "tubeMaterial": "pvc",
