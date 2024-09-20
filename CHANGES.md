@@ -1,9 +1,113 @@
 # Changelog for BROStar API
 
-## 0.22 (unreleased)
+## 0.39 (unreleased)
 
 
 - Nothing changed yet.
+
+
+## 0.38 (2024-09-20)
+
+
+- Devilvery accountable party back, but different order
+
+
+## 0.37 (2024-09-20)
+
+
+- Removed delivery accountable party from gar
+
+
+## 0.36 (2024-09-19)
+
+
+- Gar upload test
+
+
+## 0.35 (2024-09-19)
+
+
+- Addded underprivelage to gar
+
+
+## 0.34 (2024-09-19)
+
+
+- Fixed bug: only backfill sourcedocs if registration type = gld addition. Otherwise just the old method.
+
+
+## 0.33 (2024-09-19)
+
+
+- fixed gar test
+
+
+## 0.32 (2024-09-19)
+
+
+- added deliveryAccountableParty to GAR template and bulk upload
+
+
+## 0.31 (2024-09-19)
+
+
+- Small fix for gelderland Gar bulk upload
+
+
+## 0.30 (2024-09-19)
+
+
+- undo last update
+
+
+## 0.29 (2024-09-19)
+
+
+- return 1st nitg code for gmw
+
+
+## 0.28 (2024-09-19)
+
+
+- hotfix gar bulk upload command.
+
+
+## 0.27 (2024-09-19)
+
+
+- Gar bulk upload: hardcoded to input parameters.
+
+
+## 0.26 (2024-09-19)
+
+
+- Hotfix: GLD Additions now work.
+
+
+## 0.25 (2024-09-18)
+
+
+- After a 200 on the check status action on upload task instance, the log and process are now correctly updated.
+
+
+## 0.24 (2024-09-17)
+
+
+- Hotfix: Fixed the GMN import
+
+
+## 0.23 (2024-09-17)
+
+
+- Updated GAR bulk upload command.
+- Fixed GLD template bugs.
+
+
+## 0.22 (2024-09-13)
+
+
+- Updated GAR bulk upload command.
+- Added a lot templates (GMW registrations and replaces)
 
 
 ## 0.21 (2024-08-14)

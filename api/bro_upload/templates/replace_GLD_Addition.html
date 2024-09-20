@@ -18,7 +18,7 @@
     <sourceDocument>
       <GLD_Addition gml:id="id_0001">
         <observation>
-          <om:OM_Observation gml:id="id_0002">
+          <om:OM_Observation gml:id="{{ sourcedocs_data.observationId }}">
             <om:type xlink:href="http://www.opengis.net/def/observationType/waterml/2.0/MeasurementTimeseriesTVPObservation"/>
             <om:metadata>
               <wml2:ObservationMetadata>
@@ -28,7 +28,7 @@
                       <gco:CharacterString/>
                     </gmd:organisationName>
                     <gmd:role>
-                      <gmd:CI_RoleCode codeList="urn:ISO:19115:CI_RoleCode" codeListValue="principalInvestigator">{{ sourcedocs_data.principalInvestigator }}</gmd:CI_RoleCode>
+                      <gmd:CI_RoleCode codeList="urn:ISO:19115:CI_RoleCode" codeListValue="principalInvestigator">principalInvestigator</gmd:CI_RoleCode>
                     </gmd:role>
                   </gmd:CI_ResponsibleParty>
                 </gmd:contact>
@@ -65,7 +65,7 @@
               </gml:TimeInstant>
             </om:resultTime>
             <om:procedure>
-              <wml2:ObservationProcess gml:id="id_0007">
+              <wml2:ObservationProcess gml:id="{{ sourcedocs_data.observationProcessId }}">
                 <wml2:processType xlink:href="http://www.opengis.net/def/waterml/2.0/processType/Algorithm"/>
                 <wml2:processReference xlink:href="urn:bro:gld:ProcessReference:NEN5120v1991"/>
                 <wml2:parameter>
@@ -85,7 +85,7 @@
             <om:observedProperty/>
             <om:featureOfInterest/>
             <om:result>
-              <wml2:MeasurementTimeseries gml:id="id_0008">
+              <wml2:MeasurementTimeseries gml:id="{{ sourcedocs_data.measurementTimeseriesId }}">
 {%              for tvp in sourcedocs_data.timeValuePairs %}
                 <wml2:point>
                   <wml2:MeasurementTVP>
