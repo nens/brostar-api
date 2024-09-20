@@ -3,7 +3,7 @@
 ## 0.37 (unreleased)
 
 
-- Nothing changed yet.
+- Removed delivery accountable party from gar
 
 
 ## 0.36 (2024-09-19)
