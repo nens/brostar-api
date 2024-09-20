@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.38 (unreleased)
+## 0.38 (2024-09-20)
 
 
 - Devilvery accountable party back, but different order
