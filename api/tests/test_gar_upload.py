@@ -10,9 +10,6 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
     <brocom:underPrivilege>ja</brocom:underPrivilege>
 
-
-    <brocom:deliveryAccountableParty>test</brocom:deliveryAccountableParty>
-
     <sourceDocument>
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>test</objectIdAccountableParty>
@@ -111,7 +108,6 @@ def test_gar_xml_creation():
         metadata={
             "requestReference": "test",
             "qualityRegime": "IMBRO",
-            "deliveryAccountableParty": "test",
             "underPrivilege": "ja",
         },
         sourcedocs_data={
