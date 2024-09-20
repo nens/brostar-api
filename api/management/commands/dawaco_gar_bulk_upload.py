@@ -283,7 +283,9 @@ def setup_gar_sourcedocs_data(
             tube_number,
             sampling_operator_kvk,
         ),
-        "laboratoryAnalyses": setup_lab_data(lab_data, samplingdate),
+        "laboratoryAnalyses": setup_lab_data(
+            lab_data, samplingdate, sampling_operator_kvk
+        ),
     }
 
     sourcedocs_data = datamodels.GAR(**sourcedocs_data_dict)
@@ -306,7 +308,7 @@ def setup_field_research_data(
     """Fills the fieldResearch part of the GAR, using the pydantic model FieldResearch."""
 
     field_research_dict = {
-        "samplingDateTime": samplingdate,
+        "samplingDateTime": f"{samplingdate}+01:00",
         "samplingStandard": "onbekend",  # hardcoded
         "pumpType": "onbekend",  # hardcoded
         "abnormalityInCooling": "onbekend",  # hardcoded
@@ -415,13 +417,14 @@ def setup_gar_field_measurements(
 
 
 def setup_lab_data(
-    lab_data: pd.DataFrame, samplingdate: pd.Timestamp
+    lab_data: pd.DataFrame, samplingdate: pd.Timestamp, sampling_operator_kvk: str
 ) -> list[datamodels.LaboratoryAnalysis] | None:
     """Fills the laboratoryAnalyses part of the GAR."""
     if lab_data.empty:
         return None
     else:
         lab_analysis = {
+            "responsibleLaboratoryKvk": sampling_operator_kvk,
             "analysisProcesses": setup_analysis_processes(lab_data, samplingdate),
         }
 
