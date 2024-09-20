@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.37 (unreleased)
+## 0.37 (2024-09-20)
 
 
 - Removed delivery accountable party from gar
