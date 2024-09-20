@@ -4,6 +4,9 @@
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
     <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+{%  if metadata.deliveryAccountableParty %}
+    <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+{%  endif %}
     <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
 {%  if metadata.underPrivilege %}
     <brocom:underPrivilege>{{ metadata.underPrivilege }}</brocom:underPrivilege>

@@ -6,6 +6,9 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
     xmlns:gml="http://www.opengis.net/gml/3.2"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
     <brocom:requestReference>test</brocom:requestReference>
+
+    <brocom:deliveryAccountableParty>test</brocom:deliveryAccountableParty>
+
     <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
 
     <brocom:underPrivilege>ja</brocom:underPrivilege>
@@ -108,6 +111,7 @@ def test_gar_xml_creation():
         metadata={
             "requestReference": "test",
             "qualityRegime": "IMBRO",
+            "deliveryAccountableParty": "test",
             "underPrivilege": "ja",
         },
         sourcedocs_data={
