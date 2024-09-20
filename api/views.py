@@ -313,7 +313,19 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         )
         if validation_class:
             try:
-                validation_class(**serializer.validated_data["sourcedocument_data"])
+                # For GLD addition, some uuids are backfilled into the sourcedocs data
+                if serializer.validated_data["registration_type"] == "GLD_Addition":
+                    validated_sourcedocument_data = validation_class(
+                        **serializer.validated_data["sourcedocument_data"]
+                    )
+                    # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
+                    serializer.validated_data[
+                        "sourcedocument_data"
+                    ] = validated_sourcedocument_data.dict()
+                # Else, just a pydantic validation is required
+                else:
+                    validation_class(**serializer.validated_data["sourcedocument_data"])
+
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
                 return Response(
@@ -414,7 +426,8 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 ):
                     # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
                     upload_task.bro_id = delivery_info["brondocuments"][0]["broId"]
-                    upload_task.status == "FINISHED"
+                    upload_task.status == "COMPLETED"
+                    upload_task.log == "COMPLETED"
                     upload_task.save()
 
                     return Response(

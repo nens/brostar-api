@@ -1,3 +1,4 @@
+import uuid
 from datetime import date, datetime
 
 from pydantic import BaseModel, validator
@@ -324,8 +325,10 @@ class TimeValuePair(BaseModel):
 
 
 class GLDAddition(BaseModel):
-    principalInvestigator: str
     date: str
+    observationId: str | None = None
+    observationProcessId: str | None = None
+    measurementTimeseriesId: str | None = None
     investigatorKvk: str
     observationType: str
     beginPosition: str
@@ -334,6 +337,27 @@ class GLDAddition(BaseModel):
     evaluationProcedure: str
     measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
+
+    @validator("observationId", pre=True, always=True)
+    def format_observationId(cls, value):
+        """Ensure the observationId is always filled with an uuid"""
+        if not value:
+            return f"_{uuid.uuid4()}"
+        return value
+
+    @validator("observationProcessId", pre=True, always=True)
+    def format_observationProcessId(cls, value):
+        """Ensure the observationProcessId is always filled with an uuid"""
+        if not value:
+            return f"_{uuid.uuid4()}"
+        return value
+
+    @validator("measurementTimeseriesId", pre=True, always=True)
+    def format_measurementTimeseriesId(cls, value):
+        """Ensure the measurementTimeseriesId is always filled with an uuid"""
+        if not value:
+            return f"_{uuid.uuid4()}"
+        return value
 
 
 # FRD

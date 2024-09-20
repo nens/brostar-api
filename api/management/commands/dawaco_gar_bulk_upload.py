@@ -40,14 +40,33 @@ class Command(BaseCommand):
             type=str,
             help="GMN BRO ID to use for the command",
         )
+        parser.add_argument(
+            "organisation_uuid",
+            type=str,
+            help="UUID of the organisation",
+        )
+        parser.add_argument(
+            "gar_data_file_uuid",
+            type=str,
+            help="UUID of the GAR data file",
+        )
+        parser.add_argument(
+            "field_research_data_uuid",
+            type=str,
+            help="UUID of the field research data",
+        )
+        parser.add_argument(
+            "project_number",
+            type=str,
+            help="Project number",
+        )
 
     def handle(self, *args, **options):
         gmn_bro_id = options["gmn_bro_id"]
-        # INPUT DATA
-        organisation_uuid = "4253c513-d845-40a5-afd3-0c55b1e64165"  # hardcoded
-        gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
-        field_research_data_uuid = "3bd84329-5711-45a0-8d78-54e782aad88f"  # hardcoded
-        project_number = 1  # hardcoded
+        organisation_uuid = options["organisation_uuid"]
+        gar_data_file_uuid = options["gar_data_file_uuid"]
+        field_research_data_uuid = options["field_research_data_uuid"]
+        project_number = options["project_number"]
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
@@ -198,6 +217,8 @@ def handle_gar_delivery(
     uploadtask_metadata = {
         "qualityRegime": "IMBRO/A",  # hardcoded
         "requestReference": "dawaco_export_gar_data_bulk_upload_brostar",  # hardcoded
+        # "deliveryAccountableParty": organisation_instance.kvk_number,
+        "underPrivilege": "ja",
     }
 
     uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
