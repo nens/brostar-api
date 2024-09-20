@@ -3,7 +3,7 @@
 ## 0.39 (unreleased)
 
 
-- Nothing changed yet.
+- Gelderland GAR process..
 
 
 ## 0.38 (2024-09-20)
