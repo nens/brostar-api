@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.42 (unreleased)
+## 0.42 (2024-09-20)
 
 
 - Gelderland GAR process..
