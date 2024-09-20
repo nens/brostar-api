@@ -308,7 +308,7 @@ def setup_field_research_data(
     """Fills the fieldResearch part of the GAR, using the pydantic model FieldResearch."""
 
     field_research_dict = {
-        "samplingDateTime": f"{samplingdate.replace(" ", "T")}+01:00",
+        "samplingDateTime": f"{samplingdate}+01:00".replace(" ", "T"),
         "samplingStandard": "onbekend",  # hardcoded
         "pumpType": "onbekend",  # hardcoded
         "abnormalityInCooling": "onbekend",  # hardcoded
