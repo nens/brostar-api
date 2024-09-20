@@ -222,7 +222,7 @@ def handle_gar_delivery(
     }
 
     uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
-        gar_df, field_data_df, gmn_bro_id
+        gar_df, field_data_df, gmn_bro_id, organisation_instance.kvk_number
     )
 
     if not uploadtask_sourcedocument_data:
@@ -244,7 +244,10 @@ def handle_gar_delivery(
 
 
 def setup_gar_sourcedocs_data(
-    df: pd.DataFrame, field_data_df: pd.DataFrame, gmn_bro_id: str
+    df: pd.DataFrame,
+    field_data_df: pd.DataFrame,
+    gmn_bro_id: str,
+    sampling_operator_kvk: str,
 ) -> datamodels.GAR | None:
     """Creates a pydantic GAR instance, based on the data from a grouped df."""
     nitg_code = df["nitg_code"].iloc[0]
@@ -273,7 +276,12 @@ def setup_gar_sourcedocs_data(
         "gmwBroId": bro_id,
         "tubeNumber": tube_number,
         "fieldResearch": setup_field_research_data(
-            field_data, field_data_df, samplingdate, nitg_code, tube_number
+            field_data,
+            field_data_df,
+            samplingdate,
+            nitg_code,
+            tube_number,
+            sampling_operator_kvk,
         ),
         "laboratoryAnalyses": setup_lab_data(lab_data, samplingdate),
     }
@@ -293,11 +301,12 @@ def setup_field_research_data(
     samplingdate: pd.Timestamp,
     nitg_code: str,
     tube_number: str,
+    sampling_operator_kvk: str,
 ) -> datamodels.FieldResearch:
     """Fills the fieldResearch part of the GAR, using the pydantic model FieldResearch."""
 
     field_research_dict = {
-        "samplingDateTime": samplingdate,
+        "samplingDateTime": f"{samplingdate}+01:00",
         "samplingStandard": "onbekend",  # hardcoded
         "pumpType": "onbekend",  # hardcoded
         "abnormalityInCooling": "onbekend",  # hardcoded
@@ -372,6 +381,7 @@ def setup_field_research_data(
             if not pd.isna(row_data["temperatureDifficultToMeasure"])
             else "onbekend"
         )
+        field_research_dict["samplingOperator"] = sampling_operator_kvk
 
     field_research = datamodels.FieldResearch(**field_research_dict)
 
