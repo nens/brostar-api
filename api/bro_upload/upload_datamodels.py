@@ -154,7 +154,6 @@ class GMWInsertion(GMWEvent):
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
     variableDiameter: str | float
-    tubeStatus: str
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
     tubeMaterial: str

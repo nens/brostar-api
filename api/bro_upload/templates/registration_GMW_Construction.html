@@ -62,9 +62,11 @@
                 <ns:plainTubePart>
                     <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
                 </ns:plainTubePart>
+{%              if monitoringtube.sedimentSumpLength %}
                 <ns:sedimentSump>
                     <ns2:sedimentSumpLength uom="m">{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength>
                 </ns:sedimentSump>
+{%              endif %}
 {%              for geoohmcable in monitoringtube.geoohmcables %}
                 <ns:geoOhmCable>
                     <ns:cableNumber>{{ geoohmcable.cableNumber }}</ns:cableNumber>
