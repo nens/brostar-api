@@ -217,7 +217,7 @@ def handle_gar_delivery(
     uploadtask_metadata = {
         "qualityRegime": "IMBRO/A",  # hardcoded
         "requestReference": "dawaco_export_gar_data_bulk_upload_brostar",  # hardcoded
-        "deliveryAccountableParty": organisation_instance.kvk_number,
+        # "deliveryAccountableParty": organisation_instance.kvk_number,
         "underPrivilege": "ja",
     }
 
