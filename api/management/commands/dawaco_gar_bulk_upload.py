@@ -320,6 +320,7 @@ def setup_field_research_data(
         "sampleAerated": "onbekend",  # hardcoded
         "hoseReused": "onbekend",  # hardcoded
         "temperatureDifficultToMeasure": "onbekend",  # hardcoded
+        "samplingOperator": sampling_operator_kvk,
         "fieldMeasurements": setup_gar_field_measurements(field_data),
     }
 
@@ -383,8 +384,7 @@ def setup_field_research_data(
             if not pd.isna(row_data["temperatureDifficultToMeasure"])
             else "onbekend"
         )
-        field_research_dict["samplingOperator"] = sampling_operator_kvk
-    print(field_research_dict)
+
     field_research = datamodels.FieldResearch(**field_research_dict)
 
     return field_research
