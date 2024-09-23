@@ -384,7 +384,7 @@ def setup_field_research_data(
             else "onbekend"
         )
         field_research_dict["samplingOperator"] = sampling_operator_kvk
-
+    print(field_research_dict)
     field_research = datamodels.FieldResearch(**field_research_dict)
 
     return field_research
