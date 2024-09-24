@@ -3,7 +3,7 @@
 ## 0.49 (unreleased)
 
 
-- Nothing changed yet.
+- Added view XML endpoint
 
 
 ## 0.48 (2024-09-24)
