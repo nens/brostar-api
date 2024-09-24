@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.49 (unreleased)
+## 0.49 (2024-09-24)
 
 
 - Added view XML endpoint
