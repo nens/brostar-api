@@ -64,4 +64,4 @@ We use mkdocs for documenting BROSTAR. To build the docs locally:
 The docs are then available on http://127.0.0.1:8000/`.
 
 Github automatically builds the docs from `main` branch and uploads them to
-https://doc.brostar.nl/
+https://docs.brostar.nl/
