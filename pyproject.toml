@@ -16,6 +16,7 @@ dependencies = [
     "djangorestframework-api-key",
     "drf-yasg",
     "markdown > 3",  # DRF api docs
+    "mkdocs-material",
     "nens-auth-client",
     "openpyxl",
     "pandas",
