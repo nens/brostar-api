@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.48 (unreleased)
+## 0.48 (2024-09-24)
 
 
 - Hotfix: removed 500 on GAR endpoint when more GMWS exist for a BRO ID
