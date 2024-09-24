@@ -59,9 +59,9 @@ We use mkdocs for documenting BROSTAR. To build the docs locally:
     $ cd docs
     $ python3 -m venv .venv
     $ .venv/bin/pip install -r requirements.txt
-    $ .venv/bin/mkdocs build
+    $ mkdocs serve
 
-The docs are then available as `docs/site/index.html`.
+The docs are then available on http://127.0.0.1:8000/`.
 
 Github automatically builds the docs from `main` branch and uploads them to
-https://doc.brostar.nl/
+https://docs.brostar.nl/
