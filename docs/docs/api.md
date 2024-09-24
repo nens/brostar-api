@@ -717,7 +717,10 @@ Het bulk upload endpoint is gemaakt om eenvoudig een groot aantal leveringen te 
 
 Het bulk upload endpoint is stukje maatwerk in de BROSTAR. Momenteel bestaat alleen de optie om een specifiek formaat van GAR csv bestanden aan te leveren. Deze zijn ontwikkeld voor Provincie Noord-Brabant, waarbij hun formaat van lab- en veldbestanden zijn gebruikt als input. Daardoor is het voor hen mogelijk om 2 bestanden in de frontend te slepen, wat metadata op te geven, en de bestanden naar de API te sturen. Hiermee wordt alle data dus vertaald naar upload taken, die vervolgens de data naar de BRO sturen.
 
-Hieronder staat een voorbeeld van hoe een bulk upload opgestuurd kan worden via een script:
+Hieronder staat een voorbeeld van hoe een bulk upload opgestuurd kan worden via een script.
+
+!!! Wow
+     Dit stukje code, in combinatie met de xlsx bestanden, is dus alles wat nodig is om duizenden GAR berichten te registreren in de BRO!
 
 ```python
 import requests
