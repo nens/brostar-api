@@ -682,6 +682,8 @@ class GemMeasurement(BaseModel):
 ```
 
 
+TODO: schrijf docs over check status actions endpoint voor uploadtask instanties. (Als een taak op unfinished staat checkt deze opnieuw de status bij de BRO en updatet evt de status van de upload taak)
+
 ### Bulk uploadtasks
 TODO
 
