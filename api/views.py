@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 
 from api import filters, mixins, models, serializers, tasks
 from api.bro_upload import utils
+from api.bro_upload.object_upload import XMLGenerator
 from api.bro_upload.upload_datamodels import GARBulkUploadMetadata, UploadTaskMetadata
 from api.choices import registration_type_datamodel_mapping
 from brostar_api import __version__
@@ -444,6 +445,22 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                         },
                         status=status.HTTP_304_NOT_MODIFIED,
                     )
+
+    @action(detail=True, methods=["get"])
+    def read_xml(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
+        """Endpoint to show the generated XML file of this upload task, which is generated on the fly."""
+        upload_task = models.UploadTask.objects.get(uuid=uuid)
+
+        xml_generator = XMLGenerator(
+            registration_type=upload_task.registration_type,
+            request_type=upload_task.request_type,
+            metadata=upload_task.metadata,
+            sourcedocs_data=upload_task.sourcedocument_data,
+        )
+
+        xml_str = xml_generator.create_xml_file()
+
+        return HttpResponse(xml_str, content_type="application/xml")
 
 
 class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
