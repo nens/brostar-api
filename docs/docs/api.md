@@ -769,4 +769,21 @@ with open(veldwerk_path, "rb") as fp_fieldwork, open(lab_path, "rb") as fp_lab:
 ```
 
 ### Data endpoints
-TODO
+
+De data endpoints zijn een tijdelijke opslag voor de data die volgt uit de importtaken. De urls van de data endpoints zijn:
+
+- `https://www.brostar.nl/api/gmn/gmns/`
+
+- `https://www.brostar.nl/api/gmn/measuringpoints/`
+
+- `https://www.brostar.nl/api/gmws/gmws/`
+
+- `https://www.brostar.nl/api/gmws/monitoringtubes/`
+
+- `https://www.brostar.nl/api/gar/gars/`
+
+- `https://www.brostar.nl/api/gld/glds/`
+
+- `https://www.brostar.nl/api/frd/frds/`
+
+Op deze endpoints zijn de lijsten van objecten te zien. Deze lijsten van de metadata van objecten bieden een mooi overzicht van alles wat er in de BRO aan data staat. Dit is een mooie vervanging voor de [uitgifteservice van de BRO](https://publiek.broservices.nl/gm/gmn/v1/swagger-ui/#/default/bro-ids), aangezien daar alleen request gedaan kunnen worden op basis van idividuele objecten. Deze endpoints kunnen dus helpen bij het scripten, maar dienen vooral voor de frontend om de data snel op te kunnen vragen om het vervolgens in de kaart en tabellen weer te geven.
