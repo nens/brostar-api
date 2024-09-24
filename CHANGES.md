@@ -3,7 +3,7 @@
 ## 0.48 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: removed 500 on GAR endpoint when more GMWS exist for a BRO ID
 
 
 ## 0.47 (2024-09-23)
