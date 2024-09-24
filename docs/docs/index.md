@@ -56,7 +56,7 @@ Nadat een levering is gedaan, is het mogelijk om de status ervan in te zien. Als
 ![Upload taak tabel](assets/frontend_upload_task_table.png)
 *Voorbeeld van de foutmeldingen bij een gefaalde taak. Op de achtergrond zijn succesvolle taken te zien.*
 
-!!! note
+!!! info
     De frontend is nog vol in ontwikkeling. Momenteel zijn de type berichten die mogelijk zijn vanuit de frontend beperkt. Als er vanuit meerdere gebruikers wensen tot uitbreiding zijn, worden deze gerealiseerd.
 
 
