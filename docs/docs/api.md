@@ -49,19 +49,19 @@ De API bestaat uit de volgende endpoints:
 
 **Data endpoints:**
 
-- [GMNs](#gmns)
+- [GMNs](#Data endpoints)
 
-- [Measuringpoints](#measuringpoints)
+- [Measuringpoints](#Data endpoints)
 
-- [GMWs](#gmws)
+- [GMWs](#Data endpoints)
 
-- [Monitoringtubes](#monitoringtubes)
+- [Monitoringtubes](#Data endpoints)
 
-- [GARs](#gars)
+- [GARs](#Data endpoints)
 
-- [GLDs](#glds)
+- [GLDs](#Data endpoints)
 
-- [FRDs](#frds)
+- [FRDs](#Data endpoints)
 
 
 ### Organisations
@@ -709,25 +709,64 @@ Om meer inzicht te geven in de data die naar de BRO wordt gestuurd, is het mogel
 
 
 ### Bulk uploadtasks
-TODO
 
-### GMNs
-TODO
+!!! warning
+    Het bulk uploadtask endpoint is maatwerk. Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Aanvraag maatwerk bulk upload BROSTAR ) om de mogelijkheden te verkennen om een specifieke bulk upload te realiseren.
 
-### Measuringpoints
-TODO
+Het bulk upload endpoint is gemaakt om eenvoudig een groot aantal leveringen te realiseren. Op het bulk endpoint is het mogelijk om csv/excel bestanden aan te levern. Achter de schermen wordt een taak gestart die deze bestanden opknippen in meerdere upload taken.
 
-### GMWs
-TODO
+Het bulk upload endpoint is stukje maatwerk in de BROSTAR. Momenteel bestaat alleen de optie om een specifiek formaat van GAR csv bestanden aan te leveren. Deze zijn ontwikkeld voor Provincie Noord-Brabant, waarbij hun formaat van lab- en veldbestanden zijn gebruikt als input. Daardoor is het voor hen mogelijk om 2 bestanden in de frontend te slepen, wat metadata op te geven, en de bestanden naar de API te sturen. Hiermee wordt alle data dus vertaald naar upload taken, die vervolgens de data naar de BRO sturen.
 
-### Monitoringtubes
-TODO
+Hieronder staat een voorbeeld van hoe een bulk upload opgestuurd kan worden via een script:
 
-### GARs
-TODO
+```python
+import requests
+import json
+from requests.auth import HTTPBasicAuth
 
-### GLDs
-TODO
+BROSTAR_API_KEY = ...
 
-### FRDs
+auth = HTTPBasicAuth(
+    username="__key__",
+    password=BROSTAR_API_KEY,
+)
+
+url = "https://brostar.nl/api/bulkuploads/"
+
+payload = {
+    "bro_domain": "GMN"
+}
+
+lab_path = 'lab.xlsx'
+veldwerk_path ='veldwerk.xlsx'
+
+metadata_json = json.dumps(
+    {
+        "requestReference": "gar_bulk_upload",
+        "qualityRegime": "IMBRO",
+        "samplingOperator": "12345678",
+        "samplingStandard": "NTA8017v2016",
+        "qualityControlMethod": "handboekProvinciesRIVMv2017",
+        "responsibleLaboratoryKvk": "12345678",
+        "groundwaterMonitoringNets": ["GMN000000000001"]
+    }
+)
+with open(veldwerk_path, "rb") as fp_fieldwork, open(lab_path, "rb") as fp_lab:
+    files = {
+        'fieldwork_file': ('veldwerk.xlsx', fp_fieldwork, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
+        'lab_file': ('lab.xlsx', fp_lab, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    }
+    data = {
+        "bulk_upload_type": "GAR",
+        "project_number": 1,
+        "metadata": metadata_json,
+    }
+
+    # Send the POST request
+    r = requests.post(url, auth=auth, data=data, files=files)
+
+    print(r.json())
+```
+
+### Data endpoints
 TODO
