@@ -681,10 +681,32 @@ class GemMeasurement(BaseModel):
 
 ```
 
+#### Check status
 
-TODO: schrijf docs over check status actions endpoint voor uploadtask instanties. (Als een taak op unfinished staat checkt deze opnieuw de status bij de BRO en updatet evt de status van de upload taak)
+Nadat een taak 4 keer bij de BRO op status is gecontroleerd, is het mogelijk dat de BRO de taak nog steeds niet heeft verwerkt. In dit geval zal de BROSTAR stoppen met de status controleren, en schiet de status van de upload taak op UNFINISHED. In dit geval zal handmatig de voortgang van de taak gecontroleerd moeten worden. Dit gebeurt via een POST request op het check-status endpoint.
 
-TODO: schrijf over xml endpoint
+De url van dit endpoint is als volgt opgesteld:
+
+`https://www.brostar.nl/api/uploadtasks/{uuid}/check_status/`
+
+De mogelijke responses op dit endpoint zijn:
+
+- `201 - The task has been started after being stuck on PENDING`
+
+- `303 - The task is still running`
+
+- `303 - The upload task has allready finished with status: {status}`
+
+- `303 - The upload failed. Check the detail page for more info`
+
+- `304 - The upload is still not completely handled in the BRO. Check the status later again.`
+
+
+#### Read XML
+Om meer inzicht te geven in de data die naar de BRO wordt gestuurd, is het mogelijk om de XML bestanden in te zien. Dit kan op het read_xml endpoint. De url hiervoor is:
+
+`https://www.brostar.nl/api/uploadtasks/{uuid}/read_xml/`
+
 
 ### Bulk uploadtasks
 TODO
