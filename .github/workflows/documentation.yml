@@ -32,5 +32,7 @@ jobs:
           zip -r site.zip site
       - name: Publish the documentation
         run: ./upload-artifact.sh
+        env:
+          ARTIFACTS_KEY: ${{ secrets.ARTIFACTS_KEY }}
         if: github.ref == 'refs/heads/main'
         # Running this job only for main branch.
