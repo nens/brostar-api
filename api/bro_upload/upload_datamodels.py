@@ -315,6 +315,8 @@ class TimeValuePair(BaseModel):
     time: str | datetime
     value: float | str
     statusQualityControl: str
+    censorReason: str | None = None
+    censoringLimitvalue: str | float | None = None
 
     @validator("time", pre=True, always=True)
     def format_datetime(cls, value):
@@ -329,13 +331,14 @@ class GLDAddition(BaseModel):
     observationId: str | None = None
     observationProcessId: str | None = None
     measurementTimeseriesId: str | None = None
+    validationStatus: str | None = None
     investigatorKvk: str
     observationType: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
     beginPosition: str
     endPosition: str
     resultTime: str
-    evaluationProcedure: str
-    measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
 
     @validator("observationId", pre=True, always=True)
@@ -357,6 +360,15 @@ class GLDAddition(BaseModel):
         """Ensure the measurementTimeseriesId is always filled with an uuid"""
         if not value:
             return f"_{uuid.uuid4()}"
+        return value
+
+    @validator("validationStatus", pre=True, always=True)
+    def format_validationStatus(cls, value):
+        """Ensure the measurementTimeseriesId is always filled with an uuid"""
+        if cls.observationType == "reguliereMeting" and not value:
+            return "onbekend"
+        elif cls.observationType == "controlemeting":
+            return None
         return value
 
 
