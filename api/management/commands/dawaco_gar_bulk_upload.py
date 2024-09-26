@@ -20,16 +20,17 @@ T = TypeVar("T", bound=models.Model)
 
 
 class Command(BaseCommand):
-    """This command helps to upload GAR data based on DAWACO exports.
-    In order to run the command:
-        - Create an organisation for the client
-        - Import their GMW and GAR data
-        - Check if the gmw_bro_id's that are found in the GAR data are present in the database after the GMW import
-            - If so, continue
-            - If not, check which organisation owns the GMWs. Import their GMWs as well, but keep the data owner the clients organisation.
-        - Save the dawaco gar data export file as Upload File in the django admin, and save the uuid (easiest is to place it directly in the script)
-        - Check some of the hardcoded data (find by ctrl+f "# hardcoded") and check whether they work for your case.
-        - Run this command.
+    """This command helps to upload GAR data based on DAWACO exports. In the future, these kind of script should be build over the API in stead of as command.
+
+    This script was written for a GAR bulk upload project of Gelderland. To run the command, some preparations are required:
+
+        - Make sure the GAR and GMW data of the organisation are imported for the organisation in the BROSTAR.
+        - Create a bulk upload instance for the organisation in the admin. This allows you to save files via the upload file model.
+        - Save the field and lab csv/xlsx files in the admin.
+        - Update all #hardcoded values in this command.
+        - Run this script on the server that hosts the BROSTAR:
+            docker-compose run web python manage.py dawaco_gar_bulk_upload <gmn bro id> <organisation uuid> <gar data file uuid> <field file uuid> <BRO project number>
+
     """
 
     help = "Uploads GAR data based on DAWACO exports."
