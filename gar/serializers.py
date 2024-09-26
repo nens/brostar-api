@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from rest_framework import serializers
 
 from api.mixins import RequiredFieldsMixin, UrlFieldMixin
@@ -19,3 +19,8 @@ class GARSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
             return gmw_models.GMW.objects.get(bro_id=obj.gmw_bro_id).nitg_code
         except ObjectDoesNotExist:
             return None
+
+        except MultipleObjectsReturned:
+            return (
+                gmw_models.GMW.objects.filter(bro_id=obj.gmw_bro_id).first().nitg_code
+            )

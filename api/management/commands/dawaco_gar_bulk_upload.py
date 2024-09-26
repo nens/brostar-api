@@ -20,16 +20,17 @@ T = TypeVar("T", bound=models.Model)
 
 
 class Command(BaseCommand):
-    """This command helps to upload GAR data based on DAWACO exports.
-    In order to run the command:
-        - Create an organisation for the client
-        - Import their GMW and GAR data
-        - Check if the gmw_bro_id's that are found in the GAR data are present in the database after the GMW import
-            - If so, continue
-            - If not, check which organisation owns the GMWs. Import their GMWs as well, but keep the data owner the clients organisation.
-        - Save the dawaco gar data export file as Upload File in the django admin, and save the uuid (easiest is to place it directly in the script)
-        - Check some of the hardcoded data (find by ctrl+f "# hardcoded") and check whether they work for your case.
-        - Run this command.
+    """This command helps to upload GAR data based on DAWACO exports. In the future, these kind of script should be build over the API in stead of as command.
+
+    This script was written for a GAR bulk upload project of Gelderland. To run the command, some preparations are required:
+
+        - Make sure the GAR and GMW data of the organisation are imported for the organisation in the BROSTAR.
+        - Create a bulk upload instance for the organisation in the admin. This allows you to save files via the upload file model.
+        - Save the field and lab csv/xlsx files in the admin.
+        - Update all #hardcoded values in this command.
+        - Run this script on the server that hosts the BROSTAR:
+            docker-compose run web python manage.py dawaco_gar_bulk_upload <gmn bro id> <organisation uuid> <gar data file uuid> <field file uuid> <BRO project number>
+
     """
 
     help = "Uploads GAR data based on DAWACO exports."
@@ -222,7 +223,7 @@ def handle_gar_delivery(
     }
 
     uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
-        gar_df, field_data_df, gmn_bro_id
+        gar_df, field_data_df, gmn_bro_id, organisation_instance.kvk_number
     )
 
     if not uploadtask_sourcedocument_data:
@@ -244,7 +245,10 @@ def handle_gar_delivery(
 
 
 def setup_gar_sourcedocs_data(
-    df: pd.DataFrame, field_data_df: pd.DataFrame, gmn_bro_id: str
+    df: pd.DataFrame,
+    field_data_df: pd.DataFrame,
+    gmn_bro_id: str,
+    sampling_operator_kvk: str,
 ) -> datamodels.GAR | None:
     """Creates a pydantic GAR instance, based on the data from a grouped df."""
     nitg_code = df["nitg_code"].iloc[0]
@@ -273,9 +277,16 @@ def setup_gar_sourcedocs_data(
         "gmwBroId": bro_id,
         "tubeNumber": tube_number,
         "fieldResearch": setup_field_research_data(
-            field_data, field_data_df, samplingdate, nitg_code, tube_number
+            field_data,
+            field_data_df,
+            samplingdate,
+            nitg_code,
+            tube_number,
+            sampling_operator_kvk,
         ),
-        "laboratoryAnalyses": setup_lab_data(lab_data, samplingdate),
+        "laboratoryAnalyses": setup_lab_data(
+            lab_data, samplingdate, sampling_operator_kvk
+        ),
     }
 
     sourcedocs_data = datamodels.GAR(**sourcedocs_data_dict)
@@ -293,11 +304,12 @@ def setup_field_research_data(
     samplingdate: pd.Timestamp,
     nitg_code: str,
     tube_number: str,
+    sampling_operator_kvk: str,
 ) -> datamodels.FieldResearch:
     """Fills the fieldResearch part of the GAR, using the pydantic model FieldResearch."""
 
     field_research_dict = {
-        "samplingDateTime": samplingdate,
+        "samplingDateTime": f"{samplingdate}+01:00".replace(" ", "T"),
         "samplingStandard": "onbekend",  # hardcoded
         "pumpType": "onbekend",  # hardcoded
         "abnormalityInCooling": "onbekend",  # hardcoded
@@ -309,6 +321,7 @@ def setup_field_research_data(
         "sampleAerated": "onbekend",  # hardcoded
         "hoseReused": "onbekend",  # hardcoded
         "temperatureDifficultToMeasure": "onbekend",  # hardcoded
+        "samplingOperator": sampling_operator_kvk,
         "fieldMeasurements": setup_gar_field_measurements(field_data),
     }
 
@@ -405,13 +418,14 @@ def setup_gar_field_measurements(
 
 
 def setup_lab_data(
-    lab_data: pd.DataFrame, samplingdate: pd.Timestamp
+    lab_data: pd.DataFrame, samplingdate: pd.Timestamp, sampling_operator_kvk: str
 ) -> list[datamodels.LaboratoryAnalysis] | None:
     """Fills the laboratoryAnalyses part of the GAR."""
     if lab_data.empty:
         return None
     else:
         lab_analysis = {
+            "responsibleLaboratoryKvk": sampling_operator_kvk,
             "analysisProcesses": setup_analysis_processes(lab_data, samplingdate),
         }
 
