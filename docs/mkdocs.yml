@@ -1,0 +1,14 @@
+site_name: BROSTAR
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: pink
+
+  logo: assets/logo.svg
+  favicon: assets/favicon.ico
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

@@ -45,3 +45,4 @@ docker-compose.override.yml
 /.env
 *.log
 /media/
+/docs/site/

@@ -50,3 +50,18 @@ If a requirement has changed (either dependency in `pyproject.toml` or an extra 
 ## Internal N&S server installation notes
 
 This is a public project, so the actual server deployment scripts with the passwords and so are safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker compose on https://staging.brostar.nl and https://www.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
+
+
+## Build the documentation
+
+We use mkdocs for documenting BROSTAR. To build the docs locally:
+
+    $ cd docs
+    $ python3 -m venv .venv
+    $ .venv/bin/pip install -r requirements.txt
+    $ mkdocs serve
+
+The docs are then available on http://127.0.0.1:8000/`.
+
+Github automatically builds the docs from `main` branch and uploads them to
+https://docs.brostar.nl/

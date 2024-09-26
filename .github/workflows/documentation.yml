@@ -1,0 +1,38 @@
+name: documentation
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - "*"
+  pull_request:
+    branches:
+      - master
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  documentation:
+    name: documentation
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Build documentation
+        run: |
+          cd docs
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/mkdocs build
+          zip -r site.zip site
+      - name: Publish the documentation
+        run: ./upload-artifact.sh
+        env:
+          ARTIFACTS_KEY: ${{ secrets.ARTIFACTS_KEY }}
+        if: github.ref == 'refs/heads/main'
+        # Running this job only for main branch.

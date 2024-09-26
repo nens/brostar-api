@@ -1,9 +1,68 @@
 # Changelog for BROStar API
 
-## 0.40 (unreleased)
+## 0.50 (unreleased)
 
 
 - Nothing changed yet.
+
+
+## 0.49 (2024-09-24)
+
+
+- Added view XML endpoint
+
+
+## 0.48 (2024-09-24)
+
+
+- Hotfix: removed 500 on GAR endpoint when more GMWS exist for a BRO ID
+
+
+## 0.47 (2024-09-23)
+
+
+- Gelderland GAR process..
+
+
+## 0.46 (2024-09-23)
+
+
+- Gelderland GAR process..
+
+## 0.45 (2024-09-20)
+
+
+- Gelderland GAR process..
+
+
+## 0.44 (2024-09-20)
+
+
+- Gelderland GAR process..
+
+
+## 0.43 (2024-09-20)
+
+
+- Gelderland GAR process..
+
+
+## 0.42 (2024-09-20)
+
+
+- Gelderland GAR process..
+
+
+## 0.41 (2024-09-20)
+
+
+- Gelderland GAR process..
+
+
+## 0.40 (2024-09-20)
+
+
+- Gelderland GAR process..
 
 
 ## 0.39 (2024-09-20)
