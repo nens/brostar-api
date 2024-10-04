@@ -10,7 +10,15 @@
     <sourceDocument>
         <GMN_MeasuringPointEndDate gml:id="id_0001">
             <eventDate>
-                <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+{%              if measuringpoint.eventDate }
+                <brocom:date>{{ measuringpoint.eventDate }}</brocom:date>
+{%              elif measuringpoint.yearMonth }
+                <brocom:yearMonth>{{ measuringpoint.eventDate }}</brocom:yearMonth>
+{%              elif measuringpoint.year }
+                <brocom:year>{{ measuringpoint.year }}</brocom:year>
+{%              elif measuringpoint.voidReason }
+                <brocom:voidReason>{{ measuringpoint.voidReason }}</brocom:voidReason>
+{%              endif }
             </eventDate>
             <measuringPointCode>{{ sourcedocs_data.measuringPointCode }}</measuringPointCode>
         </GMN_MeasuringPointEndDate>
