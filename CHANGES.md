@@ -9,6 +9,14 @@
 ## 0.50 (2024-10-18)
 
 
+- Created all GMW-Event templates.
+- Updated GMN and GLD templates.
+- Minor bugfixes.
+
+
+## 0.50 (2024-10-18)
+
+
 - Added all GMW-Event templates.
 - Improved GLD and GMN templates.
 - Minor bugfixes.
