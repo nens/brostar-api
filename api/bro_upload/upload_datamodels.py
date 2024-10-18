@@ -51,7 +51,10 @@ class GMNMeasuringPoint(BaseModel):
 
 
 class GMNMeasuringPointEndDate(BaseModel):
-    eventDate: str
+    eventDate: str | None = None
+    yearMonth: str | None = None
+    year: str | None = None
+    voidReason: str | None = None
     measuringPointCode: str
     broId: str
     tubeNumber: str | int

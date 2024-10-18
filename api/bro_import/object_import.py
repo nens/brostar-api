@@ -106,7 +106,7 @@ class GMNObjectImporter(ObjectImporter):
         return gmn_data, measuringpoint_data
 
     def _save_gmn_data(self, gmn_data: dict[str, Any]) -> None:
-        self.gmn_obj, created = GMN.objects.update_or_create(
+        GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -136,8 +136,6 @@ class GMNObjectImporter(ObjectImporter):
             },
         )
 
-        self.gmn_obj.save()
-
     def _save_measuringpoint_data(
         self, measuringpoint_data: list[dict[str, Any]]
     ) -> None:
@@ -155,7 +153,7 @@ class GMNObjectImporter(ObjectImporter):
                 "GroundwaterMonitoringTube", {}
             )
 
-            measuringpoint_obj, created = Measuringpoint.objects.update_or_create(
+            Measuringpoint.objects.update_or_create(
                 gmn=self.gmn_obj,
                 data_owner=self.data_owner,
                 measuringpoint_code=mp_data.get("measuringPointCode", None),
@@ -170,8 +168,6 @@ class GMNObjectImporter(ObjectImporter):
                     ),
                 },
             )
-
-            measuringpoint_obj.save()
 
 
 class GMWObjectImporter(ObjectImporter):
@@ -206,7 +202,7 @@ class GMWObjectImporter(ObjectImporter):
         return gmw_data, monitoringtubes_data
 
     def _save_gmw_data(self, gmw_data: dict[str, Any]) -> None:
-        self.gmw_obj, created = GMW.objects.update_or_create(
+        GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -266,8 +262,6 @@ class GMWObjectImporter(ObjectImporter):
             },
         )
 
-        self.gmw_obj.save()
-
     def _save_monitoringtubes_data(
         self,
         monitoringtubes_data: list[dict[str, Any]] | dict[str, Any],
@@ -318,7 +312,7 @@ class GMWObjectImporter(ObjectImporter):
                     }
                 )
 
-            monitoringtube_obj, created = MonitoringTube.objects.update_or_create(
+            MonitoringTube.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
                 tube_number=monitoringtube.get("tubeNumber", None),
@@ -382,8 +376,6 @@ class GMWObjectImporter(ObjectImporter):
                     .get("#text", None),
                 },
             )
-
-            monitoringtube_obj.save()
 
     def _lookup_most_recent_top_position(
         self, monitoringtube: list[dict[str, any]], event_data: list[dict[str, any]]
@@ -472,7 +464,7 @@ class GARObjectImporter(ObjectImporter):
         else:
             lab_analysis_date = None
 
-        self.gar_obj, created = GAR.objects.update_or_create(
+        GAR.objects.update_or_create(
             bro_id=gar_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -523,8 +515,6 @@ class GARObjectImporter(ObjectImporter):
             },
         )
 
-        self.gar_obj.save()
-
 
 class GLDObjectImporter(ObjectImporter):
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
@@ -541,7 +531,7 @@ class GLDObjectImporter(ObjectImporter):
             "gldcommon:GroundwaterMonitoringTube"
         )
 
-        self.gld_obj, created = GLD.objects.update_or_create(
+        GLD.objects.update_or_create(
             bro_id=gld_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -572,7 +562,7 @@ class FRDObjectImporter(ObjectImporter):
             "frdcom:MonitoringTube"
         )
 
-        self.frd_obj, created = FRD.objects.update_or_create(
+        FRD.objects.update_or_create(
             bro_id=frd_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
