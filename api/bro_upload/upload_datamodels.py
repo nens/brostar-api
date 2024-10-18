@@ -305,8 +305,6 @@ class GAR(BaseModel):
 
 
 # GLD
-
-
 class GLDStartregistration(BaseModel):
     objectIdAccountableParty: str | None = None
     groundwaterMonitoringNets: list[str] | None = None
@@ -339,6 +337,8 @@ class GLDAddition(BaseModel):
     observationType: str
     evaluationProcedure: str
     measurementInstrumentType: str
+    processReference: str
+    airPressureCompensationType: str | None = None
     beginPosition: str
     endPosition: str
     resultTime: str
