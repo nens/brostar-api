@@ -72,7 +72,15 @@
           <om:procedure>
             <wml2:ObservationProcess gml:id="{{ sourcedocs_data.observationProcessId }}">
               <wml2:processType xlink:href="http://www.opengis.net/def/waterml/2.0/processType/Algorithm"/>
-              <wml2:processReference xlink:href="urn:bro:gld:ProcessReference:NEN5120v1991"/>
+              <wml2:processReference xlink:href="urn:bro:gld:ProcessReference:{{ sourcedocs_data.processReference }}"/>
+{%            if sourcedocs_data.airPressureCompensationType %}
+              <wml2:parameter>
+                <om:NamedValue>
+                  <om:name xlink:href="urn:bro:gld:ObservationProcess:airPressureCompensationType"/>
+                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:AirPressureCompensationType">{{ sourcedocs_data.airPressureCompensationType }}</om:value>
+                </om:NamedValue>
+              </wml2:parameter>
+{%            endif %}
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationProcess:evaluationProcedure"/>
