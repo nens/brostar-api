@@ -1,9 +1,11 @@
 # Changelog for BROStar API
 
-## 0.50 (unreleased)
+## 0.50 (2024-10-18)
 
 
-- Nothing changed yet.
+- Created all GMW-Event templates.
+- Updated GMN and GLD templates.
+- Minor bugfixes.
 
 
 ## 0.49 (2024-09-24)
