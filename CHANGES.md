@@ -3,13 +3,7 @@
 ## 0.51 (unreleased)
 
 
-- Nothing changed yet.
-
-
-## 0.51 (unreleased)
-
-
-- Nothing changed yet.
+- Documented release process.
 
 
 ## 0.50 (2024-10-18)
