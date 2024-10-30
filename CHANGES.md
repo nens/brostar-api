@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.51 (unreleased)
+## 0.51 (2024-10-30)
 
 
 - Documented release process.
