@@ -6,6 +6,12 @@
 - Nothing changed yet.
 
 
+## 0.51 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 0.50 (2024-10-18)
 
 
