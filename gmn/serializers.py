@@ -24,17 +24,17 @@ class MeasuringpointSerializer(
         model = gmn_models.Measuringpoint
         fields = "__all__"
 
-    def get_location(self, obj: gmw_models.MonitoringTube) -> str | None:
+    def get_location(self, obj: gmn_models.Measuringpoint) -> str | None:
         try:
             return gmw_models.GMW.objects.get(
-                bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
             ).standardized_location
         except ObjectDoesNotExist:
             return None
         except MultipleObjectsReturned:
             return (
                 gmw_models.GMW.objects.filter(
-                    bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                    bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
                 )
                 .first()
                 .standardized_location
