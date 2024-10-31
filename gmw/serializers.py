@@ -3,13 +3,13 @@ from typing import Any
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from api.mixins import RequiredFieldsMixin, UrlFieldMixin
+from api.mixins import UrlFieldMixin
 from gmn import models as gmn_models
 
 from . import models as gmw_models
 
 
-class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
+class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
     linked_gmns = serializers.SerializerMethodField()
 
     class Meta:
@@ -30,9 +30,7 @@ class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
             return None
 
 
-class MonitoringTubeSerializer(
-    UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
-):
+class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
     gmw_well_code = serializers.SerializerMethodField()
     gmw_bro_id = serializers.SerializerMethodField()
     linked_gmns = serializers.SerializerMethodField()
@@ -43,8 +41,6 @@ class MonitoringTubeSerializer(
 
     def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.required = True
 
     def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
         try:
