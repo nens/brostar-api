@@ -51,6 +51,10 @@ If a requirement has changed (either dependency in `pyproject.toml` or an extra 
 
 This is a public project, so the actual server deployment scripts with the passwords and so are safely hidden away in https://github.com/nens/brostar-site :-) We're installed with docker compose on https://staging.brostar.nl and https://www.brostar.nl . See the readme of `brostar-site` for the internal deployment documentation.
 
+Make releases with "zest.releaser" (`pip install zest.releaser` to install it). "fullrelease" updates the release date, does a `git tag` and updates the version number.
+
+    $ fullrelease
+
 
 ## Build the documentation
 
