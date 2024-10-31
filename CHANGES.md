@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.53 (unreleased)
+## 0.53 (2024-10-31)
 
 
 - Update Delete GMN_TubeReference
