@@ -64,6 +64,7 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
 class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
     fieldwork_file = serializers.FileField(write_only=True, required=True)
     lab_file = serializers.FileField(write_only=True, required=True)
+    timeseries_file = serializers.FileField(write_only=True, required=True)
 
     class Meta:
         model = api_models.BulkUpload
