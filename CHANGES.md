@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.52 (unreleased)
+## 0.52 (2024-10-31)
 
 
 - Improved GMW datamodel.
