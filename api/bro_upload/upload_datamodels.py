@@ -63,6 +63,8 @@ class GMNMeasuringPointEndDate(BaseModel):
 class GMNTubeReference(BaseModel):
     eventDate: str
     measuringPointCode: str
+    broId: str
+    tubeNumber: str | int
 
 
 class GMNClosure(BaseModel):
