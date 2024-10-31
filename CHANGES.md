@@ -3,7 +3,8 @@
 ## 0.53 (unreleased)
 
 
-- No changes yet.
+- Update Delete GMN_TubeReference
+- GMN MeasuringPoints bugfix.
 
 
 ## 0.52 (2024-10-31)
