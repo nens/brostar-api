@@ -106,7 +106,7 @@ class GMNObjectImporter(ObjectImporter):
         return gmn_data, measuringpoint_data
 
     def _save_gmn_data(self, gmn_data: dict[str, Any]) -> None:
-        GMN.objects.update_or_create(
+        self.gmn_obj = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -134,7 +134,7 @@ class GMNObjectImporter(ObjectImporter):
                 .get("brocom:registrationStatus", {})
                 .get("#text", None),
             },
-        )
+        )[0]
 
     def _save_measuringpoint_data(
         self, measuringpoint_data: list[dict[str, Any]]
@@ -202,7 +202,7 @@ class GMWObjectImporter(ObjectImporter):
         return gmw_data, monitoringtubes_data
 
     def _save_gmw_data(self, gmw_data: dict[str, Any]) -> None:
-        GMW.objects.update_or_create(
+        self.gmw_obj = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -260,7 +260,7 @@ class GMWObjectImporter(ObjectImporter):
                 .get("brocom:registrationStatus", {})
                 .get("#text", None),
             },
-        )
+        )[0]
 
     def _save_monitoringtubes_data(
         self,
