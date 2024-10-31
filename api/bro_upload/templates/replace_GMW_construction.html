@@ -37,7 +37,9 @@
                 <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</ns2:localVerticalReferencePoint>
                 <ns2:offset uom="m">{{ sourcedocs_data.offset }}</ns2:offset>
                 <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</ns2:verticalDatum>
+{%              if sourcedocs_data.groundLevelPosition %}
                 <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
+{%              endif %}
                 <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
             </ns:deliveredVerticalPosition>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
@@ -69,10 +71,10 @@
                     <ns2:sedimentSumpLength uom="m">{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength>
                 </ns:sedimentSump>
 {%              endif %}
-{%              for geoohmcable in monitoringtube.geoohmcables %}
+{%              for geoOhmCable in monitoringtube.geoOhmCables %}
                 <ns:geoOhmCable>
-                    <ns:cableNumber>{{ geoohmcable.cableNumber }}</ns:cableNumber>
-{%                      for electrode in geoohmcable.electrodes %}
+                    <ns:cableNumber>{{ geoOhmCable.cableNumber }}</ns:cableNumber>
+{%                      for electrode in geoOhmCable.electrodes %}
                         <ns:electrode>
                             <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
                             <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
