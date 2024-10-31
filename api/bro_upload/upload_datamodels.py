@@ -87,7 +87,7 @@ class MonitoringTube(BaseModel):
     tubeType: str
     artesianWellCapPresent: str
     sedimentSumpPresent: str
-    numberOfGeoOhmCables: str | int
+    numberOfGeoOhmCables: str | int  # Should this not be derived from 'geoohmcables'
     tubeTopDiameter: str | float | None = None
     variableDiameter: str | float
     tubeStatus: str
@@ -97,10 +97,11 @@ class MonitoringTube(BaseModel):
     tubeMaterial: str
     glue: str
     screenLength: str | float
+    screenProtection: str | None = None
     sockMaterial: str
     plainTubePartLength: str | float
     sedimentSumpLength: str | float | None = None
-    geoohmcables: list[GeoOhmCable] | None = None
+    geoOhmCables: list[GeoOhmCable] | None = None
 
 
 class GMWConstruction(BaseModel):
@@ -108,11 +109,11 @@ class GMWConstruction(BaseModel):
     deliveryContext: str
     constructionStandard: str
     initialFunction: str
-    numberOfMonitoringTubes: str | int
+    numberOfMonitoringTubes: str | int  # Should this not be derived from 'monitoringTubes'
     groundLevelStable: str
     wellStability: str | None = None
-    owner: str
-    maintenanceResponsibleParty: str
+    owner: str | None = None
+    maintenanceResponsibleParty: str | None = None
     wellHeadProtector: str
     wellConstructionDate: str
     deliveredLocation: str
