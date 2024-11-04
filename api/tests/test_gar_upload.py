@@ -11,8 +11,6 @@ expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/
 
     <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
 
-    <brocom:underPrivilege>ja</brocom:underPrivilege>
-
     <sourceDocument>
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>test</objectIdAccountableParty>
