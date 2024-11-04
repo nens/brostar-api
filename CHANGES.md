@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.55 (unreleased)
+## 0.55 (2024-11-04)
 
 
 - Auto fill underPrivilige
