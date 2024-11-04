@@ -3,7 +3,8 @@
 ## 0.55 (unreleased)
 
 
-- Nothing changed yet.
+- Create the workaround for 'underPrivilige'
+- Fix TubeTopDiameter for GMW Registration & Replace
 
 
 ## 0.54 (2024-11-04)
