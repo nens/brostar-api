@@ -3,7 +3,8 @@
 ## 0.54 (unreleased)
 
 
-- Nothing changed yet.
+- Allowed tubeTopDiameter to be absent
+- Minor bugfix: Insert GMN MeasuringPoint
 
 
 ## 0.53 (2024-10-31)
