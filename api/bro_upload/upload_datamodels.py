@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 
 ## Uploadtask models
 
@@ -261,7 +261,7 @@ class FieldResearch(BaseModel):
     temperatureDifficultToMeasure: str
     fieldMeasurements: list[FieldMeasurement] | None = None
 
-    @validator("samplingDateTime", pre=True, always=True)
+    @field_validator("samplingDateTime", mode="before")
     def format_datetime(cls, value):
         """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
@@ -284,7 +284,7 @@ class AnalysisProcess(BaseModel):
     valuationMethod: str
     analyses: list[Analysis]
 
-    @validator("date", pre=True, always=True)
+    @field_validator("date", mode="before")
     def format_date(cls, value):
         """Ensure date is always serialized as a string, in BRO required format"""
         if isinstance(value, date):
@@ -322,7 +322,7 @@ class TimeValuePair(BaseModel):
     censorReason: str | None = None
     censoringLimitvalue: str | float | None = None
 
-    @validator("time", pre=True, always=True)
+    @field_validator("time", mode="before")
     def format_datetime(cls, value):
         """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
@@ -347,28 +347,28 @@ class GLDAddition(BaseModel):
     resultTime: str
     timeValuePairs: list[TimeValuePair]
 
-    @validator("observationId", pre=True, always=True)
+    @field_validator("observationId", mode="before")
     def format_observationId(cls, value):
         """Ensure the observationId is always filled with an uuid"""
         if not value:
             return f"_{uuid.uuid4()}"
         return value
 
-    @validator("observationProcessId", pre=True, always=True)
+    @field_validator("observationProcessId", mode="before")
     def format_observationProcessId(cls, value):
         """Ensure the observationProcessId is always filled with an uuid"""
         if not value:
             return f"_{uuid.uuid4()}"
         return value
 
-    @validator("measurementTimeseriesId", pre=True, always=True)
+    @field_validator("measurementTimeseriesId", mode="before")
     def format_measurementTimeseriesId(cls, value):
         """Ensure the measurementTimeseriesId is always filled with an uuid"""
         if not value:
             return f"_{uuid.uuid4()}"
         return value
 
-    @validator("validationStatus", pre=True, always=True)
+    @field_validator("validationStatus", mode="before")
     def format_validationStatus(cls, value):
         """Ensure the measurementTimeseriesId is always filled with an uuid"""
         if cls.observationType == "reguliereMeting" and not value:
