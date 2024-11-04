@@ -3,7 +3,8 @@
 ## 0.55 (unreleased)
 
 
-- Nothing changed yet.
+- Auto fill underPrivilige
+- Correct tubeTopDiameter optionality
 
 
 ## 0.54 (2024-11-04)
