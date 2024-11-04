@@ -3,8 +3,8 @@
 ## 0.55 (unreleased)
 
 
-- Create the workaround for 'underPrivilige'
-- Fix TubeTopDiameter for GMW Registration & Replace
+- Auto fill underPrivilige
+- Correct tubeTopDiameter optionality
 
 
 ## 0.54 (2024-11-04)
