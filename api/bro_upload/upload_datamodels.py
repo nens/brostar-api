@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, root_validator, validator
 
 ## Uploadtask models
 
@@ -16,11 +16,15 @@ class UploadTaskMetadata(BaseModel):
     correctionReason: str | None = None
     dateToBeCorrected: str | date | None = None
 
-    @validator("underPrivilege", pre=True, always=True)
-    def format_underPrivilege(cls, value):
-        if cls.qualityRegime == "IMBRO/A":
-            return "ja"
-        return value
+    @root_validator(pre=True)
+    def format_underPrivilege(cls, values):
+        # Check and set `underPrivilege`
+        if values.get("qualityRegime") == "IMBRO/A" and not values.get(
+            "underPrivilege"
+        ):
+            values["underPrivilege"] = "ja"
+
+        return values
 
 
 class GARBulkUploadMetadata(BaseModel):
@@ -374,14 +378,18 @@ class GLDAddition(BaseModel):
             return f"_{uuid.uuid4()}"
         return value
 
-    @validator("validationStatus", pre=True, always=True)
-    def format_validationStatus(cls, value):
+    @root_validator(pre=True)
+    def format_validationStatus(cls, values):
         """Ensure the measurementTimeseriesId is always filled with an uuid"""
-        if cls.observationType == "reguliereMeting" and not value:
-            return "onbekend"
-        elif cls.observationType == "controlemeting":
-            return None
-        return value
+        # Check and set `validationStatus`
+        if values.get("observationType") == "reguliereMeting" and not values.get(
+            "validationStatus"
+        ):
+            values["validationStatus"] = "onbekend"
+        elif values.get("observationType") == "controlemeting":
+            values["validationStatus"] = None
+
+        return values
 
 
 # FRD
