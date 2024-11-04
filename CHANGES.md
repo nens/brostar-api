@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.54 (unreleased)
+## 0.54 (2024-11-04)
 
 
 - Allowed tubeTopDiameter to be absent
