@@ -342,7 +342,7 @@ class GMWObjectImporter(ObjectImporter):
                     ),
                     "geo_ohm_cables": geo_ohm_data or [],
                     "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
-                        "@xsi:nil", None
+                        "#text"
                     ),
                     "variable_diameter": monitoringtube.get("variableDiameter", None),
                     "tube_status": monitoringtube.get("tubeStatus", {}).get(
