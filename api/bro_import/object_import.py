@@ -202,7 +202,9 @@ class GMWObjectImporter(ObjectImporter):
         return gmw_data, monitoringtubes_data
 
     def _save_gmw_data(self, gmw_data: dict[str, Any]) -> None:
-        well_construction_date: dict = gmw_data.get("wellConstructionDate", {})
+        well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
+            "wellConstructionDate", {}
+        )
         self.gmw_obj = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -234,9 +236,9 @@ class GMWObjectImporter(ObjectImporter):
                 "delivered_location": gmw_data.get("deliveredLocation", {})
                 .get("gmwcommon:location", {})
                 .get("gml:pos", None),
-                "horizontal_positioning_method": gmw_data.get(
-                    "gmwcommon:horizontalPositioningMethod", {}
-                ).get("#text", None),
+                "horizontal_positioning_method": gmw_data.get("deliveredLocation", {})
+                .get("gmwcommon:horizontalPositioningMethod", {})
+                .get("#text", None),
                 "local_vertical_reference_point": gmw_data.get(
                     "deliveredVerticalPosition", {}
                 )
