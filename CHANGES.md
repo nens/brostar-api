@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.56 (unreleased)
+## 0.56 (2024-11-05)
 
 
 - Fix import task to include: Horinzontal Positioning Method, Well Construction Date and Tube Top Diameter.
