@@ -3,7 +3,7 @@
 ## 0.56 (unreleased)
 
 
-- Nothing changed yet.
+- Fix import task to include: Horinzontal Positioning Method, Well Construction Date and Tube Top Diameter.
 
 
 ## 0.55 (2024-11-04)

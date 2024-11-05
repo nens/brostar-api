@@ -202,6 +202,7 @@ class GMWObjectImporter(ObjectImporter):
         return gmw_data, monitoringtubes_data
 
     def _save_gmw_data(self, gmw_data: dict[str, Any]) -> None:
+        well_construction_date: dict = gmw_data.get("wellConstructionDate", {})
         self.gmw_obj = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -210,6 +211,8 @@ class GMWObjectImporter(ObjectImporter):
                     "brocom:deliveryAccountableParty", None
                 ),
                 "quality_regime": gmw_data.get("brocom:qualityRegime", None),
+                "well_construction_date": well_construction_date.get("brocom:date")
+                or well_construction_date.get("brocom:year"),
                 "delivery_context": gmw_data.get("deliveryContext", {}).get(
                     "#text", None
                 ),
@@ -231,6 +234,9 @@ class GMWObjectImporter(ObjectImporter):
                 "delivered_location": gmw_data.get("deliveredLocation", {})
                 .get("gmwcommon:location", {})
                 .get("gml:pos", None),
+                "horizontal_positioning_method": gmw_data.get(
+                    "gmwcommon:horizontalPositioningMethod", {}
+                ).get("#text", None),
                 "local_vertical_reference_point": gmw_data.get(
                     "deliveredVerticalPosition", {}
                 )
@@ -336,7 +342,7 @@ class GMWObjectImporter(ObjectImporter):
                     ),
                     "geo_ohm_cables": geo_ohm_data or [],
                     "tube_top_diameter": monitoringtube.get("tubeTopDiameter", {}).get(
-                        "@xsi:nil", None
+                        "#text"
                     ),
                     "variable_diameter": monitoringtube.get("variableDiameter", None),
                     "tube_status": monitoringtube.get("tubeStatus", {}).get(
