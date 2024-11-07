@@ -6,8 +6,8 @@
     <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
     <ns1:broId>{{ metadata.broId }}</ns1:broId>
     <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
-{%  if metadata.underPrivilege %}
-    <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
+{%  if metadata.qualityRegime == "IMBRO/A" %}
+    <ns1:underPrivilege>ja</ns1:underPrivilege>
 {%  endif %}
     <ns:sourceDocument>
         <ns:GMW_WellHeadProtector>
