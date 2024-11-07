@@ -18,7 +18,7 @@
             <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
             <ns:numberOfMonitoringTubes>{{ sourcedocs_data.numberOfMonitoringTubes }}</ns:numberOfMonitoringTubes>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
-{%          if sourcedocs_data.wellStability %}
+{%          if sourcedocs_data.groundLevelStable == "nee" %}
             <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
 {%          endif %}
             <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
