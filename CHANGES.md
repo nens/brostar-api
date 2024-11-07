@@ -3,7 +3,8 @@
 ## 0.57 (unreleased)
 
 
-- Nothing changed yet.
+- Auto create underPrivilege based on quality regime for GMW
+- Fix issue with null values for groundLevelPosition and tubeTopDiameter
 
 
 ## 0.56 (2024-11-05)
