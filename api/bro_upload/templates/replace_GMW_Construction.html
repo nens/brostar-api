@@ -40,7 +40,7 @@
 {%              if sourcedocs_data.groundLevelPosition %}
                 <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
 {%              else %}
-                <ns2:groundLevelPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="mm" xsi:nil="true"/>
+                <ns2:groundLevelPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="m" xsi:nil="true"/>
 {%              endif %}
                 <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
             </ns:deliveredVerticalPosition>
