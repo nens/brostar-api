@@ -24,8 +24,6 @@
                 <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
 {%              if monitoringtube.tubeTopDiameter %}
                 <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
-{%              else %}
-                <ns:tubeTopDiameter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="mm" xsi:nil="true"/>
 {%              endif %}
                 <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
                 <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
