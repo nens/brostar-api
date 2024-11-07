@@ -35,7 +35,11 @@
                 <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</ns2:localVerticalReferencePoint>
                 <ns2:offset uom="m">{{ sourcedocs_data.offset }}</ns2:offset>
                 <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</ns2:verticalDatum>
+{%              if sourcedocs_data.groundLevelPosition %}
                 <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
+{%              else %}
+                <ns2:groundLevelPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="mm" xsi:nil="true"/>
+{%              endif %}
                 <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
             </ns:deliveredVerticalPosition>
 {%          for monitoringtube in sourcedocs_data.monitoringTubes %}
@@ -45,7 +49,11 @@
                 <ns:artesianWellCapPresent>{{ monitoringtube.artesianWellCapPresent }}</ns:artesianWellCapPresent>
                 <ns:sedimentSumpPresent>{{ monitoringtube.sedimentSumpPresent }}</ns:sedimentSumpPresent>
                 <ns:numberOfGeoOhmCables>{{ monitoringtube.numberOfGeoOhmCables }}</ns:numberOfGeoOhmCables>
+{%              if monitoringtube.tubeTopDiameter %}
                 <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
+{%              else %}
+                <ns2:tubeTopDiameter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="mm" xsi:nil="true"/>
+{%              endif %}
                 <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
                 <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
                 <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
