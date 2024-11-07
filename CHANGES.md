@@ -3,7 +3,7 @@
 ## 0.58 (unreleased)
 
 
-- Nothing changed yet.
+- Improve templates
 
 
 ## 0.57 (2024-11-07)
