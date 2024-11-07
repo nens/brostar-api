@@ -14,8 +14,10 @@
             <ns:eventDate>
                 <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
             </ns:eventDate>
-            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+{%          if sourcedocs_data.groundLevelStable == "nee" %}
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
+{%          endif %}
             <ns:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition>
             <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns:groundLevelPositioningMethod>
         </ns:GMW_GroundLevel>
