@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.57 (unreleased)
+## 0.57 (2024-11-07)
 
 
 - Auto create underPrivilege based on quality regime for GMW
