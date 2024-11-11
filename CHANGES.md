@@ -4,6 +4,7 @@
 
 
 - Improve templates
+- Add GMW MoveRequest templates
 
 
 ## 0.57 (2024-11-07)
