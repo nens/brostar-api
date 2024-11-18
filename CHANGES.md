@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.60 (unreleased)
+## 0.60 (2024-11-18)
 
 
 - Hotfix: Add InterpolationType to GLD-Addition
