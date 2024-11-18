@@ -14,6 +14,7 @@
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:gld:CorrectionReason">{{ metadata.correctionReason}}</correctionReason>
   <sourceDocument>
     <GLD_Addition gml:id="id_0001">
       <observation>
@@ -35,11 +36,11 @@
                 <gco:Date>{{ sourcedocs_data.date }}</gco:Date>
               </gmd:dateStamp>
               <gmd:identificationInfo gco:nilReason="unknown"/>
-{%            if tvp.validationStatus == 'volledigBeoordeeld' %}
+{%            if sourcedocs_data.validationStatus == 'volledigBeoordeeld' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:volledigBeoordeeld"/>
-{%            elif tvp.validationStatus == 'voorlopig' %}
+{%            elif sourcedocs_data.validationStatus == 'voorlopig' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:voorlopig"/>
-{%            else %}
+{%            elif sourcedocs_data.validationStatus %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:onbekend"/>
 {%            endif %}
               <wml2:parameter>
@@ -103,7 +104,7 @@
               <wml2:point>
                 <wml2:MeasurementTVP>
                   <wml2:time>{{ tvp.time }}</wml2:time>
-{%                if tvp.censoredReason %}
+{%                if tvp.censorReason is none %}
                   <wml2:value xsi:nil="true"/>
                   <wml2:metadata>
                     <wml2:TVPMeasurementMetadata>
@@ -124,17 +125,17 @@
                       </wml2:qualifier>
                       <wml2:interpolationType xlink:href="http://www.opengis.net/def/waterml/2.0/interpolationType/Discontinuous"/>
                       <!--  optioneel  -->
-{%                    if tvp.censoredReason == 'kleinerDanLimietwaarde' %}
-                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/BelowDetectionRange"/>
-{%                    elif tvp.censoredReason == 'groterDanLimietwaarde' %}
-                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/AboveDetectionRange"/>
+{%                    if tvp.censorReason == 'kleinerDanLimietwaarde' %}
+                      <wml2:censorReason xlink:href="http://www.opengis.net/def/nil/OGC/0/BelowDetectionRange"/>
+{%                    elif tvp.censorReason == 'groterDanLimietwaarde' %}
+                      <wml2:censorReason xlink:href="http://www.opengis.net/def/nil/OGC/0/AboveDetectionRange"/>
 {%                    else %}
                       <!--  optioneel: IMBRO/A  -->
-                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown"/>
+                      <wml2:censorReason xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown"/>
 {%                    endif %}
                     </wml2:TVPMeasurementMetadata>
                   </wml2:metadata>
-{&                else %}
+{%                else %}
                   <wml2:value uom="m">{{ tvp.value }}</wml2:value>
                   <wml2:metadata>
                     <wml2:TVPMeasurementMetadata>

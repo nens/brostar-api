@@ -36,6 +36,24 @@ class GARBulkUploadMetadata(BaseModel):
     samplingOperator: str | int | None = None
 
 
+class GLDBulkUploadMetadata(BaseModel):
+    requestReference: str
+    qualityRegime: str
+    deliveryAccountableParty: str | None = None
+    broId: str
+    # For Addition (Procedure data)
+    validationStatus: str | None = None
+    investigatorKvk: str
+    observationType: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
+    processReference: str
+    airPressureCompensationType: str | None = None
+    beginPosition: str
+    endPosition: str
+    resultTime: str
+
+
 # GMN sourcedocs_data
 class MeasuringPoint(BaseModel):
     measuringPointCode: str
