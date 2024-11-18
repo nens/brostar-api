@@ -3,7 +3,7 @@
 ## 0.60 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Add InterpolationType to GLD-Addition
 
 
 ## 0.59 (2024-11-18)
