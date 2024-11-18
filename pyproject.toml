@@ -20,6 +20,7 @@ dependencies = [
     "nens-auth-client",
     "openpyxl",
     "pandas",
+    "polars",
     "psycopg2-binary",
     "pydantic",
     "pytest-django",
