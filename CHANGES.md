@@ -5,6 +5,7 @@
 
 - Improve templates
 - Add GMW MoveRequest templates
+- Correct GLD-Addition templates
 
 
 ## 0.57 (2024-11-07)

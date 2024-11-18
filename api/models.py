@@ -133,8 +133,8 @@ class InviteUser(models.Model):
             (3, "Revoked"),
             (4, "Failed"),
         ]
-
-        return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
+        if self.nens_auth_client_invitation:
+            return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
 
 
 class ImportTask(models.Model):
@@ -194,7 +194,7 @@ class UploadTask(models.Model):
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
-        if self.status == "PENDING":
+        if self.status == "PENDING" and self.data_owner:
             # Accessing the authenticated user's username and token
             username = self.data_owner.bro_user_token
             password = self.data_owner.bro_user_password
