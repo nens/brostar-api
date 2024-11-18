@@ -104,7 +104,7 @@
               <wml2:point>
                 <wml2:MeasurementTVP>
                   <wml2:time>{{ tvp.time }}</wml2:time>
-{%                if tvp.censorReason is none %}
+{%                if tvp.censorReason is not none %}
                   <wml2:value xsi:nil="true"/>
                   <wml2:metadata>
                     <wml2:TVPMeasurementMetadata>
