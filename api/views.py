@@ -19,7 +19,11 @@ from rest_framework.views import APIView
 from api import filters, mixins, models, serializers, tasks
 from api.bro_upload import utils
 from api.bro_upload.object_upload import XMLGenerator
-from api.bro_upload.upload_datamodels import GARBulkUploadMetadata, UploadTaskMetadata
+from api.bro_upload.upload_datamodels import (
+    GARBulkUploadMetadata,
+    GLDBulkUploadMetadata,
+    UploadTaskMetadata,
+)
 from api.choices import registration_type_datamodel_mapping
 from brostar_api import __version__
 
@@ -469,7 +473,7 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     This endpoint interfaces with the BulkUpload model and supports the following POST parameters:
 
     `bulk_upload_type`:
-        str (*required*): Options: 'GAR'
+        str (*required*): Options: ['GAR', 'GLD]
 
     `metadata`:
         json (*optional*): Open json field that can be filled in with information that cannot be provided through the upload files
@@ -482,6 +486,9 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         When the bulk_upload_type is GAR, these 2 files are required:
             - fieldwork_file
             - lab_file
+
+        When the bulk_upload_type is GLD, these 1 files are required:
+            - measurement_tvp_file
 
     """
 
@@ -498,6 +505,9 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 "fieldwork_file", openapi.IN_FORM, type=openapi.TYPE_FILE
             ),
             openapi.Parameter("lab_file", openapi.IN_FORM, type=openapi.TYPE_FILE),
+            openapi.Parameter(
+                "measurement_tvp_file", openapi.IN_FORM, type=openapi.TYPE_FILE
+            ),
         ]
     )
     def create(self, request):
@@ -511,16 +521,13 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         # Handle the request based on the bulk_upload_type
         if serializer.validated_data["bulk_upload_type"] == "GAR":
+            # Check data with pydantic models:
             try:
-                # Check data with pydantic models:
-                try:
-                    GARBulkUploadMetadata(**serializer.validated_data["metadata"])
-                except ValidationError as e:
-                    errors = utils.simplify_validation_errors(e.errors())
-                    return Response(
-                        {"detail": errors}, status=status.HTTP_400_BAD_REQUEST
-                    )
-
+                GARBulkUploadMetadata(**serializer.validated_data["metadata"])
+            except ValidationError as e:
+                errors = utils.simplify_validation_errors(e.errors())
+                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+            try:
                 # Read files
                 fieldwork_file = request.FILES.get("fieldwork_file", None)
                 lab_file = request.FILES.get("lab_file", None)
@@ -566,6 +573,41 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     )
             except Exception as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        elif serializer.validated_data["bulk_upload_type"] == "GLD":
+            # Check data with pydantic models:
+            try:
+                GLDBulkUploadMetadata(**serializer.validated_data["metadata"])
+            except ValidationError as e:
+                errors = utils.simplify_validation_errors(e.errors())
+                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Read files
+            measurement_tvp_file = request.FILES.get("measurement_tvp_file", None)
+            if measurement_tvp_file:
+                # The BulkUpload instance is created here, because the uuid needs to be passed to the celery task.
+                self.perform_create(serializer)
+                bulk_upload_instance = serializer.instance
+
+                # the file is saved, so that the uuid of those instances can be passed to the task
+                measurement_tvp_file_instance = models.UploadFile(
+                    bulk_upload=bulk_upload_instance,
+                    data_owner=data_owner,
+                    file=measurement_tvp_file,
+                )
+                measurement_tvp_file_instance.save()
+
+                # Fetch users bro credentials
+                bro_username = data_owner.bro_user_token
+                bro_password = data_owner.bro_user_password
+
+                # Start celery task
+                tasks.gld_bulk_upload_task.delay(
+                    bulk_upload_instance.uuid,
+                    measurement_tvp_file_instance.uuid,
+                    bro_username,
+                    bro_password,
+                )
 
         headers = self.get_success_headers(serializer.data)
 
