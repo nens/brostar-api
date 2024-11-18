@@ -6,6 +6,7 @@
 - Improve templates
 - Add GMW MoveRequest templates
 - Correct GLD-Addition templates
+- Create the initial requirements for GLD CSV-Import
 
 
 ## 0.57 (2024-11-07)
