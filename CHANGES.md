@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.58 (unreleased)
+## 0.58 (2024-11-18)
 
 
 - Improve templates
