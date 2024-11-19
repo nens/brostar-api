@@ -3,7 +3,7 @@
 ## 0.63 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Correct GMW-Move correctionReason = gmn -> gmw
 
 
 ## 0.62 (2024-11-19)
