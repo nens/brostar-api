@@ -98,7 +98,8 @@
               <wml2:point>
                 <wml2:MeasurementTVP>
                   <wml2:time>{{ tvp.time }}</wml2:time>
-                  <wml2:value uom="m">{{ tvp.value }}</wml2:value>
+{%                if tvp.censorReason is not none %}
+                  <wml2:value xsi:nil="true"/>
                   <wml2:metadata>
                     <wml2:TVPMeasurementMetadata>
                       <wml2:qualifier>
@@ -107,10 +108,26 @@
                           <swe:value>{{ tvp.statusQualityControl }}</swe:value>
                         </swe:Category>
                       </wml2:qualifier>
+                      <wml2:qualifier>
+                      <swe:Quantity definition="urn:bro:gld:PointMetadata:censoringLimitvalue">
+                        <swe:uom code="m"/>
+                        <!--  optioneel, afwezigheid betekent 'waarde ontbreekt'.  -->
+{%                      if tvp.censoringLimitvalue %}
+                        <swe:value>{{ tvp.censoringLimitvalue }}</swe:value>
+{%                      endif %}
+                      </swe:Quantity>
+                      </wml2:qualifier>
                       <wml2:interpolationType xlink:href="http://www.opengis.net/def/waterml/2.0/interpolationType/Discontinuous"/>
+                      <!--  optioneel  -->
+{%                    if tvp.censorReason == 'kleinerDanLimietwaarde' %}
+                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/BelowDetectionRange"/>
+{%                    elif tvp.censorReason == 'groterDanLimietwaarde' %}
+                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/AboveDetectionRange"/>
+{%                    else %}
+                      <!--  optioneel: IMBRO/A  -->
+                      <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown"/>
+{%                    endif %}
                     </wml2:TVPMeasurementMetadata>
-                  </wml2:metadata>
-                </wml2:MeasurementTVP>
               </wml2:point>
 {%              endfor %}
             </wml2:MeasurementTimeseries>

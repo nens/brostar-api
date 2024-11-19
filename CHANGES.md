@@ -3,7 +3,7 @@
 ## 0.62 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Correct GLD-Censor reason & fix GARBulkupload command
 
 
 ## 0.61 (2024-11-19)
