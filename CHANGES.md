@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.63 (unreleased)
+## 0.63 (2024-11-19)
 
 
 - Hotfix: Correct GMW-Move correctionReason = gmn -> gmw
