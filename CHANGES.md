@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.62 (unreleased)
+## 0.62 (2024-11-19)
 
 
 - Hotfix: Correct GLD-Censor reason & fix GARBulkupload command
