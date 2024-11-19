@@ -3,7 +3,7 @@
 ## 0.61 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Correct GLD-DeleteRequests (Addition, Start)
 
 
 ## 0.60 (2024-11-18)
