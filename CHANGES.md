@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.61 (unreleased)
+## 0.61 (2024-11-19)
 
 
 - Hotfix: Correct GLD-DeleteRequests (Addition, Start)
