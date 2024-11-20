@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.64 (unreleased)
+## 0.64 (2024-11-20)
 
 
 - Add NITG-Code to GMW_Construction (Registration, Replace, Move)
