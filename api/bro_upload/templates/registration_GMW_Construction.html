@@ -19,6 +19,9 @@
 {%          if sourcedocs_data.groundLevelStable == "nee" %}
             <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
 {%          endif %}
+{%          if sourcedocs_data.nitgCode %}
+            <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
+{%          endif %}
             <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
             <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
             <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>

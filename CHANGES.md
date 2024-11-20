@@ -3,7 +3,7 @@
 ## 0.64 (unreleased)
 
 
-- Nothing changed yet.
+- Add NITG-Code to GMW_Construction (Registration, Replace, Move)
 
 
 ## 0.63 (2024-11-19)
