@@ -3,7 +3,7 @@
 ## 0.65 (unreleased)
 
 
-- Nothing changed yet.
+- Include wellStability when groundLevelStable is unknown.
 
 
 ## 0.64 (2024-11-20)
