@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.65 (unreleased)
+## 0.65 (2024-11-27)
 
 
 - Include wellStability when groundLevelStable is unknown.
