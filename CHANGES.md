@@ -3,7 +3,7 @@
 ## 0.66 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: WellStability template error.
 
 
 ## 0.65 (2024-11-27)

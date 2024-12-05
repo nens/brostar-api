@@ -16,8 +16,10 @@
             <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
             <ns:numberOfMonitoringTubes>{{ sourcedocs_data.numberOfMonitoringTubes }}</ns:numberOfMonitoringTubes>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
-{%          if sourcedocs_data.groundLevelStable in ["nee", "onbekend"] %}
+{%          if sourcedocs_data.groundLevelStable  == "nee" %}
             <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
+{%          elif sourcedocs_data.groundLevelStable  == "onbekend" %}
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">onbekend</ns:wellStability>
 {%          endif %}
 {%          if sourcedocs_data.nitgCode %}
             <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
