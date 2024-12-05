@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.66 (unreleased)
+## 0.66 (2024-12-05)
 
 
 - Hotfix: WellStability template error.
