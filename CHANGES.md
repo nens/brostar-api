@@ -3,7 +3,7 @@
 ## 0.67 (unreleased)
 
 
-- Nothing changed yet.
+- Update the docs.
 
 
 ## 0.66 (2024-12-05)

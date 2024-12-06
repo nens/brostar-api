@@ -67,7 +67,7 @@ De API bestaat uit de volgende endpoints:
 ### Organisations
 
 !!! note
-    Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Registratie organisatie in BROSTAR)
+    Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Registratie organisatie in BROSTAR)
 
 Organisaties zijn de basis van het datamodel van de BROSTAR. Elke gebruiker, maar ook elk data object zoals geimporteerde data vanuit de BRO, valt onder een organisatie. Als gebruiker zie je dus alleen de data die onder jouw organisatie valt.
 
@@ -319,8 +319,8 @@ class GMWConstruction(BaseModel):
     numberOfMonitoringTubes: str | int
     groundLevelStable: str
     wellStability: str | None = None
-    owner: str
-    maintenanceResponsibleParty: str
+    owner: str | None = None
+    maintenanceResponsibleParty: str | None = None
     wellHeadProtector: str
     wellConstructionDate: str
     deliveredLocation: str
@@ -347,10 +347,11 @@ class MonitoringTube(BaseModel):
     tubeMaterial: str
     glue: str
     screenLength: str | float
+    screenProtection: str | None = None
     sockMaterial: str
     plainTubePartLength: str | float
     sedimentSumpLength: str | float | None = None
-    geoohmcables: list[GeoOhmCable] | None = None
+    geoOhmCables: list[GeoOhmCable] | None = None
 
 class GeoOhmCable(BaseModel):
     cableNumber: str | int
@@ -562,19 +563,24 @@ class GLDAddition(BaseModel):
     observationId: str | None = None
     observationProcessId: str | None = None
     measurementTimeseriesId: str | None = None
+    validationStatus: str | None = None
     investigatorKvk: str
     observationType: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
+    processReference: str
+    airPressureCompensationType: str | None = None
     beginPosition: str
     endPosition: str
     resultTime: str
-    evaluationProcedure: str
-    measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
 
 class TimeValuePair(BaseModel):
     time: str | datetime
     value: float | str
     statusQualityControl: str
+    censorReason: str | None = None
+    censoringLimitvalue: str | float | None = None
 ```
 
 ##### FRD StartRegistration
