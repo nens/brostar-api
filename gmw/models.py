@@ -86,3 +86,22 @@ class MonitoringTube(models.Model):
 
     def __str__(self) -> str:
         return f"{self.gmw}-{self.tube_number}"
+
+
+class Event(models.Model):
+    """A event is a change after a period of time to a GMW or its monitoring tube(s)."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        "api.Organisation",
+        on_delete=models.CASCADE,
+    )
+    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE)
+    event_name = models.CharField(
+        max_length=40,
+    )
+    event_date = models.DateField()
+    metadata = JSONField("Metadata", default=dict, blank=False)
+    sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)

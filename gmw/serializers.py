@@ -68,3 +68,27 @@ class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
         except ObjectDoesNotExist:
             return None
+
+
+class EventSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    gmw_well_code = serializers.SerializerMethodField()
+    gmw_bro_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = gmw_models.Event
+        fields = "__all__"
+
+    def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+    def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
+        try:
+            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
+        except ObjectDoesNotExist:
+            return None
+
+    def get_gmw_bro_id(self, obj: gmw_models.MonitoringTube) -> str | None:
+        try:
+            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).bro_id
+        except ObjectDoesNotExist:
+            return None

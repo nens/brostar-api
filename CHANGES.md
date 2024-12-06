@@ -3,7 +3,8 @@
 ## 0.67 (unreleased)
 
 
-- Nothing changed yet.
+- Add Events Endpoint
+- Add Events Import
 
 
 ## 0.66 (2024-12-05)

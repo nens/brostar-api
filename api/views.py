@@ -69,6 +69,7 @@ class APIOverview(views.APIView):
             "monitoringtubes": reverse(
                 "api:gmw:monitoringtube-list", request=request, format=format
             ),
+            "events": reverse("api:gmw:event-list", request=request, format=format),
             "gars": reverse("api:gar:gar-list", request=request, format=format),
             "glds": reverse("api:gld:gld-list", request=request, format=format),
             "frds": reverse("api:frd:frd-list", request=request, format=format),

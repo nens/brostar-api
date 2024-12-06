@@ -33,3 +33,17 @@ class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAP
     queryset = gmw_models.MonitoringTube.objects.all()
     serializer_class = serializers.MonitoringTubeSerializer
     lookup_field = "uuid"
+
+
+class EventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+    serializer_class = serializers.EventSerializer
+    queryset = gmw_models.Event.objects.all().order_by("-created")
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.EventFilter
+
+
+class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
+    queryset = gmw_models.Event.objects.all()
+    serializer_class = serializers.EventSerializer
+    lookup_field = "uuid"
