@@ -4,6 +4,7 @@
 
 
 - Update the docs.
+- Add the GLD Endpoints and models.
 
 
 ## 0.66 (2024-12-05)
