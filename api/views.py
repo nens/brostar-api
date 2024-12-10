@@ -71,6 +71,9 @@ class APIOverview(views.APIView):
             ),
             "gars": reverse("api:gar:gar-list", request=request, format=format),
             "glds": reverse("api:gld:gld-list", request=request, format=format),
+            "observations": reverse(
+                "api:gld:observation-list", request=request, format=format
+            ),
             "frds": reverse("api:frd:frd-list", request=request, format=format),
         }
         return Response(data)
