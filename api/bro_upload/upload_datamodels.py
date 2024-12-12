@@ -139,7 +139,9 @@ class GMWConstruction(BaseModel):
     deliveryContext: str
     constructionStandard: str
     initialFunction: str
-    numberOfMonitoringTubes: str | int  # Should this not be derived from 'monitoringTubes'
+    numberOfMonitoringTubes: (
+        str | int
+    )  # Should this not be derived from 'monitoringTubes'
     groundLevelStable: str
     wellStability: str | None = None
     owner: str | None = None
@@ -478,4 +480,6 @@ class FRDGemMeasurement(BaseModel):
     determinationProcedure: str
     evaluationProcedure: str
     measurements: list[GemMeasurement]
-    relatedCalculatedApparentFormationResistance: RelatedCalculatedApparentFormationResistance | None = None
+    relatedCalculatedApparentFormationResistance: (
+        RelatedCalculatedApparentFormationResistance | None
+    ) = None

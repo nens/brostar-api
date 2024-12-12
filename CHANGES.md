@@ -5,6 +5,7 @@
 
 - Update the docs.
 - Add the GLD Endpoints and models.
+- Add GLD option to bulk endpoint.
 
 
 ## 0.66 (2024-12-05)

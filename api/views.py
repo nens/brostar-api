@@ -476,7 +476,7 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     This endpoint interfaces with the BulkUpload model and supports the following POST parameters:
 
     `bulk_upload_type`:
-        str (*required*): Options: ['GAR', 'GLD]
+        str (*required*): Options: ['GAR', 'GLD']
 
     `metadata`:
         json (*optional*): Open json field that can be filled in with information that cannot be provided through the upload files
