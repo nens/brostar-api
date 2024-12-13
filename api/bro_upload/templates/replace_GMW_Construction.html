@@ -30,7 +30,7 @@
             <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
             <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
             <ns:wellConstructionDate>
-{%              if sourcedocs_data.wellConstructionDate in ['', None, 'Invalid date'] %}
+                {%              if not sourcedocs_data.wellConstructionDate or sourcedocs_data.wellConstructionDate == '' or sourcedocs_data.wellConstructionDate == 'Invalid date' %}
                 <ns1:date>onbekend</ns1:date>
 {%              elif sourcedocs_data.wellConstructionDate  %}
                 <ns1:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
