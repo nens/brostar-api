@@ -3,7 +3,7 @@
 ## 0.71 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: Reorder GMW_GroundLevel wellStability and groundLevelStable
 
 
 ## 0.70 (2024-12-17)
