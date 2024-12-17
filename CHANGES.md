@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.69 (unreleased)
+## 0.69 (2024-12-17)
 
 
 - Fix pytest
