@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.71 (unreleased)
+## 0.71 (2024-12-17)
 
 
 - Bugfix: Reorder GMW_GroundLevel wellStability and groundLevelStable
