@@ -3,7 +3,7 @@
 ## 0.70 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: GMW_PositionsMeasuring datamodel correction
 
 
 ## 0.69 (2024-12-17)
