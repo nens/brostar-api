@@ -3,7 +3,7 @@
 ## 0.69 (unreleased)
 
 
-- Nothing changed yet.
+- Fix pytest
 
 
 ## 0.68 (2024-12-17)
