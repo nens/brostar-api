@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.68 (unreleased)
+## 0.68 (2024-12-17)
 
 
 - Bugfix: correct datamodels for GMW_Lengthening and GMW_GroundLevel
