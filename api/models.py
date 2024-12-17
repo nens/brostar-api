@@ -227,6 +227,7 @@ class BulkUpload(models.Model):
         blank=False,
         help_text="Optional json field to add extra data that is not provided within the files, but is required in the processing of the files.",
     )
+    sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )

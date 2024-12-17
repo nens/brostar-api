@@ -3,7 +3,7 @@
 ## 0.72 (unreleased)
 
 
-- Nothing changed yet.
+- Add sourcedocument data to API.BulkImport
 
 
 ## 0.71 (2024-12-17)
