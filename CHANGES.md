@@ -5,6 +5,7 @@
 
 - Add sourcedocument data to API.BulkImport
 - Add insert GMW-documents
+- Bugfix: correct GroundLevelPosition type
 
 
 ## 0.71 (2024-12-17)
