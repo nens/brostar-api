@@ -1,0 +1,33 @@
+<ns:insertRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+    xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+    xmlns:ns3="http://www.opengis.net/gml/3.2">
+    <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+    <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+    <ns1:broId>{{ metadata.broId }}</ns1:broId>
+    <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+{%  if metadata.qualityRegime == "IMBRO/A" %}
+    <ns1:underPrivilege>ja</ns1:underPrivilege>
+{%  endif %}
+    <ns:sourceDocument>
+        <ns:GMW_Positions>
+            <ns:eventDate>
+                <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+            </ns:eventDate>
+{%          if sourcedocs_data.wellStability %}
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
+{%          endif %}
+            <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+            <ns:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition>
+            <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns:groundLevelPositioningMethod>
+            <ns:numberOfMonitoringTubes>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfMonitoringTubes>
+{%          for monitoringtube in sourcedocs_data.monitoringTubes %}
+            <ns:monitoringTube>
+                <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+                <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+            </ns:monitoringTube>
+{%          endfor %}
+        </ns:GMW_Positions>
+    </ns:sourceDocument>
+</ns:insertRequest>
