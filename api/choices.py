@@ -47,6 +47,7 @@ BRO_DOMAIN_CHOICES = [
 
 BULK_UPLOAD_TYPES = [
     ("GAR", "GAR"),
+    ("GLD", "GLD"),
 ]
 
 # NOTE: Add new registration types to the registration_type_datamodel_mapping below

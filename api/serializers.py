@@ -62,16 +62,37 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
 
 class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
-    fieldwork_file = serializers.FileField(write_only=True, required=True)
-    lab_file = serializers.FileField(write_only=True, required=True)
+    fieldwork_file = serializers.FileField(write_only=True, required=False)
+    lab_file = serializers.FileField(write_only=True, required=False)
+    measurement_tvp_file = serializers.FileField(write_only=True, required=False)
 
     class Meta:
         model = api_models.BulkUpload
         fields = "__all__"
 
+    def validate(self, attrs):
+        fieldwork_file = attrs.get("fieldwork_file")
+        lab_file = attrs.get("lab_file")
+        measurement_tvp_file = attrs.get("measurement_tvp_file")
+        bulk_upload_type = attrs.get("bulk_upload_type")
+
+        # Check if either both fieldwork_file and lab_file are present
+        # or measurement_tvp_file is present
+        if bulk_upload_type == "GAR" and not (fieldwork_file and lab_file):
+            raise serializers.ValidationError(
+                "Both 'fieldwork_file' and 'lab_file' must be provided, when a GAR bulk-upload is requested."
+            )
+        elif bulk_upload_type == "GLD" and not measurement_tvp_file:
+            raise serializers.ValidationError(
+                "A 'measurement_tvp_file' must be provided, when a GLD bulk-upload is requested."
+            )
+        return attrs
+
     def create(self, validated_data):
         fieldwork_file = validated_data.pop("fieldwork_file", None)
         lab_file = validated_data.pop("lab_file", None)
+        measurement_tvp_file = validated_data.pop("measurement_tvp_file", None)
+
         bulk_upload = api_models.BulkUpload.objects.create(**validated_data)
 
         if fieldwork_file:
@@ -80,5 +101,10 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
             )
         if lab_file:
             api_models.UploadFile.objects.create(bulk_upload=bulk_upload, file=lab_file)
+
+        if measurement_tvp_file:
+            api_models.UploadFile.objects.create(
+                bulk_upload=bulk_upload, file=measurement_tvp_file
+            )
 
         return bulk_upload

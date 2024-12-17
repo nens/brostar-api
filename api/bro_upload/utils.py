@@ -5,6 +5,8 @@ from typing import Any
 import requests
 from django.conf import settings
 
+import api.models as api_models
+
 logger = logging.getLogger(__name__)
 
 
@@ -124,3 +126,20 @@ def check_delivery_status(
     except requests.RequestException as e:
         logger.exception(e)
         raise RuntimeError(f"Delivery info check error: {e}")
+
+
+def include_delivery_responsible_party(
+    delivery_responsible_party: str, data_owner: str
+) -> bool:
+    """Check if delivery_responsible_party is equal to data_owner.kvk
+
+    If not, than the delivery responsible party should be included in the document.
+    """
+    if not data_owner:
+        return True
+
+    if not delivery_responsible_party:
+        return False
+
+    org = api_models.Organisation.objects.get(uuid=data_owner)
+    return org.kvk_number != delivery_responsible_party

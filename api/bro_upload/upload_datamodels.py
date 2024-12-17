@@ -139,7 +139,9 @@ class GMWConstruction(BaseModel):
     deliveryContext: str
     constructionStandard: str
     initialFunction: str
-    numberOfMonitoringTubes: str | int  # Should this not be derived from 'monitoringTubes'
+    numberOfMonitoringTubes: (
+        str | int
+    )  # Should this not be derived from 'monitoringTubes'
     groundLevelStable: str
     wellStability: str | None = None
     owner: str | None = None
@@ -167,7 +169,7 @@ class GMWElectrodeStatus(GMWEvent):
 class GMWGroundLevel(GMWEvent):
     wellStability: str | None = None
     groundLevelStable: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
@@ -187,11 +189,12 @@ class GMWInsertion(GMWEvent):
 
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
-    variableDiameter: str | float
+    variableDiameter: str | None = None
+    tubeTopDiameter: str | float | None = None
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
-    tubeMaterial: str
-    glue: str
+    tubeMaterial: str | None = None
+    glue: str | None = None
     plainTubePartLength: str | float
 
 
@@ -478,4 +481,6 @@ class FRDGemMeasurement(BaseModel):
     determinationProcedure: str
     evaluationProcedure: str
     measurements: list[GemMeasurement]
-    relatedCalculatedApparentFormationResistance: RelatedCalculatedApparentFormationResistance | None = None
+    relatedCalculatedApparentFormationResistance: (
+        RelatedCalculatedApparentFormationResistance | None
+    ) = None

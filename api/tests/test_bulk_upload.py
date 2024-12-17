@@ -71,9 +71,10 @@ def test_gar_bulk_upload_valid_input(
         }
     )
 
-    with fieldwork_file_path.open("rb") as fp_fieldwork, lab_file_path.open(
-        "rb"
-    ) as fp_lab:
+    with (
+        fieldwork_file_path.open("rb") as fp_fieldwork,
+        lab_file_path.open("rb") as fp_lab,
+    ):
         data = {
             "bulk_upload_type": "GAR",
             "project_number": 1,

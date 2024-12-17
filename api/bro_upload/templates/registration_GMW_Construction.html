@@ -28,7 +28,11 @@
             <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
             <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
             <ns:wellConstructionDate>
+{%              if not sourcedocs_data.wellConstructionDate or sourcedocs_data.wellConstructionDate == '' or sourcedocs_data.wellConstructionDate == 'Invalid date' %}
+                <ns1:voidReason>onbekend</ns1:voidReason>
+{%              elif sourcedocs_data.wellConstructionDate  %}
                 <ns1:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
+{%              endif %}
             </ns:wellConstructionDate>
             <ns:deliveredLocation>
                 <ns2:location ns3:id="id-f072811a-323d-40f4-8ebc-7fb0df43c660" srsName="urn:ogc:def:crs:EPSG::28992">
