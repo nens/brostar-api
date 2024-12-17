@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.72 (unreleased)
+## 0.72 (2024-12-17)
 
 
 - Add sourcedocument data to API.BulkImport
