@@ -3,7 +3,8 @@
 ## 0.68 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: correct datamodels for GMW_Lengthening and GMW_GroundLevel
+- Bugfix: correct GMW_Lengthening templates to work with new datamodel
 
 
 ## 0.67 (2024-12-16)

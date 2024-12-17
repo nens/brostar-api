@@ -169,7 +169,7 @@ class GMWElectrodeStatus(GMWEvent):
 class GMWGroundLevel(GMWEvent):
     wellStability: str | None = None
     groundLevelStable: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
@@ -189,11 +189,12 @@ class GMWInsertion(GMWEvent):
 
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
-    variableDiameter: str | float
+    variableDiameter: str | None = None
+    tubeTopDiameter: str | float | None = None
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
-    tubeMaterial: str
-    glue: str
+    tubeMaterial: str | None = None
+    glue: str | None = None
     plainTubePartLength: str | float
 
 
