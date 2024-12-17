@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.70 (unreleased)
+## 0.70 (2024-12-17)
 
 
 - Bugfix: GMW_PositionsMeasuring datamodel correction
