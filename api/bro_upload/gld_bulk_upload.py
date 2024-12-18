@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 from typing import TypeVar
@@ -85,12 +86,46 @@ class GLDBulkUploader:
             "requestReference": self.bulk_upload_instance.metadata["requestReference"],
         }
 
+        measurements_df = measurements_df.sort("time")
+        begin_position = measurements_df.item(0, 0)
+        end_position = measurements_df.item(-1, 0)
+
+        if len(begin_position) == 19:
+            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+        elif len(begin_position) > 19:
+            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z")
+        else:
+            raise ValueError(
+                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {begin_position}."
+            )
+
+        if len(end_position) == 19:
+            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+        elif len(end_position) > 19:
+            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z")
+        else:
+            raise ValueError(
+                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
+            )
+
+        result_time = (end_position + datetime.timedelta(hours=1)).astimezone(
+            datetime.UTC
+        )
+
         measurement_tvps: list[TimeValuePair] = [
             TimeValuePair(**row) for row in measurements_df.iter_rows(named=True)
         ]
 
+        self.bulk_upload_instance.sourcedocument_data.update(
+            {
+                "beginPosition": begin_position.isoformat(sep="T", timespec="seconds"),
+                "endPosition": end_position.isoformat(sep="T", timespec="seconds"),
+                "resultTime": result_time.isoformat(sep="T", timespec="seconds"),
+            }
+        )
+
         uploadtask_sourcedocument_data: GLDAddition = create_gld_sourcedocs_data(
-            measurement_tvps, self.bulk_upload_instance.metadata
+            measurement_tvps, self.bulk_upload_instance.sourcedocument_data
         )
 
         uploadtask_sourcedocument_data_dict = (
@@ -157,26 +192,30 @@ def _convert_resulttime_to_date(result_time: str) -> str:
 
 
 def create_gld_sourcedocs_data(
-    measurement_tvps: list[TimeValuePair], metadata: dict[str, any]
+    measurement_tvps: list[TimeValuePair], sourcedocument_data: dict[str, any]
 ) -> GLDAddition:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
     sourcedocs_data_dict = {
-        "date": _convert_resulttime_to_date(metadata["resultTime"]),
-        "validationStatus": metadata["validationStatus"],
-        "investigatorKvk": metadata["investigatorKvk"],
-        "observationType": metadata["observationType"],
-        "evaluationProcedure": metadata["evaluationProcedure"],
-        "measurementInstrumentType": metadata["measurementInstrumentType"],
-        "processReference": metadata["processReference"],
-        "beginPosition": metadata["beginPosition"],
-        "endPosition": metadata["endPosition"],
-        "resultTime": metadata["resultTime"],
+        "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
+        "validationStatus": sourcedocument_data["validationStatus"],
+        "investigatorKvk": sourcedocument_data["investigatorKvk"],
+        "observationType": sourcedocument_data["observationType"],
+        "evaluationProcedure": sourcedocument_data["evaluationProcedure"],
+        "measurementInstrumentType": sourcedocument_data["measurementInstrumentType"],
+        "processReference": sourcedocument_data["processReference"],
+        "beginPosition": sourcedocument_data["beginPosition"],
+        "endPosition": sourcedocument_data["endPosition"],
+        "resultTime": sourcedocument_data["resultTime"],
         "timeValuePairs": measurement_tvps,
     }
 
-    if metadata["airPressureCompensationType"]:
+    if sourcedocument_data["airPressureCompensationType"]:
         sourcedocs_data_dict.update(
-            {"airPressureCompensationType": metadata["airPressureCompensationType"]}
+            {
+                "airPressureCompensationType": sourcedocument_data[
+                    "airPressureCompensationType"
+                ]
+            }
         )
 
     sourcedocs_data = GLDAddition(**sourcedocs_data_dict)

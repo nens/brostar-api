@@ -357,7 +357,7 @@ class TimeValuePair(BaseModel):
     def format_datetime(cls, value):
         """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
-            return value.isoformat()
+            return value.isoformat(sep="T", timespec="seconds")
         return value
 
 
