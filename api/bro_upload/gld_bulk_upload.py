@@ -93,7 +93,9 @@ class GLDBulkUploader:
         if len(begin_position) == 19:
             begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
         elif len(begin_position) > 19:
-            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z")
+            begin_position = datetime.datetime.strptime(
+                "%Y-%m-%dT%H:%M:%S%z"
+            ).astimezone(datetime.UTC)
         else:
             raise ValueError(
                 f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {begin_position}."
@@ -102,15 +104,21 @@ class GLDBulkUploader:
         if len(end_position) == 19:
             end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
         elif len(end_position) > 19:
-            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z")
+            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z").astimezone(
+                datetime.UTC
+            )
         else:
             raise ValueError(
                 f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
             )
 
-        result_time = (end_position + datetime.timedelta(hours=1)).astimezone(
-            datetime.UTC
-        )
+        if (
+            self.bulk_upload_instance.sourcedocument_data["validationStatus"]
+            == "volledigBeoordeeld"
+        ):
+            result_time = end_position + datetime.timedelta(days=1)
+        else:
+            result_time = end_position
 
         measurement_tvps: list[TimeValuePair] = [
             TimeValuePair(**row) for row in measurements_df.iter_rows(named=True)
