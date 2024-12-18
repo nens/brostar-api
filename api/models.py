@@ -84,6 +84,26 @@ class Organisation(models.Model):
         return self.name
 
 
+class Contract(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organisation = models.OneToOneField(
+        Organisation, on_delete=models.CASCADE, null=False
+    )
+    start_date = models.DateTimeField(null=False, blank=False)
+    end_date = models.DateTimeField()
+    nr_of_messages = models.BigIntegerField(null=False, blank=False, default=0)
+    description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.organisation} ({self.start_date} - {self.end_date if self.end_date else 'onbepaald'})"
+
+    class Meta:
+        verbose_name = "Contract"
+        verbose_name_plural = "Contracts"
+
+
 class UserProfile(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
