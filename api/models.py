@@ -86,8 +86,8 @@ class Organisation(models.Model):
 
 class Contract(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    organisation = models.ForeignKey(
-        Organisation, on_delete=models.CASCADE, null=False, unique=True
+    organisation = models.OneToOneField(
+        Organisation, on_delete=models.CASCADE, null=False
     )
     start_date = models.DateTimeField(null=False, blank=False)
     end_date = models.DateTimeField()
