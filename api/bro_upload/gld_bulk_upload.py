@@ -80,7 +80,7 @@ class GLDBulkUploader:
         self.bulk_upload_instance.save()
 
         # Step 2: Prepare data for uploadtask per row
-        uploadtask_metadata = {
+        uploadtask_metadata = {  # noqa: F841
             "qualityRegime": self.bulk_upload_instance.metadata["qualityRegime"],
             "requestReference": self.bulk_upload_instance.metadata["requestReference"],
         }
@@ -136,40 +136,32 @@ class GLDBulkUploader:
             measurement_tvps, self.bulk_upload_instance.sourcedocument_data
         )
 
-        upload_task = api_models.UploadTask.objects.create(
-            data_owner=self.bulk_upload_instance.data_owner,
-            bro_domain="GLD",
-            project_number=self.bulk_upload_instance.project_number,
-            registration_type="GLD_Addition",
-            request_type="registration",
-            metadata=uploadtask_metadata,
-            sourcedocument_data=uploadtask_sourcedocument_dict,
-        )
+        self.bulk_upload_instance.sourcedocument_data = uploadtask_sourcedocument_dict
 
         self.bulk_upload_instance.progress = 50.00
         self.bulk_upload_instance.save()
 
         # Wait while the GLD_Addition is being processed
         time.sleep(10)
-        upload_task.refresh_from_db()
+        # upload_task.refresh_from_db()
 
-        if upload_task.status in ["COMPLETED", "FAILED"]:
-            self.bulk_upload_instance.progress = 100.00
+        # if upload_task.status in ["COMPLETED", "FAILED"]:
+        #     self.bulk_upload_instance.progress = 100.00
 
-        if upload_task.status == "COMPLETED":
-            self.bulk_upload_instance.status = "FINISHED"
+        # if upload_task.status == "COMPLETED":
+        #     self.bulk_upload_instance.status = "FINISHED"
 
-        elif upload_task.status == "FAILED":
-            self.bulk_upload_instance.status = "FAILED"
-            self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
+        # elif upload_task.status == "FAILED":
+        #     self.bulk_upload_instance.status = "FAILED"
+        #     self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
 
-        else:
-            self.bulk_upload_instance.status = "UNFINISHED"
-            self.bulk_upload_instance.log += (
-                "After 10 seconds the upload is not yet finished."
-            )
+        # else:
+        #     self.bulk_upload_instance.status = "UNFINISHED"
+        #     self.bulk_upload_instance.log += (
+        #         "After 10 seconds the upload is not yet finished."
+        #     )
 
-        self.bulk_upload_instance.save()
+        # self.bulk_upload_instance.save()
 
 
 def csv_or_excel_to_df(file_instance: T) -> pl.DataFrame:
