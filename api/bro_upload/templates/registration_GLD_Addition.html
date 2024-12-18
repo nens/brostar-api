@@ -32,7 +32,11 @@
                 </gmd:CI_ResponsibleParty>
               </gmd:contact>
               <gmd:dateStamp>
+{%              if not sourcedocs_data.date %}
                 <gco:Date>{{ sourcedocs_data.date }}</gco:Date>
+{%              elif not sourcedocs_data.date %}
+                <brocom:voidReason>onbekend</brocom:voidReason>
+{%              endif %}
               </gmd:dateStamp>
               <gmd:identificationInfo gco:nilReason="unknown"/>
 {%            if sourcedocs_data.validationStatus == 'volledigBeoordeeld' %}
@@ -66,7 +70,11 @@
           </om:phenomenonTime>
           <om:resultTime>
             <gml:TimeInstant gml:id="id_0006">
+{%            if sourcedocs_data.resultTime %}
               <gml:timePosition>{{ sourcedocs_data.resultTime }}</gml:timePosition>
+{%            elif not sourcedocs_data.resultTime %}
+              <brocom:voidReason>onbekend</brocom:voidReason>
+{%            endif %}
             </gml:TimeInstant>
           </om:resultTime>
           <om:procedure>
