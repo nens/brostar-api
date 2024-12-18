@@ -11,7 +11,7 @@ from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD
 from gmn.models import GMN, Measuringpoint
-from gmw.models import GMW, MonitoringTube
+from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger(__name__)
 
@@ -186,6 +186,7 @@ class GMWObjectImporter(ObjectImporter):
 
         self._save_gmw_data(gmw_data)
         self._save_monitoringtubes_data(monitoringtubes_data, event_data)
+        self._save_events_data(event_data)
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
@@ -383,6 +384,83 @@ class GMWObjectImporter(ObjectImporter):
                     .get("gmwcommon:plainTubePartLength", {})
                     .get("#text", None),
                 },
+            )
+
+    def _get_well_data(self, intermediate_event: list[dict[str, any]]) -> dict:
+        event_data = intermediate_event.get("eventData", {}).get("wellData", {})
+        if not event_data:
+            return {}
+
+        well_data = {}
+        for key in event_data.keys():
+            if isinstance(event_data[key], str):
+                well_data[key] = event_data[key]
+            else:
+                well_data[key] = event_data[key].get("#text", None)
+
+        return well_data
+
+    def _get_tube_data(self, intermediate_event: list[dict[str, any]]) -> list[dict]:
+        event_data = intermediate_event.get("eventData", {}).get("tubeData", {})
+        if not event_data:
+            return {}
+
+        tubes_data = []
+        if isinstance(event_data, list):
+            for tube in event_data:
+                tube_data = {}
+                for key in tube.keys():
+                    data = tube[key]
+                    logger.info(tube)
+                    logger.info(data)
+                    if isinstance(tube[key], (str | int)):
+                        tube_data[key] = tube[key]
+                    else:
+                        tube_data[key] = tube[key].get("#text", None)
+                tubes_data.append(tube_data)
+
+            return tube_data
+
+        tube_data = {}
+        for key in event_data.keys():
+            data = event_data[key]
+            if isinstance(event_data[key], (str | int)):
+                tube_data[key] = event_data[key]
+            else:
+                tube_data[key] = event_data[key].get("#text", None)
+        tubes_data.append(tube_data)
+        return tubes_data
+
+    def _save_events_data(self, event_data: list[dict[str, any]]):
+        intermediate_events = event_data.get("intermediateEvent", [])
+        if isinstance(intermediate_events, dict):
+            intermediate_events = [intermediate_events]
+
+        for intermediate_event in intermediate_events:
+            name = intermediate_event.get("eventName", {}).get("#text")
+            event_date = intermediate_event.get("eventDate", {}).get(
+                "brocom:date"
+            ) or intermediate_event.get("eventDate", {}).get("brocom:year")
+
+            # If event_date is a year, convert it to a date
+            if event_date:
+                event_date = (
+                    event_date + "-01-01" if len(event_date) == 4 else event_date
+                )
+            else:
+                continue
+
+            sourcedocument_data = self._get_well_data(intermediate_event)
+            sourcedocument_data["monitoringTubes"] = self._get_tube_data(
+                intermediate_event
+            )
+
+            Event.objects.update_or_create(
+                gmw=self.gmw_obj,
+                data_owner=self.data_owner,
+                event_name=name,
+                event_date=event_date,
+                defaults={"sourcedocument_data": sourcedocument_data},
             )
 
     def _lookup_most_recent_top_position(
