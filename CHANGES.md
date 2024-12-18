@@ -3,6 +3,7 @@
 ## 0.73 (unreleased)
 
 
+- Bugfix: Add correction reason to GMW-InsertRequests
 - Add Events Endpoint
 - Add Events Import
 
