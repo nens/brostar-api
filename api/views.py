@@ -22,6 +22,7 @@ from api.bro_upload.object_upload import XMLGenerator
 from api.bro_upload.upload_datamodels import (
     GARBulkUploadMetadata,
     GLDBulkUploadMetadata,
+    GLDBulkUploadSourcedocumentData,
     UploadTaskMetadata,
 )
 from api.choices import registration_type_datamodel_mapping
@@ -582,6 +583,9 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             # Check data with pydantic models:
             try:
                 GLDBulkUploadMetadata(**serializer.validated_data["metadata"])
+                GLDBulkUploadSourcedocumentData(
+                    **serializer.validated_data["sourcedocument_data"]
+                )
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
                 return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)

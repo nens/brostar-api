@@ -41,7 +41,9 @@ class GLDBulkUploadMetadata(BaseModel):
     qualityRegime: str
     deliveryAccountableParty: str | None = None
     broId: str
-    # For Addition (Procedure data)
+
+
+class GLDBulkUploadSourcedocumentData(BaseModel):
     validationStatus: str | None = None
     investigatorKvk: str
     observationType: str
@@ -49,9 +51,9 @@ class GLDBulkUploadMetadata(BaseModel):
     measurementInstrumentType: str
     processReference: str
     airPressureCompensationType: str | None = None
-    beginPosition: str
-    endPosition: str
-    resultTime: str
+    beginPosition: str | None = None
+    endPosition: str | None = None
+    resultTime: str | None = None
 
 
 # GMN sourcedocs_data
@@ -362,7 +364,7 @@ class TimeValuePair(BaseModel):
 
 
 class GLDAddition(BaseModel):
-    date: str
+    date: str | None = None
     observationId: str | None = None
     observationProcessId: str | None = None
     measurementTimeseriesId: str | None = None
@@ -375,7 +377,7 @@ class GLDAddition(BaseModel):
     airPressureCompensationType: str | None = None
     beginPosition: str
     endPosition: str
-    resultTime: str
+    resultTime: str | None = None
     timeValuePairs: list[TimeValuePair]
 
     @validator("observationId", pre=True, always=True)

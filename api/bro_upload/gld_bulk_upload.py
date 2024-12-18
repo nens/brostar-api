@@ -1,3 +1,4 @@
+import datetime
 import logging
 import time
 from typing import TypeVar
@@ -6,7 +7,6 @@ import polars as pl
 
 from api import models as api_models
 from api.bro_upload.upload_datamodels import (
-    GLDAddition,
     TimeValuePair,
 )
 
@@ -85,16 +85,55 @@ class GLDBulkUploader:
             "requestReference": self.bulk_upload_instance.metadata["requestReference"],
         }
 
-        measurement_tvps: list[TimeValuePair] = [
-            TimeValuePair(**row) for row in measurements_df.iter_rows(named=True)
+        measurements_df = measurements_df.sort("time")
+        begin_position = measurements_df.item(0, 0)
+        end_position = measurements_df.item(-1, 0)
+
+        if len(begin_position) == 19:
+            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+        elif len(begin_position) > 19:
+            begin_position = datetime.datetime.strptime(
+                "%Y-%m-%dT%H:%M:%S%z"
+            ).astimezone(datetime.UTC)
+        else:
+            raise ValueError(
+                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {begin_position}."
+            )
+
+        if len(end_position) == 19:
+            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+        elif len(end_position) > 19:
+            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z").astimezone(
+                datetime.UTC
+            )
+        else:
+            raise ValueError(
+                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
+            )
+
+        if (
+            self.bulk_upload_instance.sourcedocument_data["validationStatus"]
+            == "volledigBeoordeeld"
+        ):
+            result_time = end_position + datetime.timedelta(days=1)
+        else:
+            result_time = end_position
+
+        measurement_tvps: list[dict] = [
+            TimeValuePair(**row).model_dump_json()
+            for row in measurements_df.iter_rows(named=True)
         ]
 
-        uploadtask_sourcedocument_data: GLDAddition = create_gld_sourcedocs_data(
-            measurement_tvps, self.bulk_upload_instance.metadata
+        self.bulk_upload_instance.sourcedocument_data.update(
+            {
+                "beginPosition": begin_position.isoformat(sep="T", timespec="seconds"),
+                "endPosition": end_position.isoformat(sep="T", timespec="seconds"),
+                "resultTime": result_time.isoformat(sep="T", timespec="seconds"),
+            }
         )
 
-        uploadtask_sourcedocument_data_dict = (
-            uploadtask_sourcedocument_data.model_dump()
+        uploadtask_sourcedocument_dict: dict = create_gld_sourcedocs_data(
+            measurement_tvps, self.bulk_upload_instance.sourcedocument_data
         )
 
         upload_task = api_models.UploadTask.objects.create(
@@ -104,7 +143,7 @@ class GLDBulkUploader:
             registration_type="GLD_Addition",
             request_type="registration",
             metadata=uploadtask_metadata,
-            sourcedocument_data=uploadtask_sourcedocument_data_dict,
+            sourcedocument_data=uploadtask_sourcedocument_dict,
         )
 
         self.bulk_upload_instance.progress = 50.00
@@ -157,28 +196,32 @@ def _convert_resulttime_to_date(result_time: str) -> str:
 
 
 def create_gld_sourcedocs_data(
-    measurement_tvps: list[TimeValuePair], metadata: dict[str, any]
-) -> GLDAddition:
+    measurement_tvps: list[dict], sourcedocument_data: dict
+) -> dict:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
-    sourcedocs_data_dict = {
-        "date": _convert_resulttime_to_date(metadata["resultTime"]),
-        "validationStatus": metadata["validationStatus"],
-        "investigatorKvk": metadata["investigatorKvk"],
-        "observationType": metadata["observationType"],
-        "evaluationProcedure": metadata["evaluationProcedure"],
-        "measurementInstrumentType": metadata["measurementInstrumentType"],
-        "processReference": metadata["processReference"],
-        "beginPosition": metadata["beginPosition"],
-        "endPosition": metadata["endPosition"],
-        "resultTime": metadata["resultTime"],
-        "timeValuePairs": measurement_tvps,
-    }
+    sourcedocument_data.update(
+        {
+            "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
+            # "validationStatus": sourcedocument_data.get("validationStatus", None),
+            # "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
+            # "observationType": sourcedocument_data.get("observationType", None),
+            # "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),
+            # "measurementInstrumentType": sourcedocument_data.get("measurementInstrumentType"),
+            # "processReference": sourcedocument_data.get("processReference", None),
+            # "beginPosition": sourcedocument_data("beginPosition", None),
+            # "endPosition": sourcedocument_data.get("endPosition", None),
+            # "resultTime": sourcedocument_data.get("resultTime", None),
+            "timeValuePairs": measurement_tvps,
+        }
+    )
 
-    if metadata["airPressureCompensationType"]:
-        sourcedocs_data_dict.update(
-            {"airPressureCompensationType": metadata["airPressureCompensationType"]}
+    if sourcedocument_data["airPressureCompensationType"]:
+        sourcedocument_data.update(
+            {
+                "airPressureCompensationType": sourcedocument_data[
+                    "airPressureCompensationType"
+                ]
+            }
         )
 
-    sourcedocs_data = GLDAddition(**sourcedocs_data_dict)
-
-    return sourcedocs_data
+    return sourcedocument_data
