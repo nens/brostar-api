@@ -7,7 +7,6 @@ import polars as pl
 
 from api import models as api_models
 from api.bro_upload.upload_datamodels import (
-    GLDAddition,
     TimeValuePair,
 )
 
@@ -132,12 +131,8 @@ class GLDBulkUploader:
             }
         )
 
-        uploadtask_sourcedocument_data: GLDAddition = create_gld_sourcedocs_data(
+        uploadtask_sourcedocument_dict: dict = create_gld_sourcedocs_data(
             measurement_tvps, self.bulk_upload_instance.sourcedocument_data
-        )
-
-        uploadtask_sourcedocument_data_dict = (
-            uploadtask_sourcedocument_data.model_dump()
         )
 
         upload_task = api_models.UploadTask.objects.create(
@@ -147,7 +142,7 @@ class GLDBulkUploader:
             registration_type="GLD_Addition",
             request_type="registration",
             metadata=uploadtask_metadata,
-            sourcedocument_data=uploadtask_sourcedocument_data_dict,
+            sourcedocument_data=uploadtask_sourcedocument_dict,
         )
 
         self.bulk_upload_instance.progress = 50.00
@@ -201,7 +196,7 @@ def _convert_resulttime_to_date(result_time: str) -> str:
 
 def create_gld_sourcedocs_data(
     measurement_tvps: list[TimeValuePair], sourcedocument_data: dict[str, any]
-) -> GLDAddition:
+) -> dict:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
     sourcedocs_data_dict = {
         "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
@@ -226,6 +221,4 @@ def create_gld_sourcedocs_data(
             }
         )
 
-    sourcedocs_data = GLDAddition(**sourcedocs_data_dict)
-
-    return sourcedocs_data
+    return sourcedocs_data_dict
