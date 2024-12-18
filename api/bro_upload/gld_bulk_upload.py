@@ -119,8 +119,9 @@ class GLDBulkUploader:
         else:
             result_time = end_position
 
-        measurement_tvps: list[TimeValuePair] = [
-            TimeValuePair(**row) for row in measurements_df.iter_rows(named=True)
+        measurement_tvps: list[dict] = [
+            TimeValuePair(**row).model_dump_json()
+            for row in measurements_df.iter_rows(named=True)
         ]
 
         self.bulk_upload_instance.sourcedocument_data.update(
@@ -195,25 +196,27 @@ def _convert_resulttime_to_date(result_time: str) -> str:
 
 
 def create_gld_sourcedocs_data(
-    measurement_tvps: list[TimeValuePair], sourcedocument_data: dict[str, any]
+    measurement_tvps: list[dict], sourcedocument_data: dict
 ) -> dict:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
-    sourcedocs_data_dict = {
-        "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
-        "validationStatus": sourcedocument_data["validationStatus"],
-        "investigatorKvk": sourcedocument_data["investigatorKvk"],
-        "observationType": sourcedocument_data["observationType"],
-        "evaluationProcedure": sourcedocument_data["evaluationProcedure"],
-        "measurementInstrumentType": sourcedocument_data["measurementInstrumentType"],
-        "processReference": sourcedocument_data["processReference"],
-        "beginPosition": sourcedocument_data["beginPosition"],
-        "endPosition": sourcedocument_data["endPosition"],
-        "resultTime": sourcedocument_data["resultTime"],
-        "timeValuePairs": measurement_tvps,
-    }
+    sourcedocument_data.update(
+        {
+            "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
+            # "validationStatus": sourcedocument_data.get("validationStatus", None),
+            # "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
+            # "observationType": sourcedocument_data.get("observationType", None),
+            # "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),
+            # "measurementInstrumentType": sourcedocument_data.get("measurementInstrumentType"),
+            # "processReference": sourcedocument_data.get("processReference", None),
+            # "beginPosition": sourcedocument_data("beginPosition", None),
+            # "endPosition": sourcedocument_data.get("endPosition", None),
+            # "resultTime": sourcedocument_data.get("resultTime", None),
+            "timeValuePairs": measurement_tvps,
+        }
+    )
 
     if sourcedocument_data["airPressureCompensationType"]:
-        sourcedocs_data_dict.update(
+        sourcedocument_data.update(
             {
                 "airPressureCompensationType": sourcedocument_data[
                     "airPressureCompensationType"
@@ -221,4 +224,4 @@ def create_gld_sourcedocs_data(
             }
         )
 
-    return sourcedocs_data_dict
+    return sourcedocument_data
