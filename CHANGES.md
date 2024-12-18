@@ -3,7 +3,7 @@
 ## 0.73 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: Add correction reason to GMW-InsertRequests
 
 
 ## 0.72 (2024-12-17)
