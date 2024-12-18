@@ -1,4 +1,4 @@
-<ns:replaceRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+<ns:insertRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
     xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
     xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
     xmlns:ns3="http://www.opengis.net/gml/3.2">
@@ -9,7 +9,6 @@
 {%  if metadata.qualityRegime == "IMBRO/A" %}
     <ns1:underPrivilege>ja</ns1:underPrivilege>
 {%  endif %}
-    <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">{{ metadata.correctionReason }}</ns:correctionReason>
     <ns:sourceDocument>
         <ns:GMW_GroundLevel>
             <ns:eventDate>
@@ -23,4 +22,4 @@
             <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns:groundLevelPositioningMethod>
         </ns:GMW_GroundLevel>
     </ns:sourceDocument>
-</ns:replaceRequest>
+</ns:insertRequest>

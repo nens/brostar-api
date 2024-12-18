@@ -174,7 +174,7 @@ class GMWGroundLevel(GMWEvent):
 
 
 class GMWGroundLevelMeasuring(GMWEvent):
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
@@ -218,15 +218,15 @@ class MonitoringTubePositions(BaseModel):
 
 
 class GMWPositions(GMWEvent):
-    wellStability: str | None = None
+    wellStability: str
     groundLevelStable: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTubePositions]
 
 
 class GMWPositionsMeasuring(GMWEvent):
-    monitoringTubes: list[MonitoringTube]
+    monitoringTubes: list[MonitoringTubePositions]
     groundLevelPosition: str | None = None
     groundLevelPositioningMethod: str | None = None
 
@@ -236,7 +236,7 @@ class GMWRemoval(GMWEvent):
 
 
 class GMWShift(GMWEvent):
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 

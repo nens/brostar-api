@@ -1,10 +1,36 @@
 # Changelog for BROStar API
 
-## 0.69 (unreleased)
+## 0.73 (unreleased)
 
 
 - Add Events Endpoint
 - Add Events Import
+
+
+## 0.72 (2024-12-17)
+
+
+- Add sourcedocument data to API.BulkImport
+- Add insert GMW-documents
+- Bugfix: correct GroundLevelPosition type
+
+
+## 0.71 (2024-12-17)
+
+
+- Bugfix: Reorder GMW_GroundLevel wellStability and groundLevelStable
+
+
+## 0.70 (2024-12-17)
+
+
+- Bugfix: GMW_PositionsMeasuring datamodel correction
+
+
+## 0.69 (2024-12-17)
+
+
+- Fix pytest
 
 
 ## 0.68 (2024-12-17)
