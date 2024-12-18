@@ -41,7 +41,9 @@ class GLDBulkUploadMetadata(BaseModel):
     qualityRegime: str
     deliveryAccountableParty: str | None = None
     broId: str
-    # For Addition (Procedure data)
+
+
+class GLDBulkUploadSourcedocumentData(BaseModel):
     validationStatus: str | None = None
     investigatorKvk: str
     observationType: str
@@ -49,9 +51,9 @@ class GLDBulkUploadMetadata(BaseModel):
     measurementInstrumentType: str
     processReference: str
     airPressureCompensationType: str | None = None
-    beginPosition: str
-    endPosition: str
-    resultTime: str
+    beginPosition: str | None = None
+    endPosition: str | None = None
+    resultTime: str | None = None
 
 
 # GMN sourcedocs_data
