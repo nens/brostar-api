@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.73 (unreleased)
+## 0.73 (2024-12-19)
 
 
 - Add Events Endpoint
