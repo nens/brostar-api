@@ -3,11 +3,13 @@
 ## 0.73 (unreleased)
 
 
-- Bugfix: Add correction reason to GMW-InsertRequests
 - Add Events Endpoint
 - Add Events Import
-- Enhancement: Allow GLD-Addition date and resultTime to be unknown (IMBRO/A)
 - Improve the docs
+- Enhancement: Allow GLD-Addition date and resultTime to be unknown (IMBRO/A)
+- Bugfix: GMW-Positions order
+- Bugfix: Add correction reason to GMW-InsertRequests
+
 
 
 ## 0.72 (2024-12-17)

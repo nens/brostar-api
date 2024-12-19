@@ -16,7 +16,7 @@
             <ns:deliveryContext codeSpace="urn:bro:gmw:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</ns:deliveryContext>
             <ns:constructionStandard codeSpace="urn:bro:gmw:ConstructionStandard">{{ sourcedocs_data.constructionStandard }}</ns:constructionStandard>
             <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
-            <ns:numberOfMonitoringTubes>{{ sourcedocs_data.numberOfMonitoringTubes }}</ns:numberOfMonitoringTubes>
+            <ns:numberOfMonitoringTubes>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfMonitoringTubes>
             <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
 {%          if sourcedocs_data.groundLevelStable  == "nee" %}
             <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>

@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+import zipfile
 from typing import TypeVar
 
 import polars as pl
@@ -17,14 +18,26 @@ T = TypeVar("T", bound="api_models.UploadFile")
 
 
 def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
-    # Set columns to the right name
-    df.columns = [
+    column_names = df.columns.copy()
+
+    # Columns 0 to 5 should have the following names
+    new_names = [
+        "bro_id",
         "time",
         "value",
         "statusQualityControl",
         "censorReason",
         "censoringLimitvalue",
     ]
+
+    # Replace up to the number of existing columns
+    updated_names = new_names[: len(column_names)]
+
+    # Append the remaining original column names if any
+    updated_names.extend(column_names[len(updated_names) :])
+
+    # Set the new column names
+    df.columns = updated_names
     return df
 
 
@@ -57,37 +70,16 @@ class GLDBulkUploader:
         self.bro_username: str = bro_username
         self.bro_password: str = bro_password
 
-    def process(self) -> None:
-        # Step 1: open the files and transform to a pd df
-        try:
-            measurements_df: pl.DataFrame = csv_or_excel_to_df(
-                self.measurement_tvp_file
-            )
-            self.bulk_upload_instance.progress = 10.00
-            self.bulk_upload_instance.save()
-        except Exception as e:
-            self.bulk_upload_instance.log = f"Failed to open the files: {e}"
-            self.bulk_upload_instance.status = "FAILED"
-            self.bulk_upload_instance.save()
-            return
+    def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
+        uploadtask_metadata = self.bulk_upload_instance.metadata
+        uploadtask_metadata["broId"] = bro_id
+        uploadtask_metadata[
+            "requestReference"
+        ] += f"{bro_id} {uploadtask_metadata["qualityRegime"]}"  # Maybe still change this
 
-        # Minimal validation / correction of the data
-        assert len(measurements_df) > 0, "There is no data in the file"
-
-        # Convert to standard format
-        measurements_df = _convert_and_check_df(measurements_df)
-        self.bulk_upload_instance.progress = 20.00
-        self.bulk_upload_instance.save()
-
-        # Step 2: Prepare data for uploadtask per row
-        uploadtask_metadata = {
-            "qualityRegime": self.bulk_upload_instance.metadata["qualityRegime"],
-            "requestReference": self.bulk_upload_instance.metadata["requestReference"],
-        }
-
-        measurements_df = measurements_df.sort("time")
-        begin_position = measurements_df.item(0, 0)
-        end_position = measurements_df.item(-1, 0)
+        current_measurements_df = current_measurements_df.sort("time")
+        begin_position = current_measurements_df.item(0, 0)
+        end_position = current_measurements_df.item(-1, 0)
 
         if len(begin_position) == 19:
             begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
@@ -121,7 +113,7 @@ class GLDBulkUploader:
 
         measurement_tvps: list[dict] = [
             TimeValuePair(**row).model_dump_json()
-            for row in measurements_df.iter_rows(named=True)
+            for row in current_measurements_df.iter_rows(named=True)
         ]
 
         self.bulk_upload_instance.sourcedocument_data.update(
@@ -145,41 +137,103 @@ class GLDBulkUploader:
             metadata=uploadtask_metadata,
             sourcedocument_data=uploadtask_sourcedocument_dict,
         )
+        return upload_task
 
-        self.bulk_upload_instance.progress = 50.00
+    def process(self) -> None:
+        # Step 1: open the files and transform to a pd df
+        try:
+            all_measurements_df: pl.DataFrame = file_to_df(self.measurement_tvp_file)
+            self.bulk_upload_instance.progress = 10.00
+            self.bulk_upload_instance.save()
+        except Exception as e:
+            self.bulk_upload_instance.log = f"Failed to open the files: {e}"
+            self.bulk_upload_instance.status = "FAILED"
+            self.bulk_upload_instance.save()
+            return
+
+        # Minimal validation / correction of the data
+        assert len(all_measurements_df) > 0, "There is no data in the file"
+
+        # Convert to standard format
+        all_measurements_df = _convert_and_check_df(all_measurements_df)
+        self.bulk_upload_instance.progress = 20.00
         self.bulk_upload_instance.save()
 
-        # Wait while the GLD_Addition is being processed
-        time.sleep(10)
-        upload_task.refresh_from_db()
-
-        if upload_task.status in ["COMPLETED", "FAILED"]:
-            self.bulk_upload_instance.progress = 100.00
-
-        if upload_task.status == "COMPLETED":
-            self.bulk_upload_instance.status = "FINISHED"
-
-        elif upload_task.status == "FAILED":
-            self.bulk_upload_instance.status = "FAILED"
-            self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
-
-        else:
-            self.bulk_upload_instance.status = "UNFINISHED"
-            self.bulk_upload_instance.log += (
-                "After 10 seconds the upload is not yet finished."
+        # BRO-Ids
+        bro_ids = all_measurements_df.to_series(0).unique()
+        progress = 80 / len(
+            bro_ids * 2
+        )  # amount of progress per steps, per bro_id two steps.
+        for bro_id in bro_ids:
+            # Step 2: Prepare data for uploadtask per row
+            current_measurements_df = all_measurements_df.filter(
+                pl.col("bro_id").eq(bro_id)
             )
 
+            upload_task = self.deliver_one_addition(bro_id, current_measurements_df)
+
+            time.sleep(10)
+            upload_task.refresh_from_db()
+
+            # Wait while the GLD_Addition is being processed
+            if upload_task.status in ["COMPLETED", "FAILED"]:
+                self.bulk_upload_instance.progress += progress
+
+            if upload_task.status == "COMPLETED":
+                self.bulk_upload_instance.status = "FINISHED"
+
+            elif upload_task.status == "FAILED":
+                self.bulk_upload_instance.status = "FAILED"
+                self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
+
+            else:
+                self.bulk_upload_instance.status = "UNFINISHED"
+                self.bulk_upload_instance.log += (
+                    "After 10 seconds the upload is not yet finished."
+                )
+
         self.bulk_upload_instance.save()
 
 
-def csv_or_excel_to_df(file_instance: T) -> pl.DataFrame:
+def file_to_df(file_instance: T) -> pl.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
     filetype = file_instance.file.name.split(".")[-1].lower()
 
     if filetype == "csv":
-        df = pl.read_csv(file_instance.file, has_header=True, ignore_errors=False)
+        df = pl.read_csv(
+            file_instance.file,
+            has_header=True,
+            ignore_errors=False,
+            truncate_ragged_lines=True,
+        )
     elif filetype in ["xls", "xlsx"]:
-        df = pl.read_excel(file_instance.file, has_header=True, ignore_errors=False)
+        df = pl.read_excel(
+            file_instance.file,
+            has_header=True,
+            ignore_errors=False,
+            truncate_ragged_lines=True,
+        )
+    elif filetype == "zip":
+        with zipfile.ZipFile(file_instance.file) as z:
+            csv_files = [f for f in z.namelist() if f.lower().endswith(".csv")]
+            if not csv_files:
+                raise ValueError("No CSV files found in the zip archive.")
+
+            # Read all CSV files into Polars DataFrames
+            dfs = []
+            for csv_file in csv_files:
+                with z.open(csv_file) as file:
+                    dfs.append(
+                        pl.read_csv(
+                            file,
+                            has_header=True,
+                            ignore_errors=False,
+                            truncate_ragged_lines=True,
+                        )
+                    )
+
+            # Combine all DataFrames into one, or return a list if separate DataFrames are desired
+            df = pl.concat(dfs)
     else:
         raise ValueError(
             "Unsupported file type. Only CSV and Excel files are supported."
