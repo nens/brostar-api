@@ -19,10 +19,10 @@
             </startDateMonitoring>
 {%          for measuringpoint in sourcedocs_data.measuringPoints %}
             <measuringPoint>
-                <MeasuringPoint gml:id="id_0002">
+                <MeasuringPoint gml:id="measuringpoint_{{ forloop.counter }}">
                     <measuringPointCode>{{ measuringpoint.measuringPointCode }}</measuringPointCode>
                     <monitoringTube>
-                        <GroundwaterMonitoringTube gml:id="id_0003">
+                        <GroundwaterMonitoringTube gml:id="tube_{{ forloop.counter }}">
                             <broId>{{ measuringpoint.broId }}</broId>
                             <tubeNumber>{{ measuringpoint.tubeNumber }}</tubeNumber>
                         </GroundwaterMonitoringTube>

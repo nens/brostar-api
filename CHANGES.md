@@ -3,7 +3,7 @@
 ## 0.75 (unreleased)
 
 
-- Nothing changed yet.
+- Hotfix: Correct IDs for Move GMN-StartRegistration
 
 
 ## 0.74 (2024-12-20)
