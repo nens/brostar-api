@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.75 (unreleased)
+## 0.75 (2024-12-20)
 
 
 - Hotfix: Correct IDs for Move GMN-StartRegistration
