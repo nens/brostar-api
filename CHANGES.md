@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.74 (unreleased)
+## 0.74 (2024-12-20)
 
 
 - Improved GLD-Bulk
