@@ -3,7 +3,8 @@
 ## 0.74 (unreleased)
 
 
-- Nothing changed yet.
+- Improved GLD-Bulk
+- Added testing to GLD-Bulk
 
 
 ## 0.73 (2024-12-19)

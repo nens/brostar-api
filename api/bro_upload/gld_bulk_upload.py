@@ -161,8 +161,8 @@ class GLDBulkUploader:
 
         # BRO-Ids
         bro_ids = all_measurements_df.to_series(0).unique()
-        progress = 80 / len(
-            bro_ids * 2
+        progress = 80 / (
+            len(bro_ids) * 2
         )  # amount of progress per steps, per bro_id two steps.
         for bro_id in bro_ids:
             # Step 2: Prepare data for uploadtask per row
@@ -236,7 +236,7 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
             df = pl.concat(dfs)
     else:
         raise ValueError(
-            "Unsupported file type. Only CSV and Excel files are supported."
+            "Unsupported file type. Only CSV and Excel, or ZIP files are supported."
         )
     return df
 
