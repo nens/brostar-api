@@ -5,6 +5,7 @@
 
 - Improved GLD-Bulk
 - Added testing to GLD-Bulk
+- Hotfix: Add correct namespace to GMW_Insert XMLs
 
 
 ## 0.73 (2024-12-19)
