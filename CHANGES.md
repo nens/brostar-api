@@ -3,7 +3,7 @@
 ## 0.77 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: GLD-Addition DateStamp
 
 
 ## 0.76 (2025-01-02)

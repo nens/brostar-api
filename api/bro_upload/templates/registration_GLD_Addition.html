@@ -32,7 +32,7 @@
                 </gmd:CI_ResponsibleParty>
               </gmd:contact>
               <gmd:dateStamp>
-{%              if not sourcedocs_data.date %}
+{%              if sourcedocs_data.date %}
                 <gco:Date>{{ sourcedocs_data.date }}</gco:Date>
 {%              elif not sourcedocs_data.date %}
                 <brocom:voidReason>onbekend</brocom:voidReason>
