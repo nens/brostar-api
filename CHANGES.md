@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.77 (unreleased)
+## 0.77 (2025-01-02)
 
 
 - Bugfix: GLD-Addition DateStamp
