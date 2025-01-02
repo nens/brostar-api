@@ -12,12 +12,9 @@ SECRET_KEY = os.getenv(
     "SECRET_KEY",
     default="django-insecure-r4_51z=)9re0wxnj(fwanhzi($42k#usdr37z!o2c-a04*4p06",
 )
-# NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
-# NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
-# NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
-NENS_AUTH_ISSUER = "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_vPwXOnNbi"
-NENS_AUTH_CLIENT_ID = "71uv1605es7ksjc83sabon95u3"
-NENS_AUTH_CLIENT_SECRET = "uuahp4p1o8sgh89r9mgdp5314skcngeru5jljjf3qh3ipf7poe8"
+NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
+NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
+NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 
 _debug_env = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
