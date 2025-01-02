@@ -3,7 +3,7 @@
 ## 0.76 (unreleased)
 
 
-- Nothing changed yet.
+- Minor bugfix
 
 
 ## 0.75 (2024-12-20)
