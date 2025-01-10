@@ -4,6 +4,7 @@
 
 
 - Bugfix: GLD-Closure template
+- Enhancement: Do not require underPrivilige for GMW
 
 
 ## 0.77 (2025-01-02)

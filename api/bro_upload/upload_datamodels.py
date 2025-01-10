@@ -12,19 +12,8 @@ class UploadTaskMetadata(BaseModel):
     deliveryAccountableParty: str | None = None
     qualityRegime: str
     broId: str | None = None
-    underPrivilege: str | None = None
     correctionReason: str | None = None
     dateToBeCorrected: str | date | None = None
-
-    @root_validator(pre=True)
-    def format_underPrivilege(cls, values):
-        # Check and set `underPrivilege`
-        if values.get("qualityRegime") == "IMBRO/A" and not values.get(
-            "underPrivilege"
-        ):
-            values["underPrivilege"] = "ja"
-
-        return values
 
 
 class GARBulkUploadMetadata(BaseModel):
