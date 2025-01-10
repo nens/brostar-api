@@ -3,7 +3,7 @@
 ## 0.78 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: GLD-Closure template
 
 
 ## 0.77 (2025-01-02)
