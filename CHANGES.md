@@ -4,6 +4,7 @@
 
 
 - Bugfix: GLD-Closure template
+- Bugfix: GLD-Addition delete template
 - Enhancement: Do not require underPrivilige for GMW
 
 

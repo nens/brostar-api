@@ -102,7 +102,7 @@
             <om:featureOfInterest/>
             <om:result>
             <wml2:MeasurementTimeseries gml:id="{{ sourcedocs_data.measurementTimeseriesId }}">
-{%              for tvp in sourcedocs_data.timeValuePairs %}
+{%            for tvp in sourcedocs_data.timeValuePairs %}
               <wml2:point>
                 <wml2:MeasurementTVP>
                   <wml2:time>{{ tvp.time }}</wml2:time>
@@ -136,8 +136,24 @@
                       <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown"/>
 {%                    endif %}
                     </wml2:TVPMeasurementMetadata>
+                  </wml2:metadata>
+{%                else %}
+                  <wml2:value uom="m">{{ tvp.value }}</wml2:value>
+                  <wml2:metadata>
+                    <wml2:TVPMeasurementMetadata>
+                      <wml2:qualifier>
+                        <swe:Category>
+                          <swe:codeSpace xlink:href="urn:bro:gld:StatusQualityControl"/>
+                          <swe:value>{{ tvp.statusQualityControl }}</swe:value>
+                        </swe:Category>
+                      </wml2:qualifier>
+                      <wml2:interpolationType xlink:href="http://www.opengis.net/def/waterml/2.0/interpolationType/Discontinuous"/>
+                    </wml2:TVPMeasurementMetadata>
+                  </wml2:metadata>
+{%                endif %}
+                </wml2:MeasurementTVP>
               </wml2:point>
-{%              endfor %}
+{%            endfor %}
             </wml2:MeasurementTimeseries>
           </om:result>
         </om:OM_Observation>
