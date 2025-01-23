@@ -109,7 +109,7 @@ def test_convert_xml_to_json(gmn_object_importer):
 @pytest.fixture
 def gld_object_importer(organisation):
     return object_import.GLDObjectImporter(
-        bro_id="GLD000000076615", data_owner=organisation.uuid
+        bro_id="GLD000000076615", data_owner=organisation
     )
 
 
@@ -141,7 +141,5 @@ def test_gld_observation_summary(gld_object_importer: object_import.GLDObjectImp
 
 
 @pytest.mark.django_db
-def test_gld_observations(gld_object_importer: object_import.GLDObjectImporter):
-    observations = gld_object_importer._save_observations()
-
-    assert observations == {}
+def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
+    gld_object_importer.run()

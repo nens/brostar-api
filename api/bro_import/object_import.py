@@ -644,9 +644,8 @@ class GLDObjectImporter(ObjectImporter):
             "gldcommon:GroundwaterMonitoringTube"
         )
 
-        self.bro_id = gld_data.get("brocom:broId", None)
-        GLD.objects.update_or_create(
-            bro_id=self.bro_id,
+        self.gld = GLD.objects.update_or_create(
+            bro_id=gld_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
                 "delivery_accountable_party": gld_data.get(
@@ -658,7 +657,7 @@ class GLDObjectImporter(ObjectImporter):
                 "research_first_date": gld_data.get("researchFirstDate", None),
                 "research_last_date": gld_data.get("researchLastDate", None),
             },
-        )
+        )[0]
 
         self._save_observations()
 
@@ -720,7 +719,7 @@ class GLDObjectImporter(ObjectImporter):
             procedure = self._format_procedure(observation)
 
             Observation.objects.update_or_create(
-                gld_id=self.bro_id,
+                gld=self.gld,
                 data_owner=self.data_owner,
                 observation_id=observation_id,
                 defaults=(
