@@ -6,6 +6,7 @@
 - Bugfix: GLD-Closure template
 - Bugfix: GLD-Addition delete template
 - Enhancement: Do not require underPrivilige for GMW
+- Added GLD-Observations to import
 
 
 ## 0.77 (2025-01-02)
