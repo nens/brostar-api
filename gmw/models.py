@@ -41,6 +41,7 @@ class GMW(models.Model):
     standardized_location = models.CharField(max_length=100, null=True)
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
+    nr_of_intermediate_events = models.IntegerField(null=True)
 
     def __str__(self) -> str:
         return self.bro_id
@@ -53,13 +54,13 @@ class MonitoringTube(models.Model):
     """A monitoringtube is part of a GMW."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE, null=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
         "api.Organisation",
         on_delete=models.CASCADE,
     )
-    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE)
     tube_number = models.CharField(max_length=100, null=True)
     tube_type = models.CharField(max_length=100, null=True)
     artesian_well_cap_present = models.CharField(max_length=100, null=True)
@@ -87,21 +88,27 @@ class MonitoringTube(models.Model):
     def __str__(self) -> str:
         return f"{self.gmw}-{self.tube_number}"
 
+    class Meta:
+        verbose_name_plural = "Monitoring Tubes"
+
 
 class Event(models.Model):
     """A event is a change after a period of time to a GMW or its monitoring tube(s)."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        "api.Organisation",
-        on_delete=models.CASCADE,
-    )
-    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE)
+    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE, null=False)
     event_name = models.CharField(
         max_length=40,
     )
     event_date = models.DateField()
     metadata = JSONField("Metadata", default=dict, blank=False)
     sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        "api.Organisation",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name_plural = "Events"

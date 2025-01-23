@@ -71,9 +71,7 @@ class BulkImporter:
                 counter += 1
 
                 try:
-                    data_importer = self.object_importer_class(
-                        self.bro_domain, bro_id, self.data_owner
-                    )
+                    data_importer = self.object_importer_class(bro_id, self.data_owner)
                     data_importer.run()
                 except Exception as e:
                     logger.exception(e)

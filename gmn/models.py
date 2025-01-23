@@ -17,9 +17,6 @@ class GMN(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=50, null=True)
@@ -31,6 +28,9 @@ class GMN(models.Model):
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
     color = models.CharField(max_length=7, null=True, blank=True, default=None)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.bro_id
@@ -53,15 +53,18 @@ class Measuringpoint(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     gmn = models.ForeignKey(GMN, on_delete=models.CASCADE)
     measuringpoint_code = models.CharField(max_length=50, null=True)
     measuringpoint_start_date = models.DateField(null=True)
     gmw_bro_id = models.CharField(max_length=50, null=True)
     tube_number = models.CharField(max_length=50, null=True)
     tube_start_date = models.DateField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return self.measuringpoint_code
+
+    class Meta:
+        verbose_name_plural = "Measuring Points"

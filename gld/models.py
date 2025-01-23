@@ -20,6 +20,7 @@ class GLD(models.Model):
     tube_number = models.CharField(max_length=100, null=True)
     research_first_date = models.DateField(null=True, blank=True)
     research_last_date = models.DateField(null=True, blank=True)
+    nr_of_observations = models.IntegerField(null=True)
 
     def __str__(self) -> str:
         return self.bro_id
@@ -35,9 +36,7 @@ class Observation(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+    gld = models.ForeignKey(GLD, on_delete=models.CASCADE, null=False)
     observation_id = models.CharField(max_length=100)
     begin_position = models.CharField(max_length=100, null=True)
     end_position = models.CharField(max_length=100, null=True)
@@ -49,26 +48,30 @@ class Observation(models.Model):
     air_pressure_compensation_type = models.CharField(max_length=100, null=True)
     evaluation_procedure = models.CharField(max_length=100, null=True)
     measurement_instrument_type = models.CharField(max_length=100, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Observations"
 
 
 class MeasurementTvp(models.Model):
-    """MEasurement Time-Value Pair
+    """Measurement Time-Value Pair
 
     A single event / measurement on a observation.
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+    observation = models.ForeignKey(Observation, on_delete=models.CASCADE, null=False)
     time = models.CharField(max_length=100)
     value = models.FloatField(null=True, blank=True)
     status_quality_control = models.CharField(max_length=100, null=True)
     censoring_reason = models.CharField(max_length=100, null=True, blank=True)
     censoring_limit = models.CharField(max_length=100, null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Measurement time-value pairs"
