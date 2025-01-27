@@ -49,7 +49,7 @@ def test_fetch_bro_ids_fail(mocker, bulk_importer):
 @pytest.fixture
 def gmn_object_importer(organisation):
     return object_import.GMNObjectImporter(
-        bro_domain="GMN", bro_id="GMN1234567890", data_owner=organisation.uuid
+        bro_id="GMN1234567890", data_owner=organisation.uuid
     )
 
 
@@ -104,3 +104,42 @@ def test_convert_xml_to_json(gmn_object_importer):
     json_data = gmn_object_importer._convert_xml_to_json(xml)
 
     assert json_data == expected_json
+
+
+@pytest.fixture
+def gld_object_importer(organisation):
+    return object_import.GLDObjectImporter(
+        bro_id="GLD000000076615", data_owner=organisation
+    )
+
+
+@pytest.mark.django_db
+def test_gld_download_url(gld_object_importer: object_import.GLDObjectImporter):
+    url = gld_object_importer._create_download_url()
+
+    assert (
+        url
+        == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/GLD000000076615?fullHistory=nee&observationPeriodBeginDate=2021-01-01&observationPeriodEndDate=2021-01-01"
+    )
+
+
+@pytest.mark.django_db
+def test_gld_observation_summary(gld_object_importer: object_import.GLDObjectImporter):
+    observation_summary = gld_object_importer._observation_summary()
+
+    assert isinstance(observation_summary, list)
+
+    procedure = observation_summary[0]
+    assert isinstance(procedure, dict)
+
+    keys = procedure.keys()
+    assert "observationId" in keys
+    assert "startDate" in keys
+    assert "endDate" in keys
+    assert "observationType" in keys
+    assert "observationProcessId" in keys
+
+
+@pytest.mark.django_db
+def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
+    gld_object_importer.run()

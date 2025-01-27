@@ -22,7 +22,7 @@ class GLDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
 
 class ObservationListView(mixins.UserOrganizationMixin, generics.ListAPIView):
-    serializer_class = serializers.GLDSerializer
+    serializer_class = serializers.ObservationSerializer
     queryset = gld_models.Observation.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
@@ -31,5 +31,5 @@ class ObservationListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
 class ObservationDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = gld_models.Observation.objects.all()
-    serializer_class = serializers.GLDSerializer
+    serializer_class = serializers.ObservationSerializer
     lookup_field = "uuid"

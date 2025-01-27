@@ -1,6 +1,6 @@
 import logging
+import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
-from datetime import date
 from typing import IO, Any
 
 import requests
@@ -9,7 +9,7 @@ from django.conf import settings
 
 from frd.models import FRD
 from gar.models import GAR
-from gld.models import GLD
+from gld.models import GLD, Observation
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
@@ -31,8 +31,12 @@ class ObjectImporter(ABC):
         4) Save actions into the database
     """
 
-    def __init__(self, bro_domain: str, bro_id: str, data_owner: str) -> None:
-        self.bro_domain = bro_domain
+    bro_domain: str
+
+    def __init__(self, bro_id: str, data_owner: str) -> None:
+        if not bro_id.startswith(self.bro_domain):
+            raise ValueError(f"Incorrect BRO-ID for domain: {self.bro_domain}")
+
         self.bro_id = bro_id
         self.data_owner = data_owner
 
@@ -46,12 +50,6 @@ class ObjectImporter(ABC):
         """Creates the import url for a given bro object."""
         bro_domain = self.bro_domain.lower()
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
-
-        # For GLD, all timeserie events are also found in the response if no time period filter is set. This avoids slow imports:
-        if bro_domain == "gld":
-            today = date.today().strftime("%Y-%m-%d")
-            url = f"{url}&observationPeriodBeginDate={today}&observationPeriodEndDate={today}"
-
         return url
 
     def _download_xml(self, url: str) -> IO[bytes]:
@@ -73,6 +71,8 @@ class ObjectImporter(ABC):
 
 
 class GMNObjectImporter(ObjectImporter):
+    bro_domain = "GMN"
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
@@ -171,6 +171,8 @@ class GMNObjectImporter(ObjectImporter):
 
 
 class GMWObjectImporter(ObjectImporter):
+    bro_domain = "GMW"
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
@@ -514,6 +516,8 @@ class GMWObjectImporter(ObjectImporter):
 
 
 class GARObjectImporter(ObjectImporter):
+    bro_domain = "GAR"
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
@@ -602,7 +606,30 @@ class GARObjectImporter(ObjectImporter):
         )
 
 
+OBSERVATION_NAMESPACE = {
+    "gco": "http://www.isotc211.org/2005/gco",
+    "swe": "http://www.opengis.net/swe/2.0",
+    "xlink": "http://www.w3.org/1999/xlink",
+    "gldcommon": "http://www.broservices.nl/xsd/gldcommon/1.0",
+    "brocom": "http://www.broservices.nl/xsd/brocommon/3.0",
+    "gmd": "http://www.isotc211.org/2005/gmd",
+    "gml": "http://www.opengis.net/gml/3.2",
+    "om": "http://www.opengis.net/om/2.0",
+    "waterml": "http://www.opengis.net/waterml/2.0",
+    "": "http://www.broservices.nl/xsd/dsgld/1.0",  # Default namespace (empty prefix)
+}
+
+
 class GLDObjectImporter(ObjectImporter):
+    bro_domain = "GLD"
+
+    def _create_download_url(self) -> str:
+        """Creates the import url for a given bro object."""
+        bro_domain = self.bro_domain.lower()
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee&observationPeriodBeginDate=2021-01-01&observationPeriodEndDate=2021-01-01"
+
+        return url
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
@@ -617,7 +644,9 @@ class GLDObjectImporter(ObjectImporter):
             "gldcommon:GroundwaterMonitoringTube"
         )
 
-        GLD.objects.update_or_create(
+        gmn_ids = self._gmn_ids(gld_data)
+
+        self.gld = GLD.objects.update_or_create(
             bro_id=gld_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -629,11 +658,117 @@ class GLDObjectImporter(ObjectImporter):
                 "tube_number": monitoring_point_data.get("gldcommon:tubeNumber", None),
                 "research_first_date": gld_data.get("researchFirstDate", None),
                 "research_last_date": gld_data.get("researchLastDate", None),
+                "linked_gmns": gmn_ids,
             },
+        )[0]
+
+        self._save_observations()
+
+    def _gmn_ids(self, gld_data: list[dict[str, any]]) -> list:
+        """Retrieve a list of all coupled gmn-ids."""
+        # Navigate to the `groundwaterMonitoringNet` key
+        monitoring_nets = gld_data.get("groundwaterMonitoringNet", {}).get(
+            "gldcommon:GroundwaterMonitoringNet", []
         )
+
+        gmn_ids = []
+        if isinstance(monitoring_nets, dict):
+            monitoring_nets = [monitoring_nets]
+
+        for monitoring_net in monitoring_nets:
+            bro_id = monitoring_net.get("gldcommon:broId")
+            if bro_id:
+                gmn_ids.append(bro_id)
+
+        return gmn_ids
+
+    def _observation_summary(self):
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
+        r = requests.get(url=url)
+        r.raise_for_status()
+        return r.json()
+
+    def _procedure_information(self, observation_id: str):
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}"
+        r = requests.get(url=url)
+        r.raise_for_status()
+        return ET.fromstring(r.content)
+
+    def _format_procedure(self, observation: ET.Element) -> dict:
+        procedure = {}
+
+        named_values = observation.findall(".//om:NamedValue", OBSERVATION_NAMESPACE)
+        for named_vallue in named_values:
+            name = (
+                named_vallue.find(".//om:value", OBSERVATION_NAMESPACE)
+                .attrib.get("codeSpace", "None:None")
+                .split(":")[-1]
+            )
+            value = named_vallue.find(".//om:value", OBSERVATION_NAMESPACE).text
+            procedure.update({name: value})
+
+        procedure.update(
+            {
+                "ProcessReference": observation.find(
+                    ".//waterml:processReference", OBSERVATION_NAMESPACE
+                ).attrib.get("{http://www.w3.org/1999/xlink}href", None),
+                "ResultTime": observation.find(
+                    ".//om:resultTime", OBSERVATION_NAMESPACE
+                )
+                .find(".//gml:timePosition", OBSERVATION_NAMESPACE)
+                .text,
+                "InvestigatorKvk": observation.find(
+                    ".//gmd:organisationName", OBSERVATION_NAMESPACE
+                ).text,
+            }
+        )
+
+        return procedure
+
+    def _save_observations(self):
+        observation_summary = self._observation_summary()
+
+        for observation in observation_summary:
+            observation_id = observation.get("observationId", None)
+            if not observation_id:
+                continue
+
+            observation_tree = self._procedure_information(observation_id)
+            observation = observation_tree.find(
+                ".//observation", namespaces=OBSERVATION_NAMESPACE
+            )
+            procedure = self._format_procedure(observation)
+
+            Observation.objects.update_or_create(
+                gld=self.gld,
+                data_owner=self.data_owner,
+                observation_id=observation_id,
+                defaults=(
+                    {
+                        "begin_position": observation.get("startDate", "None"),
+                        "end_position": observation.get("endDate", "None"),
+                        "observation_type": observation.get("observationType", "None"),
+                        "validation_status": observation.get(
+                            "observationStatus", "None"
+                        ),
+                        "investigator_kvk": procedure["InvestigatorKvk"],
+                        "result_time": procedure["ResultTime"],
+                        "process_reference": procedure["ProcessReference"],
+                        "air_pressure_compensation_type": procedure[
+                            "AirPressureCompensationType"
+                        ],
+                        "evaluation_procedure": procedure["EvaluationProcedure"],
+                        "measurement_instrument_type": procedure[
+                            "MeasurementInstrumentType"
+                        ],
+                    }
+                ),
+            )
 
 
 class FRDObjectImporter(ObjectImporter):
+    bro_domain = "FRD"
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}

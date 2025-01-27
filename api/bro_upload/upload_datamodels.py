@@ -170,17 +170,17 @@ class GMWGroundLevelMeasuring(GMWEvent):
 
 
 class GMWInsertion(GMWEvent):
-    tubeNumber: str
-    tubeTopPosition: str
+    tubeNumber: str | int
+    tubeTopPosition: str | float
     tubeTopPositioningMethod: str
-    insertedPartLength: str
-    insertedPartDiameter: str
-    insertedPartMaterial: str
+    insertedPartLength: str | float
+    insertedPartDiameter: str | float
+    insertedPartMaterial: str | float
 
 
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
-    variableDiameter: str | None = None
+    variableDiameter: str = "ja"
     tubeTopDiameter: str | float | None = None
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
