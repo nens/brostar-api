@@ -8,6 +8,7 @@
 - Bugfix: GLD-StartRegistration replace template
 - Enhancement: Do not require underPrivilige for GMW
 - Added GLD-Observations to import
+- Added GMN-IDs to GLD import
 
 
 ## 0.77 (2025-01-02)

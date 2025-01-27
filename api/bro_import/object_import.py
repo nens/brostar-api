@@ -644,6 +644,8 @@ class GLDObjectImporter(ObjectImporter):
             "gldcommon:GroundwaterMonitoringTube"
         )
 
+        gmn_ids = self._gmn_ids(gld_data)
+
         self.gld = GLD.objects.update_or_create(
             bro_id=gld_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -656,10 +658,29 @@ class GLDObjectImporter(ObjectImporter):
                 "tube_number": monitoring_point_data.get("gldcommon:tubeNumber", None),
                 "research_first_date": gld_data.get("researchFirstDate", None),
                 "research_last_date": gld_data.get("researchLastDate", None),
+                "linked_gmns": gmn_ids,
             },
         )[0]
 
         self._save_observations()
+
+    def _gmn_ids(self, gld_data: list[dict[str, any]]) -> list:
+        """Retrieve a list of all coupled gmn-ids."""
+        # Navigate to the `groundwaterMonitoringNet` key
+        monitoring_nets = gld_data.get("groundwaterMonitoringNet", {}).get(
+            "gldcommon:GroundwaterMonitoringNet", []
+        )
+
+        gmn_ids = []
+        if isinstance(monitoring_nets, dict):
+            monitoring_nets = [monitoring_nets]
+
+        for monitoring_net in monitoring_nets:
+            bro_id = monitoring_net.get("gldcommon:broId")
+            if bro_id:
+                gmn_ids.append(bro_id)
+
+        return gmn_ids
 
     def _observation_summary(self):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
