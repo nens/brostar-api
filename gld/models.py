@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import JSONField, Manager
 
 
 class GLD(models.Model):
@@ -14,19 +15,27 @@ class GLD(models.Model):
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
+    linked_gmns = JSONField(
+        "Gmns", default=list, blank=False
+    )  # In GLD XMLs these are actually returned.
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)
     tube_number = models.CharField(max_length=100, null=True)
     research_first_date = models.DateField(null=True, blank=True)
     research_last_date = models.DateField(null=True, blank=True)
-    nr_of_observations = models.IntegerField(null=True)
+
+    observations = Manager["Observation"]
 
     def __str__(self) -> str:
         return self.bro_id
 
     class Meta:
         verbose_name_plural = "GLD's"
+
+    @property
+    def nr_of_observations(self) -> int:
+        return self.observations.count()
 
 
 class Observation(models.Model):
@@ -36,7 +45,9 @@ class Observation(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gld = models.ForeignKey(GLD, on_delete=models.CASCADE, null=False)
+    gld = models.ForeignKey(
+        GLD, on_delete=models.CASCADE, null=False, related_name="observations"
+    )
     observation_id = models.CharField(max_length=100)
     begin_position = models.CharField(max_length=100, null=True)
     end_position = models.CharField(max_length=100, null=True)
@@ -52,8 +63,14 @@ class Observation(models.Model):
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
+    measurements = Manager["MeasurementTvp"]
+
     class Meta:
         verbose_name_plural = "Observations"
+
+    @property
+    def nr_of_measurements(self) -> int:
+        return self.measurements.count()
 
 
 class MeasurementTvp(models.Model):
@@ -63,7 +80,9 @@ class MeasurementTvp(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    observation = models.ForeignKey(Observation, on_delete=models.CASCADE, null=False)
+    observation = models.ForeignKey(
+        Observation, on_delete=models.CASCADE, null=False, related_name="measurements"
+    )
     time = models.CharField(max_length=100)
     value = models.FloatField(null=True, blank=True)
     status_quality_control = models.CharField(max_length=100, null=True)

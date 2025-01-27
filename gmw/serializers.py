@@ -11,6 +11,8 @@ from . import models as gmw_models
 
 class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
     linked_gmns = serializers.SerializerMethodField()
+    nr_of_monitoring_tubes = serializers.SerializerMethodField()
+    nr_of_intermediate_events = serializers.SerializerMethodField()
 
     class Meta:
         model = gmw_models.GMW
@@ -28,6 +30,12 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
         except ObjectDoesNotExist:
             return None
+
+    def get_nr_of_monitoring_tubes(self, obj: gmw_models.GMW) -> int:
+        return obj.nr_of_tubes
+
+    def get_nr_of_intermediate_events(self, obj: gmw_models.GMW) -> int:
+        return obj.nr_of_intermediate_events
 
 
 class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):

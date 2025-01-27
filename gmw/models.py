@@ -1,7 +1,7 @@
 import uuid
 
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import JSONField, Manager
 
 
 class GMW(models.Model):
@@ -41,7 +41,9 @@ class GMW(models.Model):
     standardized_location = models.CharField(max_length=100, null=True)
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
-    nr_of_intermediate_events = models.IntegerField(null=True)
+
+    tubes = Manager["MonitoringTube"]
+    events = Manager["Event"]
 
     def __str__(self) -> str:
         return self.bro_id
@@ -49,12 +51,22 @@ class GMW(models.Model):
     class Meta:
         verbose_name_plural = "GMW's"
 
+    @property
+    def nr_of_tubes(self) -> int:
+        return self.tubes.count()
+
+    @property
+    def nr_of_intermediate_events(self) -> int:
+        return self.events.count()
+
 
 class MonitoringTube(models.Model):
     """A monitoringtube is part of a GMW."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE, null=False)
+    gmw = models.ForeignKey(
+        GMW, on_delete=models.CASCADE, null=False, related_name="tubes"
+    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey(
@@ -96,7 +108,9 @@ class Event(models.Model):
     """A event is a change after a period of time to a GMW or its monitoring tube(s)."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gmw = models.ForeignKey(GMW, on_delete=models.CASCADE, null=False)
+    gmw = models.ForeignKey(
+        GMW, on_delete=models.CASCADE, null=False, related_name="events"
+    )
     event_name = models.CharField(
         max_length=40,
     )
