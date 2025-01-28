@@ -452,6 +452,12 @@ class GMWObjectImporter(ObjectImporter):
             else:
                 continue
 
+            metadata = {
+                "broId": self.gmw_obj.bro_id,
+                "qualityRegime": self.gmw_obj.quality_regime,
+                "deliveryAccountableParty": self.gmw_obj.delivery_accountable_party,
+            }
+
             sourcedocument_data = self._get_well_data(intermediate_event)
             sourcedocument_data["monitoringTubes"] = self._get_tube_data(
                 intermediate_event
@@ -462,7 +468,10 @@ class GMWObjectImporter(ObjectImporter):
                 data_owner=self.data_owner,
                 event_name=name,
                 event_date=event_date,
-                defaults={"sourcedocument_data": sourcedocument_data},
+                defaults={
+                    "metadata": metadata,
+                    "sourcedocument_data": sourcedocument_data,
+                },
             )
 
     def _lookup_most_recent_top_position(

@@ -5,6 +5,7 @@ from requests.exceptions import HTTPError, RequestException
 from api.bro_import import bulk_import, object_import
 from api.tests import fixtures
 from gld.models import GLD, Observation
+from gmw.models import GMW, Event, MonitoringTube
 
 organisation = fixtures.organisation
 importtask = fixtures.importtask
@@ -158,3 +159,47 @@ def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
     assert observation_instance[0].begin_position == "14-11-2024"
     assert observation_instance[0].observation_type == "reguliereMeting"
     assert observation_instance[0].validation_status == "voorlopig"
+
+
+@pytest.fixture
+def gmw_object_importer(organisation):
+    return object_import.GMWObjectImporter(
+        bro_id="GMW000000068159", data_owner=organisation
+    )
+
+
+@pytest.mark.django_db
+def test_gmw_download_url(gmw_object_importer: object_import.GMWObjectImporter):
+    url = gmw_object_importer._create_download_url()
+
+    assert (
+        url
+        == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmw/v1/objects/GMW000000068159?fullHistory=nee"
+    )
+
+
+@pytest.mark.django_db
+def test_gmw_import(gmw_object_importer: object_import.GMWObjectImporter):
+    gmw_object_importer.run()
+
+    gmw_instance = GMW.objects.get(bro_id=gmw_object_importer.bro_id)
+    assert gmw_instance.quality_regime == "IMBRO"
+    assert gmw_instance.bro_id == "GMW000000068159"
+    assert gmw_instance.well_construction_date == "2023-05-19"
+
+    events = Event.objects.filter(gmw=gmw_instance)
+    assert events.count() == gmw_instance.nr_of_intermediate_events
+
+    event_instance = events[0]
+    assert event_instance.metadata.get("broId", "None") == gmw_instance.bro_id
+    assert (
+        event_instance.metadata.get("qualityRegime", "None")
+        == gmw_instance.quality_regime
+    )
+    assert (
+        event_instance.metadata.get("deliveryAccountableParty", "None")
+        == gmw_instance.delivery_accountable_party
+    )
+
+    monitoring_tubes = MonitoringTube.objects.filter(gmw=gmw_instance)
+    assert monitoring_tubes.count() == gmw_instance.nr_of_tubes
