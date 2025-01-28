@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 from api.mixins import RequiredFieldsMixin, UrlFieldMixin
@@ -19,6 +20,7 @@ class ObservationSerializer(
     UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
 ):
     nr_of_measurements = serializers.SerializerMethodField()
+    gld_bro_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Observation
@@ -26,6 +28,12 @@ class ObservationSerializer(
 
     def get_nr_of_measurements(self, obj: Observation) -> int:
         return obj.nr_of_measurements
+
+    def get_gld_bro_id(self, obj: Observation) -> str | None:
+        try:
+            return GLD.objects.get(uuid=obj.gld.uuid).bro_id
+        except ObjectDoesNotExist:
+            return None
 
 
 class MeasurementTvpSerializer(

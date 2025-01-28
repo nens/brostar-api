@@ -734,10 +734,10 @@ class GLDObjectImporter(ObjectImporter):
                 continue
 
             observation_tree = self._procedure_information(observation_id)
-            observation = observation_tree.find(
+            observation_element = observation_tree.find(
                 ".//observation", namespaces=OBSERVATION_NAMESPACE
             )
-            procedure = self._format_procedure(observation)
+            procedure = self._format_procedure(observation_element)
 
             Observation.objects.update_or_create(
                 gld=self.gld,

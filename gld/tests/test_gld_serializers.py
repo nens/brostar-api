@@ -34,7 +34,9 @@ class ObservationSerializerTestCase(TestCase):
     def test_serializer_data(self):
         serializer = ObservationSerializer(self.observation)
         self.assertIn("nr_of_measurements", serializer.data)
+        self.assertIn("gld_bro_id", serializer.data)
         self.assertEqual(serializer.data["nr_of_measurements"], 0)
+        self.assertEqual(serializer.data["gld_bro_id"], "GLD0000001234")
 
 
 class MeasurementTvpSerializerTestCase(TestCase):

@@ -4,6 +4,7 @@ from requests.exceptions import HTTPError, RequestException
 
 from api.bro_import import bulk_import, object_import
 from api.tests import fixtures
+from gld.models import GLD, Observation
 
 organisation = fixtures.organisation
 importtask = fixtures.importtask
@@ -139,7 +140,21 @@ def test_gld_observation_summary(gld_object_importer: object_import.GLDObjectImp
     assert "observationType" in keys
     assert "observationProcessId" in keys
 
+    assert procedure["startDate"] == "14-11-2024"
+
 
 @pytest.mark.django_db
 def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
     gld_object_importer.run()
+
+    gld_instance = GLD.objects.get(bro_id=gld_object_importer.bro_id)
+    assert gld_instance.quality_regime == "IMBRO/A"
+    assert gld_instance.gmw_bro_id == "GMW000000078271"
+    assert gld_instance.tube_number == "1"
+
+    observation_instance = Observation.objects.filter(gld=gld_instance)
+    assert observation_instance.count() == gld_instance.nr_of_observations
+    assert observation_instance[0].end_position == "08-01-2025"
+    assert observation_instance[0].begin_position == "14-11-2024"
+    assert observation_instance[0].observation_type == "reguliereMeting"
+    assert observation_instance[0].validation_status == "voorlopig"
