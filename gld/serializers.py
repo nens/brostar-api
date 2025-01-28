@@ -11,7 +11,7 @@ class GLDSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
         model = GLD
         fields = "__all__"
 
-    def get_nr_of_monitoring_tubes(self, obj: GLD) -> int:
+    def get_nr_of_observations(self, obj: GLD) -> int:
         return obj.nr_of_observations
 
 
@@ -24,7 +24,7 @@ class ObservationSerializer(
         model = Observation
         fields = "__all__"
 
-    def get_nr_of_monitoring_tubes(self, obj: Observation) -> int:
+    def get_nr_of_measurements(self, obj: Observation) -> int:
         return obj.nr_of_measurements
 
 
