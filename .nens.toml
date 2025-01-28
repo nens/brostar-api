@@ -4,5 +4,5 @@ uses_ansible = false
 meta_version = "0.5.dev0"
 project_name = "brostar"
 package_name = "brostar"
-extra_package_names = ["api", "gmn", "gmw"]
+extra_package_names = ["api", "gmn", "gmw", "gld", "frd", "gar"]
 minimum_coverage = "10"

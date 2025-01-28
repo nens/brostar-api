@@ -3,8 +3,8 @@ from rest_framework import generics
 
 from api import mixins
 
+from . import filters, serializers
 from . import models as gld_models
-from . import serializers
 
 
 class GLDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -12,7 +12,7 @@ class GLDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = gld_models.GLD.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_class = filters.GldFilter
 
 
 class GLDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
