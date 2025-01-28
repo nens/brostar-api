@@ -29,9 +29,12 @@ def test_gld_set_list(api_client, user):
 
 
 class GLDViewTestCase(APITestCase):
+    @pytest.mark.django_db
     def setUp(self):
         self.organisation = Organisation.objects.create(name="Nelen & Schuurmans")
-        self.gld = GLD.objects.create(data_owner=self.organisation, bro_id="BRO123")
+        self.gld = GLD.objects.create(
+            data_owner=self.organisation, bro_id="GLD000012234"
+        )
         # Create and authenticate a user
         self.user = self.client.force_authenticate(user=self._create_test_user())
 
