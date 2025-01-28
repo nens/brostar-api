@@ -6,6 +6,7 @@
 - Bugfix: GLD-Closure template
 - Bugfix: GLD-Addition delete template
 - Bugfix: GLD-StartRegistration replace template
+- Bugfix: GMN-Closure registration template
 - Enhancement: Do not require underPrivilige for GMW
 - Added GLD-Observations to import
 - Added GMN-IDs to GLD import
