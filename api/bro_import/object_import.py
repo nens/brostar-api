@@ -754,22 +754,22 @@ class GLDObjectImporter(ObjectImporter):
                 observation_id=observation_id,
                 defaults=(
                     {
-                        "begin_position": observation.get("startDate", "None"),
-                        "end_position": observation.get("endDate", "None"),
-                        "observation_type": observation.get("observationType", "None"),
-                        "validation_status": observation.get(
-                            "observationStatus", "None"
+                        "begin_position": observation.get("startDate", None),
+                        "end_position": observation.get("endDate", None),
+                        "observation_type": observation.get("observationType", None),
+                        "validation_status": observation.get("observationStatus", None),
+                        "investigator_kvk": procedure.get("InvestigatorKvk", None),
+                        "result_time": procedure.get("ResultTime", None),
+                        "process_reference": procedure.get("ProcessReference", None),
+                        "air_pressure_compensation_type": procedure.get(
+                            "AirPressureCompensationType", None
                         ),
-                        "investigator_kvk": procedure["InvestigatorKvk"],
-                        "result_time": procedure["ResultTime"],
-                        "process_reference": procedure["ProcessReference"],
-                        "air_pressure_compensation_type": procedure[
-                            "AirPressureCompensationType"
-                        ],
-                        "evaluation_procedure": procedure["EvaluationProcedure"],
-                        "measurement_instrument_type": procedure[
-                            "MeasurementInstrumentType"
-                        ],
+                        "evaluation_procedure": procedure.get(
+                            "EvaluationProcedure", None
+                        ),
+                        "measurement_instrument_type": procedure.get(
+                            "MeasurementInstrumentType", None
+                        ),
                     }
                 ),
             )
