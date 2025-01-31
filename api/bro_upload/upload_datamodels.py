@@ -339,8 +339,8 @@ class GLDStartregistration(BaseModel):
 
 class TimeValuePair(BaseModel):
     time: str | datetime
-    value: float | str
-    statusQualityControl: str
+    value: float | str | None = None
+    statusQualityControl: str = "onbekend"
     censorReason: str | None = None
     censoringLimitvalue: str | float | None = None
 

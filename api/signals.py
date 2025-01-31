@@ -31,7 +31,7 @@ def create_user_profile(sender, instance: User, created, **kwargs):
 
 
 @receiver(pre_save, sender=UploadTask)
-def pre_save_upload_task(sender, instance: UploadTask, created, **kwargs):
+def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     """Handle registration where it should be an insert."""
     if (
         "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis"
