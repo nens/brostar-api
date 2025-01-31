@@ -42,6 +42,19 @@ class OrganisationAdminForm(forms.ModelForm):
 
 class OrganisationAdmin(admin.ModelAdmin):
     form = OrganisationAdminForm
+    list_display = (
+        "name",
+        "request_count",
+    )
+
+
+class ContractAdmin(admin.ModelAdmin):
+    model = api_models.Contract
+    list_display = (
+        "organisation",
+        "start_date",
+        "nr_of_messages",
+    )
 
 
 class InviteUserAdmin(admin.ModelAdmin):
