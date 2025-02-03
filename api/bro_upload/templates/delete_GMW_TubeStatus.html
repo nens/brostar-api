@@ -1,0 +1,37 @@
+<ns:deleteRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
+  >
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  {% if metadata.qualityRegime == "IMBRO/A" %}
+  <ns1:underPrivilege>ja</ns1:underPrivilege>
+  {% endif %}
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason"
+    >eigenCorrectie</ns:correctionReason
+  >
+  <ns:sourceDocument>
+    <ns:GMW_TubeStatus>
+      <ns:eventDate>
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+      </ns:eventDate>
+      <ns:numberOfTubesChanged
+        >{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesChanged
+      >
+      {% for monitoringtube in sourcedocs_data.monitoringTubes %}
+      <ns:monitoringTube>
+        <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+        <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus"
+          >{{ monitoringtube.tubeStatus }}</ns:tubeStatus
+        >
+      </ns:monitoringTube>
+      {% endfor %}
+    </ns:GMW_TubeStatus>
+  </ns:sourceDocument>
+</ns:deleteRequest>

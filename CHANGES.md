@@ -11,6 +11,7 @@
 -   Enhancement: Autocorrect to insert when 'gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis' in error.
 -   Added GLD-Observations to import
 -   Added GMN-IDs to GLD import
+-   Added GMW-DeleteRequests
 
 ## 0.77 (2025-01-02)
 
