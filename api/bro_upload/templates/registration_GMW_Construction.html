@@ -1,104 +1,189 @@
-<ns:registrationRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
-    xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
-    xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
-    xmlns:ns3="http://www.opengis.net/gml/3.2">
-    <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
-    <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
-    <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
-{%  if metadata.qualityRegime == "IMBRO/A" %}
-    <ns1:underPrivilege>ja</ns1:underPrivilege>
-{%  endif %}
-    <ns:sourceDocument>
-        <ns:GMW_Construction>
-            <ns:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</ns:objectIdAccountableParty>
-            <ns:deliveryContext codeSpace="urn:bro:gmw:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</ns:deliveryContext>
-            <ns:constructionStandard codeSpace="urn:bro:gmw:ConstructionStandard">{{ sourcedocs_data.constructionStandard }}</ns:constructionStandard>
-            <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">{{ sourcedocs_data.initialFunction }}</ns:initialFunction>
-            <ns:numberOfMonitoringTubes>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfMonitoringTubes>
-            <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
-{%          if sourcedocs_data.groundLevelStable  == "nee" %}
-            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
-{%          elif sourcedocs_data.groundLevelStable  == "onbekend" %}
-            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">onbekend</ns:wellStability>
-{%          endif %}
-{%          if sourcedocs_data.nitgCode %}
-            <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
-{%          endif %}
-            <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
-            <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
-            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
-            <ns:wellConstructionDate>
-{%              if not sourcedocs_data.wellConstructionDate or sourcedocs_data.wellConstructionDate == '' or sourcedocs_data.wellConstructionDate == 'Invalid date' %}
-                <ns1:voidReason>onbekend</ns1:voidReason>
-{%              elif sourcedocs_data.wellConstructionDate  %}
-                <ns1:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
-{%              endif %}
-            </ns:wellConstructionDate>
-            <ns:deliveredLocation>
-                <ns2:location ns3:id="id-f072811a-323d-40f4-8ebc-7fb0df43c660" srsName="urn:ogc:def:crs:EPSG::28992">
-                    <ns3:pos>{{ sourcedocs_data.deliveredLocation }}</ns3:pos>
-                </ns2:location>
-                <ns2:horizontalPositioningMethod codeSpace="urn:bro:gmw:HorizontalPositioningMethod">{{ sourcedocs_data.horizontalPositioningMethod }}</ns2:horizontalPositioningMethod>
-            </ns:deliveredLocation>
-            <ns:deliveredVerticalPosition>
-                <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</ns2:localVerticalReferencePoint>
-                <ns2:offset uom="m">{{ sourcedocs_data.offset }}</ns2:offset>
-                <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</ns2:verticalDatum>
-{%              if sourcedocs_data.groundLevelPosition %}
-                <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
-{%              else %}
-                <ns2:groundLevelPosition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="m" xsi:nil="true"/>
-{%              endif %}
-                <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns2:groundLevelPositioningMethod>
-            </ns:deliveredVerticalPosition>
-{%          for monitoringtube in sourcedocs_data.monitoringTubes %}
-            <ns:monitoringTube>
-                <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-                <ns:tubeType codeSpace="urn:bro:gmw:TubeType">{{ monitoringtube.tubeType }}</ns:tubeType>
-                <ns:artesianWellCapPresent>{{ monitoringtube.artesianWellCapPresent }}</ns:artesianWellCapPresent>
-                <ns:sedimentSumpPresent>{{ monitoringtube.sedimentSumpPresent }}</ns:sedimentSumpPresent>
-                <ns:numberOfGeoOhmCables>{{ monitoringtube.numberOfGeoOhmCables }}</ns:numberOfGeoOhmCables>
-{%              if monitoringtube.tubeTopDiameter %}
-                <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
-{%              else %}
-                <ns:tubeTopDiameter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uom="mm" xsi:nil="true"/>
-{%              endif %}
-                <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
-                <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
-                <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-                <ns:materialUsed>
-                    <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">{{ monitoringtube.tubePackingMaterial }}</ns2:tubePackingMaterial>
-                    <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.tubeMaterial }}</ns2:tubeMaterial>
-                    <ns2:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns2:glue>
-                </ns:materialUsed>
-                <ns:screen>
-                    <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
-                    <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
-                </ns:screen>
-                <ns:plainTubePart>
-                    <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
-                </ns:plainTubePart>
-{%              if monitoringtube.sedimentSumpLength %}
-                <ns:sedimentSump>
-                    <ns2:sedimentSumpLength uom="m">{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength>
-                </ns:sedimentSump>
-{%              endif %}
-{%              for geoOhmCable in monitoringtube.geoOhmCables %}
-                <ns:geoOhmCable>
-                    <ns:cableNumber>{{ geoOhmCable.cableNumber }}</ns:cableNumber>
-{%                      for electrode in geoOhmCable.electrodes %}
-                        <ns:electrode>
-                            <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
-                            <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
-                            <ns2:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ electrode.electrodeStatus }}</ns2:electrodeStatus>
-                            <ns2:electrodePosition uom="m">{{ electrode.electrodePosition }}</ns2:electrodePosition>
-                        </ns:electrode>
-{%                      endfor %}
-                </ns:geoOhmCable>
-{%              endfor %}
-            </ns:monitoringTube>
-{%          endfor %}
-        </ns:GMW_Construction>
-    </ns:sourceDocument>
+<ns:registrationRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
+  >
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  {% if metadata.qualityRegime == "IMBRO/A" %}
+  <ns1:underPrivilege>ja</ns1:underPrivilege>
+  {% endif %}
+  <ns:sourceDocument>
+    <ns:GMW_Construction>
+      <ns:objectIdAccountableParty
+        >{{ sourcedocs_data.objectIdAccountableParty }}</ns:objectIdAccountableParty
+      >
+      <ns:deliveryContext codeSpace="urn:bro:gmw:DeliveryContext"
+        >{{ sourcedocs_data.deliveryContext }}</ns:deliveryContext
+      >
+      <ns:constructionStandard codeSpace="urn:bro:gmw:ConstructionStandard"
+        >{{ sourcedocs_data.constructionStandard }}</ns:constructionStandard
+      >
+      <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction"
+        >{{ sourcedocs_data.initialFunction }}</ns:initialFunction
+      >
+      <ns:numberOfMonitoringTubes
+        >{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfMonitoringTubes
+      >
+      <ns:groundLevelStable
+        >{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable
+      >
+      {% if sourcedocs_data.groundLevelStable == "nee" %}
+      <ns:wellStability codeSpace="urn:bro:gmw:WellStability"
+        >{{ sourcedocs_data.wellStability }}</ns:wellStability
+      >
+      {% elif sourcedocs_data.groundLevelStable == "onbekend" %}
+      <ns:wellStability codeSpace="urn:bro:gmw:WellStability"
+        >onbekend</ns:wellStability
+      >
+      {% endif %} {% if sourcedocs_data.nitgCode %}
+      <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
+      {% endif %}
+      <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
+      <ns:maintenanceResponsibleParty
+        >{{ sourcedocs_data.maintenanceResponsibleParty
+        }}</ns:maintenanceResponsibleParty
+      >
+      <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector"
+        >{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector
+      >
+      <ns:wellConstructionDate>
+        {% if not sourcedocs_data.wellConstructionDate or
+        sourcedocs_data.wellConstructionDate == '' or
+        sourcedocs_data.wellConstructionDate == 'Invalid date' %}
+        <ns1:voidReason>onbekend</ns1:voidReason>
+        {% elif sourcedocs_data.wellConstructionDate %}
+        <ns1:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
+        {% endif %}
+      </ns:wellConstructionDate>
+      <ns:deliveredLocation>
+        <ns2:location
+          ns3:id="id-f072811a-323d-40f4-8ebc-7fb0df43c660"
+          srsName="urn:ogc:def:crs:EPSG::28992"
+        >
+          <ns3:pos>{{ sourcedocs_data.deliveredLocation }}</ns3:pos>
+        </ns2:location>
+        <ns2:horizontalPositioningMethod
+          codeSpace="urn:bro:gmw:HorizontalPositioningMethod"
+          >{{ sourcedocs_data.horizontalPositioningMethod
+          }}</ns2:horizontalPositioningMethod
+        >
+      </ns:deliveredLocation>
+      <ns:deliveredVerticalPosition>
+        <ns2:localVerticalReferencePoint
+          codeSpace="urn:bro:gmw:LocalVerticalReferencePoint"
+          >{{ sourcedocs_data.localVerticalReferencePoint
+          }}</ns2:localVerticalReferencePoint
+        >
+        <ns2:offset uom="m">{{ sourcedocs_data.offset }}</ns2:offset>
+        <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum"
+          >{{ sourcedocs_data.verticalDatum }}</ns2:verticalDatum
+        >
+        {% if sourcedocs_data.groundLevelPosition %}
+        <ns2:groundLevelPosition uom="m"
+          >{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition
+        >
+        {% else %}
+        <ns2:groundLevelPosition
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          uom="m"
+          xsi:nil="true"
+        />
+        {% endif %}
+        <ns2:groundLevelPositioningMethod
+          codeSpace="urn:bro:gmw:GroundLevelPositioningMethod"
+          >{{ sourcedocs_data.groundLevelPositioningMethod
+          }}</ns2:groundLevelPositioningMethod
+        >
+      </ns:deliveredVerticalPosition>
+      {% for monitoringtube in sourcedocs_data.monitoringTubes %}
+      <ns:monitoringTube>
+        <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+        <ns:tubeType codeSpace="urn:bro:gmw:TubeType"
+          >{{ monitoringtube.tubeType }}</ns:tubeType
+        >
+        <ns:artesianWellCapPresent
+          >{{ monitoringtube.artesianWellCapPresent }}</ns:artesianWellCapPresent
+        >
+        <ns:sedimentSumpPresent
+          >{{ monitoringtube.sedimentSumpPresent }}</ns:sedimentSumpPresent
+        >
+        <ns:numberOfGeoOhmCables
+          >{{ monitoringtube.numberOfGeoOhmCables }}</ns:numberOfGeoOhmCables
+        >
+        {% if monitoringtube.tubeTopDiameter %}
+        <ns:tubeTopDiameter uom="mm"
+          >{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter
+        >
+        {% else %}
+        <ns:tubeTopDiameter
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          uom="mm"
+          xsi:nil="true"
+        />
+        {% endif %}
+        <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
+        <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus"
+          >{{ monitoringtube.tubeStatus }}</ns:tubeStatus
+        >
+        <ns:tubeTopPosition uom="m"
+          >{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition
+        >
+        <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod"
+          >{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod
+        >
+        <ns:materialUsed>
+          <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial"
+            >{{ monitoringtube.tubePackingMaterial }}</ns2:tubePackingMaterial
+          >
+          <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial"
+            >{{ monitoringtube.tubeMaterial }}</ns2:tubeMaterial
+          >
+          <ns2:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns2:glue>
+        </ns:materialUsed>
+        <ns:screen>
+          <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
+          <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial"
+            >{{ monitoringtube.sockMaterial }}</ns:sockMaterial
+          >
+        </ns:screen>
+        <ns:plainTubePart>
+          <ns2:plainTubePartLength uom="m"
+            >{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength
+          >
+        </ns:plainTubePart>
+        {% if monitoringtube.sedimentSumpLength %}
+        <ns:sedimentSump>
+          <ns2:sedimentSumpLength uom="m"
+            >{{ monitoringtube.sedimentSumpLength }}</ns2:sedimentSumpLength
+          >
+        </ns:sedimentSump>
+        {% endif %} {% for geoOhmCable in monitoringtube.geoOhmCables %}
+        <ns:geoOhmCable>
+          <ns:cableNumber>{{ geoOhmCable.cableNumber }}</ns:cableNumber>
+          {% for electrode in geoOhmCable.electrodes %}
+          <ns:electrode>
+            <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
+            <ns2:electrodePackingMaterial
+              codeSpace="urn:bro:gmw:ElectrodePackingMaterial"
+              >{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial
+            >
+            <ns2:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus"
+              >{{ electrode.electrodeStatus }}</ns2:electrodeStatus
+            >
+            <ns2:electrodePosition uom="m"
+              >{{ electrode.electrodePosition }}</ns2:electrodePosition
+            >
+          </ns:electrode>
+          {% endfor %}
+        </ns:geoOhmCable>
+        {% endfor %}
+      </ns:monitoringTube>
+      {% endfor %}
+    </ns:GMW_Construction>
+  </ns:sourceDocument>
 </ns:registrationRequest>

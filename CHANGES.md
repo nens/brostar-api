@@ -9,6 +9,7 @@
 -   Bugfix: GLD-Importer
 -   Enhancement: Do not require underPrivilige for GMW
 -   Enhancement: Autocorrect to insert when 'gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis' in error.
+-   Enhancement: Templates formatting
 -   Added GLD-Observations to import
 -   Added GMN-IDs to GLD import
 -   Added GMW-DeleteRequests
