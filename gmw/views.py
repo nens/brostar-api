@@ -12,6 +12,7 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = gmw_models.GMW.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmwFilter
     filterset_fields = "__all__"
 
 

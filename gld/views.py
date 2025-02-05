@@ -26,6 +26,7 @@ class ObservationListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = gld_models.Observation.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.ObservationFilter
     filterset_fields = "__all__"
 
 
