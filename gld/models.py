@@ -1,21 +1,7 @@
-import datetime
 import uuid
 
 from django.db import models
 from django.db.models import JSONField, Manager
-from django_filters import rest_framework as filters
-
-
-class DateTimeStringFilter(filters.Filter):
-    def filter(self, qs, value):
-        if value in (None, ""):
-            return qs
-        try:
-            # Ensure the value is in the correct format
-            datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
-            return qs.filter(**{self.field_name: value})
-        except ValueError:
-            return qs.none()
 
 
 class GLD(models.Model):
