@@ -16,11 +16,11 @@ router.register("bulkuploads", views.BulkUploadViewSet, basename="bulkupload")
 urlpatterns = [
     path("", views.APIOverview.as_view(), name="overview"),
     path("localhost-redirect", views.LocalHostRedirectView.as_view(), name="localhost"),
-    path("gmn/", include(("gmn.urls", "gmn"), namespace="gmn")),
-    path("gmw/", include(("gmw.urls", "gmw"), namespace="gmw")),
-    path("gar/", include(("gar.urls", "gar"), namespace="gar")),
-    path("gld/", include(("gld.urls", "gld"), namespace="gld")),
-    path("frd/", include(("frd.urls", "frd"), namespace="frd")),
+    path("gmn/", include("gmn.urls", namespace="gmn")),
+    path("gmw/", include("gmw.urls", namespace="gmw")),
+    path("gar/", include("gar.urls", namespace="gar")),
+    path("gld/", include("gld.urls", namespace="gld")),
+    path("frd/", include("frd.urls", namespace="frd")),
 ]
 
 urlpatterns += router.urls

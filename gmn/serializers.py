@@ -24,39 +24,39 @@ class MeasuringpointSerializer(
         model = gmn_models.Measuringpoint
         fields = "__all__"
 
-    def get_location(self, obj: gmw_models.MonitoringTube) -> str | None:
+    def get_location(self, obj: gmn_models.Measuringpoint) -> str | None:
         try:
             return gmw_models.GMW.objects.get(
-                bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
             ).standardized_location
         except ObjectDoesNotExist:
             return None
         except MultipleObjectsReturned:
             return (
                 gmw_models.GMW.objects.filter(
-                    bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                    bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
                 )
                 .first()
                 .standardized_location
             )
 
-    def get_gmw_uuid(self, obj: gmw_models.MonitoringTube) -> str | None:
+    def get_gmw_uuid(self, obj: gmn_models.Measuringpoint) -> str | None:
         try:
             return gmw_models.GMW.objects.get(
-                bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
             ).uuid
         except ObjectDoesNotExist:
             return None
         except MultipleObjectsReturned:
             return (
                 gmw_models.GMW.objects.filter(
-                    bro_id=obj.gmw.bro_id, data_owner=obj.data_owner
+                    bro_id=obj.gmw_bro_id, data_owner=obj.data_owner
                 )
                 .first()
                 .uuid
             )
 
-    def get_monitoringtube_uuid(self, obj: gmw_models.MonitoringTube) -> str | None:
+    def get_monitoringtube_uuid(self, obj: gmn_models.Measuringpoint) -> str | None:
         try:
             gmw_uuid = self.get_gmw_uuid(obj)
             return gmw_models.MonitoringTube.objects.get(
@@ -69,7 +69,7 @@ class MeasuringpointSerializer(
         except MultipleObjectsReturned:
             return (
                 gmw_models.MonitoringTube.objects.filter(
-                    bro_id=obj.gmw.bro_id,
+                    gmw=gmw_uuid,
                     tube_number=obj.tube_number,
                     data_owner=obj.data_owner,
                 )

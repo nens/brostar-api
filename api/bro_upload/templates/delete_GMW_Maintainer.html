@@ -1,0 +1,39 @@
+<ns:deleteRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
+  >
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  {% if metadata.qualityRegime == "IMBRO/A" %}
+  <ns1:underPrivilege>ja</ns1:underPrivilege>
+  {% endif %}
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason"
+    >eigenCorrectie</ns:correctionReason
+  >
+  <ns:sourceDocument>
+    <ns:GMW_Maintainer>
+      <eventDate>
+        {% if sourcedocs_data.eventDate %} {% if sourcedocs_data.eventDate|length == 10
+        %}
+        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
+        {% endif %} {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </eventDate>
+      <ns:maintenanceResponsibleParty
+        >{{ sourcedocs_data.maintenanceResponsibleParty
+        }}</ns:maintenanceResponsibleParty
+      >
+    </ns:GMW_Maintainer>
+  </ns:sourceDocument>
+</ns:deleteRequest>

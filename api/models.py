@@ -84,6 +84,26 @@ class Organisation(models.Model):
         return self.name
 
 
+class Contract(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    organisation = models.OneToOneField(
+        Organisation, on_delete=models.CASCADE, null=False
+    )
+    start_date = models.DateTimeField(null=False, blank=False)
+    end_date = models.DateTimeField()
+    nr_of_messages = models.BigIntegerField(null=False, blank=False, default=0)
+    description = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.organisation} ({self.start_date} - {self.end_date if self.end_date else 'onbepaald'})"
+
+    class Meta:
+        verbose_name = "Contract"
+        verbose_name_plural = "Contracts"
+
+
 class UserProfile(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -133,8 +153,8 @@ class InviteUser(models.Model):
             (3, "Revoked"),
             (4, "Failed"),
         ]
-
-        return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
+        if self.nens_auth_client_invitation:
+            return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
 
 
 class ImportTask(models.Model):
@@ -194,7 +214,7 @@ class UploadTask(models.Model):
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
-        if self.status == "PENDING":
+        if self.status == "PENDING" and self.data_owner:
             # Accessing the authenticated user's username and token
             username = self.data_owner.bro_user_token
             password = self.data_owner.bro_user_password
@@ -227,6 +247,7 @@ class BulkUpload(models.Model):
         blank=False,
         help_text="Optional json field to add extra data that is not provided within the files, but is required in the processing of the files.",
     )
+    sourcedocument_data = JSONField("Sourcedocument data", default=dict, blank=False)
     status = models.CharField(
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )

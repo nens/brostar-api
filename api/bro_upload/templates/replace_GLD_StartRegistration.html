@@ -1,30 +1,38 @@
-<replaceRequest xmlns="http://www.broservices.nl/xsd/isgld/1.0"
-    xmlns:gldcom="http://www.broservices.nl/xsd/gldcommon/1.0"
-    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-    xmlns:gml="http://www.opengis.net/gml/3.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.broservices.nl/xsd/isgld/1.0 https://schema.broservices.nl/xsd/isgld/1.0/isgld-messages.xsd">
-    <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-    <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
-    <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-    <brocom:broId>{{ metadata.broId }}</brocom:broId>
-    <correctionReason codeSpace="urn:bro:gld:CorrectionReason">{{ metadata.correctionReason}}</correctionReason>
-    <sourceDocument>
-      <GLD_StartRegistration gml:id="id_0001">
-        <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
-{%      for net in sourcedocs_data.groundwaterMonitoringNets %}
-        <groundwaterMonitoringNet>
-            <gldcom:GroundwaterMonitoringNet gml:id="{{ net }}">
-                <gldcom:broId>{{ net }}</gldcom:broId>
-            </gldcom:GroundwaterMonitoringNet>
-        </groundwaterMonitoringNet>
-{%      endfor %}
-        <monitoringPoint>
-          <gldcom:GroundwaterMonitoringTube gml:id="id_0004">
-            <gldcom:broId>{{ sourcedocs_data.gmwBroId }}</gldcom:broId>
-            <gldcom:tubeNumber>{{ sourcedocs_data.tubeNumber }}</gldcom:tubeNumber>
-          </gldcom:GroundwaterMonitoringTube>
-        </monitoringPoint>
-      </GLD_StartRegistration>
-    </sourceDocument>
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/isgld/1.0"
+  xmlns:gldcom="http://www.broservices.nl/xsd/gldcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isgld/1.0 https://schema.broservices.nl/xsd/isgld/1.0/isgld-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
+  >
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:gld:CorrectionReason"
+    >{{ metadata.correctionReason }}</correctionReason
+  >
+  <sourceDocument>
+    <GLD_StartRegistration gml:id="id_0001">
+      <objectIdAccountableParty
+        >{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty
+      >
+      {% for net in sourcedocs_data.groundwaterMonitoringNets %}
+      <groundwaterMonitoringNet>
+        <gldcom:GroundwaterMonitoringNet gml:id="{{ net }}">
+          <gldcom:broId>{{ net }}</gldcom:broId>
+        </gldcom:GroundwaterMonitoringNet>
+      </groundwaterMonitoringNet>
+      {% endfor %}
+      <monitoringPoint>
+        <gldcom:GroundwaterMonitoringTube gml:id="id_0004">
+          <gldcom:broId>{{ sourcedocs_data.gmwBroId }}</gldcom:broId>
+          <gldcom:tubeNumber>{{ sourcedocs_data.tubeNumber }}</gldcom:tubeNumber>
+        </gldcom:GroundwaterMonitoringTube>
+      </monitoringPoint>
+    </GLD_StartRegistration>
+  </sourceDocument>
 </replaceRequest>

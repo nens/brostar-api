@@ -4,7 +4,7 @@ De browsable BROSTAR API is te vinden op [https://www.brostar.nl/api/](https://w
 
 ## API Keys
 
-Voor elke request die op de API gedaan wordt, moet een API key gebruikt worden om de gebruiker te authenticeren. Een API key is gebruikersgebonden en kunnen momenteel alleen aangevraagd worden bij Nelen & Schuurmans. Het eigenhandig beheren van API keys in de Api en frontend zal spoedig worden ontwikkeld.
+Voor elke request die op de API gedaan wordt, moet een API key gebruikt worden om de gebruiker te authenticeren. Een API key is gebruikersgebonden en kunnen momenteel alleen aangevraagd worden bij Nelen & Schuurmans. Het eigenhandig beheren van API keys in de API en frontend zal spoedig worden ontwikkeld.
 
 Een request op de BROSTAR API, inclusief een API Key, ziet er als volgt uit:
 
@@ -67,7 +67,7 @@ De API bestaat uit de volgende endpoints:
 ### Organisations
 
 !!! note
-    Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Registratie organisatie in BROSTAR)
+    Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Registratie organisatie in BROSTAR)
 
 Organisaties zijn de basis van het datamodel van de BROSTAR. Elke gebruiker, maar ook elk data object zoals geimporteerde data vanuit de BRO, valt onder een organisatie. Als gebruiker zie je dus alleen de data die onder jouw organisatie valt.
 
@@ -89,14 +89,14 @@ Op het [https://www.brostar.nl/api/users/logged-in/](https://www.brostar.nl/api/
 
 ### Importtasks
 
-Import taken zorgen ervoor dat de huidig aanwezige data in de BRO in de BROSTAR database belanden. Deze data is vervolgens in de specifieke endpoints op te vragen.
+Importtaken zorgen ervoor dat de huidig aanwezige data in de BRO in de BROSTAR database belanden. Deze data is vervolgens in de specifieke endpoints op te vragen.
 
-Import taken vinden plaats op basis van POST requests. In deze request wordt een combinatie van een BRO domein (GAR, GLD, GMW, GMN of FRD) en een kvk nummer meegegeven. Voordat de import start, wordt alle data voor dat domein in de BROSTAR verwijderd. Nadat een taak is geslaagd, is de data in de BROSTAR voor dat specifieke domein dus up-to-date met de BRO.
+Importtaken vinden plaats op basis van POST requests. In deze request wordt een combinatie van een BRO domein (GAR, GLD, GMW, GMN of FRD) en een kvk nummer meegegeven. Voordat de import start, wordt alle data voor dat domein in de BROSTAR verwijderd. Nadat een taak is geslaagd, is de data in de BROSTAR voor dat specifieke domein dus up-to-date met de BRO.
 
 De data die wordt geimporteerd is slechts de huidige versie van de metadata. Er wordt dus bijvoorbeeld geen geschiedenis van een GMW of de standen van een GLD geimporteerd. Hiervoor kan de BRO zelf bevraagd worden.
 
 !!! note
-    De aanwezigheid van de data in de BROSTAR is essentieel voor de frontend om te bestaan. Het kan dus zijn dat je als scripter, die alleen bezig is met het aanleveren van data, geen gebruik maakt van dit endpoint. Toch kan het in sommige gevallen handig zijn. Voorbeelden hiervan zijn om een vertaling van een nitg code naar een BRO id te maken of te controleren of bepaalde objecten reeds aangeleverd zijn.
+    De aanwezigheid van de data in de BROSTAR is essentieel voor de frontend om te bestaan. Het kan dus zijn dat je als scripter, die alleen bezig is met het aanleveren van data, geen gebruik maakt van dit endpoint. Toch kan het in sommige gevallen handig zijn. Voorbeelden hiervan zijn om een vertaling van een NITG-code naar een BRO-id te maken of te controleren of bepaalde objecten reeds aangeleverd zijn.
 
 Hieronder een voorbeeld van een POST request om een GMN import taak voor eigen organisatie te starten:
 
@@ -123,7 +123,7 @@ r = requests.post(url, auth=auth, payload=payload)
 
 ### Uploadtasks
 
-Upload taken zijn dé kracht van de BROSTAR. Het idee achter dit endpoint is dat er slechts JSON opgesteld hoeft te worden om data aan te leveren. Om dit te visualiseren volgt hieronder een code snippet, waarmee een GMN aangemaakt kan worden in de BRO.
+Uploadtaken zijn dé kracht van de BROSTAR. Het idee achter dit endpoint is dat er slechts JSON opgesteld hoeft te worden om data aan te leveren. Om dit te visualiseren volgt hieronder een code snippet, waarmee een GMN aangemaakt kan worden in de BRO.
 
 ```python
 import requests
@@ -193,7 +193,7 @@ Het BRO project nummer is nodig om data bij de BRO aan te kunnen leveren. Deze k
 Voor elk BRO domein zijn er verschillende type berichten mogelijk. Zo zijn er bijvoorbeeld voor de [GMN](https://www.bro-productomgeving.nl/bpo/latest/gmn-inname-voorbeeldberichten-in-xml) Startregistration, MeasuringPoint, en Closure als berichten mogelijk.
 
 #### request_type
-Elk registratie type kan op verschillende manieren aangeleverd worden. In principe is de registration de standaardoptie, maar als er data aangepast of verwijderd moet worden, dan zijn respectievelijk de replace en delete requests types beschikbaar. In de [BRO catalogus](https://www.bro-productomgeving.nl/bpo/latest/grondwatermonitoring) staan alle mogelijke combinaties. Dit zijn de beschikbare request types:
+Elk registration type kan op verschillende manieren aangeleverd worden. In principe is de registration de standaardoptie, maar als er data aangepast of verwijderd moet worden, dan zijn respectievelijk de replace en delete requests types beschikbaar. In de [BRO catalogus](https://www.bro-productomgeving.nl/bpo/latest/grondwatermonitoring) staan alle mogelijke combinaties. Dit zijn de beschikbare request types:
 
 - registration
 
@@ -319,8 +319,8 @@ class GMWConstruction(BaseModel):
     numberOfMonitoringTubes: str | int
     groundLevelStable: str
     wellStability: str | None = None
-    owner: str
-    maintenanceResponsibleParty: str
+    owner: str | None = None
+    maintenanceResponsibleParty: str | None = None
     wellHeadProtector: str
     wellConstructionDate: str
     deliveredLocation: str
@@ -347,10 +347,11 @@ class MonitoringTube(BaseModel):
     tubeMaterial: str
     glue: str
     screenLength: str | float
+    screenProtection: str | None = None
     sockMaterial: str
     plainTubePartLength: str | float
     sedimentSumpLength: str | float | None = None
-    geoohmcables: list[GeoOhmCable] | None = None
+    geoOhmCables: list[GeoOhmCable] | None = None
 
 class GeoOhmCable(BaseModel):
     cableNumber: str | int
@@ -562,19 +563,24 @@ class GLDAddition(BaseModel):
     observationId: str | None = None
     observationProcessId: str | None = None
     measurementTimeseriesId: str | None = None
+    validationStatus: str | None = None
     investigatorKvk: str
     observationType: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
+    processReference: str
+    airPressureCompensationType: str | None = None
     beginPosition: str
     endPosition: str
     resultTime: str
-    evaluationProcedure: str
-    measurementInstrumentType: str
     timeValuePairs: list[TimeValuePair]
 
 class TimeValuePair(BaseModel):
     time: str | datetime
     value: float | str
     statusQualityControl: str
+    censorReason: str | None = None
+    censoringLimitvalue: str | float | None = None
 ```
 
 ##### FRD StartRegistration
@@ -713,14 +719,14 @@ Om meer inzicht te geven in de data die naar de BRO wordt gestuurd, is het mogel
 !!! warning
     Het bulk uploadtask endpoint is maatwerk. Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Aanvraag maatwerk bulk upload BROSTAR ) om de mogelijkheden te verkennen om een specifieke bulk upload te realiseren.
 
-Het bulk upload endpoint is gemaakt om eenvoudig een groot aantal leveringen te realiseren. Op het bulk endpoint is het mogelijk om csv/excel bestanden aan te levern. Achter de schermen wordt een taak gestart die deze bestanden opknippen in meerdere upload taken.
+Het bulk upload endpoint is gemaakt om eenvoudig een groot aantal leveringen te realiseren. Op het bulk endpoint is het mogelijk om CSV/Excel bestanden aan te leveren. Achter de schermen wordt een taak gestart die deze bestanden opknipt in meerdere uploadtaken.
 
-Het bulk upload endpoint is stukje maatwerk in de BROSTAR. Momenteel bestaat alleen de optie om een specifiek formaat van GAR csv bestanden aan te leveren. Deze zijn ontwikkeld voor Provincie Noord-Brabant, waarbij hun formaat van lab- en veldbestanden zijn gebruikt als input. Daardoor is het voor hen mogelijk om 2 bestanden in de frontend te slepen, wat metadata op te geven, en de bestanden naar de API te sturen. Hiermee wordt alle data dus vertaald naar upload taken, die vervolgens de data naar de BRO sturen.
+Het bulk upload endpoint is een stukje maatwerk in de BROSTAR. Momenteel bestaat alleen de optie om een specifiek formaat van GAR CSV bestanden aan te leveren. Deze zijn ontwikkeld voor Provincie Noord-Brabant, waarbij hun formaat van lab- en veldbestanden zijn gebruikt als input. Daardoor is het voor hen mogelijk om 2 bestanden in de frontend te slepen, wat metadata op te geven, en de bestanden naar de API te sturen. Hiermee wordt alle data dus vertaald naar uploadtaken, die vervolgens de data naar de BRO sturen.
 
 Hieronder staat een voorbeeld van hoe een bulk upload opgestuurd kan worden via een script.
 
 !!! Wow
-     Dit stukje code, in combinatie met de xlsx bestanden, is dus alles wat nodig is om duizenden GAR berichten te registreren in de BRO!
+     Dit stukje code, in combinatie met de XLSX bestanden, is dus alles wat nodig is om duizenden GAR berichten te registreren in de BRO!
 
 ```python
 import requests
@@ -789,4 +795,4 @@ De data endpoints zijn een tijdelijke opslag voor de data die volgt uit de impor
 
 - `https://www.brostar.nl/api/frd/frds/`
 
-Op deze endpoints zijn de lijsten van objecten te zien. Deze lijsten van de metadata van objecten bieden een mooi overzicht van alles wat er in de BRO aan data staat. Dit is een mooie vervanging voor de [uitgifteservice van de BRO](https://publiek.broservices.nl/gm/gmn/v1/swagger-ui/#/default/bro-ids), aangezien daar alleen request gedaan kunnen worden op basis van idividuele objecten. Deze endpoints kunnen dus helpen bij het scripten, maar dienen vooral voor de frontend om de data snel op te kunnen vragen om het vervolgens in de kaart en tabellen weer te geven.
+Op deze endpoints zijn de lijsten van objecten te zien. Deze lijsten van de metadata van objecten bieden een mooi overzicht van alles wat er in de BRO aan data staat. Dit is een mooie vervanging voor de [uitgifteservice van de BRO](https://publiek.broservices.nl/gm/gmn/v1/swagger-ui/#/default/bro-ids), aangezien daar alleen requests gedaan kunnen worden op basis van individuele objecten. Deze endpoints kunnen dus helpen bij het scripten, maar dienen vooral voor de frontend om de data snel op te kunnen vragen om het vervolgens in de kaart en tabellen weer te geven.

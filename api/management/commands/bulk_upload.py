@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from api.bro_upload.bulk_upload import GARBulkUploader
+from api.bro_upload.gar_bulk_upload import GARBulkUploader
 
 
 class Command(BaseCommand):

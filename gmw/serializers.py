@@ -3,14 +3,16 @@ from typing import Any
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
-from api.mixins import RequiredFieldsMixin, UrlFieldMixin
+from api.mixins import UrlFieldMixin
 from gmn import models as gmn_models
 
 from . import models as gmw_models
 
 
-class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
+class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
     linked_gmns = serializers.SerializerMethodField()
+    nr_of_monitoring_tubes = serializers.SerializerMethodField()
+    nr_of_intermediate_events = serializers.SerializerMethodField()
 
     class Meta:
         model = gmw_models.GMW
@@ -29,10 +31,14 @@ class GMWSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
         except ObjectDoesNotExist:
             return None
 
+    def get_nr_of_monitoring_tubes(self, obj: gmw_models.GMW) -> int:
+        return obj.nr_of_tubes
 
-class MonitoringTubeSerializer(
-    UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
-):
+    def get_nr_of_intermediate_events(self, obj: gmw_models.GMW) -> int:
+        return obj.nr_of_intermediate_events
+
+
+class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
     gmw_well_code = serializers.SerializerMethodField()
     gmw_bro_id = serializers.SerializerMethodField()
     linked_gmns = serializers.SerializerMethodField()
@@ -43,8 +49,6 @@ class MonitoringTubeSerializer(
 
     def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.required = True
 
     def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
         try:
@@ -70,5 +74,29 @@ class MonitoringTubeSerializer(
             )
             return list(linked_gmns)
 
+        except ObjectDoesNotExist:
+            return None
+
+
+class EventSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    gmw_well_code = serializers.SerializerMethodField()
+    gmw_bro_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = gmw_models.Event
+        fields = "__all__"
+
+    def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+
+    def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
+        try:
+            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
+        except ObjectDoesNotExist:
+            return None
+
+    def get_gmw_bro_id(self, obj: gmw_models.MonitoringTube) -> str | None:
+        try:
+            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).bro_id
         except ObjectDoesNotExist:
             return None

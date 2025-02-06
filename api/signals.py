@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from .models import InviteUser, UserProfile
+from .models import InviteUser, UploadTask, UserProfile
 
 
 @receiver(post_save, sender=User)
@@ -28,3 +28,15 @@ def create_user_profile(sender, instance: User, created, **kwargs):
 
         except InviteUser.DoesNotExist:
             pass
+
+
+@receiver(pre_save, sender=UploadTask)
+def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
+    """Handle registration where it should be an insert."""
+    if (
+        "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis"
+        in instance.bro_errors
+    ):
+        instance.registration_type = "insert"
+        instance.bro_errors = ""
+        instance.status = "PENDING"

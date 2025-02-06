@@ -1,20 +1,26 @@
-<ns:registrationRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
-    xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
-    xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
-    xmlns:ns3="http://www.opengis.net/gml/3.2">
-    <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
-    <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
-    <ns1:broId>{{ metadata.broId }}</ns1:broId>
-    <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
-{%  if metadata.underPrivilege %}
-    <ns1:underPrivilege>{{ metadata.underPrivilege }}</ns1:underPrivilege>
-{%  endif %}
-    <ns:sourceDocument>
-        <ns:GMW_WellHeadProtector>
-            <ns:eventDate>
-                <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
-            </ns:eventDate>
-            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
-        </ns:GMW_WellHeadProtector>
-    </ns:sourceDocument>
+<ns:registrationRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
+  >
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  {% if metadata.qualityRegime == "IMBRO/A" %}
+  <ns1:underPrivilege>ja</ns1:underPrivilege>
+  {% endif %}
+  <ns:sourceDocument>
+    <ns:GMW_WellHeadProtector>
+      <ns:eventDate>
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+      </ns:eventDate>
+      <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector"
+        >{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector
+      >
+    </ns:GMW_WellHeadProtector>
+  </ns:sourceDocument>
 </ns:registrationRequest>

@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, root_validator, validator
 
 ## Uploadtask models
 
@@ -12,7 +12,6 @@ class UploadTaskMetadata(BaseModel):
     deliveryAccountableParty: str | None = None
     qualityRegime: str
     broId: str | None = None
-    underPrivilege: str | None = None
     correctionReason: str | None = None
     dateToBeCorrected: str | date | None = None
 
@@ -21,9 +20,31 @@ class GARBulkUploadMetadata(BaseModel):
     requestReference: str
     qualityRegime: str
     deliveryAccountableParty: str | None = None
-    qualityControlMethod: str | None = None  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
+    qualityControlMethod: str | None = (
+        None  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
+    )
     groundwaterMonitoringNets: list[str] | None = None
     samplingOperator: str | int | None = None
+
+
+class GLDBulkUploadMetadata(BaseModel):
+    requestReference: str
+    qualityRegime: str
+    deliveryAccountableParty: str | None = None
+    broId: str
+
+
+class GLDBulkUploadSourcedocumentData(BaseModel):
+    validationStatus: str | None = None
+    investigatorKvk: str
+    observationType: str
+    evaluationProcedure: str
+    measurementInstrumentType: str
+    processReference: str
+    airPressureCompensationType: str | None = None
+    beginPosition: str | None = None
+    endPosition: str | None = None
+    resultTime: str | None = None
 
 
 # GMN sourcedocs_data
@@ -63,6 +84,8 @@ class GMNMeasuringPointEndDate(BaseModel):
 class GMNTubeReference(BaseModel):
     eventDate: str
     measuringPointCode: str
+    broId: str
+    tubeNumber: str | int
 
 
 class GMNClosure(BaseModel):
@@ -87,7 +110,7 @@ class MonitoringTube(BaseModel):
     tubeType: str
     artesianWellCapPresent: str
     sedimentSumpPresent: str
-    numberOfGeoOhmCables: str | int
+    numberOfGeoOhmCables: str | int  # Should this not be derived from 'geoohmcables'
     tubeTopDiameter: str | float | None = None
     variableDiameter: str | float
     tubeStatus: str
@@ -97,10 +120,11 @@ class MonitoringTube(BaseModel):
     tubeMaterial: str
     glue: str
     screenLength: str | float
+    screenProtection: str | None = None
     sockMaterial: str
     plainTubePartLength: str | float
     sedimentSumpLength: str | float | None = None
-    geoohmcables: list[GeoOhmCable] | None = None
+    geoOhmCables: list[GeoOhmCable] | None = None
 
 
 class GMWConstruction(BaseModel):
@@ -108,11 +132,13 @@ class GMWConstruction(BaseModel):
     deliveryContext: str
     constructionStandard: str
     initialFunction: str
-    numberOfMonitoringTubes: str | int
+    numberOfMonitoringTubes: (
+        str | int
+    )  # Should this not be derived from 'monitoringTubes'
     groundLevelStable: str
     wellStability: str | None = None
-    owner: str
-    maintenanceResponsibleParty: str
+    owner: str | None = None
+    maintenanceResponsibleParty: str | None = None
     wellHeadProtector: str
     wellConstructionDate: str
     deliveredLocation: str
@@ -136,31 +162,32 @@ class GMWElectrodeStatus(GMWEvent):
 class GMWGroundLevel(GMWEvent):
     wellStability: str | None = None
     groundLevelStable: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
 class GMWGroundLevelMeasuring(GMWEvent):
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
 class GMWInsertion(GMWEvent):
-    tubeNumber: str
-    tubeTopPosition: str
+    tubeNumber: str | int
+    tubeTopPosition: str | float
     tubeTopPositioningMethod: str
-    insertedPartLength: str
-    insertedPartDiameter: str
-    insertedPartMaterial: str
+    insertedPartLength: str | float
+    insertedPartDiameter: str | float
+    insertedPartMaterial: str | float
 
 
 class MonitoringTubeLengthening(BaseModel):
     tubeNumber: str | int
-    variableDiameter: str | float
+    variableDiameter: str = "ja"
+    tubeTopDiameter: str | float | None = None
     tubeTopPosition: str | float
     tubeTopPositioningMethod: str
-    tubeMaterial: str
-    glue: str
+    tubeMaterial: str | None = None
+    glue: str | None = None
     plainTubePartLength: str | float
 
 
@@ -184,15 +211,15 @@ class MonitoringTubePositions(BaseModel):
 
 
 class GMWPositions(GMWEvent):
-    wellStability: str | None = None
+    wellStability: str
     groundLevelStable: str
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTubePositions]
 
 
 class GMWPositionsMeasuring(GMWEvent):
-    monitoringTubes: list[MonitoringTube]
+    monitoringTubes: list[MonitoringTubePositions]
     groundLevelPosition: str | None = None
     groundLevelPositioningMethod: str | None = None
 
@@ -202,7 +229,7 @@ class GMWRemoval(GMWEvent):
 
 
 class GMWShift(GMWEvent):
-    groundLevelPosition: str
+    groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
 
@@ -314,8 +341,8 @@ class GLDStartregistration(BaseModel):
 
 class TimeValuePair(BaseModel):
     time: str | datetime
-    value: float | str
-    statusQualityControl: str
+    value: float | str | None = None
+    statusQualityControl: str = "onbekend"
     censorReason: str | None = None
     censoringLimitvalue: str | float | None = None
 
@@ -323,12 +350,12 @@ class TimeValuePair(BaseModel):
     def format_datetime(cls, value):
         """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
-            return value.isoformat()
+            return value.isoformat(sep="T", timespec="seconds")
         return value
 
 
 class GLDAddition(BaseModel):
-    date: str
+    date: str | None = None
     observationId: str | None = None
     observationProcessId: str | None = None
     measurementTimeseriesId: str | None = None
@@ -341,7 +368,7 @@ class GLDAddition(BaseModel):
     airPressureCompensationType: str | None = None
     beginPosition: str
     endPosition: str
-    resultTime: str
+    resultTime: str | None = None
     timeValuePairs: list[TimeValuePair]
 
     @validator("observationId", pre=True, always=True)
@@ -365,14 +392,18 @@ class GLDAddition(BaseModel):
             return f"_{uuid.uuid4()}"
         return value
 
-    @validator("validationStatus", pre=True, always=True)
-    def format_validationStatus(cls, value):
+    @root_validator(pre=True)
+    def format_validationStatus(cls, values):
         """Ensure the measurementTimeseriesId is always filled with an uuid"""
-        if cls.observationType == "reguliereMeting" and not value:
-            return "onbekend"
-        elif cls.observationType == "controlemeting":
-            return None
-        return value
+        # Check and set `validationStatus`
+        if values.get("observationType") == "reguliereMeting" and not values.get(
+            "validationStatus"
+        ):
+            values["validationStatus"] = "onbekend"
+        elif values.get("observationType") == "controlemeting":
+            values["validationStatus"] = None
+
+        return values
 
 
 # FRD
@@ -443,4 +474,6 @@ class FRDGemMeasurement(BaseModel):
     determinationProcedure: str
     evaluationProcedure: str
     measurements: list[GemMeasurement]
-    relatedCalculatedApparentFormationResistance: RelatedCalculatedApparentFormationResistance | None = None
+    relatedCalculatedApparentFormationResistance: (
+        RelatedCalculatedApparentFormationResistance | None
+    ) = None

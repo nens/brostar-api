@@ -1,0 +1,43 @@
+<ns:insertRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
+  >
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  {% if metadata.qualityRegime == "IMBRO/A" %}
+  <ns1:underPrivilege>ja</ns1:underPrivilege>
+  {% endif %}
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason"
+    >eigenCorrectie</ns:correctionReason
+  >
+  <ns:sourceDocument>
+    <ns:GMW_ElectrodeStatus>
+      <ns:eventDate>
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+      </ns:eventDate>
+      <ns:numberOfElectrodesChanged
+        >{{ sourcedocs_data.electrodes | length }}</ns:numberOfElectrodesChanged
+      >
+      {% for electrode in sourcedocs_data.electrodes %}
+      <ns:electrode>
+        <ns:electrodeNumber>{{ monitoringtube.electrodeNumber }}</ns:electrodeNumber>
+        <ns:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial"
+          >{{ monitoringtube.electrodePackingMaterial }}</ns:electrodePackingMaterial
+        >
+        <ns:electrodePosition
+          >{{ monitoringtube.electrodePosition }}</ns:electrodePosition
+        >
+        <ns:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus"
+          >{{ monitoringtube.electrodeStatus }}</ns:electrodeStatus
+        >
+      </ns:electrode>
+      {% endfor %}
+    </ns:GMW_ElectrodeStatus>
+  </ns:sourceDocument>
+</ns:insertRequest>

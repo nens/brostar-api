@@ -15,6 +15,7 @@ SECRET_KEY = os.getenv(
 NENS_AUTH_ISSUER = os.getenv("NENS_AUTH_ISSUER")
 NENS_AUTH_CLIENT_ID = os.getenv("NENS_AUTH_CLIENT_ID")
 NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
+
 _debug_env = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")
 DATABASE_USER = os.getenv("DATABASE_USER", "brostar")

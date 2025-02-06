@@ -17,4 +17,14 @@ urlpatterns = [
         views.MonitoringTubeDetailView.as_view(),
         name="monitoringtube-detail",
     ),
+    path(
+        "events/",
+        views.EventListView.as_view(),
+        name="event-list",
+    ),
+    path(
+        "events/<uuid:uuid>/",
+        views.EventDetailView.as_view(),
+        name="event-detail",
+    ),
 ]

@@ -16,6 +16,8 @@ asgiref==3.8.1
     #   django-cors-headers
 authlib==1.3.0
     # via nens-auth-client
+babel==2.16.0
+    # via mkdocs-material
 billiard==4.2.0
     # via celery
 build==1.2.1
@@ -36,6 +38,7 @@ click==8.1.7
     #   click-didyoumean
     #   click-plugins
     #   click-repl
+    #   mkdocs
     #   pip-tools
 click-didyoumean==0.3.1
     # via celery
@@ -43,6 +46,8 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.3.0
     # via celery
+colorama==0.4.6
+    # via mkdocs-material
 coverage==7.4.4
     # via -r dev-requirements.in
 cryptography==42.0.5
@@ -78,16 +83,42 @@ drf-yasg==1.21.7
     # via brostar-api (pyproject.toml)
 et-xmlfile==1.1.0
     # via openpyxl
+ghp-import==2.1.0
+    # via mkdocs
 idna==3.6
     # via requests
 inflection==0.5.1
     # via drf-yasg
 iniconfig==2.0.0
     # via pytest
+jinja2==3.1.4
+    # via
+    #   mkdocs
+    #   mkdocs-material
 kombu==5.3.6
     # via celery
 markdown==3.6
+    # via
+    #   brostar-api (pyproject.toml)
+    #   mkdocs
+    #   mkdocs-material
+    #   pymdown-extensions
+markupsafe==3.0.2
+    # via
+    #   jinja2
+    #   mkdocs
+mergedeep==1.3.4
+    # via
+    #   mkdocs
+    #   mkdocs-get-deps
+mkdocs==1.6.1
+    # via mkdocs-material
+mkdocs-get-deps==0.2.0
+    # via mkdocs
+mkdocs-material==9.5.44
     # via brostar-api (pyproject.toml)
+mkdocs-material-extensions==1.3.1
+    # via mkdocs-material
 mypy==1.9.0
     # via -r dev-requirements.in
 mypy-extensions==1.0.0
@@ -103,13 +134,22 @@ packaging==24.0
     #   build
     #   djangorestframework-api-key
     #   drf-yasg
+    #   mkdocs
     #   pytest
+paginate==0.5.7
+    # via mkdocs-material
 pandas==2.2.2
     # via brostar-api (pyproject.toml)
+pathspec==0.12.1
+    # via mkdocs
 pip-tools==7.4.1
     # via -r dev-requirements.in
+platformdirs==4.3.6
+    # via mkdocs-get-deps
 pluggy==1.4.0
     # via pytest
+polars==1.14.0
+    # via brostar-api (pyproject.toml)
 prompt-toolkit==3.0.43
     # via click-repl
 psycopg2-binary==2.9.9
@@ -120,6 +160,10 @@ pydantic==2.7.0
     # via brostar-api (pyproject.toml)
 pydantic-core==2.18.1
     # via pydantic
+pygments==2.18.0
+    # via mkdocs-material
+pymdown-extensions==10.12
+    # via mkdocs-material
 pyproject-hooks==1.0.0
     # via
     #   build
@@ -136,18 +180,29 @@ pytest-mock==3.14.0
 python-dateutil==2.9.0.post0
     # via
     #   celery
+    #   ghp-import
     #   pandas
 pytz==2024.1
     # via
     #   drf-yasg
     #   pandas
 pyyaml==6.0.1
-    # via drf-yasg
+    # via
+    #   drf-yasg
+    #   mkdocs
+    #   mkdocs-get-deps
+    #   pymdown-extensions
+    #   pyyaml-env-tag
+pyyaml-env-tag==0.1
+    # via mkdocs
 redis==5.0.3
     # via celery
+regex==2024.11.6
+    # via mkdocs-material
 requests==2.31.0
     # via
     #   brostar-api (pyproject.toml)
+    #   mkdocs-material
     #   nens-auth-client
 ruff==0.3.5
     # via -r dev-requirements.in
@@ -177,6 +232,8 @@ vine==5.1.0
     #   amqp
     #   celery
     #   kombu
+watchdog==6.0.0
+    # via mkdocs
 wcwidth==0.2.13
     # via prompt-toolkit
 wheel==0.43.0

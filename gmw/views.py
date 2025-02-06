@@ -12,6 +12,7 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = gmw_models.GMW.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmwFilter
     filterset_fields = "__all__"
 
 
@@ -32,4 +33,18 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
 class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = gmw_models.MonitoringTube.objects.all()
     serializer_class = serializers.MonitoringTubeSerializer
+    lookup_field = "uuid"
+
+
+class EventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+    serializer_class = serializers.EventSerializer
+    queryset = gmw_models.Event.objects.all().order_by("-created")
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.EventFilter
+
+
+class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
+    queryset = gmw_models.Event.objects.all()
+    serializer_class = serializers.EventSerializer
     lookup_field = "uuid"

@@ -1,7 +1,6 @@
 from django.http import HttpRequest
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from rest_framework.settings import api_settings
 
 from api.models import PersonalAPIKey
 
@@ -52,4 +51,4 @@ class APIKeyBasicAuthentication(BasicAuthentication):
 
         api_key.update_last_used()
 
-        return (api_settings.UNAUTHENTICATED_USER(), api_key)
+        return (api_key.user, None)
