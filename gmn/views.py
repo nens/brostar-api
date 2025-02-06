@@ -3,8 +3,8 @@ from rest_framework import generics
 
 from api import mixins
 
+from . import filters, serializers
 from . import models as gmn_models
-from . import serializers
 
 
 class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -12,6 +12,7 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = gmn_models.GMN.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmnFilter
     filterset_fields = "__all__"
 
 
@@ -26,6 +27,7 @@ class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView)
     queryset = gmn_models.Measuringpoint.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.MeasuringPointFilter
     filterset_fields = "__all__"
 
 

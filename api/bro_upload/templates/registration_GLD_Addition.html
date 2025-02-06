@@ -44,16 +44,16 @@
               <gmd:dateStamp>
                 {% if sourcedocs_data.date %}
                 <gco:Date>{{ sourcedocs_data.date }}</gco:Date>
-                {% elif not sourcedocs_data.date %}
+                {% else %}
                 <brocom:voidReason>onbekend</brocom:voidReason>
                 {% endif %}
               </gmd:dateStamp>
               <gmd:identificationInfo gco:nilReason="unknown" />
               {% if sourcedocs_data.validationStatus == 'volledigBeoordeeld' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:volledigBeoordeeld" />
-              {% elif sourcedocs_data.validationStatus == 'voorlopig' %}
+              {% endif %} {% if sourcedocs_data.validationStatus == 'voorlopig' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:voorlopig" />
-              {% elif sourcedocs_data.validationStatus %}
+              {% endif %} {% if sourcedocs_data.validationStatus == 'onbekend' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:onbekend" />
               {% endif %}
               <wml2:parameter>
@@ -93,7 +93,7 @@
             <gml:TimeInstant gml:id="id_0006">
               {% if sourcedocs_data.resultTime %}
               <gml:timePosition>{{ sourcedocs_data.resultTime }}</gml:timePosition>
-              {% elif not sourcedocs_data.resultTime %}
+              {% else %}
               <brocom:voidReason>onbekend</brocom:voidReason>
               {% endif %}
             </gml:TimeInstant>
@@ -189,11 +189,11 @@
                       <wml2:censoredReason
                         xlink:href="http://www.opengis.net/def/nil/OGC/0/BelowDetectionRange"
                       />
-                      {% elif tvp.censorReason == 'groterDanLimietwaarde' %}
+                      {% endif %} {% if tvp.censorReason == 'groterDanLimietwaarde' %}
                       <wml2:censoredReason
                         xlink:href="http://www.opengis.net/def/nil/OGC/0/AboveDetectionRange"
                       />
-                      {% else %}
+                      {% endif %} {% if tvp.censorReason == 'onbekend' %}
                       <!--  optioneel: IMBRO/A  -->
                       <wml2:censoredReason
                         xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown"
