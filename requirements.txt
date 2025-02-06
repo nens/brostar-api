@@ -47,7 +47,12 @@ click-plugins==1.1.1
 click-repl==0.3.0
     # via celery
 colorama==0.4.6
-    # via mkdocs-material
+    # via
+    #   build
+    #   click
+    #   mkdocs
+    #   mkdocs-material
+    #   pytest
 coverage==7.4.4
     # via -r dev-requirements.in
 cryptography==42.0.5
@@ -83,6 +88,8 @@ drf-yasg==1.21.7
     # via brostar-api (pyproject.toml)
 et-xmlfile==1.1.0
     # via openpyxl
+fastexcel==0.12.1
+    # via brostar-api (pyproject.toml)
 ghp-import==2.1.0
     # via mkdocs
 idna==3.6
@@ -154,6 +161,10 @@ prompt-toolkit==3.0.43
     # via click-repl
 psycopg2-binary==2.9.9
     # via brostar-api (pyproject.toml)
+pyarrow==19.0.0
+    # via
+    #   brostar-api (pyproject.toml)
+    #   fastexcel
 pycparser==2.22
     # via cffi
 pydantic==2.7.0
@@ -220,6 +231,7 @@ typing-extensions==4.11.0
 tzdata==2024.1
     # via
     #   celery
+    #   django
     #   pandas
 uritemplate==4.1.1
     # via drf-yasg
@@ -239,6 +251,8 @@ wcwidth==0.2.13
 wheel==0.43.0
     # via pip-tools
 whitenoise==6.6.0
+    # via brostar-api (pyproject.toml)
+xlsx2csv==0.8.4
     # via brostar-api (pyproject.toml)
 xmltodict==0.13.0
     # via brostar-api (pyproject.toml)
