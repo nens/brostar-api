@@ -17,7 +17,16 @@
   <sourceDocument>
     <GMN_Closure gml:id="id_0001">
       <endDateMonitoring>
+        {% if sourcedocs_data.eventDate %} {% if sourcedocs_data.eventDate|length == 10
+        %}
         <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
+        {% endif %} {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
       </endDateMonitoring>
     </GMN_Closure>
   </sourceDocument>

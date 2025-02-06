@@ -18,9 +18,18 @@
   >
   <ns:sourceDocument>
     <ns:GMW_ElectrodeStatus>
-      <ns:eventDate>
-        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
-      </ns:eventDate>
+      <eventDate>
+        {% if sourcedocs_data.eventDate %} {% if sourcedocs_data.eventDate|length == 10
+        %}
+        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
+        {% endif %} {% if sourcedocs_data.eventDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
+        {% endif %} {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </eventDate>
       <ns:numberOfElectrodesChanged
         >{{ sourcedocs_data.electrodes | length }}</ns:numberOfElectrodesChanged
       >

@@ -36,7 +36,7 @@
       <ns:wellStability codeSpace="urn:bro:gmw:WellStability"
         >{{ sourcedocs_data.wellStability }}</ns:wellStability
       >
-      {% elif sourcedocs_data.groundLevelStable == "onbekend" %}
+      {% endif %} {% if sourcedocs_data.groundLevelStable == "onbekend" %}
       <ns:wellStability codeSpace="urn:bro:gmw:WellStability"
         >onbekend</ns:wellStability
       >
@@ -52,12 +52,15 @@
         >{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector
       >
       <ns:wellConstructionDate>
-        {% if not sourcedocs_data.wellConstructionDate or
-        sourcedocs_data.wellConstructionDate == '' or
-        sourcedocs_data.wellConstructionDate == 'Invalid date' %}
+        {% if sourcedocs_data.wellConstructionDate %} {% if
+        sourcedocs_data.wellConstructionDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
+        {% endif %} {% if sourcedocs_data.wellConstructionDate|length == 7 %}
+        <ns1:yearMonth>{{ sourcedocs_data.wellConstructionDate }}</ns1:yearMonth>
+        {% endif %} {% if sourcedocs_data.wellConstructionDate|length == 4 %}
+        <ns1:year>{{ sourcedocs_data.wellConstructionDate }}</ns1:year>
+        {% endif %} {% else %}
         <ns1:voidReason>onbekend</ns1:voidReason>
-        {% elif sourcedocs_data.wellConstructionDate %}
-        <ns1:date>{{ sourcedocs_data.wellConstructionDate }}</ns1:date>
         {% endif %}
       </ns:wellConstructionDate>
       <ns:deliveredLocation>
