@@ -1,21 +1,13 @@
-<registrationRequest
-  xmlns="http://www.broservices.nl/xsd/isfrd/1.0"
-  xmlns:frdcom="http://www.broservices.nl/xsd/frdcommon/1.0"
-  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:gml="http://www.opengis.net/gml/3.2"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd"
->
+<registrationRequest xmlns="http://www.broservices.nl/xsd/isfrd/1.0"
+  xmlns:frdcom="http://www.broservices.nl/xsd/frdcommon/1.0" xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd">
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-  <brocom:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
-  >
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <sourceDocument>
     <FRD_StartRegistration gml:id="id_0001">
-      <objectIdAccountableParty
-        >{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty
-      >
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
       {% for net in sourcedocs_data.groundwaterMonitoringNets %}
       <groundwaterMonitoringNet>
         <frdcom:GroundwaterMonitoringNet gml:id="id_0002">
