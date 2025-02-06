@@ -329,9 +329,9 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                         **serializer.validated_data["sourcedocument_data"]
                     )
                     # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
-                    serializer.validated_data[
-                        "sourcedocument_data"
-                    ] = validated_sourcedocument_data.dict()
+                    serializer.validated_data["sourcedocument_data"] = (
+                        validated_sourcedocument_data.dict()
+                    )
                 # Else, just a pydantic validation is required
                 else:
                     validation_class(**serializer.validated_data["sourcedocument_data"])

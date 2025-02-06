@@ -73,9 +73,9 @@ class GLDBulkUploader:
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
         uploadtask_metadata = self.bulk_upload_instance.metadata
         uploadtask_metadata["broId"] = bro_id
-        uploadtask_metadata[
-            "requestReference"
-        ] += f"{bro_id} {uploadtask_metadata["qualityRegime"]}"  # Maybe still change this
+        uploadtask_metadata["requestReference"] += (
+            f"{bro_id} {uploadtask_metadata['qualityRegime']}"  # Maybe still change this
+        )
 
         current_measurements_df = current_measurements_df.sort("time")
         begin_position = current_measurements_df.item(0, 0)
