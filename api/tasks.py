@@ -49,8 +49,6 @@ def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     fieldwork_upload_file_uuid: str,
     lab_upload_file_uuid: str,
-    bro_username: str,
-    bro_password: str,
 ) -> None:
     """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
     try:
@@ -58,8 +56,6 @@ def gar_bulk_upload_task(
             bulk_upload_instance_uuid,
             fieldwork_upload_file_uuid,
             lab_upload_file_uuid,
-            bro_username,
-            bro_password,
         )
         uploader.process()
     except Exception as e:

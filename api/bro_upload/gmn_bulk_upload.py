@@ -1,4 +1,3 @@
-import datetime
 import logging
 import time
 import zipfile
@@ -7,9 +6,6 @@ from typing import TypeVar
 import polars as pl
 
 from api import models as api_models
-from api.bro_upload.upload_datamodels import (
-    TimeValuePair,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +18,11 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
 
     # Columns 0 to 5 should have the following names
     new_names = [
-        "bro_id",
-        "time",
-        "value",
-        "statusQualityControl",
-        "censorReason",
-        "censoringLimitvalue",
+        "eventType",
+        "measuringPointCode",
+        "gmwBroId",
+        "tubeNumber",
+        "eventDate",
     ]
 
     # Replace up to the number of existing columns
@@ -41,8 +36,45 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
     return df
 
 
-class GLDBulkUploader:
-    """Handles the upload process for bulk GAR data.
+def determine_event_type(event_type: str) -> str:
+    """Take a bunch of letters and tries to distinguish any of the 3 options (small LLM?)"""
+    lowered_event = event_type.lower()
+    mp = ["add", "toevoegen", "meetpunt"]
+    mpe = ["end", "eind", "date", "datum"]
+    tfr = ["reference", "referentie", "verwijzing", "tube", "buis"]
+
+    if any(keyword in lowered_event for keyword in mpe):
+        return "GMN_MeasuringPointEndDate"
+    elif any(keyword in lowered_event for keyword in tfr):
+        return "GMN_TubeReference"
+    elif any(keyword in lowered_event for keyword in mp):
+        return "GMN_MeasuringPoint"
+    else:
+        raise ValueError("Niet in staat het bericht-type te achterhalen: ")
+
+
+def check_date_string(date_string: str) -> str:
+    """Make sure the date is correctly formatted."""
+    date_parts = date_string.split("-")
+    for index, part in enumerate(date_parts):
+        if index > 2:
+            raise ValueError(
+                f"Datum moet voldoen aan YYYY-MM-DD formaat. {date_string}"
+            )
+        elif index == 0 and not (len(part) == 4 or len(part) == 0):
+            raise ValueError(
+                f"Datum moet voldoen aan YYYY-MM-DD formaat. {date_string}"
+            )
+        elif index > 0 and len(part) != 2:
+            raise ValueError(
+                f"Datum moet voldoen aan YYYY-MM-DD formaat. {date_string}"
+            )
+
+    return date_string
+
+
+class GMNBulkUploader:
+    """Handles the upload process for bulk GMN data.
 
     Takes in the bulk_upload_instance_uuid and the uploaded files.
     Then orchestrates the whole transormation process of the files,
@@ -53,7 +85,7 @@ class GLDBulkUploader:
     def __init__(
         self,
         bulk_upload_instance_uuid: str,
-        measurement_tvp_file_uuid: str,
+        measuringpoint_file_uuid: str,
     ) -> None:
         self.bulk_upload_instance: api_models.BulkUpload = (
             api_models.BulkUpload.objects.get(uuid=bulk_upload_instance_uuid)
@@ -61,73 +93,36 @@ class GLDBulkUploader:
         self.bulk_upload_instance.status = "PROCESSING"
         self.bulk_upload_instance.save()
 
-        self.measurement_tvp_file: api_models.UploadFile = (
-            api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
+        self.measuringpoint_file_uuid: api_models.UploadFile = (
+            api_models.UploadFile.objects.get(uuid=measuringpoint_file_uuid)
         )
 
-    def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
+    def deliver_one_uploadtask(
+        self,
+        event_type: str,
+        measuring_point_code: str,
+        gmw_bro_id: str,
+        tube_number: int,
+        event_date: str,
+    ):
+        registration_type = determine_event_type(event_type)
         uploadtask_metadata = self.bulk_upload_instance.metadata
-        uploadtask_metadata["broId"] = bro_id
         uploadtask_metadata["requestReference"] += (
-            f"{bro_id} {uploadtask_metadata['qualityRegime']}"  # Maybe still change this
+            f"{event_type}_{measuring_point_code}_{event_date}"  # Maybe still change this
         )
 
-        current_measurements_df = current_measurements_df.sort("time")
-        begin_position = current_measurements_df.item(0, 0)
-        end_position = current_measurements_df.item(-1, 0)
-
-        if len(begin_position) == 19:
-            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
-        elif len(begin_position) > 19:
-            begin_position = datetime.datetime.strptime(
-                "%Y-%m-%dT%H:%M:%S%z"
-            ).astimezone(datetime.UTC)
-        else:
-            raise ValueError(
-                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {begin_position}."
-            )
-
-        if len(end_position) == 19:
-            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
-        elif len(end_position) > 19:
-            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z").astimezone(
-                datetime.UTC
-            )
-        else:
-            raise ValueError(
-                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
-            )
-
-        if (
-            self.bulk_upload_instance.sourcedocument_data["validationStatus"]
-            == "volledigBeoordeeld"
-        ):
-            result_time = end_position + datetime.timedelta(days=1)
-        else:
-            result_time = end_position
-
-        measurement_tvps: list[dict] = [
-            TimeValuePair(**row).model_dump_json()
-            for row in current_measurements_df.iter_rows(named=True)
-        ]
-
-        self.bulk_upload_instance.sourcedocument_data.update(
-            {
-                "beginPosition": begin_position.isoformat(sep="T", timespec="seconds"),
-                "endPosition": end_position.isoformat(sep="T", timespec="seconds"),
-                "resultTime": result_time.isoformat(sep="T", timespec="seconds"),
-            }
-        )
-
-        uploadtask_sourcedocument_dict: dict = create_gld_sourcedocs_data(
-            measurement_tvps, self.bulk_upload_instance.sourcedocument_data
-        )
+        uploadtask_sourcedocument_dict = {
+            "eventDate": event_date,
+            "measuringPointCode": event_date,
+            "broId": gmw_bro_id,
+            "tubeNumber": tube_number,
+        }
 
         upload_task = api_models.UploadTask.objects.create(
             data_owner=self.bulk_upload_instance.data_owner,
-            bro_domain="GLD",
+            bro_domain="GMN",
             project_number=self.bulk_upload_instance.project_number,
-            registration_type="GLD_Addition",
+            registration_type=registration_type,
             request_type="registration",
             metadata=uploadtask_metadata,
             sourcedocument_data=uploadtask_sourcedocument_dict,
@@ -137,7 +132,9 @@ class GLDBulkUploader:
     def process(self) -> None:
         # Step 1: open the files and transform to a pd df
         try:
-            all_measurements_df: pl.DataFrame = file_to_df(self.measurement_tvp_file)
+            monitoringnet_adjustments_df: pl.DataFrame = file_to_df(
+                self.measuringpoint_file_uuid
+            )
             self.bulk_upload_instance.progress = 10.00
             self.bulk_upload_instance.save()
         except Exception as e:
@@ -147,46 +144,53 @@ class GLDBulkUploader:
             return
 
         # Minimal validation / correction of the data
-        assert len(all_measurements_df) > 0, "There is no data in the file"
+        assert len(monitoringnet_adjustments_df) > 0, "There is no data in the file"
 
         # Convert to standard format
-        all_measurements_df = _convert_and_check_df(all_measurements_df)
+        monitoringnet_adjustments_df = _convert_and_check_df(
+            monitoringnet_adjustments_df
+        )
         self.bulk_upload_instance.progress = 20.00
         self.bulk_upload_instance.save()
 
         # BRO-Ids
-        bro_ids = all_measurements_df.to_series(0).unique()
+        nr_of_rows = len(monitoringnet_adjustments_df.rows())
         progress = 80 / (
-            len(bro_ids) * 2
+            len(nr_of_rows) * 2
         )  # amount of progress per steps, per bro_id two steps.
-        for bro_id in bro_ids:
-            # Step 2: Prepare data for uploadtask per row
-            current_measurements_df = all_measurements_df.filter(
-                pl.col("bro_id").eq(bro_id)
+
+        upload_tasks = []
+
+        for row in monitoringnet_adjustments_df.iter_rows(named=True):
+            upload_task = self.deliver_one_uploadtask(
+                event_type=row["eventType"],
+                measuring_point_code=row["measuringPointCode"],
+                gmw_bro_id=row["gmwBroId"],
+                tube_number=row["tubeNumber"],
+                event_date=row["eventDate"],
             )
+            upload_tasks.append(upload_task)
+            time.sleep(5)
 
-            upload_task = self.deliver_one_addition(bro_id, current_measurements_df)
+        while len(upload_tasks) > 0:
+            time.sleep(5)
+            remaining_tasks = []
+            for task in upload_tasks:
+                task.refresh_from_db()
+                # Wait while the GLD_Addition is being processed
+                if task.status == "FAILED":
+                    self.bulk_upload_instance.log += (
+                        f"FAILED (task: {task.uuid}): {task.log}."
+                    )
+                    self.bulk_upload_instance.progress += progress
+                elif task.status in ["COMPLETED", "UNFINISHED"]:
+                    self.bulk_upload_instance.progress += progress
+                else:
+                    remaining_tasks.append(task)
 
-            time.sleep(10)
-            upload_task.refresh_from_db()
+            upload_task = remaining_tasks
 
-            # Wait while the GLD_Addition is being processed
-            if upload_task.status in ["COMPLETED", "FAILED"]:
-                self.bulk_upload_instance.progress += progress
-
-            if upload_task.status == "COMPLETED":
-                self.bulk_upload_instance.status = "FINISHED"
-
-            elif upload_task.status == "FAILED":
-                self.bulk_upload_instance.status = "FAILED"
-                self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
-
-            else:
-                self.bulk_upload_instance.status = "UNFINISHED"
-                self.bulk_upload_instance.log += (
-                    "After 10 seconds the upload is not yet finished."
-                )
-
+        self.bulk_upload_instance.status = "FINISHED"
         self.bulk_upload_instance.save()
 
 
