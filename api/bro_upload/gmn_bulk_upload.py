@@ -107,13 +107,13 @@ class GMNBulkUploader:
     ):
         registration_type = determine_event_type(event_type)
         uploadtask_metadata = self.bulk_upload_instance.metadata
-        uploadtask_metadata["requestReference"] += (
+        uploadtask_metadata["requestReference"] = (
             f"{event_type}_{measuring_point_code}_{event_date}"  # Maybe still change this
         )
 
         uploadtask_sourcedocument_dict = {
             "eventDate": event_date,
-            "measuringPointCode": event_date,
+            "measuringPointCode": measuring_point_code,
             "broId": gmw_bro_id,
             "tubeNumber": tube_number,
         }
@@ -152,11 +152,11 @@ class GMNBulkUploader:
         )
         self.bulk_upload_instance.progress = 20.00
         self.bulk_upload_instance.save()
-
+        print(monitoringnet_adjustments_df)
         # BRO-Ids
         nr_of_rows = len(monitoringnet_adjustments_df.rows())
-        progress = 80 / (
-            len(nr_of_rows) * 2
+        progress = (
+            80 / nr_of_rows
         )  # amount of progress per steps, per bro_id two steps.
 
         upload_tasks = []

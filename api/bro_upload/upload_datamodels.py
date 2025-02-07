@@ -34,6 +34,13 @@ class GLDBulkUploadMetadata(BaseModel):
     broId: str
 
 
+class GMNBulkUploadMetadata(BaseModel):
+    requestReference: str
+    qualityRegime: str
+    deliveryAccountableParty: str | None = None
+    broId: str
+
+
 class GLDBulkUploadSourcedocumentData(BaseModel):
     validationStatus: str | None = None
     investigatorKvk: str
