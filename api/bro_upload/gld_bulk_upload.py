@@ -73,14 +73,19 @@ class GLDBulkUploader:
         )
 
         current_measurements_df = current_measurements_df.sort("time")
-        begin_position = current_measurements_df.item(0, 0)
-        end_position = current_measurements_df.item(-1, 0)
+        logger.warning(current_measurements_df)
+
+        time = current_measurements_df.select("time")
+        begin_position = time.item(0, 0)
+        end_position = time.item(-1, 0)
 
         if len(begin_position) == 19:
-            begin_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+            begin_position = datetime.datetime.strptime(
+                begin_position, "%Y-%m-%dT%H:%M:%S"
+            )
         elif len(begin_position) > 19:
             begin_position = datetime.datetime.strptime(
-                "%Y-%m-%dT%H:%M:%S%z"
+                begin_position, "%Y-%m-%dT%H:%M:%S%z"
             ).astimezone(datetime.UTC)
         else:
             raise ValueError(
@@ -88,26 +93,26 @@ class GLDBulkUploader:
             )
 
         if len(end_position) == 19:
-            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S")
+            end_position = datetime.datetime.strptime(end_position, "%Y-%m-%dT%H:%M:%S")
         elif len(end_position) > 19:
-            end_position = datetime.datetime.strptime("%Y-%m-%dT%H:%M:%S%z").astimezone(
-                datetime.UTC
-            )
+            end_position = datetime.datetime.strptime(
+                end_position, "%Y-%m-%dT%H:%M:%S%z"
+            ).astimezone(datetime.UTC)
         else:
             raise ValueError(
                 f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
             )
 
-        if (
-            self.bulk_upload_instance.sourcedocument_data["validationStatus"]
-            == "volledigBeoordeeld"
-        ):
+        validation_status = self.bulk_upload_instance.sourcedocument_data.get(
+            "validationStatus", None
+        )
+        if validation_status == "volledigBeoordeeld":
             result_time = end_position + datetime.timedelta(days=1)
         else:
             result_time = end_position
 
         measurement_tvps: list[dict] = [
-            TimeValuePair(**row).model_dump_json()
+            TimeValuePair(**row).model_dump()
             for row in current_measurements_df.iter_rows(named=True)
         ]
 
@@ -205,8 +210,6 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
         df = pl.read_excel(
             file_instance.file,
             has_header=True,
-            ignore_errors=False,
-            truncate_ragged_lines=True,
         )
     elif filetype == "zip":
         with zipfile.ZipFile(file_instance.file) as z:
@@ -245,21 +248,23 @@ def _convert_resulttime_to_date(result_time: str) -> str:
 
 
 def create_gld_sourcedocs_data(
-    measurement_tvps: list[dict], sourcedocument_data: dict
+    measurement_tvps: list[TimeValuePair], sourcedocument_data: dict
 ) -> dict:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
     sourcedocument_data.update(
         {
             "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
-            # "validationStatus": sourcedocument_data.get("validationStatus", None),
-            # "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
-            # "observationType": sourcedocument_data.get("observationType", None),
-            # "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),
-            # "measurementInstrumentType": sourcedocument_data.get("measurementInstrumentType"),
-            # "processReference": sourcedocument_data.get("processReference", None),
-            # "beginPosition": sourcedocument_data("beginPosition", None),
-            # "endPosition": sourcedocument_data.get("endPosition", None),
-            # "resultTime": sourcedocument_data.get("resultTime", None),
+            "validationStatus": sourcedocument_data.get("validationStatus", None),
+            "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
+            "observationType": sourcedocument_data.get("observationType", None),
+            "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),
+            "measurementInstrumentType": sourcedocument_data.get(
+                "measurementInstrumentType"
+            ),
+            "processReference": sourcedocument_data.get("processReference", None),
+            "beginPosition": sourcedocument_data.get("beginPosition", None),
+            "endPosition": sourcedocument_data.get("endPosition", None),
+            "resultTime": sourcedocument_data.get("resultTime", None),
             "timeValuePairs": measurement_tvps,
         }
     )

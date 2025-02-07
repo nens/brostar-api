@@ -1,13 +1,8 @@
-<ns:registrationRequest
-  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
-  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
-  xmlns:ns3="http://www.opengis.net/gml/3.2"
->
+<ns:registrationRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2">
   <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
-  <ns1:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
-  >
+  <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
   <ns1:broId>{{ metadata.broId }}</ns1:broId>
   <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
   {% if metadata.qualityRegime == "IMBRO/A" %}
@@ -16,17 +11,21 @@
   <ns:sourceDocument>
     <ns:GMW_TubeStatus>
       <ns:eventDate>
+        {% if sourcedocs_data.eventDate|length == 10 %}
         <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+        {% elif sourcedocs_data.eventDate|length == 7 %}
+        <ns1:yearMonth>{{ sourcedocs_data.eventDate }}</ns1:yearMonth>
+        {% elif sourcedocs_data.eventDate|length == 4 %}
+        <ns1:year>{{ sourcedocs_data.eventDate }}</ns1:year>
+        {% else %}
+        <ns1:voidReason>onbekend</ns1:voidReason>
+        {% endif %}
       </ns:eventDate>
-      <ns:numberOfTubesChanged
-        >{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesChanged
-      >
+      <ns:numberOfTubesChanged>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesChanged>
       {% for monitoringtube in sourcedocs_data.monitoringTubes %}
       <ns:monitoringTube>
         <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-        <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus"
-          >{{ monitoringtube.tubeStatus }}</ns:tubeStatus
-        >
+        <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">{{ monitoringtube.tubeStatus }}</ns:tubeStatus>
       </ns:monitoringTube>
       {% endfor %}
     </ns:GMW_TubeStatus>

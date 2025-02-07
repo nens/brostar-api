@@ -15,6 +15,7 @@ dependencies = [
     "djangorestframework",
     "djangorestframework-api-key",
     "drf-yasg",
+    "fastexcel",
     "markdown > 3",  # DRF api docs
     "mkdocs-material",
     "nens-auth-client",
@@ -22,12 +23,14 @@ dependencies = [
     "pandas",
     "polars",
     "psycopg2-binary",
+    "pyarrow",
     "pydantic",
     "pytest-django",
     "pytest-mock",
     "requests",
     "sentry-sdk[django]",
     "whitenoise",
+    "xlsx2csv",
     "xmltodict",
 ]
 description = "Simplify data management for BRO"
