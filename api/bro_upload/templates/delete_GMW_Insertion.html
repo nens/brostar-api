@@ -1,51 +1,35 @@
-<ns:deleteRequest
-  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
-  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
-  xmlns:ns3="http://www.opengis.net/gml/3.2"
->
+<ns:deleteRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2">
   <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
-  <ns1:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
-  >
+  <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
   <ns1:broId>{{ metadata.broId }}</ns1:broId>
   <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
   {% if metadata.qualityRegime == "IMBRO/A" %}
   <ns1:underPrivilege>ja</ns1:underPrivilege>
   {% endif %}
-  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason"
-    >eigenCorrectie</ns:correctionReason
-  >
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">eigenCorrectie</ns:correctionReason>
   <ns:sourceDocument>
     <ns:GMW_Insertion>
       <eventDate>
-        {% if sourcedocs_data.eventDate %} {% if sourcedocs_data.eventDate|length == 10
-        %}
-        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
-        {% endif %} {% if sourcedocs_data.eventDate|length == 7 %}
-        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
-        {% endif %} {% if sourcedocs_data.eventDate|length == 4 %}
-        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
-        {% endif %} {% else %}
-        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% if sourcedocs_data.eventDate|length == 10 %}
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+        {% elif sourcedocs_data.eventDate|length == 7 %}
+        <ns1:yearMonth>{{ sourcedocs_data.eventDate }}</ns1:yearMonth>
+        {% elif sourcedocs_data.eventDate|length == 4 %}
+        <ns1:year>{{ sourcedocs_data.eventDate }}</ns1:year>
+        {% else %}
+        <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
       </eventDate>
       <ns:tubeNumber>{{ sourcedocs_data.tubeNumber }}</ns:tubeNumber>
-      <ns:tubeTopPosition uom="m"
-        >{{ sourcedocs_data.tubeTopPosition }}</ns:tubeTopPosition
-      >
-      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod"
-        >{{ sourcedocs_data.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod
-      >
-      <ns:insertedPartLength uom="m"
-        >{{ sourcedocs_data.insertedPartLength }}</ns:insertedPartLength
-      >
-      <ns:insertedPartDiameter uom="mm"
-        >{{ sourcedocs_data.insertedPartDiameter }}</ns:insertedPartDiameter
-      >
-      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial"
-        >{{ sourcedocs_data.insertedPartMaterial }}</ns:insertedPartMaterial
-      >
+      <ns:tubeTopPosition uom="m">{{ sourcedocs_data.tubeTopPosition }}</ns:tubeTopPosition>
+      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{
+        sourcedocs_data.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+      <ns:insertedPartLength uom="m">{{ sourcedocs_data.insertedPartLength }}</ns:insertedPartLength>
+      <ns:insertedPartDiameter uom="mm">{{ sourcedocs_data.insertedPartDiameter }}</ns:insertedPartDiameter>
+      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ sourcedocs_data.insertedPartMaterial }}
+      </ns:insertedPartMaterial>
     </ns:GMW_Insertion>
   </ns:sourceDocument>
 </ns:deleteRequest>

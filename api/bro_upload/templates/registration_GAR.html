@@ -1,26 +1,28 @@
 <registrationRequest xmlns="http://www.broservices.nl/xsd/isgar/1.0"
     xmlns:garcom="http://www.broservices.nl/xsd/garcommon/1.0"
-    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-    xmlns:gml="http://www.opengis.net/gml/3.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.broservices.nl/xsd/isgar/1.0 https://schema.broservices.nl/xsd/isgar/1.0/isgar-messages.xsd">
     <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-{%  if metadata.deliveryAccountableParty %}
+    {% if metadata.deliveryAccountableParty %}
     <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
-{%  endif %}
+    {% endif %}
     <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
     <sourceDocument>
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
-            <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod }}</qualityControlMethod>
-{%          for net in sourcedocs_data.groundwaterMonitoringNets %}
+            <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod
+                }}</qualityControlMethod>
+            {% for net in sourcedocs_data.groundwaterMonitoringNets %}
             <groundwaterMonitoringNet>
                 <garcom:GroundwaterMonitoringNet gml:id="{{ net }}">
                     <garcom:broId>{{ net }}</garcom:broId>
                 </garcom:GroundwaterMonitoringNet>
             </groundwaterMonitoringNet>
-{%          endfor %}
+            {% endfor %}
             <monitoringPoint>
-                <garcom:GroundwaterMonitoringTube gml:id="{{sourcedocs_data.gmwBroId}}_{{ sourcedocs_data.tubeNumber }}">
+                <garcom:GroundwaterMonitoringTube
+                    gml:id="{{sourcedocs_data.gmwBroId}}_{{ sourcedocs_data.tubeNumber }}">
                     <garcom:broId>{{ sourcedocs_data.gmwBroId }}</garcom:broId>
                     <garcom:tubeNumber>{{ sourcedocs_data.tubeNumber }}</garcom:tubeNumber>
                 </garcom:GroundwaterMonitoringTube>
@@ -28,73 +30,94 @@
             <fieldResearch>
                 <garcom:samplingDateTime>{{ sourcedocs_data.fieldResearch.samplingDateTime }}</garcom:samplingDateTime>
                 <garcom:samplingOperator>
-                        <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}</brocom:chamberOfCommerceNumber>
+                    <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}
+                    </brocom:chamberOfCommerceNumber>
                 </garcom:samplingOperator>
-                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{ sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
+                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{
+                    sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
                 <garcom:samplingDevice>
-                    <garcom:pumpType codeSpace="urn:bro:gar:PumpType">{{ sourcedocs_data.fieldResearch.pumpType }}</garcom:pumpType>
+                    <garcom:pumpType codeSpace="urn:bro:gar:PumpType">{{ sourcedocs_data.fieldResearch.pumpType }}
+                    </garcom:pumpType>
                 </garcom:samplingDevice>
                 <garcom:fieldObservation>
-{%                  if sourcedocs_data.fieldResearch.primaryColour %}
-                    <garcom:primaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.primaryColour }}</garcom:primaryColour>
-{%                  endif %}
-{%                  if sourcedocs_data.fieldResearch.secondaryColour %}
-                    <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.secondaryColour }}</garcom:secondaryColour>
-{%                  endif %}
-{%                  if sourcedocs_data.fieldResearch.colourStrength %}
-                    <garcom:colourStrength codeSpace="urn:bro:gar:ColourStrength">{{ sourcedocs_data.fieldResearch.colourStrength }}</garcom:colourStrength>
-{%                  endif %}
-                    <garcom:abnormalityInCooling>{{ sourcedocs_data.fieldResearch.abnormalityInCooling }}</garcom:abnormalityInCooling>
-                    <garcom:abnormalityInDevice>{{ sourcedocs_data.fieldResearch.abnormalityInDevice }}</garcom:abnormalityInDevice>
-                    <garcom:pollutedByEngine>{{ sourcedocs_data.fieldResearch.pollutedByEngine }}</garcom:pollutedByEngine>
+                    {% if sourcedocs_data.fieldResearch.primaryColour %}
+                    <garcom:primaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.primaryColour
+                        }}</garcom:primaryColour>
+                    {% endif %}
+                    {% if sourcedocs_data.fieldResearch.secondaryColour %}
+                    <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">{{
+                        sourcedocs_data.fieldResearch.secondaryColour }}</garcom:secondaryColour>
+                    {% endif %}
+                    {% if sourcedocs_data.fieldResearch.colourStrength %}
+                    <garcom:colourStrength codeSpace="urn:bro:gar:ColourStrength">{{
+                        sourcedocs_data.fieldResearch.colourStrength }}</garcom:colourStrength>
+                    {% endif %}
+                    <garcom:abnormalityInCooling>{{ sourcedocs_data.fieldResearch.abnormalityInCooling }}
+                    </garcom:abnormalityInCooling>
+                    <garcom:abnormalityInDevice>{{ sourcedocs_data.fieldResearch.abnormalityInDevice }}
+                    </garcom:abnormalityInDevice>
+                    <garcom:pollutedByEngine>{{ sourcedocs_data.fieldResearch.pollutedByEngine }}
+                    </garcom:pollutedByEngine>
                     <garcom:filterAerated>{{ sourcedocs_data.fieldResearch.filterAerated }}</garcom:filterAerated>
-                    <garcom:groundWaterLevelDroppedTooMuch>{{ sourcedocs_data.fieldResearch.groundWaterLevelDroppedTooMuch }}</garcom:groundWaterLevelDroppedTooMuch>
+                    <garcom:groundWaterLevelDroppedTooMuch>{{
+                        sourcedocs_data.fieldResearch.groundWaterLevelDroppedTooMuch }}
+                    </garcom:groundWaterLevelDroppedTooMuch>
                     <garcom:abnormalFilter>{{ sourcedocs_data.fieldResearch.abnormalFilter }}</garcom:abnormalFilter>
                     <garcom:sampleAerated>{{ sourcedocs_data.fieldResearch.sampleAerated }}</garcom:sampleAerated>
                     <garcom:hoseReused>{{ sourcedocs_data.fieldResearch.hoseReused }}</garcom:hoseReused>
-                    <garcom:temperatureDifficultToMeasure>{{ sourcedocs_data.fieldResearch.temperatureDifficultToMeasure }}</garcom:temperatureDifficultToMeasure>
+                    <garcom:temperatureDifficultToMeasure>{{ sourcedocs_data.fieldResearch.temperatureDifficultToMeasure
+                        }}</garcom:temperatureDifficultToMeasure>
                 </garcom:fieldObservation>
-{%              for measurement in sourcedocs_data.fieldResearch.fieldMeasurements %}
+                {% for measurement in sourcedocs_data.fieldResearch.fieldMeasurements %}
                 <garcom:fieldMeasurement>
                     <garcom:parameter>{{ measurement.parameter }}</garcom:parameter>
-                    <garcom:fieldMeasurementValue uom="{{ measurement.unit }}">{{ measurement.fieldMeasurementValue }}</garcom:fieldMeasurementValue>
-                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{ measurement.qualityControlStatus }}</garcom:qualityControlStatus>
+                    <garcom:fieldMeasurementValue uom="{{ measurement.unit }}">{{ measurement.fieldMeasurementValue }}
+                    </garcom:fieldMeasurementValue>
+                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{
+                        measurement.qualityControlStatus }}</garcom:qualityControlStatus>
                 </garcom:fieldMeasurement>
-{%              endfor %}
+                {% endfor %}
             </fieldResearch>
-{%          if sourcedocs_data.laboratoryAnalyses %}
-{%          for lab_analysis in sourcedocs_data.laboratoryAnalyses %}
+            {% if sourcedocs_data.laboratoryAnalyses %}
+            {% for lab_analysis in sourcedocs_data.laboratoryAnalyses %}
             <laboratoryAnalysis>
-{%              if lab_analysis.responsibleLaboratoryKvk %}
+                {% if lab_analysis.responsibleLaboratoryKvk %}
                 <garcom:responsibleLaboratory>
-                        <brocom:chamberOfCommerceNumber>{{ lab_analysis.responsibleLaboratoryKvk }}</brocom:chamberOfCommerceNumber>
+                    <brocom:chamberOfCommerceNumber>{{ lab_analysis.responsibleLaboratoryKvk }}
+                    </brocom:chamberOfCommerceNumber>
                 </garcom:responsibleLaboratory>
-{%              endif %}
-{%              for process in lab_analysis.analysisProcesses %}
+                {% endif %}
+                {% for process in lab_analysis.analysisProcesses %}
                 <garcom:analysisProcess>
                     <garcom:analysisDate>
                         <brocom:date>{{ process.date }}</brocom:date>
                     </garcom:analysisDate>
-                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{ process.analyticalTechnique }}</garcom:analyticalTechnique>
-                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}</garcom:valuationMethod>
-{%                  for analysis in process.analyses %}
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{
+                        process.analyticalTechnique }}</garcom:analyticalTechnique>
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}
+                    </garcom:valuationMethod>
+                    {% for analysis in process.analyses %}
                     <garcom:analysis>
                         <garcom:parameter>{{ analysis.parameter }}</garcom:parameter>
-                        <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue }}</garcom:analysisMeasurementValue>
-{%                      if analysis.limitSymbol %}
-                        <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}</garcom:limitSymbol>
-{%                      endif %}
-{%                      if analysis.reportingLimit %}
-                        <garcom:reportingLimit uom="{{ analysis.unit }}">{{ analysis.reportingLimit }}</garcom:reportingLimit>
-{%                      endif %}
-                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{ analysis.qualityControlStatus }}</garcom:qualityControlStatus>
+                        <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue
+                            }}</garcom:analysisMeasurementValue>
+                        {% if analysis.limitSymbol %}
+                        <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}
+                        </garcom:limitSymbol>
+                        {% endif %}
+                        {% if analysis.reportingLimit %}
+                        <garcom:reportingLimit uom="{{ analysis.unit }}">{{ analysis.reportingLimit }}
+                        </garcom:reportingLimit>
+                        {% endif %}
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{
+                            analysis.qualityControlStatus }}</garcom:qualityControlStatus>
                     </garcom:analysis>
-{%                  endfor %}
+                    {% endfor %}
                 </garcom:analysisProcess>
-{%              endfor %}
+                {% endfor %}
             </laboratoryAnalysis>
-{%          endfor %}
-{%          endif %}
+            {% endfor %}
+            {% endif %}
         </GAR>
     </sourceDocument>
 </registrationRequest>

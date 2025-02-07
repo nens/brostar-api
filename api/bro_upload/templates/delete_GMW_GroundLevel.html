@@ -1,51 +1,35 @@
-<ns:deleteRequest
-  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
-  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
-  xmlns:ns3="http://www.opengis.net/gml/3.2"
->
+<ns:deleteRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:ns3="http://www.opengis.net/gml/3.2">
   <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
-  <ns1:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty
-  >
+  <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
   <ns1:broId>{{ metadata.broId }}</ns1:broId>
   <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
   {% if metadata.qualityRegime == "IMBRO/A" %}
   <ns1:underPrivilege>ja</ns1:underPrivilege>
   {% endif %}
-  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason"
-    >eigenCorrectie</ns:correctionReason
-  >
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">eigenCorrectie</ns:correctionReason>
   <ns:sourceDocument>
     <ns:GMW_GroundLevel>
       <eventDate>
-        {% if sourcedocs_data.eventDate %} {% if sourcedocs_data.eventDate|length == 10
-        %}
-        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
-        {% endif %} {% if sourcedocs_data.eventDate|length == 7 %}
-        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
-        {% endif %} {% if sourcedocs_data.eventDate|length == 4 %}
-        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
-        {% endif %} {% else %}
-        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% if sourcedocs_data.eventDate|length == 10 %}
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+        {% elif sourcedocs_data.eventDate|length == 7 %}
+        <ns1:yearMonth>{{ sourcedocs_data.eventDate }}</ns1:yearMonth>
+        {% elif sourcedocs_data.eventDate|length == 4 %}
+        <ns1:year>{{ sourcedocs_data.eventDate }}</ns1:year>
+        {% else %}
+        <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
       </eventDate>
       {% if sourcedocs_data.groundLevelStable == "nee" %}
-      <ns:wellStability codeSpace="urn:bro:gmw:WellStability"
-        >{{ sourcedocs_data.wellStability }}</ns:wellStability
-      >
+      <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
       {% endif %}
-      <ns:groundLevelStable
-        >{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable
-      >
-      <ns:groundLevelPosition uom="m"
-        >{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition
-      >
-      <ns:groundLevelPositioningMethod
-        codeSpace="urn:bro:gmw:GroundLevelPositioningMethod"
-        >{{ sourcedocs_data.groundLevelPositioningMethod
-        }}</ns:groundLevelPositioningMethod
-      >
+      <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+      <ns:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition>
+      <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{
+        sourcedocs_data.groundLevelPositioningMethod
+        }}</ns:groundLevelPositioningMethod>
     </ns:GMW_GroundLevel>
   </ns:sourceDocument>
 </ns:deleteRequest>

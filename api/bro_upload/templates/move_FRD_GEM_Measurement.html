@@ -1,94 +1,61 @@
-<moveRequest
-  xmlns="http://www.broservices.nl/xsd/isfrd/1.0"
-  xmlns:frdcom="http://www.broservices.nl/xsd/frdcommon/1.0"
-  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:swe="http://www.opengis.net/swe/2.0"
-  xmlns:gml="http://www.opengis.net/gml/3.2"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
+<moveRequest xmlns="http://www.broservices.nl/xsd/isfrd/1.0" xmlns:frdcom="http://www.broservices.nl/xsd/frdcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:swe="http://www.opengis.net/swe/2.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd"
->
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isfrd/1.0 ../../XSD/isfrd-messages.xsd">
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-  <brocom:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
-  >
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <dateToBeCorrected>{{ metadata.dateToBeCorrected }}</dateToBeCorrected>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-  <correctionReason codeSpace="urn:bro:frd:CorrectionReason"
-    >{{ metadata.correctionReason }}</correctionReason
-  >
+  <correctionReason codeSpace="urn:bro:frd:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
   <sourceDocument>
     <FRD_GEM_Measurement gml:id="id_0001">
       <relatedGeoElectricMeasurement>
         <frdcom:GeoElectricMeasurement gml:id="id_0002">
-          <frdcom:measurementDate
-            >{{ sourcedocs_data.measurementDate }}</frdcom:measurementDate
-          >
+          <frdcom:measurementDate>{{ sourcedocs_data.measurementDate }}</frdcom:measurementDate>
           <frdcom:measurementOperator>
-            <brocom:chamberOfCommerceNumber
-              >{{ sourcedocs_data.measurementOperatorKvk
-              }}</brocom:chamberOfCommerceNumber
-            >
+            <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.measurementOperatorKvk
+              }}</brocom:chamberOfCommerceNumber>
           </frdcom:measurementOperator>
-          <frdcom:determinationProcedure codeSpace="urn:bro:frd:DeterminationProcedure"
-            >{{ sourcedocs_data.determinationProcedure }}</frdcom:determinationProcedure
-          >
-          <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure"
-            >{{ sourcedocs_data.evaluationProcedure }}</frdcom:evaluationProcedure
-          >
+          <frdcom:determinationProcedure codeSpace="urn:bro:frd:DeterminationProcedure">{{
+            sourcedocs_data.determinationProcedure }}</frdcom:determinationProcedure>
+          <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{ sourcedocs_data.evaluationProcedure
+            }}</frdcom:evaluationProcedure>
           {% for measurement in sourcedocs_data.measurements %}
           <frdcom:measure>
-            <frdcom:resistance uom="{{ measurement.unit }}"
-              >{{ measurement.value }}</frdcom:resistance
-            >
-            <frdcom:relatedMeasurementConfiguration
-              xlink:href="{{ measurement.configuration }}"
-            />
+            <frdcom:resistance uom="{{ measurement.unit }}">{{ measurement.value }}</frdcom:resistance>
+            <frdcom:relatedMeasurementConfiguration xlink:href="{{ measurement.configuration }}" />
           </frdcom:measure>
           {% if relatedCalculatedApparentFormationResistance in sourcedocs_data %}
           <frdcom:relatedCalculatedApparentFormationResistance>
             <frdcom:CalculatedApparentFormationResistance gml:id="id_0003">
               <frdcom:calculationOperator>
-                <brocom:chamberOfCommerceNumber
-                  >{{
+                <brocom:chamberOfCommerceNumber>{{
                   sourcedocs_data.relatedCalculatedApparentFormationResistance.calculationOperatorKvk
-                  }}</brocom:chamberOfCommerceNumber
-                >
+                  }}</brocom:chamberOfCommerceNumber>
               </frdcom:calculationOperator>
-              <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure"
-                >{{
+              <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{
                 sourcedocs_data.relatedCalculatedApparentFormationResistance.evaluationProcedure
-                }}</frdcom:evaluationProcedure
-              >
+                }}</frdcom:evaluationProcedure>
               <frdcom:apparentFormationResistanceSeries>
                 <swe:DataArray id="id_0004">
                   <swe:elementCount>
                     <swe:Count>
-                      <swe:value
-                        >{{
+                      <swe:value>{{
                         sourcedocs_data.relatedCalculatedApparentFormationResistance.elementCount
-                        }}</swe:value
-                      >
+                        }}</swe:value>
                     </swe:Count>
                   </swe:elementCount>
-                  <swe:elementType
-                    name="SchijnbareFormatieweerstandRecord"
-                    xlink:href="https://schema.broservices.nl/xsd/frdcommon/1.0/ApparentFormationResistanceRecord.xml"
-                  />
+                  <swe:elementType name="SchijnbareFormatieweerstandRecord"
+                    xlink:href="https://schema.broservices.nl/xsd/frdcommon/1.0/ApparentFormationResistanceRecord.xml" />
                   <swe:encoding>
-                    <swe:TextEncoding
-                      collapseWhiteSpaces="true"
-                      decimalSeparator="."
-                      tokenSeparator=","
-                      blockSeparator=" "
-                    />
+                    <swe:TextEncoding collapseWhiteSpaces="true" decimalSeparator="." tokenSeparator=","
+                      blockSeparator=" " />
                   </swe:encoding>
-                  <swe:values
-                    >{{
+                  <swe:values>{{
                     sourcedocs_data.relatedCalculatedApparentFormationResistance.values
-                    }}</swe:values
-                  >
+                    }}</swe:values>
                 </swe:DataArray>
               </frdcom:apparentFormationResistanceSeries>
             </frdcom:CalculatedApparentFormationResistance>
