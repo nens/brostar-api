@@ -5,6 +5,7 @@ from celery import shared_task
 from api.bro_import import bulk_import
 from api.bro_upload.gar_bulk_upload import GARBulkUploader
 from api.bro_upload.gld_bulk_upload import GLDBulkUploader
+from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import BRODelivery
 
 logger = logging.getLogger(__name__)
@@ -49,8 +50,6 @@ def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     fieldwork_upload_file_uuid: str,
     lab_upload_file_uuid: str,
-    bro_username: str,
-    bro_password: str,
 ) -> None:
     """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
     try:
@@ -58,8 +57,6 @@ def gar_bulk_upload_task(
             bulk_upload_instance_uuid,
             fieldwork_upload_file_uuid,
             lab_upload_file_uuid,
-            bro_username,
-            bro_password,
         )
         uploader.process()
     except Exception as e:
@@ -70,16 +67,28 @@ def gar_bulk_upload_task(
 def gld_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     measurement_tvp_file_uuid: str,
-    bro_username: str,
-    bro_password: str,
 ) -> None:
     """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
     try:
         uploader = GLDBulkUploader(
             bulk_upload_instance_uuid,
             measurement_tvp_file_uuid,
-            bro_username,
-            bro_password,
+        )
+        uploader.process()
+    except Exception as e:
+        logger.exception(e)
+
+
+@shared_task
+def gmn_bulk_upload_task(
+    bulk_upload_instance_uuid: str,
+    file_uuid: str,
+) -> None:
+    """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
+    try:
+        uploader = GMNBulkUploader(
+            bulk_upload_instance_uuid,
+            file_uuid,
         )
         uploader.process()
     except Exception as e:

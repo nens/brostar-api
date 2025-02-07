@@ -4,6 +4,8 @@ from requests.exceptions import HTTPError, RequestException
 
 from api.bro_import import bulk_import, object_import
 from api.tests import fixtures
+from gld.models import GLD, Observation
+from gmw.models import GMW, Event, MonitoringTube
 
 organisation = fixtures.organisation
 importtask = fixtures.importtask
@@ -123,40 +125,40 @@ def test_gld_download_url(gld_object_importer: object_import.GLDObjectImporter):
     )
 
 
-# @pytest.mark.django_db
-# def test_gld_observation_summary(gld_object_importer: object_import.GLDObjectImporter):
-#     observation_summary = gld_object_importer._observation_summary()
+@pytest.mark.django_db
+def test_gld_observation_summary(gld_object_importer: object_import.GLDObjectImporter):
+    observation_summary = gld_object_importer._observation_summary()
 
-#     assert isinstance(observation_summary, list)
+    assert isinstance(observation_summary, list)
 
-#     procedure = observation_summary[0]
-#     assert isinstance(procedure, dict)
+    procedure = observation_summary[0]
+    assert isinstance(procedure, dict)
 
-#     keys = procedure.keys()
-#     assert "observationId" in keys
-#     assert "startDate" in keys
-#     assert "endDate" in keys
-#     assert "observationType" in keys
-#     assert "observationProcessId" in keys
+    keys = procedure.keys()
+    assert "observationId" in keys
+    assert "startDate" in keys
+    assert "endDate" in keys
+    assert "observationType" in keys
+    assert "observationProcessId" in keys
 
-#     assert procedure["startDate"] == "14-11-2024"
+    assert procedure["startDate"] == "14-11-2024"
 
 
-# @pytest.mark.django_db
-# def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
-#     gld_object_importer.run()
+@pytest.mark.django_db
+def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
+    gld_object_importer.run()
 
-#     gld_instance = GLD.objects.get(bro_id=gld_object_importer.bro_id)
-#     assert gld_instance.quality_regime == "IMBRO/A"
-#     assert gld_instance.gmw_bro_id == "GMW000000078271"
-#     assert gld_instance.tube_number == "1"
+    gld_instance = GLD.objects.get(bro_id=gld_object_importer.bro_id)
+    assert gld_instance.quality_regime == "IMBRO/A"
+    assert gld_instance.gmw_bro_id == "GMW000000078271"
+    assert gld_instance.tube_number == "1"
 
-#     observation_instance = Observation.objects.filter(gld=gld_instance)
-#     assert observation_instance.count() == gld_instance.nr_of_observations
-#     assert observation_instance[0].end_position == "08-01-2025"
-#     assert observation_instance[0].begin_position == "14-11-2024"
-#     assert observation_instance[0].observation_type == "reguliereMeting"
-#     assert observation_instance[0].validation_status == "voorlopig"
+    observation_instance = Observation.objects.filter(gld=gld_instance)
+    assert observation_instance.count() == gld_instance.nr_of_observations
+    assert observation_instance[0].end_position == "08-01-2025"
+    assert observation_instance[0].begin_position == "14-11-2024"
+    assert observation_instance[0].observation_type == "reguliereMeting"
+    assert observation_instance[0].validation_status == "voorlopig"
 
 
 @pytest.fixture
@@ -176,28 +178,28 @@ def test_gmw_download_url(gmw_object_importer: object_import.GMWObjectImporter):
     )
 
 
-# @pytest.mark.django_db
-# def test_gmw_import(gmw_object_importer: object_import.GMWObjectImporter):
-#     gmw_object_importer.run()
+@pytest.mark.django_db
+def test_gmw_import(gmw_object_importer: object_import.GMWObjectImporter):
+    gmw_object_importer.run()
 
-#     gmw_instance = GMW.objects.get(bro_id=gmw_object_importer.bro_id)
-#     assert gmw_instance.quality_regime == "IMBRO"
-#     assert gmw_instance.bro_id == "GMW000000068159"
-#     assert gmw_instance.well_construction_date == "2023-05-19"
+    gmw_instance = GMW.objects.get(bro_id=gmw_object_importer.bro_id)
+    assert gmw_instance.quality_regime == "IMBRO"
+    assert gmw_instance.bro_id == "GMW000000068159"
+    assert gmw_instance.well_construction_date == "2023-05-19"
 
-#     events = Event.objects.filter(gmw=gmw_instance)
-#     assert events.count() == gmw_instance.nr_of_intermediate_events
+    events = Event.objects.filter(gmw=gmw_instance)
+    assert events.count() == gmw_instance.nr_of_intermediate_events
 
-#     event_instance = events[0]
-#     assert event_instance.metadata.get("broId", "None") == gmw_instance.bro_id
-#     assert (
-#         event_instance.metadata.get("qualityRegime", "None")
-#         == gmw_instance.quality_regime
-#     )
-#     assert (
-#         event_instance.metadata.get("deliveryAccountableParty", "None")
-#         == gmw_instance.delivery_accountable_party
-#     )
+    event_instance = events[0]
+    assert event_instance.metadata.get("broId", "None") == gmw_instance.bro_id
+    assert (
+        event_instance.metadata.get("qualityRegime", "None")
+        == gmw_instance.quality_regime
+    )
+    assert (
+        event_instance.metadata.get("deliveryAccountableParty", "None")
+        == gmw_instance.delivery_accountable_party
+    )
 
-#     monitoring_tubes = MonitoringTube.objects.filter(gmw=gmw_instance)
-#     assert monitoring_tubes.count() == gmw_instance.nr_of_tubes
+    monitoring_tubes = MonitoringTube.objects.filter(gmw=gmw_instance)
+    assert monitoring_tubes.count() == gmw_instance.nr_of_tubes

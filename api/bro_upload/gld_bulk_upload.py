@@ -54,8 +54,6 @@ class GLDBulkUploader:
         self,
         bulk_upload_instance_uuid: str,
         measurement_tvp_file_uuid: str,
-        bro_username: str,
-        bro_password: str,
     ) -> None:
         self.bulk_upload_instance: api_models.BulkUpload = (
             api_models.BulkUpload.objects.get(uuid=bulk_upload_instance_uuid)
@@ -66,9 +64,6 @@ class GLDBulkUploader:
         self.measurement_tvp_file: api_models.UploadFile = (
             api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
         )
-
-        self.bro_username: str = bro_username
-        self.bro_password: str = bro_password
 
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
         uploadtask_metadata = self.bulk_upload_instance.metadata

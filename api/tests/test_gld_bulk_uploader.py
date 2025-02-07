@@ -25,14 +25,10 @@ def test_gld_bulk_uploader_invalid_init():
         GLDBulkUploader(
             bulk_upload_instance_uuid="test",
             measurement_tvp_file_uuid="test2",
-            bro_password="pass",
-            bro_username="user",
         )
 
     with pytest.raises(api_models.BulkUpload.DoesNotExist):
         GLDBulkUploader(
             bulk_upload_instance_uuid=uuid.uuid4(),
             measurement_tvp_file_uuid=uuid.uuid4(),
-            bro_password="pass",
-            bro_username="user",
         )

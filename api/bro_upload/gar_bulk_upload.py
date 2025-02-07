@@ -36,8 +36,6 @@ class GARBulkUploader:
         bulk_upload_instance_uuid: str,
         fieldwork_upload_file_uuid: str,
         lab_upload_file_uuid: str,
-        bro_username: str,
-        bro_password: str,
     ) -> None:
         self.bulk_upload_instance: api_models.BulkUpload = (
             api_models.BulkUpload.objects.get(uuid=bulk_upload_instance_uuid)
@@ -51,9 +49,6 @@ class GARBulkUploader:
         self.lab_file: api_models.UploadFile = api_models.UploadFile.objects.get(
             uuid=lab_upload_file_uuid
         )
-
-        self.bro_username: str = bro_username
-        self.bro_password: str = bro_password
 
     def process(self) -> None:
         # Step 1: open the files and transform to a pd df
