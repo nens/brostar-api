@@ -60,6 +60,22 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = api_models.UploadTask
         fields = "__all__"
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        # Check if this is a list view
+        view = self.context.get("view", None)
+        is_list_view = hasattr(view, "action") and view.action == "list"
+
+        # Remove 'sourcedocument_data' only in list view when registration_type is "GLD_Addition"
+        if is_list_view and representation.get("registration_type") == "GLD_Addition":
+            src_data = representation.get("sourcedocument_data", {})
+            tvps = src_data.pop("timeValuePairs")
+            src_data["timeValuePairsCount"] = len(tvps)
+            representation["sourcedocument_data"] = src_data
+
+        return representation
+
 
 class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
     fieldwork_file = serializers.FileField(write_only=True, required=False)
