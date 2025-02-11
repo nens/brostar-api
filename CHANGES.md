@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.1 (unreleased)
+## 1.1 (2025-02-11)
 
 -   Hotfix: template formatting
 
