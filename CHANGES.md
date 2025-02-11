@@ -7,6 +7,7 @@
 -   Bugfix: GLD-StartRegistration replace template
 -   Bugfix: GMN-Closure registration template
 -   Bugfix: GLD-Importer
+-   Bugfix: GMW-PositionsMeasuring template order correction
 -   Enhancement: Do not require underPrivilige for GMW
 -   Enhancement: Autocorrect to insert when 'gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis' in error.
 -   Enhancement: Templates formatting

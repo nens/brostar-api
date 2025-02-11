@@ -11,7 +11,7 @@
   <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">eigenCorrectie</ns:correctionReason>
   <ns:sourceDocument>
     <ns:GMW_GroundLevelMeasuring>
-      <eventDate>
+      <ns:eventDate>
         {% if sourcedocs_data.eventDate|length == 10 %}
         <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
         {% elif sourcedocs_data.eventDate|length == 7 %}
@@ -21,7 +21,7 @@
         {% else %}
         <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
-      </eventDate>
+      </ns:eventDate>
       <ns:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition>
       <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{
         sourcedocs_data.groundLevelPositioningMethod
