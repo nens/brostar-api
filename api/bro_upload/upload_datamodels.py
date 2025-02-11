@@ -227,7 +227,7 @@ class GMWPositions(GMWEvent):
 
 class GMWPositionsMeasuring(GMWEvent):
     monitoringTubes: list[MonitoringTubePositions]
-    groundLevelPosition: str | None = None
+    groundLevelPosition: str | float | None = None
     groundLevelPositioningMethod: str | None = None
 
 

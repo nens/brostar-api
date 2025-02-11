@@ -15,13 +15,10 @@
         <frdcom:GeoElectricMeasurement gml:id="id_0002">
           <frdcom:measurementDate>{{ sourcedocs_data.measurementDate }}</frdcom:measurementDate>
           <frdcom:measurementOperator>
-            <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.measurementOperatorKvk
-              }}</brocom:chamberOfCommerceNumber>
+            <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.measurementOperatorKvk }}</brocom:chamberOfCommerceNumber>
           </frdcom:measurementOperator>
-          <frdcom:determinationProcedure codeSpace="urn:bro:frd:DeterminationProcedure">{{
-            sourcedocs_data.determinationProcedure }}</frdcom:determinationProcedure>
-          <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{ sourcedocs_data.evaluationProcedure
-            }}</frdcom:evaluationProcedure>
+          <frdcom:determinationProcedure codeSpace="urn:bro:frd:DeterminationProcedure">{{ sourcedocs_data.determinationProcedure }}</frdcom:determinationProcedure>
+          <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{ sourcedocs_data.evaluationProcedure }}</frdcom:evaluationProcedure>
           {% for measurement in sourcedocs_data.measurements %}
           <frdcom:measure>
             <frdcom:resistance uom="{{ measurement.unit }}">{{ measurement.value }}</frdcom:resistance>
@@ -31,20 +28,14 @@
           <frdcom:relatedCalculatedApparentFormationResistance>
             <frdcom:CalculatedApparentFormationResistance gml:id="id_0003">
               <frdcom:calculationOperator>
-                <brocom:chamberOfCommerceNumber>{{
-                  sourcedocs_data.relatedCalculatedApparentFormationResistance.calculationOperatorKvk
-                  }}</brocom:chamberOfCommerceNumber>
+                <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.relatedCalculatedApparentFormationResistance.calculationOperatorKvk }}</brocom:chamberOfCommerceNumber>
               </frdcom:calculationOperator>
-              <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{
-                sourcedocs_data.relatedCalculatedApparentFormationResistance.evaluationProcedure
-                }}</frdcom:evaluationProcedure>
+              <frdcom:evaluationProcedure codeSpace="urn:bro:frd:EvaluationProcedure">{{ sourcedocs_data.relatedCalculatedApparentFormationResistance.evaluationProcedure }}</frdcom:evaluationProcedure>
               <frdcom:apparentFormationResistanceSeries>
                 <swe:DataArray id="id_0004">
                   <swe:elementCount>
                     <swe:Count>
-                      <swe:value>{{
-                        sourcedocs_data.relatedCalculatedApparentFormationResistance.elementCount
-                        }}</swe:value>
+                      <swe:value>{{ sourcedocs_data.relatedCalculatedApparentFormationResistance.elementCount }}</swe:value>
                     </swe:Count>
                   </swe:elementCount>
                   <swe:elementType name="SchijnbareFormatieweerstandRecord"
@@ -53,9 +44,7 @@
                     <swe:TextEncoding collapseWhiteSpaces="true" decimalSeparator="." tokenSeparator=","
                       blockSeparator=" " />
                   </swe:encoding>
-                  <swe:values>{{
-                    sourcedocs_data.relatedCalculatedApparentFormationResistance.values
-                    }}</swe:values>
+                  <swe:values>{{ sourcedocs_data.relatedCalculatedApparentFormationResistance.values }}</swe:values>
                 </swe:DataArray>
               </frdcom:apparentFormationResistanceSeries>
             </frdcom:CalculatedApparentFormationResistance>

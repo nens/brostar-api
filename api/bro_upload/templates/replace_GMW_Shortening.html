@@ -23,16 +23,14 @@
         {% endif %}
       </ns:eventDate>
       {% if sourcedocs_data.wellHeadProtector %}
-      <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}
-      </ns:wellHeadProtector>
+      <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}</ns:wellHeadProtector>
       {% endif %}
       <ns:numberOfTubesShortened>{{ sourcedocs_data.monitoringTubes | length }}</ns:numberOfTubesShortened>
       {% for monitoringtube in sourcedocs_data.monitoringTubes %}
       <ns:monitoringTube>
         <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
         <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-        <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{
-          monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+        <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
         <ns:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns:plainTubePartLength>
       </ns:monitoringTube>
       {% endfor %}

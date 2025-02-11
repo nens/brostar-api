@@ -24,8 +24,7 @@
                     <gco:CharacterString />
                   </gmd:organisationName>
                   <gmd:role>
-                    <gmd:CI_RoleCode codeList="urn:ISO:19115:CI_RoleCode" codeListValue="principalInvestigator">
-                      principalInvestigator</gmd:CI_RoleCode>
+                    <gmd:CI_RoleCode codeList="urn:ISO:19115:CI_RoleCode" codeListValue="principalInvestigator">principalInvestigator</gmd:CI_RoleCode>
                   </gmd:role>
                 </gmd:CI_ResponsibleParty>
               </gmd:contact>
@@ -39,25 +38,23 @@
               <gmd:identificationInfo gco:nilReason="unknown" />
               {% if sourcedocs_data.validationStatus == 'volledigBeoordeeld' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:volledigBeoordeeld" />
-              {% endif %} {% if sourcedocs_data.validationStatus == 'voorlopig' %}
+              {% elif sourcedocs_data.validationStatus == 'voorlopig' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:voorlopig" />
-              {% endif %} {% if sourcedocs_data.validationStatus == 'onbekend' %}
+              {% else %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:onbekend" />
               {% endif %}
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationMetadata:principalInvestigator" />
                   <om:value xsi:type="gldcom:OrganizationType">
-                    <gldcom:chamberOfCommerceNumber>{{ sourcedocs_data.investigatorKvk
-                      }}</gldcom:chamberOfCommerceNumber>
+                    <gldcom:chamberOfCommerceNumber>{{ sourcedocs_data.investigatorKvk }}</gldcom:chamberOfCommerceNumber>
                   </om:value>
                 </om:NamedValue>
               </wml2:parameter>
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationMetadata:observationType" />
-                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:ObservationType">{{
-                    sourcedocs_data.observationType }}</om:value>
+                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:ObservationType">{{ sourcedocs_data.observationType }}</om:value>
                 </om:NamedValue>
               </wml2:parameter>
             </wml2:ObservationMetadata>
@@ -85,23 +82,20 @@
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationProcess:airPressureCompensationType" />
-                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:AirPressureCompensationType">{{
-                    sourcedocs_data.airPressureCompensationType }}</om:value>
+                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:AirPressureCompensationType">{{ sourcedocs_data.airPressureCompensationType }}</om:value>
                 </om:NamedValue>
               </wml2:parameter>
               {% endif %}
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationProcess:evaluationProcedure" />
-                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:EvaluationProcedure">{{
-                    sourcedocs_data.evaluationProcedure }}</om:value>
+                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:EvaluationProcedure">{{ sourcedocs_data.evaluationProcedure }}</om:value>
                 </om:NamedValue>
               </wml2:parameter>
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationProcess:measurementInstrumentType" />
-                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:MeasurementInstrumentType">{{
-                    sourcedocs_data.measurementInstrumentType }}</om:value>
+                  <om:value xsi:type="gml:CodeWithAuthorityType" codeSpace="urn:bro:gld:MeasurementInstrumentType">{{ sourcedocs_data.measurementInstrumentType }}</om:value>
                 </om:NamedValue>
               </wml2:parameter>
             </wml2:ObservationProcess>
@@ -138,9 +132,9 @@
                       <!--  optioneel  -->
                       {% if tvp.censorReason == 'kleinerDanLimietwaarde' %}
                       <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/BelowDetectionRange" />
-                      {% endif %} {% if tvp.censorReason == 'groterDanLimietwaarde' %}
+                      {% elif tvp.censorReason == 'groterDanLimietwaarde' %}
                       <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/AboveDetectionRange" />
-                      {% endif %} {% if tvp.censorReason == 'onbekend' %}
+                      {% else %}
                       <!--  optioneel: IMBRO/A  -->
                       <wml2:censoredReason xlink:href="http://www.opengis.net/def/nil/OGC/0/unknown" />
                       {% endif %}

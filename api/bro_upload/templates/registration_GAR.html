@@ -30,27 +30,22 @@
             <fieldResearch>
                 <garcom:samplingDateTime>{{ sourcedocs_data.fieldResearch.samplingDateTime }}</garcom:samplingDateTime>
                 <garcom:samplingOperator>
-                    <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}
-                    </brocom:chamberOfCommerceNumber>
+                    <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}</brocom:chamberOfCommerceNumber>
                 </garcom:samplingOperator>
-                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{
-                    sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
+                <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{ sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
                 <garcom:samplingDevice>
                     <garcom:pumpType codeSpace="urn:bro:gar:PumpType">{{ sourcedocs_data.fieldResearch.pumpType }}
                     </garcom:pumpType>
                 </garcom:samplingDevice>
                 <garcom:fieldObservation>
                     {% if sourcedocs_data.fieldResearch.primaryColour %}
-                    <garcom:primaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.primaryColour
-                        }}</garcom:primaryColour>
+                    <garcom:primaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.primaryColour }}</garcom:primaryColour>
                     {% endif %}
                     {% if sourcedocs_data.fieldResearch.secondaryColour %}
-                    <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">{{
-                        sourcedocs_data.fieldResearch.secondaryColour }}</garcom:secondaryColour>
+                    <garcom:secondaryColour codeSpace="urn:bro:gar:Colour">{{ sourcedocs_data.fieldResearch.secondaryColour }}</garcom:secondaryColour>
                     {% endif %}
                     {% if sourcedocs_data.fieldResearch.colourStrength %}
-                    <garcom:colourStrength codeSpace="urn:bro:gar:ColourStrength">{{
-                        sourcedocs_data.fieldResearch.colourStrength }}</garcom:colourStrength>
+                    <garcom:colourStrength codeSpace="urn:bro:gar:ColourStrength">{{ sourcedocs_data.fieldResearch.colourStrength }}</garcom:colourStrength>
                     {% endif %}
                     <garcom:abnormalityInCooling>{{ sourcedocs_data.fieldResearch.abnormalityInCooling }}
                     </garcom:abnormalityInCooling>
@@ -59,22 +54,19 @@
                     <garcom:pollutedByEngine>{{ sourcedocs_data.fieldResearch.pollutedByEngine }}
                     </garcom:pollutedByEngine>
                     <garcom:filterAerated>{{ sourcedocs_data.fieldResearch.filterAerated }}</garcom:filterAerated>
-                    <garcom:groundWaterLevelDroppedTooMuch>{{
-                        sourcedocs_data.fieldResearch.groundWaterLevelDroppedTooMuch }}
+                    <garcom:groundWaterLevelDroppedTooMuch>{{ sourcedocs_data.fieldResearch.groundWaterLevelDroppedTooMuch }}
                     </garcom:groundWaterLevelDroppedTooMuch>
                     <garcom:abnormalFilter>{{ sourcedocs_data.fieldResearch.abnormalFilter }}</garcom:abnormalFilter>
                     <garcom:sampleAerated>{{ sourcedocs_data.fieldResearch.sampleAerated }}</garcom:sampleAerated>
                     <garcom:hoseReused>{{ sourcedocs_data.fieldResearch.hoseReused }}</garcom:hoseReused>
-                    <garcom:temperatureDifficultToMeasure>{{ sourcedocs_data.fieldResearch.temperatureDifficultToMeasure
-                        }}</garcom:temperatureDifficultToMeasure>
+                    <garcom:temperatureDifficultToMeasure>{{ sourcedocs_data.fieldResearch.temperatureDifficultToMeasure }}</garcom:temperatureDifficultToMeasure>
                 </garcom:fieldObservation>
                 {% for measurement in sourcedocs_data.fieldResearch.fieldMeasurements %}
                 <garcom:fieldMeasurement>
                     <garcom:parameter>{{ measurement.parameter }}</garcom:parameter>
                     <garcom:fieldMeasurementValue uom="{{ measurement.unit }}">{{ measurement.fieldMeasurementValue }}
                     </garcom:fieldMeasurementValue>
-                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{
-                        measurement.qualityControlStatus }}</garcom:qualityControlStatus>
+                    <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{ measurement.qualityControlStatus }}</garcom:qualityControlStatus>
                 </garcom:fieldMeasurement>
                 {% endfor %}
             </fieldResearch>
@@ -92,25 +84,21 @@
                     <garcom:analysisDate>
                         <brocom:date>{{ process.date }}</brocom:date>
                     </garcom:analysisDate>
-                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{
-                        process.analyticalTechnique }}</garcom:analyticalTechnique>
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{ process.analyticalTechnique }}</garcom:analyticalTechnique>
                     <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}
                     </garcom:valuationMethod>
                     {% for analysis in process.analyses %}
                     <garcom:analysis>
                         <garcom:parameter>{{ analysis.parameter }}</garcom:parameter>
-                        <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue
-                            }}</garcom:analysisMeasurementValue>
+                        <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue }}</garcom:analysisMeasurementValue>
                         {% if analysis.limitSymbol %}
                         <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}
                         </garcom:limitSymbol>
                         {% endif %}
                         {% if analysis.reportingLimit %}
-                        <garcom:reportingLimit uom="{{ analysis.unit }}">{{ analysis.reportingLimit }}
-                        </garcom:reportingLimit>
+                        <garcom:reportingLimit uom="{{ analysis.unit }}">{{ analysis.reportingLimit }} </garcom:reportingLimit>
                         {% endif %}
-                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{
-                            analysis.qualityControlStatus }}</garcom:qualityControlStatus>
+                        <garcom:qualityControlStatus codeSpace="urn:bro:gar:QualityControlStatus">{{ analysis.qualityControlStatus }}</garcom:qualityControlStatus>
                     </garcom:analysis>
                     {% endfor %}
                 </garcom:analysisProcess>
