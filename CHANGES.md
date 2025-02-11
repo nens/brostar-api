@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 0.78 (unreleased)
+## 1.0 (2025-02-11)
 
 -   Bugfix: GLD-Closure template
 -   Bugfix: GLD-Addition delete template
