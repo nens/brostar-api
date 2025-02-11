@@ -13,6 +13,7 @@
 -   Enhancement: Templates formatting
 -   Enhancement: Uploadtasks - GLDAddition timeValuePairs -> timeValuePairsCount for improved performance
 -   Added GLD-Observations to import
+-   Added GMN-MeasuringPoint to bulk-import
 -   Added GMN-IDs to GLD import
 -   Added GMW-DeleteRequests
 
