@@ -2,9 +2,7 @@
 
 ## 1.5 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: accept Excel in .zip folders for bulkimports
 
 ## 1.4 (2025-02-13)
 

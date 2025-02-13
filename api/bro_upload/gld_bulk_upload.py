@@ -235,13 +235,27 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
     elif filetype == "zip":
         with zipfile.ZipFile(file_instance.file) as z:
             csv_files = [f for f in z.namelist() if f.lower().endswith(".csv")]
-            if not csv_files:
-                raise ValueError("No CSV files found in the zip archive.")
+            xls_files = [f for f in z.namelist() if f.lower().endswith(".xls")]
+            xlsx_files = [f for f in z.namelist() if f.lower().endswith(".xlsx")]
+            excel_files = xlsx_files.extend(xls_files)
+            if not csv_files or not excel_files:
+                raise ValueError("No CSV or Excel files found in the zip archive.")
 
             # Read all CSV files into Polars DataFrames
             dfs = []
             for csv_file in csv_files:
                 with z.open(csv_file) as file:
+                    dfs.append(
+                        pl.read_csv(
+                            file,
+                            has_header=True,
+                            ignore_errors=False,
+                            truncate_ragged_lines=True,
+                        )
+                    )
+
+            for excel in excel_files:
+                with z.open(excel) as file:
                     dfs.append(
                         pl.read_csv(
                             file,
