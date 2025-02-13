@@ -106,7 +106,9 @@ class GLDBulkUploader:
             f"{bro_id} {uploadtask_metadata['qualityRegime']}"  # Maybe still change this
         )
 
-        current_measurements_df = current_measurements_df.sort("time")
+        current_measurements_df = current_measurements_df.with_columns(
+            pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
+        ).sort("time")
         logger.warning(current_measurements_df)
 
         time = current_measurements_df.select("time")
