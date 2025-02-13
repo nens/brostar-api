@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.3 (unreleased)
+## 1.3 (2025-02-13)
 
 -   Hotfix: GMW-Construction templates
 
