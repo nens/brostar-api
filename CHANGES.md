@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.3 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.2 (2025-02-13)
 
 -   Enhancement: allow for YYYY-MM-DD HH:MM:SS time format in timeseriesFiles
