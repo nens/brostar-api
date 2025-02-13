@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.2 (unreleased)
+## 1.2 (2025-02-13)
 
 -   Enhancement: allow for YYYY-MM-DD HH:MM:SS time format in timeseriesFiles
 -   Bugfix: Import of GLDs with multiple links to GMN now work again
