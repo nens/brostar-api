@@ -2,9 +2,7 @@
 
 ## 1.4 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: GLD-Bulk time to isoformat
 
 ## 1.3 (2025-02-13)
 
