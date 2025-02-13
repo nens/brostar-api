@@ -27,7 +27,9 @@
       <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
       {% endif %}
       <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
+      {% if sourcedocs_data.maintenanceResponsibleParty %}
       <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
+      {% endif %}
       <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}
       </ns:wellHeadProtector>
       <ns:wellConstructionDate>

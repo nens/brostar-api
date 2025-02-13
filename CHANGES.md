@@ -2,9 +2,7 @@
 
 ## 1.3 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: GMW-Construction templates
 
 ## 1.2 (2025-02-13)
 
