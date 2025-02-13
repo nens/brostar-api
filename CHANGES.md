@@ -2,9 +2,9 @@
 
 ## 1.2 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: allow for YYYY-MM-DD HH:MM:SS time format in timeseriesFiles
+-   Bugfix: Import of GLDs with multiple links to GMN now work again
+-   Bugfix: GMW-Construction templates
 
 ## 1.1 (2025-02-11)
 

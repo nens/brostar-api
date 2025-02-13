@@ -29,8 +29,7 @@
       <ns:nitgCode>{{ sourcedocs_data.nitgCode }}</ns:nitgCode>
       {% endif %}
       <ns:owner>{{ sourcedocs_data.owner }}</ns:owner>
-      <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty
-        }}</ns:maintenanceResponsibleParty>
+      <ns:maintenanceResponsibleParty>{{ sourcedocs_data.maintenanceResponsibleParty }}</ns:maintenanceResponsibleParty>
       <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">{{ sourcedocs_data.wellHeadProtector }}
       </ns:wellHeadProtector>
       <ns:wellConstructionDate>
@@ -78,8 +77,7 @@
         <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
         <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
         <ns:materialUsed>
-          <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">{{ monitoringtube.tubePackingMaterial }}
-          </ns2:tubePackingMaterial>
+          <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">{{ monitoringtube.tubePackingMaterial }}</ns2:tubePackingMaterial>
           <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.tubeMaterial }}</ns2:tubeMaterial>
           <ns2:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns2:glue>
         </ns:materialUsed>
@@ -101,8 +99,7 @@
           {% for electrode in geoOhmCable.electrodes %}
           <ns:electrode>
             <ns2:electrodeNumber>{{ electrode.electrodeNumber }}</ns2:electrodeNumber>
-            <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{
-              electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
+            <ns2:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ electrode.electrodePackingMaterial }}</ns2:electrodePackingMaterial>
             <ns2:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ electrode.electrodeStatus }}</ns2:electrodeStatus>
             <ns2:electrodePosition uom="m">{{ electrode.electrodePosition }}</ns2:electrodePosition>
           </ns:electrode>

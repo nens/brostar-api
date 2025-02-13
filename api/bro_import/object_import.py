@@ -673,13 +673,10 @@ class GLDObjectImporter(ObjectImporter):
 
         self._save_observations()
 
-    def _gmn_ids(self, gld_data: list[dict[str, any]]) -> list:
+    def _gmn_ids(self, gld_data: dict[list[dict[str, any]]]) -> list:
         """Retrieve a list of all coupled gmn-ids."""
         # Navigate to the `groundwaterMonitoringNet` key
-        monitoring_nets = gld_data.get("groundwaterMonitoringNet", {}).get(
-            "gldcommon:GroundwaterMonitoringNet", []
-        )
-
+        monitoring_nets = gld_data.get("groundwaterMonitoringNet", {})
         gmn_ids = []
         if isinstance(monitoring_nets, dict):
             monitoring_nets = [monitoring_nets]

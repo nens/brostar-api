@@ -246,35 +246,3 @@ def _convert_resulttime_to_date(result_time: str) -> str:
     From 2024-01-01T00:00:00Z to 2024-01-01
     """
     return result_time.split("T")[0]
-
-
-def create_gld_sourcedocs_data(
-    measurement_tvps: list[dict], sourcedocument_data: dict
-) -> dict:
-    """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
-    sourcedocument_data.update(
-        {
-            "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
-            # "validationStatus": sourcedocument_data.get("validationStatus", None),
-            # "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
-            # "observationType": sourcedocument_data.get("observationType", None),
-            # "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),
-            # "measurementInstrumentType": sourcedocument_data.get("measurementInstrumentType"),
-            # "processReference": sourcedocument_data.get("processReference", None),
-            # "beginPosition": sourcedocument_data("beginPosition", None),
-            # "endPosition": sourcedocument_data.get("endPosition", None),
-            # "resultTime": sourcedocument_data.get("resultTime", None),
-            "timeValuePairs": measurement_tvps,
-        }
-    )
-
-    if sourcedocument_data["airPressureCompensationType"]:
-        sourcedocument_data.update(
-            {
-                "airPressureCompensationType": sourcedocument_data[
-                    "airPressureCompensationType"
-                ]
-            }
-        )
-
-    return sourcedocument_data

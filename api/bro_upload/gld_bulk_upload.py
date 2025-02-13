@@ -41,6 +41,39 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
     return df
 
 
+def str_to_datetime(time_value: str | datetime.datetime):
+    if isinstance(time_value, datetime.datetime):
+        return time_value
+    if len(time_value) == 19:
+        return _convert_timenaive(time_value)
+    elif len(time_value) > 19:
+        return _convert_time(time_value)
+    else:
+        raise ValueError("Incorrect time format.")
+
+
+def _convert_timenaive(datetime_str: str) -> datetime.datetime:
+    if datetime_str.__contains__("T"):
+        return datetime.datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S")
+    elif datetime_str.__contains__(" "):
+        return datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+    else:
+        raise ValueError("Incorrect time format.")
+
+
+def _convert_time(datetime_str: str) -> datetime.datetime:
+    if datetime_str.__contains__("T"):
+        return datetime.datetime.strptime(
+            datetime_str, "%Y-%m-%dT%H:%M:%S%z"
+        ).astimezone(datetime.UTC)
+    elif datetime_str.__contains__(" "):
+        return datetime.datetime.strptime(
+            datetime_str, "%Y-%m-%d %H:%M:%S%z"
+        ).astimezone(datetime.UTC)
+    else:
+        raise ValueError("Incorrect time format.")
+
+
 class GLDBulkUploader:
     """Handles the upload process for bulk GAR data.
 
@@ -64,6 +97,7 @@ class GLDBulkUploader:
         self.measurement_tvp_file: api_models.UploadFile = (
             api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
         )
+        logger.warning(self.measurement_tvp_file.file)
 
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
         uploadtask_metadata = self.bulk_upload_instance.metadata
@@ -79,29 +113,8 @@ class GLDBulkUploader:
         begin_position = time.item(0, 0)
         end_position = time.item(-1, 0)
 
-        if len(begin_position) == 19:
-            begin_position = datetime.datetime.strptime(
-                begin_position, "%Y-%m-%dT%H:%M:%S"
-            )
-        elif len(begin_position) > 19:
-            begin_position = datetime.datetime.strptime(
-                begin_position, "%Y-%m-%dT%H:%M:%S%z"
-            ).astimezone(datetime.UTC)
-        else:
-            raise ValueError(
-                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {begin_position}."
-            )
-
-        if len(end_position) == 19:
-            end_position = datetime.datetime.strptime(end_position, "%Y-%m-%dT%H:%M:%S")
-        elif len(end_position) > 19:
-            end_position = datetime.datetime.strptime(
-                end_position, "%Y-%m-%dT%H:%M:%S%z"
-            ).astimezone(datetime.UTC)
-        else:
-            raise ValueError(
-                f"Time has incorrect format, use: YYYY-mm-ddTHH:MM:SS+-Timezone. Not: {end_position}."
-            )
+        begin_position = str_to_datetime(begin_position)
+        end_position = str_to_datetime(end_position)
 
         validation_status = self.bulk_upload_instance.sourcedocument_data.get(
             "validationStatus", None
@@ -197,18 +210,23 @@ class GLDBulkUploader:
 
 def file_to_df(file_instance: T) -> pl.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
+    print("FILE_TO_DF")
+    logger.warning("FILE_TO_DF")
     filetype = file_instance.file.name.split(".")[-1].lower()
+    logger.warning(filetype)
 
     if filetype == "csv":
         df = pl.read_csv(
-            file_instance.file,
+            file_instance.file.path,
             has_header=True,
             ignore_errors=False,
             truncate_ragged_lines=True,
         )
     elif filetype in ["xls", "xlsx"]:
+        print("XLSX")
+        logger.warning(file_instance.file.path)
         df = pl.read_excel(
-            file_instance.file,
+            source=file_instance.file.path,
             has_header=True,
         )
     elif filetype == "zip":
