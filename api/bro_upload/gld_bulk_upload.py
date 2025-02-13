@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+import uuid
 import zipfile
 from typing import TypeVar
 
@@ -273,6 +274,9 @@ def create_gld_sourcedocs_data(
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
     sourcedocument_data.update(
         {
+            "observationId": f"_{uuid.uuid4()}",
+            "observationProcessId": f"_{uuid.uuid4()}",
+            "measurementTimeseriesId": f"_{uuid.uuid4()}",
             "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
             "validationStatus": sourcedocument_data.get("validationStatus", None),
             "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),

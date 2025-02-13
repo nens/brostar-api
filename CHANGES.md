@@ -3,6 +3,7 @@
 ## 1.4 (unreleased)
 
 -   Hotfix: GLD-Bulk time to isoformat
+-   Hotfix: generate uuids for bulk
 
 ## 1.3 (2025-02-13)
 
