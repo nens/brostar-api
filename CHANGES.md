@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.4 (unreleased)
+## 1.4 (2025-02-13)
 
 -   Hotfix: GLD-Bulk time to isoformat
 -   Hotfix: generate uuids for bulk
