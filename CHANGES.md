@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.5 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.4 (2025-02-13)
 
 -   Hotfix: GLD-Bulk time to isoformat
