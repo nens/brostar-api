@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.6 (unreleased)
+## 1.6 (2025-02-14)
 
 -   Hotfix: GLD-BulkUpload
 
