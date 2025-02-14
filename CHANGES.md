@@ -2,9 +2,7 @@
 
 ## 1.10 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Docs: Add basic front-end information
 
 ## 1.9 (2025-02-14)
 
