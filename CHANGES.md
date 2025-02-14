@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.5 (unreleased)
+## 1.5 (2025-02-14)
 
 -   Enhancement: accept Excel in .zip folders for bulkimports
 -   GLD-Addition template status
