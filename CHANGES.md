@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.9 (unreleased)
+## 1.9 (2025-02-14)
 
 -   Enhancement: GLD-Import handle summer-winter time
 
