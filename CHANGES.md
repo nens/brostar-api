@@ -2,9 +2,7 @@
 
 ## 1.6 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: GLD-BulkUpload
 
 ## 1.5 (2025-02-14)
 
