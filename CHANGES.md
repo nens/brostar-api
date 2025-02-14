@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.9 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.8 (2025-02-14)
 
 -   Hotfix: Temporarily fix validationStatus
