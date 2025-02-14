@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.7 (unreleased)
+## 1.7 (2025-02-14)
 
 -   Enhancement: GLD-Bulk handling of caps and uncomplete censorReason
 
