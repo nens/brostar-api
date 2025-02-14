@@ -123,7 +123,8 @@ class GLDBulkUploader:
         end_position = str_to_datetime(end_position)
 
         validation_status = self.bulk_upload_instance.sourcedocument_data.get(
-            "validationStatus", None
+            "statusQualityControl",
+            None,  # should be validationStatus, update in front-end
         )
         if validation_status == "volledigBeoordeeld":
             result_time = end_position + datetime.timedelta(days=1)
