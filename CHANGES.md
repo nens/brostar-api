@@ -2,9 +2,7 @@
 
 ## 1.7 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: GLD-Bulk handling of caps and uncomplete censorReason
 
 ## 1.6 (2025-02-14)
 
