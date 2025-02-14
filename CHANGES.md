@@ -2,9 +2,7 @@
 
 ## 1.9 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: GLD-Import handle summer-winter time
 
 ## 1.8 (2025-02-14)
 

@@ -130,7 +130,9 @@ class GLDBulkUploader:
         )
         # Convert naive datetime to Dutch timezone (Europe/Amsterdam)
         current_measurements_df = current_measurements_df.with_columns(
-            pl.col("time").dt.replace_time_zone("Europe/Amsterdam")
+            pl.col("time").dt.replace_time_zone(
+                "Europe/Amsterdam", ambiguous="earliest"
+            )
         )
         current_measurements_df = current_measurements_df.with_columns(
             pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
