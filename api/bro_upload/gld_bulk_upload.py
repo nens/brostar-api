@@ -39,6 +39,21 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
 
     # Set the new column names
     df.columns = updated_names
+
+    df = df.with_columns(
+        pl.col("statusQualityControl").str.to_lowercase().alias("statusQualityControl"),
+        pl.col("censorReason").str.to_lowercase().alias("censorReason"),
+    )
+
+    df = df.with_columns(
+        pl.when(pl.col("censorReason").str.contains("kleiner"))
+        .then(pl.lit("kleinerDanLimietwaarde"))
+        .when(pl.col("censorReason").str.contains("groter"))
+        .then(pl.lit("groterDanLimietwaarde"))
+        .otherwise(pl.col("censorReason"))  # Keeps original value if no match
+        .alias("censorReason")  # Overwrites the existing column
+    )
+
     return df
 
 
