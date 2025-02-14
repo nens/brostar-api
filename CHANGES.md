@@ -3,6 +3,7 @@
 ## 1.5 (unreleased)
 
 -   Enhancement: accept Excel in .zip folders for bulkimports
+-   GLD-Addition template status
 
 ## 1.4 (2025-02-13)
 

@@ -98,6 +98,9 @@ class GLDBulkUploader:
         self.measurement_tvp_file: api_models.UploadFile = (
             api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
         )
+        self.bulk_upload_instance.file = self.measurement_tvp_file
+        self.bulk_upload_instance.save()
+
         logger.warning(self.measurement_tvp_file.file)
 
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
@@ -134,8 +137,8 @@ class GLDBulkUploader:
 
         self.bulk_upload_instance.sourcedocument_data.update(
             {
-                "beginPosition": begin_position.isoformat(sep="T", timespec="seconds"),
-                "endPosition": end_position.isoformat(sep="T", timespec="seconds"),
+                "beginPosition": begin_position.date(),
+                "endPosition": end_position.date(),
                 "resultTime": result_time.isoformat(sep="T", timespec="seconds"),
             }
         )
@@ -172,14 +175,15 @@ class GLDBulkUploader:
 
         # Convert to standard format
         all_measurements_df = _convert_and_check_df(all_measurements_df)
-        self.bulk_upload_instance.progress = 20.00
-        self.bulk_upload_instance.save()
 
         # BRO-Ids
         bro_ids = all_measurements_df.to_series(0).unique()
         progress = 80 / (
             len(bro_ids) * 2
         )  # amount of progress per steps, per bro_id two steps.
+        self.bulk_upload_instance.progress = 20.00
+        self.bulk_upload_instance.log = f"Nr BroIds: {bro_ids}, Nr of Measurements: {all_measurements_df.count().item(0, 0)}. \n"
+        self.bulk_upload_instance.save()
         for bro_id in bro_ids:
             # Step 2: Prepare data for uploadtask per row
             current_measurements_df = all_measurements_df.filter(
@@ -195,12 +199,9 @@ class GLDBulkUploader:
             if upload_task.status in ["COMPLETED", "FAILED"]:
                 self.bulk_upload_instance.progress += progress
 
-            if upload_task.status == "COMPLETED":
-                self.bulk_upload_instance.status = "FINISHED"
-
             elif upload_task.status == "FAILED":
                 self.bulk_upload_instance.status = "FAILED"
-                self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}."
+                self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}.\n"
 
             else:
                 self.bulk_upload_instance.status = "UNFINISHED"
@@ -208,7 +209,11 @@ class GLDBulkUploader:
                     "After 10 seconds the upload is not yet finished."
                 )
 
-        self.bulk_upload_instance.save()
+            self.bulk_upload_instance.save()
+
+        if self.bulk_upload_instance.progress >= 100:
+            self.bulk_upload_instance.status = "COMPLETED"
+            self.bulk_upload_instance.save()
 
 
 def file_to_df(file_instance: T) -> pl.DataFrame:
