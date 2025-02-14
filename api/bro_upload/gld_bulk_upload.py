@@ -320,7 +320,10 @@ def create_gld_sourcedocs_data(
             "observationProcessId": f"_{uuid.uuid4()}",
             "measurementTimeseriesId": f"_{uuid.uuid4()}",
             "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
-            "validationStatus": sourcedocument_data.get("validationStatus", None),
+            "validationStatus": sourcedocument_data.get(
+                "validationStatus",
+                sourcedocument_data.get("statusQualityControl", None),
+            ),
             "investigatorKvk": sourcedocument_data.get("investigatorKvk", None),
             "observationType": sourcedocument_data.get("observationType", None),
             "evaluationProcedure": sourcedocument_data.get("evaluationProcedure", None),

@@ -2,9 +2,7 @@
 
 ## 1.8 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: Temporarily fix validationStatus
 
 ## 1.7 (2025-02-14)
 
