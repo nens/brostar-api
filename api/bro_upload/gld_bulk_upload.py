@@ -95,10 +95,14 @@ class GLDBulkUploader:
         self.bulk_upload_instance.status = "PROCESSING"
         self.bulk_upload_instance.save()
 
-        self.measurement_tvp_file: api_models.UploadFile = (
-            api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
-        )
-        self.bulk_upload_instance.file = self.measurement_tvp_file
+        if self.bulk_upload_instance.file:
+            self.measurement_tvp_file = self.bulk_upload_instance.file
+        else:
+            self.measurement_tvp_file: api_models.UploadFile = (
+                api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
+            )
+            self.bulk_upload_instance.file = self.measurement_tvp_file
+
         self.bulk_upload_instance.save()
 
         logger.warning(self.measurement_tvp_file.file)
@@ -109,7 +113,10 @@ class GLDBulkUploader:
         uploadtask_metadata["requestReference"] += (
             f"{bro_id} {uploadtask_metadata['qualityRegime']}"  # Maybe still change this
         )
-
+        # Convert naive datetime to Dutch timezone (Europe/Amsterdam)
+        current_measurements_df = current_measurements_df.with_columns(
+            pl.col("time").dt.replace_time_zone("Europe/Amsterdam")
+        )
         current_measurements_df = current_measurements_df.with_columns(
             pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
         ).sort("time")
@@ -138,8 +145,8 @@ class GLDBulkUploader:
 
         self.bulk_upload_instance.sourcedocument_data.update(
             {
-                "beginPosition": begin_position.date(),
-                "endPosition": end_position.date(),
+                "beginPosition": begin_position.date().strftime("%Y-%m-%d"),
+                "endPosition": end_position.date().strftime("%Y-%m-%d"),
                 "resultTime": result_time.isoformat(sep="T", timespec="seconds"),
             }
         )
@@ -183,7 +190,7 @@ class GLDBulkUploader:
             len(bro_ids) * 2
         )  # amount of progress per steps, per bro_id two steps.
         self.bulk_upload_instance.progress = 20.00
-        self.bulk_upload_instance.log = f"Nr BroIds: {bro_ids}, Nr of Measurements: {all_measurements_df.count().item(0, 0)}. \n"
+        self.bulk_upload_instance.log = f"Nr BroIds: {len(bro_ids)}, Nr of Measurements: {all_measurements_df.count().item(0, 0)}. \n"
         self.bulk_upload_instance.save()
         for bro_id in bro_ids:
             # Step 2: Prepare data for uploadtask per row

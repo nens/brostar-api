@@ -91,6 +91,7 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
         lab_file = attrs.get("lab_file")
         measurement_tvp_file = attrs.get("measurement_tvp_file")
         bulk_upload_type = attrs.get("bulk_upload_type")
+        file = attrs.get("file")
 
         # Check if either both fieldwork_file and lab_file are present
         # or measurement_tvp_file is present
@@ -98,9 +99,13 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Both 'fieldwork_file' and 'lab_file' must be provided, when a GAR bulk-upload is requested."
             )
-        elif bulk_upload_type == "GLD" and not measurement_tvp_file:
+        elif bulk_upload_type == "GLD" and not (measurement_tvp_file or file):
             raise serializers.ValidationError(
                 "A 'measurement_tvp_file' must be provided, when a GLD bulk-upload is requested."
+            )
+        elif bulk_upload_type == "GMN" and not (measurement_tvp_file or file):
+            raise serializers.ValidationError(
+                "A 'measurement_tvp_file' must be provided, when a GMN bulk-upload is requested."
             )
         return attrs
 
