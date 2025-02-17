@@ -2,9 +2,7 @@
 
 ## 1.12 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: resolve errors
 
 ## 1.11 (2025-02-17)
 

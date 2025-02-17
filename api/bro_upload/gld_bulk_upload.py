@@ -131,7 +131,7 @@ class GLDBulkUploader:
         # Convert naive datetime to Dutch timezone (Europe/Amsterdam)
         current_measurements_df = current_measurements_df.with_columns(
             pl.col("time").dt.replace_time_zone(
-                "Europe/Amsterdam", ambiguous="earliest"
+                "Europe/Amsterdam", ambiguous="earliest", non_existent="shift_forward"
             )
         )
         current_measurements_df = current_measurements_df.with_columns(

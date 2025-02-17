@@ -131,7 +131,6 @@ class BRODelivery:
                         self.upload_task_instance.bro_domain
                     ]
                     importer = object_importer_class(
-                        bro_domain=self.upload_task_instance.bro_domain,
                         bro_id=self.upload_task_instance.bro_id,
                         data_owner=self.upload_task_instance.data_owner,
                     )

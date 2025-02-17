@@ -96,9 +96,10 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
         # Remove 'sourcedocument_data' only in list view when registration_type is "GLD_Addition"
         if is_list_view and representation.get("bulk_upload_type") == "GLD":
             src_data = representation.get("sourcedocument_data", {})
-            tvps = src_data.pop("timeValuePairs")
-            src_data["timeValuePairsCount"] = len(tvps)
-            representation["sourcedocument_data"] = src_data
+            if "timeValuePairs" in src_data:
+                tvps = src_data.pop("timeValuePairs")
+                src_data["timeValuePairsCount"] = len(tvps)
+                representation["sourcedocument_data"] = src_data
 
         return representation
 
