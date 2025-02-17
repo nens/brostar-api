@@ -3,6 +3,7 @@
 ## 1.10 (unreleased)
 
 -   Docs: Add basic front-end information
+-   Enhancement: improve bulkupload list performance
 
 ## 1.9 (2025-02-14)
 
