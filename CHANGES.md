@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.12 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.11 (2025-02-17)
 
 -   Bugfix: add correctionReason to signal
