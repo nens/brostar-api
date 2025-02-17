@@ -37,6 +37,6 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
         "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis"
         in instance.bro_errors
     ):
-        instance.registration_type = "insert"
+        instance.request_type = "insert"
         instance.bro_errors = ""
         instance.status = "PENDING"

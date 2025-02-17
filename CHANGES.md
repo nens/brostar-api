@@ -4,6 +4,7 @@
 
 -   Docs: Add basic front-end information
 -   Enhancement: improve bulkupload list performance
+-   Bugfix: signal to correct insert
 
 ## 1.9 (2025-02-14)
 
