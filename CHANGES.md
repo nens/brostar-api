@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.11 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.10 (2025-02-17)
 
 -   Docs: Add basic front-end information
