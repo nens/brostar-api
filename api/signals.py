@@ -38,5 +38,6 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
         in instance.bro_errors
     ):
         instance.request_type = "insert"
+        instance.metadata.update({"correctionReason": "eigenCorrectie"})
         instance.bro_errors = ""
         instance.status = "PENDING"

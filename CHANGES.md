@@ -2,9 +2,7 @@
 
 ## 1.11 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: add correctionReason to signal
 
 ## 1.10 (2025-02-17)
 
