@@ -27,7 +27,7 @@ class GMW(models.Model):
     removed = models.CharField(max_length=100, null=True)
     ground_level_stable = models.CharField(max_length=100, null=True)
     well_stability = models.CharField(max_length=100, null=True, blank=True)
-    nitg_code = models.CharField(max_length=100, null=True)
+    nitg_code = models.CharField(max_length=100, null=True, blank=True)
     well_code = models.CharField(max_length=100, null=True)
     owner = models.CharField(max_length=100, null=True, blank=True)
     well_head_protector = models.CharField(max_length=100, null=True)

@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.13 (unreleased)
+## 1.13 (2025-02-18)
 
 -   Bugfix: GLD-Bulk
 -   Import: Improve Observations import
