@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.14 (unreleased)
+## 1.14 (2025-02-18)
 
 -   Hotfix: GLD-non-existent time
 
