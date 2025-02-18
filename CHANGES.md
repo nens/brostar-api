@@ -2,9 +2,7 @@
 
 ## 1.14 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: GLD-non-existent time
 
 ## 1.13 (2025-02-18)
 

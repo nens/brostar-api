@@ -134,12 +134,17 @@ class GLDBulkUploader:
                 "Europe/Amsterdam", ambiguous="earliest", non_existent="null"
             )
         )
-        current_measurements_df = current_measurements_df.with_columns(
-            pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
-        ).sort("time")
+        current_measurements_df = (
+            current_measurements_df.with_columns(
+                pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
+            )
+            .sort("time")
+            .drop_nulls(subset="time")
+        )
         logger.warning(current_measurements_df)
 
         time = current_measurements_df.select("time")
+        logger.info(time)
         begin_position = time.item(0, 0)
         end_position = time.item(-1, 0)
 
