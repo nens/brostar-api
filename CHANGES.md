@@ -2,9 +2,8 @@
 
 ## 1.13 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: GLD-Bulk
+-   Import: Improve Observations import
 
 ## 1.12 (2025-02-17)
 

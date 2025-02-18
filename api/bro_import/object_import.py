@@ -704,31 +704,54 @@ class GLDObjectImporter(ObjectImporter):
         procedure = {}
 
         named_values = observation.findall(".//om:NamedValue", OBSERVATION_NAMESPACE)
-        for named_vallue in named_values:
+        for named_value in named_values:
             name = (
-                named_vallue.find(".//om:value", OBSERVATION_NAMESPACE)
-                .attrib.get("codeSpace", "None:None")
+                named_value.find(".//om:name", OBSERVATION_NAMESPACE)
+                .attrib.get("{http://www.w3.org/1999/xlink}href", "None:None")
                 .split(":")[-1]
             )
-            value = named_vallue.find(".//om:value", OBSERVATION_NAMESPACE).text
-            procedure.update({name: value})
+            if name == "principalInvestigator":
+                value = named_value.find(".//om:value", OBSERVATION_NAMESPACE)
+                procedure.update(
+                    {
+                        "InvestigatorKvk": value.find(
+                            ".//gldcommon:chamberOfCommerceNumber",
+                            OBSERVATION_NAMESPACE,
+                        ).text
+                    }
+                )
+            else:
+                value = named_value.find(".//om:value", OBSERVATION_NAMESPACE).text
+                procedure.update({name: value})
+
+            logger.info(f"{name}, {value}")
 
         procedure.update(
             {
                 "ProcessReference": observation.find(
                     ".//waterml:processReference", OBSERVATION_NAMESPACE
-                ).attrib.get("{http://www.w3.org/1999/xlink}href", None),
+                )
+                .attrib.get("{http://www.w3.org/1999/xlink}href", "None:None")
+                .split(":")[-1],
                 "ResultTime": observation.find(
                     ".//om:resultTime", OBSERVATION_NAMESPACE
                 )
                 .find(".//gml:timePosition", OBSERVATION_NAMESPACE)
                 .text,
-                "InvestigatorKvk": observation.find(
-                    ".//gmd:organisationName", OBSERVATION_NAMESPACE
-                ).text,
             }
         )
+        try:
+            procedure.update(
+                {
+                    "InvestigatorKvk": observation.find(
+                        ".//gldcommon:chamberOfCommerceNumber", OBSERVATION_NAMESPACE
+                    ).text
+                }
+            )
+        except AttributeError:
+            logger.info("No chamberOfCommerceNumber found.")
 
+        logger.info(procedure)
         return procedure
 
     def _save_observations(self):
@@ -743,9 +766,11 @@ class GLDObjectImporter(ObjectImporter):
             observation_element = observation_tree.find(
                 ".//observation", namespaces=OBSERVATION_NAMESPACE
             )
+            logger.info(self.gld.bro_id)
+            logger.info(observation_id)
             procedure = self._format_procedure(observation_element)
 
-            Observation.objects.update_or_create(
+            observation = Observation.objects.update_or_create(
                 gld=self.gld,
                 data_owner=self.data_owner,
                 observation_id=observation_id,
@@ -759,17 +784,17 @@ class GLDObjectImporter(ObjectImporter):
                         "result_time": procedure.get("ResultTime", None),
                         "process_reference": procedure.get("ProcessReference", None),
                         "air_pressure_compensation_type": procedure.get(
-                            "AirPressureCompensationType", None
+                            "airPressureCompensationType", None
                         ),
                         "evaluation_procedure": procedure.get(
-                            "EvaluationProcedure", None
+                            "evaluationProcedure", None
                         ),
                         "measurement_instrument_type": procedure.get(
-                            "MeasurementInstrumentType", None
+                            "measurementInstrumentType", None
                         ),
                     }
                 ),
-            )
+            )[0]
 
 
 class FRDObjectImporter(ObjectImporter):

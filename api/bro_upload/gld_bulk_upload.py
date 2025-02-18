@@ -131,7 +131,7 @@ class GLDBulkUploader:
         # Convert naive datetime to Dutch timezone (Europe/Amsterdam)
         current_measurements_df = current_measurements_df.with_columns(
             pl.col("time").dt.replace_time_zone(
-                "Europe/Amsterdam", ambiguous="earliest", non_existent="shift_forward"
+                "Europe/Amsterdam", ambiguous="earliest", non_existent="null"
             )
         )
         current_measurements_df = current_measurements_df.with_columns(
@@ -204,7 +204,7 @@ class GLDBulkUploader:
         # BRO-Ids
         bro_ids = all_measurements_df.to_series(0).unique()
         progress = 80 / (
-            len(bro_ids) * 2
+            len(bro_ids)
         )  # amount of progress per steps, per bro_id two steps.
         self.bulk_upload_instance.progress = 20.00
         self.bulk_upload_instance.log = f"Nr BroIds: {len(bro_ids)}, Nr of Measurements: {all_measurements_df.count().item(0, 0)}. \n"
