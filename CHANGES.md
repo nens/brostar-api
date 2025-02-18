@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.14 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.13 (2025-02-18)
 
 -   Bugfix: GLD-Bulk
