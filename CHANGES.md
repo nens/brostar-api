@@ -3,6 +3,7 @@
 ## 1.15 (unreleased)
 
 -   Enhancement: beginPosition & endPosition gld.
+-   Added GAR-CorrectionRequest
 
 ## 1.14 (2025-02-18)
 
