@@ -6,6 +6,7 @@ import zipfile
 from typing import TypeVar
 
 import polars as pl
+import pytz
 
 from api import models as api_models
 from api.bro_upload.upload_datamodels import (
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 T = TypeVar("T", bound="api_models.UploadFile")
+amsterdam_tz = pytz.timezone("Europe/Amsterdam")
 
 
 def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
@@ -81,11 +83,11 @@ def _convert_time(datetime_str: str) -> datetime.datetime:
     if datetime_str.__contains__("T"):
         return datetime.datetime.strptime(
             datetime_str, "%Y-%m-%dT%H:%M:%S%z"
-        ).astimezone(datetime.UTC)
+        ).astimezone(amsterdam_tz)
     elif datetime_str.__contains__(" "):
         return datetime.datetime.strptime(
             datetime_str, "%Y-%m-%d %H:%M:%S%z"
-        ).astimezone(datetime.UTC)
+        ).astimezone(amsterdam_tz)
     else:
         raise ValueError("Incorrect time format.")
 
