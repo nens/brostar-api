@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.15 (unreleased)
+## 1.15 (2025-02-25)
 
 -   Enhancement: beginPosition & endPosition gld.
 -   Added GAR-CorrectionRequest
