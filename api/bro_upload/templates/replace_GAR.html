@@ -7,6 +7,7 @@
     {% if metadata.deliveryAccountableParty %}
     <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
     {% endif %}
+    <brocom:broId>{{ metadata.broId }}</brocom:broId>
     <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
     <correctionReason codeSpace="urn:bro:gar:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
     <sourceDocument>
