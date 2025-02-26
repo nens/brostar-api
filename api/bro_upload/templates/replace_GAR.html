@@ -13,8 +13,7 @@
     <sourceDocument>
         <GAR gml:id="id_0001">
             <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
-            <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod
-                }}</qualityControlMethod>
+            <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod }}</qualityControlMethod>
             {% for net in sourcedocs_data.groundwaterMonitoringNets %}
             <groundwaterMonitoringNet>
                 <garcom:GroundwaterMonitoringNet gml:id="{{ net }}">

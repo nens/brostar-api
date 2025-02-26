@@ -2,9 +2,7 @@
 
 ## 1.16 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: GAR-CorrectionRequest
 
 ## 1.15 (2025-02-25)
 
