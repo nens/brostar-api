@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.17 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.16 (2025-02-26)
 
 -   Bugfix: GAR-CorrectionRequest
