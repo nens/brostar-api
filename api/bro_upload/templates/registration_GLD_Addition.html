@@ -39,7 +39,7 @@
               <wml2:status xlink:href="urn:bro:gld:StatusCode:volledigBeoordeeld" />
               {% elif sourcedocs_data.validationStatus == 'voorlopig' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:voorlopig" />
-              {% else %}
+              {% elif sourcedocs_data.validationStatus == 'onbekend' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:onbekend" />
               {% endif %}
               <wml2:parameter>

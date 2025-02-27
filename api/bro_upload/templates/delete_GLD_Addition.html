@@ -36,7 +36,13 @@
               <gmd:dateStamp gco:nilReason="unknown" />
               {% endif %}
               <gmd:identificationInfo gco:nilReason="unknown" />
+              {% if sourcedocs_data.validationStatus == 'volledigBeoordeeld' %}
+              <wml2:status xlink:href="urn:bro:gld:StatusCode:volledigBeoordeeld" />
+              {% elif sourcedocs_data.validationStatus == 'voorlopig' %}
               <wml2:status xlink:href="urn:bro:gld:StatusCode:voorlopig" />
+              {% elif sourcedocs_data.validationStatus == 'onbekend' %}
+              <wml2:status xlink:href="urn:bro:gld:StatusCode:onbekend" />
+              {% endif %}
               <wml2:parameter>
                 <om:NamedValue>
                   <om:name xlink:href="urn:bro:gld:ObservationMetadata:principalInvestigator" />

@@ -3,6 +3,7 @@
 ## 1.17 (unreleased)
 
 -   Bugfix: GLD-import process_reference retrieval
+-   Bugfix: GLD-Addition improve controlemeting handling
 
 ## 1.16 (2025-02-26)
 
