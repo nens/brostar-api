@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.18 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.17 (2025-02-27)
 
 -   Bugfix: GLD-import process_reference retrieval
