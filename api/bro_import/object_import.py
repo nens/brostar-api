@@ -726,13 +726,19 @@ class GLDObjectImporter(ObjectImporter):
 
             logger.info(f"{name}, {value}")
 
+        process_reference_element = observation.find(
+            ".//waterml:processReference", OBSERVATION_NAMESPACE
+        )
+        if process_reference_element:
+            process_reference = process_reference_element.attrib.get(
+                "{http://www.w3.org/1999/xlink}href", "None:None"
+            ).split(":")[-1]
+        else:
+            process_reference = None
+
         procedure.update(
             {
-                "ProcessReference": observation.find(
-                    ".//waterml:processReference", OBSERVATION_NAMESPACE
-                )
-                .attrib.get("{http://www.w3.org/1999/xlink}href", "None:None")
-                .split(":")[-1],
+                "ProcessReference": process_reference,
                 "ResultTime": observation.find(
                     ".//om:resultTime", OBSERVATION_NAMESPACE
                 )

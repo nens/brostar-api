@@ -2,9 +2,7 @@
 
 ## 1.17 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: GLD-import process_reference retrieval
 
 ## 1.16 (2025-02-26)
 
