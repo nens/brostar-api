@@ -2,9 +2,7 @@
 
 ## 1.18 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: Add request-types to bulkuploads.
 
 ## 1.17 (2025-02-27)
 

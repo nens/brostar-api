@@ -241,6 +241,12 @@ class BulkUpload(models.Model):
         blank=False,
         help_text="Determines which process/task to start.",
     )
+    request_type = models.CharField(
+        blank=False,
+        max_length=235,
+        choices=choices.REQUEST_TYPE_OPTIONS,
+        default="registration",
+    )
     metadata = JSONField(
         "Metadata",
         default=dict,
