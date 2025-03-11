@@ -4,6 +4,7 @@
 
 -   Enhancement: Add request-types to bulkuploads.
 -   Enhancement: Improve GMW UploadModels
+-   Rework: Update the GMN-Measuring point import
 
 ## 1.17 (2025-02-27)
 
