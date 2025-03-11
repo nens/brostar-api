@@ -47,6 +47,8 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
         pl.col("censorReason").str.to_lowercase().alias("censorReason"),
     )
 
+    df = df.with_columns(pl.col("time").str.to_datetime())
+
     df = df.with_columns(
         pl.when(pl.col("censorReason").str.contains("kleiner"))
         .then(pl.lit("kleinerDanLimietwaarde"))
