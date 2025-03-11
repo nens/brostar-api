@@ -96,7 +96,7 @@ class GMNObjectImporter(ObjectImporter):
         event_dates = []
         measuring_point_codes = []
         for event in events_data:
-            event_type = event.get("eventName", {})
+            event_type = event.get("eventName", {}).get("#text", None)
             event_date = event.get("eventDate", {}).get("brocom:date", None)
             measuring_point_code = event.get("measuringPointCode", {})
             if not event_type or not event_date or not measuring_point_code:
@@ -113,6 +113,7 @@ class GMNObjectImporter(ObjectImporter):
                 "measuringPointCode": measuring_point_codes,
             }
         )
+        print(self.events_df)
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
@@ -137,6 +138,7 @@ class GMNObjectImporter(ObjectImporter):
         return gmn_data, measuringpoint_data, intermediate_events
 
     def _save_gmn_data(self, gmn_data: dict[str, Any]) -> None:
+        print(self.data_owner)
         self.gmn_obj = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -181,24 +183,39 @@ class GMNObjectImporter(ObjectImporter):
                 monitoring_tubes_data = [monitoring_tubes_data]
 
             for monitoring_tube_reference in monitoring_tubes_data:
-                monitoring_tube_data = monitoring_tubes_data.get(
+                monitoring_tube_data = monitoring_tube_reference.get(
                     "GroundwaterMonitoringTube", {}
                 )
+                event_date = monitoring_tube_data.get("startDate", {}).get(
+                    "brocom:date", None
+                )
+                mp_code = mp_data.get("measuringPointCode", None)
+                bro_id = monitoring_tube_data.get("broId", None)
+                print(f"{event_date} and {mp_code}")
+                event = self.events_df.filter(
+                    pl.col("eventDate").eq(event_date)
+                    & pl.col("measuringPointCode").eq(mp_code)
+                )
+                print(event)
+                if not event.is_empty():
+                    event_type = event.item(0, 0)
+                else:
+                    event_type = "GMN_StartRegistration"
+                defaults = {
+                    "measuringpoint_start_date": mp_data.get("startDate", {}).get(
+                        "brocom:date", None
+                    ),
+                    "tube_number": monitoring_tube_data.get("tubeNumber", None),
+                    "tube_start_date": event_date,
+                    "event_type": event_type,
+                }
 
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
                     data_owner=self.data_owner,
-                    measuringpoint_code=mp_data.get("measuringPointCode", None),
-                    defaults={
-                        "measuringpoint_start_date": mp_data.get("startDate", {}).get(
-                            "brocom:date", None
-                        ),
-                        "gmw_bro_id": monitoring_tube_data.get("broId", None),
-                        "tube_number": monitoring_tube_data.get("tubeNumber", None),
-                        "tube_start_date": monitoring_tube_data.get(
-                            "startDate", None
-                        ).get("brocom:date", None),
-                    },
+                    measuringpoint_code=mp_code,
+                    gmw_bro_id=bro_id,
+                    defaults=defaults,
                 )
 
 
