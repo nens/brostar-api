@@ -167,8 +167,8 @@ class GMWElectrodeStatus(GMWEvent):
 
 
 class GMWGroundLevel(GMWEvent):
-    wellStability: str | None = None
-    groundLevelStable: str
+    wellStability: str = "stabielNAP"
+    groundLevelStable: str = "nee"
     groundLevelPosition: str | float
     groundLevelPositioningMethod: str
 
@@ -218,8 +218,8 @@ class MonitoringTubePositions(BaseModel):
 
 
 class GMWPositions(GMWEvent):
-    wellStability: str
-    groundLevelStable: str
+    wellStability: str = "nee"
+    groundLevelStable: str = "instabiel"
     groundLevelPosition: str | float
     groundLevelPositioningMethod: str
     monitoringTubes: list[MonitoringTubePositions]
