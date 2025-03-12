@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.20 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.19 (2025-03-12)
 
 -   Enhancement: Add additional testing
