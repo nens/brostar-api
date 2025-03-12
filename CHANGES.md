@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.18 (unreleased)
+## 1.18 (2025-03-12)
 
 -   Enhancement: Add request-types to bulkuploads
 -   Enhancement: Allow GLD-Addition ReplaceRequests to be send through bulk
