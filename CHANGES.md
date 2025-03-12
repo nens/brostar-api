@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.19 (unreleased)
+## 1.19 (2025-03-12)
 
 -   Enhancement: Add additional testing
 -   Enhancement: Further improvements to GMN-Import
