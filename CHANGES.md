@@ -2,9 +2,9 @@
 
 ## 1.19 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: Add additional testing
+-   Enhancement: Further improvements to GMN-Import
+-   Enhancement: Format CHANGES.md
 
 ## 1.18 (2025-03-12)
 

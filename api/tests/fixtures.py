@@ -38,7 +38,7 @@ def userprofile(user, organisation):
 
 @pytest.fixture
 def gmn(organisation):
-    return gmn_models.GMN(
+    return gmn_models.GMN.objects.create(
         data_owner=organisation,
         bro_id="GMN123456789",
     )
@@ -46,7 +46,7 @@ def gmn(organisation):
 
 @pytest.fixture
 def gmw(organisation):
-    return gmw_models.GMW(
+    return gmw_models.GMW.objects.create(
         data_owner=organisation,
         bro_id="GMW123456789",
     )
@@ -54,7 +54,7 @@ def gmw(organisation):
 
 @pytest.fixture
 def gar(organisation):
-    return gar_models.GAR(
+    return gar_models.GAR.objects.create(
         data_owner=organisation,
         bro_id="GMW987654321",
     )

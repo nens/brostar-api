@@ -11,6 +11,7 @@ from django.conf import settings
 from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD, Observation
+from gmn.choices import GMN_EVENT_MAPPING
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
@@ -198,7 +199,8 @@ class GMNObjectImporter(ObjectImporter):
                 )
                 print(event)
                 if not event.is_empty():
-                    event_type = event.item(0, 0)
+                    event_name = event.item(0, 0)
+                    event_type = GMN_EVENT_MAPPING[event_name]
                 else:
                     event_type = "GMN_StartRegistration"
                 defaults = {
@@ -209,6 +211,7 @@ class GMNObjectImporter(ObjectImporter):
                     "tube_start_date": event_date,
                     "event_type": event_type,
                 }
+                print(defaults)
 
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
