@@ -2,7 +2,8 @@
 
 ## 1.18 (unreleased)
 
--   Enhancement: Add request-types to bulkuploads.
+-   Enhancement: Add request-types to bulkuploads
+-   Enhancement: Allow GLD-Addition ReplaceRequests to be send through bulk
 -   Enhancement: Improve GMW UploadModels
 -   Rework: Update the GMN-Measuring point import
 
@@ -17,7 +18,7 @@
 
 ## 1.15 (2025-02-25)
 
--   Enhancement: beginPosition & endPosition gld.
+-   Enhancement: beginPosition & endPosition gld
 -   Added GAR-CorrectionRequest
 
 ## 1.14 (2025-02-18)
@@ -152,18 +153,18 @@
 
 ## 0.67 (2024-12-16)
 
--   Update the docs.
--   Add the GLD Endpoints and models.
--   Add GLD option to bulk endpoint.
--   Enhancement: Allow for unknown construction date (IMBRO/A).
+-   Update the docs
+-   Add the GLD Endpoints and models
+-   Add GLD option to bulk endpoint
+-   Enhancement: Allow for unknown construction date (IMBRO/A)
 
 ## 0.66 (2024-12-05)
 
--   Hotfix: WellStability template error.
+-   Hotfix: WellStability template error
 
 ## 0.65 (2024-11-27)
 
--   Include wellStability when groundLevelStable is unknown.
+-   Include wellStability when groundLevelStable is unknown
 
 ## 0.64 (2024-11-20)
 
@@ -218,28 +219,28 @@
 ## 0.53 (2024-10-31)
 
 -   Update Delete GMN_TubeReference
--   GMN MeasuringPoints bugfix.
+-   GMN MeasuringPoints bugfix
 
 ## 0.52 (2024-10-31)
 
--   Improved GMW datamodel.
--   Bugfixes.
+-   Improved GMW datamodel
+-   Bugfixes
 
 ## 0.51 (2024-10-30)
 
--   Documented release process.
+-   Documented release process
 
 ## 0.50 (2024-10-18)
 
--   Created all GMW-Event templates.
--   Updated GMN and GLD templates.
--   Minor bugfixes.
+-   Created all GMW-Event templates
+-   Updated GMN and GLD templates
+-   Minor bugfixes
 
 ## 0.50 (2024-10-18)
 
--   Added all GMW-Event templates.
--   Improved GLD and GMN templates.
--   Minor bugfixes.
+-   Added all GMW-Event templates
+-   Improved GLD and GMN templates
+-   Minor bugfixes
 
 ## 0.49 (2024-09-24)
 
@@ -251,39 +252,39 @@
 
 ## 0.47 (2024-09-23)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.46 (2024-09-23)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.45 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.44 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.43 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.42 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.41 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.40 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.39 (2024-09-20)
 
--   Gelderland GAR process..
+-   Gelderland GAR process
 
 ## 0.38 (2024-09-20)
 
@@ -303,7 +304,7 @@
 
 ## 0.34 (2024-09-19)
 
--   Fixed bug: only backfill sourcedocs if registration type = gld addition. Otherwise just the old method.
+-   Fixed bug: only backfill sourcedocs if registration type = gld addition, otherwise just the old method
 
 ## 0.33 (2024-09-19)
 
@@ -327,15 +328,15 @@
 
 ## 0.28 (2024-09-19)
 
--   hotfix gar bulk upload command.
+-   hotfix gar bulk upload command
 
 ## 0.27 (2024-09-19)
 
--   Gar bulk upload: hardcoded to input parameters.
+-   Gar bulk upload: hardcoded to input parameters
 
 ## 0.26 (2024-09-19)
 
--   Hotfix: GLD Additions now work.
+-   Hotfix: GLD Additions now work
 
 ## 0.25 (2024-09-18)
 
@@ -347,12 +348,12 @@
 
 ## 0.23 (2024-09-17)
 
--   Updated GAR bulk upload command.
--   Fixed GLD template bugs.
+-   Updated GAR bulk upload command
+-   Fixed GLD template bugs
 
 ## 0.22 (2024-09-13)
 
--   Updated GAR bulk upload command.
+-   Updated GAR bulk upload command
 -   Added a lot templates (GMW registrations and replaces)
 
 ## 0.21 (2024-08-14)
@@ -369,7 +370,7 @@
 
 ## 0.18.1 (2024-08-09)
 
--   Release process fix.
+-   Release process fix
 
 ## 0.18 (2024-08-09)
 
@@ -387,7 +388,7 @@
 
 -   Added gmw bro_id to monitoringtube endpoint
 -   Added replace gmw construction template
--   Improved performance on GLD import.
+-   Improved performance on GLD import
 
 ## 0.14 (2024-06-14)
 
@@ -401,7 +402,7 @@
 
 ## 0.12 (2024-05-24)
 
--   Added option to post/patch bro credentials to own organisation.
+-   Added option to post/patch bro credentials to own organisation
 -   Fixed GAR import
 -   Added request counter
 -   Added data flush before importing. This makes sure that deleted data in the BRO doesnt stay forever in the BROSTAR API.
@@ -412,22 +413,22 @@
 
 ## 0.10 (2024-05-02)
 
--   Added gmw/gmn/upload/import tests.
--   Added GAR Template + tests.
+-   Added gmw/gmn/upload/import tests
+-   Added GAR Template + tests
 -   Added BulkUpload model & Endpoint. Currently it supports the GAR bulk upload, where csv/excel files can be uploaded.
--   Added Api_tokens.
--   Added support for user-uploaded files.
+-   Added Api_tokens
+-   Added support for user-uploaded files
 
 ## 0.9 (2024-04-23)
 
--   Added bulk import tests.
--   Added pydantic to dependencies.
--   Added validation on the metadata and srcdocdata input of the uploadtask endpoint.
--   Added an organisation list endpoint, which can be used as organisation_name:kvk_number mapping.
+-   Added bulk import tests
+-   Added pydantic to dependencies
+-   Added validation on the metadata and srcdocdata input of the uploadtask endpoint
+-   Added an organisation list endpoint, which can be used as organisation_name:kvk_number mapping
 
 ## 0.8 (2024-04-18)
 
--   Made internal brostar_api version number available.
+-   Made internal brostar_api version number available
 
 ## 0.7 (2024-04-18)
 
@@ -445,11 +446,11 @@
 ## 0.4 (2024-04-10)
 
 -   Hotfix: importtasks endpoint was accidentaly renamed to ImportTaskViewSet. Back to importtasks.
--   Added tests for api views and serializers.
+-   Added tests for api views and serializers
 
 ## 0.3 (2024-04-09)
 
--   Hotfix: savemethods of upload and import tasks were buggy.
+-   Hotfix: savemethods of upload and import tasks were buggy
 
 ## 0.2 (2024-04-09)
 
@@ -457,7 +458,7 @@
 
 ## 0.1 (2024-04-09)
 
--   Initial set of functionality, including API.
--   Added login functionality.
--   Building docker images for use in the N&S deployment.
--   Added basic tests and formatting checks.
+-   Initial set of functionality, including API
+-   Added login functionality
+-   Building docker images for use in the N&S deployment
+-   Added basic tests and formatting checks

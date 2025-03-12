@@ -186,7 +186,7 @@ class GLDBulkUploader:
             bro_domain="GLD",
             project_number=self.bulk_upload_instance.project_number,
             registration_type="GLD_Addition",
-            request_type="registration",
+            request_type=self.bulk_upload_instance.request_type,
             metadata=uploadtask_metadata,
             sourcedocument_data=uploadtask_sourcedocument_dict,
         )
