@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.19 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.18 (2025-03-12)
 
 -   Enhancement: Add request-types to bulkuploads
