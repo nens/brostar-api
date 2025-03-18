@@ -26,8 +26,7 @@ r = requests.get(url, auth=auth)
 ```
 
 !!! note
-    De username in de basic authenticatie is **altijd** `__key__`
-
+De username in de basic authenticatie is **altijd** `__key__`
 
 ## Endpoints
 
@@ -35,39 +34,38 @@ De API bestaat uit de volgende endpoints:
 
 **Authenticatie en authorisatie endpoints:**
 
-- [Organisations](#organisations)
+-   [Organisations](#organisations)
 
-- [Users](#users)
+-   [Users](#users)
 
 **Functionele endpoints:**
 
-- [Importtasks](#importtasks)
+-   [Importtasks](#importtasks)
 
-- [Uploadtasks](#uploadtasks)
+-   [Uploadtasks](#uploadtasks)
 
-- [Bulk uploadtasks](#bulk-uploadtasks)
+-   [Bulk uploadtasks](#bulk-uploadtasks)
 
 **Data endpoints:**
 
-- [GMNs](#Data endpoints)
+-   [GMNs](#Data endpoints)
 
-- [Measuringpoints](#Data endpoints)
+-   [Measuringpoints](#Data endpoints)
 
-- [GMWs](#Data endpoints)
+-   [GMWs](#Data endpoints)
 
-- [Monitoringtubes](#Data endpoints)
+-   [Monitoringtubes](#Data endpoints)
 
-- [GARs](#Data endpoints)
+-   [GARs](#Data endpoints)
 
-- [GLDs](#Data endpoints)
+-   [GLDs](#Data endpoints)
 
-- [FRDs](#Data endpoints)
-
+-   [FRDs](#Data endpoints)
 
 ### Organisations
 
 !!! note
-    Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Registratie organisatie in BROSTAR)
+Organisaties kunnen alleen aangemaakt worden door medewerkers van Nelen & Schuurmans. Staat jouw organisatie nog niet geregistreerd? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Registratie organisatie in BROSTAR)
 
 Organisaties zijn de basis van het datamodel van de BROSTAR. Elke gebruiker, maar ook elk data object zoals geimporteerde data vanuit de BRO, valt onder een organisatie. Als gebruiker zie je dus alleen de data die onder jouw organisatie valt.
 
@@ -76,8 +74,7 @@ Een organisatie bestaat uit een combinatie van een naam en een kvk nummer. Als j
 Om het opzoeken van kvk nummers makkelijker te maken, is het mogelijk om alle geregistreerde organisaties in de BROSTAR, inclusief kvk nummer, in te zien. Deze zijn in te zien op het [https://www.brostar.nl/api/organisations/](https://www.brostar.nl/api/organisations/) endpoint.
 
 !!! warning
-    Om de data in de browsable in te kunnen zien moet een gebruiker ingelogd zijn.
-
+Om de data in de browsable in te kunnen zien moet een gebruiker ingelogd zijn.
 
 ### Users
 
@@ -96,7 +93,7 @@ Importtaken vinden plaats op basis van POST requests. In deze request wordt een 
 De data die wordt geimporteerd is slechts de huidige versie van de metadata. Er wordt dus bijvoorbeeld geen geschiedenis van een GMW of de standen van een GLD geimporteerd. Hiervoor kan de BRO zelf bevraagd worden.
 
 !!! note
-    De aanwezigheid van de data in de BROSTAR is essentieel voor de frontend om te bestaan. Het kan dus zijn dat je als scripter, die alleen bezig is met het aanleveren van data, geen gebruik maakt van dit endpoint. Toch kan het in sommige gevallen handig zijn. Voorbeelden hiervan zijn om een vertaling van een NITG-code naar een BRO-id te maken of te controleren of bepaalde objecten reeds aangeleverd zijn.
+De aanwezigheid van de data in de BROSTAR is essentieel voor de frontend om te bestaan. Het kan dus zijn dat je als scripter, die alleen bezig is met het aanleveren van data, geen gebruik maakt van dit endpoint. Toch kan het in sommige gevallen handig zijn. Voorbeelden hiervan zijn om een vertaling van een NITG-code naar een BRO-id te maken of te controleren of bepaalde objecten reeds aangeleverd zijn.
 
 Hieronder een voorbeeld van een POST request om een GMN import taak voor eigen organisatie te starten:
 
@@ -119,7 +116,6 @@ payload = {
 
 r = requests.post(url, auth=auth, payload=payload)
 ```
-
 
 ### Uploadtasks
 
@@ -177,7 +173,6 @@ De BROSTAR API zal een taak starten waarin 1) een XML bestand wordt aangemaakt, 
 
 ![BROSTAR API uploadtask](assets/api_upload_task.png)
 
-
 In een post request bestaat de payload uit 6 belangrijke onderdelen:
 
 #### bro_domain
@@ -193,17 +188,18 @@ Het BRO project nummer is nodig om data bij de BRO aan te kunnen leveren. Deze k
 Voor elk BRO domein zijn er verschillende type berichten mogelijk. Zo zijn er bijvoorbeeld voor de [GMN](https://www.bro-productomgeving.nl/bpo/latest/gmn-inname-voorbeeldberichten-in-xml) Startregistration, MeasuringPoint, en Closure als berichten mogelijk.
 
 #### request_type
+
 Elk registration type kan op verschillende manieren aangeleverd worden. In principe is de registration de standaardoptie, maar als er data aangepast of verwijderd moet worden, dan zijn respectievelijk de replace en delete requests types beschikbaar. In de [BRO catalogus](https://www.bro-productomgeving.nl/bpo/latest/grondwatermonitoring) staan alle mogelijke combinaties. Dit zijn de beschikbare request types:
 
-- registration
+-   registration
 
-- replace
+-   replace
 
-- move
+-   move
 
-- insert
+-   insert
 
-- delete
+-   delete
 
 #### metadata
 
@@ -231,8 +227,7 @@ De sourcedocument data is de data die benodigd is om de specifieke XML bestanden
 Net zoals de metadata, wordt de sourcedocument data door de API gevalideerd met behulp van [Pydantic](https://docs.pydantic.dev/latest/) models.
 
 !!! tip
-    Voor simpele eenmalige leveringen kunnen deze worden gebruikt om een JSON samen te stellen. Voor grotere, complexere of operationele leveringen, wordt het aangeraden om de Pydantic models te kopieren in de eigen code.
-
+Voor simpele eenmalige leveringen kunnen deze worden gebruikt om een JSON samen te stellen. Voor grotere, complexere of operationele leveringen, wordt het aangeraden om de Pydantic models te kopieren in de eigen code.
 
 ##### GMN Startregistratie
 
@@ -268,7 +263,6 @@ class GMNMeasuringPoint(BaseModel):
 
 ```
 
-
 ##### GMN MeasuringPointEndDate
 
 ```python
@@ -282,7 +276,6 @@ class GMNMeasuringPointEndDate(BaseModel):
 
 ```
 
-
 ##### GMN TubeReference
 
 ```python
@@ -292,7 +285,6 @@ class GMNTubeReference(BaseModel):
     eventDate: str
     measuringPointCode: str
 ```
-
 
 ##### GMN Closure
 
@@ -304,7 +296,6 @@ class GMNClosure(BaseModel):
     endDateMonitoring: str
 
 ```
-
 
 ##### GWM GMWConstruction
 
@@ -364,7 +355,6 @@ class Electrode(BaseModel):
     electrodePosition: str | float
 
 ```
-
 
 ##### GMW Events
 
@@ -479,7 +469,6 @@ class GMWWellHeadProtector(GMWEvent):
 
 ```
 
-
 ##### GAR StartRegistration
 
 ```python
@@ -539,7 +528,6 @@ class FieldMeasurement(BaseModel):
     qualityControlStatus: str
 ```
 
-
 ##### GLD StartRegistration
 
 ```python
@@ -551,7 +539,6 @@ class GLDStartregistration(BaseModel):
     gmwBroId: str
     tubeNumber: str | int
 ```
-
 
 ##### GLD Addition
 
@@ -697,27 +684,26 @@ De url van dit endpoint is als volgt opgesteld:
 
 De mogelijke responses op dit endpoint zijn:
 
-- `201 - The task has been started after being stuck on PENDING`
+-   `201 - The task has been started after being stuck on PENDING`
 
-- `303 - The task is still running`
+-   `303 - The task is still running`
 
-- `303 - The upload task has allready finished with status: {status}`
+-   `303 - The upload task has allready finished with status: {status}`
 
-- `303 - The upload failed. Check the detail page for more info`
+-   `303 - The upload failed. Check the detail page for more info`
 
-- `304 - The upload is still not completely handled in the BRO. Check the status later again.`
-
+-   `304 - The upload is still not completely handled in the BRO. Check the status later again.`
 
 #### Read XML
+
 Om meer inzicht te geven in de data die naar de BRO wordt gestuurd, is het mogelijk om de XML bestanden in te zien. Dit kan op het read_xml endpoint. De url hiervoor is:
 
 `https://www.brostar.nl/api/uploadtasks/{uuid}/read_xml/`
 
-
 ### Bulk uploadtasks
 
 !!! warning
-    Het bulk uploadtask endpoint is maatwerk. Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Aanvraag maatwerk bulk upload BROSTAR ) om de mogelijkheden te verkennen om een specifieke bulk upload te realiseren.
+Het bulk uploadtask endpoint is maatwerk. Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Aanvraag maatwerk bulk upload BROSTAR ) om de mogelijkheden te verkennen om een specifieke bulk upload te realiseren.
 
 Het bulk upload endpoint is gemaakt om eenvoudig een groot aantal leveringen te realiseren. Op het bulk endpoint is het mogelijk om CSV/Excel bestanden aan te leveren. Achter de schermen wordt een taak gestart die deze bestanden opknipt in meerdere uploadtaken.
 
@@ -726,7 +712,7 @@ Het bulk upload endpoint is een stukje maatwerk in de BROSTAR. Momenteel bestaat
 Hieronder staat een voorbeeld van hoe een bulk upload opgestuurd kan worden via een script.
 
 !!! Wow
-     Dit stukje code, in combinatie met de XLSX bestanden, is dus alles wat nodig is om duizenden GAR berichten te registreren in de BRO!
+Dit stukje code, in combinatie met de XLSX bestanden, is dus alles wat nodig is om duizenden GAR berichten te registreren in de BRO!
 
 ```python
 import requests
@@ -781,18 +767,18 @@ with open(veldwerk_path, "rb") as fp_fieldwork, open(lab_path, "rb") as fp_lab:
 
 De data endpoints zijn een tijdelijke opslag voor de data die volgt uit de importtaken. De urls van de data endpoints zijn:
 
-- `https://www.brostar.nl/api/gmn/gmns/`
+-   `https://www.brostar.nl/api/gmn/gmns/`
 
-- `https://www.brostar.nl/api/gmn/measuringpoints/`
+-   `https://www.brostar.nl/api/gmn/measuringpoints/`
 
-- `https://www.brostar.nl/api/gmws/gmws/`
+-   `https://www.brostar.nl/api/gmws/gmws/`
 
-- `https://www.brostar.nl/api/gmws/monitoringtubes/`
+-   `https://www.brostar.nl/api/gmws/monitoringtubes/`
 
-- `https://www.brostar.nl/api/gar/gars/`
+-   `https://www.brostar.nl/api/gar/gars/`
 
-- `https://www.brostar.nl/api/gld/glds/`
+-   `https://www.brostar.nl/api/gld/glds/`
 
-- `https://www.brostar.nl/api/frd/frds/`
+-   `https://www.brostar.nl/api/frd/frds/`
 
 Op deze endpoints zijn de lijsten van objecten te zien. Deze lijsten van de metadata van objecten bieden een mooi overzicht van alles wat er in de BRO aan data staat. Dit is een mooie vervanging voor de [uitgifteservice van de BRO](https://publiek.broservices.nl/gm/gmn/v1/swagger-ui/#/default/bro-ids), aangezien daar alleen requests gedaan kunnen worden op basis van individuele objecten. Deze endpoints kunnen dus helpen bij het scripten, maar dienen vooral voor de frontend om de data snel op te kunnen vragen om het vervolgens in de kaart en tabellen weer te geven.
