@@ -114,7 +114,7 @@ class GMNObjectImporter(ObjectImporter):
                 "measuringPointCode": measuring_point_codes,
             }
         )
-        print(self.events_df)
+        logger.info(self.events_df)
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
@@ -139,7 +139,6 @@ class GMNObjectImporter(ObjectImporter):
         return gmn_data, measuringpoint_data, intermediate_events
 
     def _save_gmn_data(self, gmn_data: dict[str, Any]) -> None:
-        print(self.data_owner)
         self.gmn_obj = GMN.objects.update_or_create(
             bro_id=gmn_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -192,12 +191,12 @@ class GMNObjectImporter(ObjectImporter):
                 )
                 mp_code = mp_data.get("measuringPointCode", None)
                 bro_id = monitoring_tube_data.get("broId", None)
-                print(f"{event_date} and {mp_code}")
+                logger.info(f"{event_date} and {mp_code}")
                 event = self.events_df.filter(
                     pl.col("eventDate").eq(event_date)
                     & pl.col("measuringPointCode").eq(mp_code)
                 )
-                print(event)
+                logger.info(event)
                 if not event.is_empty():
                     event_name = event.item(0, 0)
                     event_type = GMN_EVENT_MAPPING[event_name]
@@ -211,7 +210,7 @@ class GMNObjectImporter(ObjectImporter):
                     "tube_start_date": event_date,
                     "event_type": event_type,
                 }
-                print(defaults)
+                logger.info(defaults)
 
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
@@ -723,6 +722,8 @@ class GLDObjectImporter(ObjectImporter):
             },
         )[0]
 
+        logger.info(f"Updated or created: {self.gld}")
+        logger.info("Starting observations procedure.")
         self._save_observations()
 
     def _gmn_ids(self, gld_data: dict[list[dict[str, any]]]) -> list:
@@ -747,7 +748,7 @@ class GLDObjectImporter(ObjectImporter):
         return r.json()
 
     def _procedure_information(self, observation_id: str):
-        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}"
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}?startTVPTime=1900-01-01T00%3A00%3A00&endTVPTime=1900-01-01T00%3A00%3A00"
         r = requests.get(url=url)
         r.raise_for_status()
         return ET.fromstring(r.content)
@@ -814,8 +815,9 @@ class GLDObjectImporter(ObjectImporter):
 
     def _save_observations(self):
         observation_summary = self._observation_summary()
-
+        logger.info(f"The observation summary contains: {observation_summary}")
         for observation in observation_summary:
+            logger.info(f"Processing {observation}")
             observation_id = observation.get("observationId", None)
             if not observation_id:
                 continue
@@ -853,6 +855,7 @@ class GLDObjectImporter(ObjectImporter):
                     }
                 ),
             )[0]
+            logger.info(f"Observation updated or created: {observation}")
 
 
 class FRDObjectImporter(ObjectImporter):
