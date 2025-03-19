@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.db.models import JSONField, Q, UniqueConstraint
+from django_prometheus.models import ExportModelOperationsMixin
 from encrypted_model_fields.fields import EncryptedCharField
 from nens_auth_client.models import Invitation
 from rest_framework_api_key.models import AbstractAPIKey
@@ -157,7 +158,7 @@ class InviteUser(models.Model):
             return INVITATION_STATUS_CHOICES[self.nens_auth_client_invitation.status][1]
 
 
-class ImportTask(models.Model):
+class ImportTask(ExportModelOperationsMixin("importtask"), models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -184,7 +185,7 @@ class ImportTask(models.Model):
         return f"{self.bro_domain} import - {self.data_owner}"
 
 
-class UploadTask(models.Model):
+class UploadTask(ExportModelOperationsMixin("uploadtask"), models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -226,7 +227,7 @@ class UploadTask(models.Model):
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"
 
 
-class BulkUpload(models.Model):
+class BulkUpload(ExportModelOperationsMixin("bulkupload"), models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -267,7 +268,7 @@ class BulkUpload(models.Model):
         return f"{self.data_owner}: Bulk upload {self.bulk_upload_type}"
 
 
-class UploadFile(models.Model):
+class UploadFile(ExportModelOperationsMixin("uploadfile"), models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     data_owner = models.ForeignKey(

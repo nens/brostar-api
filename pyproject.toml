@@ -14,6 +14,7 @@ dependencies = [
     "django==5.0.*",
     "djangorestframework",
     "djangorestframework-api-key",
+    "django-prometheus",
     "drf-yasg",
     "fastexcel",
     "markdown > 3",  # DRF api docs
