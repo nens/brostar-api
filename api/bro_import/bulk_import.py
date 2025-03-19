@@ -66,7 +66,7 @@ class BulkImporter:
             total_bro_ids = len(bro_ids)
             counter = 0
             update_interval = max(total_bro_ids // 10, 1)
-
+            logger.info(f"Starting import with {total_bro_ids} BRO-IDs.")
             for bro_id in bro_ids:
                 counter += 1
 
@@ -81,11 +81,13 @@ class BulkImporter:
 
                 if counter % update_interval == 0 or counter == total_bro_ids:
                     progress = (counter / total_bro_ids) * 100
+                    logger.info(f"At {round(progress, 2)}% of import.")
                     self.import_task_instance.progress = round(progress, 2)
                     self.import_task_instance.save()
 
             self.import_task_instance.status = "COMPLETED"
             self.import_task_instance.save()
+            logger.info("Completed import succesfully.")
 
         except Exception as e:
             self.import_task_instance.log = e

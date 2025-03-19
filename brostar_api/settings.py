@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import sentry_sdk
 
@@ -31,8 +30,15 @@ USE_BRO_PRODUCTION = _use_bro_production_env.lower() == "true"  # Default: False
 TIME_ZONE = "CET"
 USE_TZ = True
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# SETTINGS_DIR allows media paths and so to be relative to this settings file
+# instead of hardcoded to c:\only\on\my\computer.
+SETTINGS_DIR = os.path.dirname(os.path.realpath(__file__))
+
+# BUILDOUT_DIR is for access to the "surrounding" buildout, for instance for
+# BUILDOUT_DIR/var/static files to give django-staticfiles a proper place
+# to place all collected static files.
+BASE_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../"))
+BUILDOUT_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../.."))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
@@ -50,6 +56,7 @@ INSTALLED_APPS = [
     "gld.apps.GldConfig",
     "frd.apps.FrdConfig",
     "nens_auth_client",
+    "django_prometheus",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -71,6 +78,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -79,6 +87,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 
@@ -142,7 +151,7 @@ CORS_ALLOWED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "NAME": "brostar",
         "USER": DATABASE_USER,
         "PASSWORD": DATABASE_PASSWORD,

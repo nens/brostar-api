@@ -62,6 +62,5 @@ services:
       celery:
         condition: service_started
 
-
 volumes:
   pgdata:

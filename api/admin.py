@@ -92,10 +92,35 @@ class InviteUserAdmin(admin.ModelAdmin):
         return obj.get_status()
 
 
+class UploadTaskAdmin(admin.ModelAdmin):
+    model = api_models.UploadTask
+    list_display = (
+        "bro_id",
+        "request_type",
+        "registration_type",
+        "status",
+        "data_owner",
+    )
+
+    list_filter = ("data_owner", "bro_id")
+
+
+class BulkUploadAdmin(admin.ModelAdmin):
+    model = api_models.BulkUpload
+    list_display = (
+        "bulk_upload_type",
+        "request_type",
+        "status",
+        "data_owner",
+    )
+
+    list_filter = ("data_owner", "bulk_upload_type")
+
+
 admin.site.register(api_models.UserProfile)
 admin.site.register(api_models.InviteUser, InviteUserAdmin)
 admin.site.register(api_models.Organisation, OrganisationAdmin)
 admin.site.register(api_models.ImportTask)
-admin.site.register(api_models.UploadTask)
-admin.site.register(api_models.BulkUpload)
+admin.site.register(api_models.UploadTask, UploadTaskAdmin)
+admin.site.register(api_models.BulkUpload, BulkUploadAdmin)
 admin.site.register(api_models.UploadFile)

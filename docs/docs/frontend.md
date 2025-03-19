@@ -22,6 +22,16 @@ Het aanmaken van nieuwe berichten gaat via het (+)-teken. Alle nieuwe registrati
 
 Voor meer informatie over elk van de documenten, ga naar het desbetreffende kopje.
 
+## BRO Tabellen
+
+De verschillende tabellen per bro-domein zijn er om vervang correcties door te voeren op reeds bestaande objecten. In deze tabellen vindt je dus alle in de BRO geregistreerde informatie. Mits je de data hebt gesynchroniseerd. Op dit moment ondersteunen we correcties van:
+
+1. GMN: StartRegistraties
+2. GMW: Constructies, Tussentijdse gebeurtenissen
+3. GLD: StartRegistratie, Aanvulling
+
+Voor het beeindigen zijn vervang correcties niet direct van toepassing.
+
 ### De GMW-Tabel
 
 Deze tabel biedt een overzicht van alle bestaande put leveringen (GMW). Deze tabel is te gebruiken voor het **corrigeren** van gegevens. Hiermee worden dus ReplaceRequests/VervangVerzoeken opgestuurd. Op dit moment ondersteunen we deze berichten zowel voor de constructies van de put, waarmee het BRO-ID normaliter wordt gemaakt. Maar ook voor de tussentijdse gebeurtenissen, zoals het inmeten van je maaiveld. Om dit te doen klik je op het **BRO-ID** in de tabel, die blauw gekleurd is.
@@ -41,15 +51,32 @@ Stel je hebt toch een andere methode positiebepaling aangeleverd dan de werkelij
 
 ### De GMN-Tabel
 
-Wordt later uitgebreid.
+Hierin laten we de verschillende meetnetten van de geselecteerde organisatie zien. Kijk en zoek snel je meetnet op, om zo eventuele wijzigingen aan je startregistratie door te voeren. Voor ieder meetnet geven we je de belangrijkste informatie:
+
+1. BRO-ID
+2. Naam
+3. Startdatum
+4. Kwaliteitsregime
 
 ### De GLD-Tabel
 
-Wordt later uitgebreid.
+Hierin laten we alle tijdreeksdossiers van de geselecteerde organisatie zien. Voor ieder dossier geven we je de belangrijkste informatie:
+
+1. BRO-ID
+2. Put-ID
+3. Buisnummer
+4. Datum eerste meting
+5. Datum laatste meting
+6. Kwaliteitsregime
+7. Aantal observaties (aanvullingen)
+
+Op het moment dat er aanvullingen onder een tijdsreeksdossier zijn gedaan, dan kan je door op de regel te klikken het dropdown menu openen. Er verschijnt dan een nieuwe tabel met informatie over elke observatiereeks. Zo kan jij voor het juiste bestand een correctie doorvoeren.
+
+Let hierbij wel op: je dient alle metingen uit de reeks aan te leveren, niet alleen de gecorrigeerde waarde.
 
 ### De Uploadtaak-tabel
 
-Wordt later uitgebreid.
+In de upload taak tabel vind je informatie over alle aanleveringen die zijn gedaan onder jou organisatie. Op deze manier krijg je een goed inzicht van hoeveel, hoe vaak en hoe succesvol jou leveringen lopen. Ook krijg je hier feedback op je levering mocht er toch iets niet helemaal correct zijn rondom je waardes.
 
 ### GMW-Aanleveringen
 
