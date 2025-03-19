@@ -97,6 +97,7 @@ class GMNObjectImporter(ObjectImporter):
         event_dates = []
         measuring_point_codes = []
         for event in events_data:
+            print(event)
             event_type = event.get("eventName", {}).get("#text", None)
             event_date = event.get("eventDate", {}).get("brocom:date", None)
             measuring_point_code = event.get("measuringPointCode", {})
@@ -121,8 +122,10 @@ class GMNObjectImporter(ObjectImporter):
     ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         """Takes in the json data and splits it up into GMN and Measuringpoint data"""
 
-        intermediate_events = dispatch_document_data["GMN_PPO"].get(
-            "intermediateEvent", []
+        intermediate_events = (
+            dispatch_document_data["GMN_PPO"]
+            .get("monitoringNetHistory", {})
+            .get("intermediateEvent", [])
         )
 
         measuringpoint_data = dispatch_document_data["GMN_PPO"].get(
@@ -192,6 +195,7 @@ class GMNObjectImporter(ObjectImporter):
                 mp_code = mp_data.get("measuringPointCode", None)
                 bro_id = monitoring_tube_data.get("broId", None)
                 logger.info(f"{event_date} and {mp_code}")
+
                 event = self.events_df.filter(
                     pl.col("eventDate").eq(event_date)
                     & pl.col("measuringPointCode").eq(mp_code)
@@ -202,6 +206,7 @@ class GMNObjectImporter(ObjectImporter):
                     event_type = GMN_EVENT_MAPPING[event_name]
                 else:
                     event_type = "GMN_StartRegistration"
+
                 defaults = {
                     "measuringpoint_start_date": mp_data.get("startDate", {}).get(
                         "brocom:date", None

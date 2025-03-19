@@ -2,9 +2,8 @@
 
 ## 1.20 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Add prometheus setup for monitoring
+-   Bugfix: GMN-Eventtype import
 
 ## 1.19 (2025-03-12)
 

@@ -246,7 +246,7 @@ if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 else:
-    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
+    BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
 
 if not DEBUG:
