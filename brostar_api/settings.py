@@ -37,6 +37,7 @@ SETTINGS_DIR = os.path.dirname(os.path.realpath(__file__))
 # BUILDOUT_DIR is for access to the "surrounding" buildout, for instance for
 # BUILDOUT_DIR/var/static files to give django-staticfiles a proper place
 # to place all collected static files.
+BASE_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../"))
 BUILDOUT_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../.."))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
@@ -103,7 +104,7 @@ ROOT_URLCONF = "brostar_api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BUILDOUT_DIR, "api", "bro_upload", "templates")],
+        "DIRS": [os.path.join(BASE_DIR, "api", "bro_upload", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -253,25 +254,3 @@ if not DEBUG:
     EMAIL_HOST = "int-smtp.nens"
     DEFAULT_FROM_EMAIL = "BROSTAR <noreply@nelen-schuurmans.nl>"
     NENS_AUTH_INVITATION_EMAIL_SUBJECT = "Uitnodiging voor BROSTAR"
-
-
-for relpath in [
-    "",
-    "data",
-    "data/raster",
-    "data/raster/groups",
-    "data/raster/stores",
-    "log",
-    "log/silk",
-    "media",
-    "media/downloads",
-    "scenarios",
-    "scenarios_import",
-    "static",
-    "timeseries",
-    "timeseries/files",
-    "upload",
-]:
-    abspath = os.path.join(BUILDOUT_DIR, "var", relpath)
-    if not os.path.exists(abspath):
-        os.mkdir(abspath)
