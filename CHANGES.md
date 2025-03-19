@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.21 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.20 (2025-03-19)
 
 -   Add prometheus setup for monitoring
