@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.20 (unreleased)
+## 1.20 (2025-03-19)
 
 -   Add prometheus setup for monitoring
 -   Bugfix: GMN-Eventtype import
