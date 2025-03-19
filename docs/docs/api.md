@@ -56,9 +56,13 @@ De API bestaat uit de volgende endpoints:
 
 -   [Monitoringtubes](#Data endpoints)
 
+-   [Events](#Data endpoints)
+
 -   [GARs](#Data endpoints)
 
 -   [GLDs](#Data endpoints)
+
+-   [Observations](#Data endpoints)
 
 -   [FRDs](#Data endpoints)
 
@@ -702,6 +706,8 @@ Om meer inzicht te geven in de data die naar de BRO wordt gestuurd, is het mogel
 
 ### Bulk uploadtasks
 
+Current options are GMN, GLD and GAR.
+
 !!! warning
 Het bulk uploadtask endpoint is maatwerk. Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Aanvraag maatwerk bulk upload BROSTAR ) om de mogelijkheden te verkennen om een specifieke bulk upload te realiseren.
 
@@ -775,9 +781,13 @@ De data endpoints zijn een tijdelijke opslag voor de data die volgt uit de impor
 
 -   `https://www.brostar.nl/api/gmws/monitoringtubes/`
 
+-   `https://www.brostar.nl/api/gmws/events/`
+
 -   `https://www.brostar.nl/api/gar/gars/`
 
 -   `https://www.brostar.nl/api/gld/glds/`
+
+-   `https://www.brostar.nl/api/gld/observations/`
 
 -   `https://www.brostar.nl/api/frd/frds/`
 
