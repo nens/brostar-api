@@ -47,7 +47,8 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
         pl.col("censorReason").str.to_lowercase().alias("censorReason"),
     )
 
-    df = df.with_columns(pl.col("time").str.to_datetime())
+    if df.dtypes[1] == pl.String:
+        df = df.with_columns(pl.col("time").str.to_datetime())
 
     df = df.with_columns(
         pl.when(pl.col("censorReason").str.contains("kleiner"))
@@ -252,11 +253,7 @@ class GLDBulkUploader:
 
 def file_to_df(file_instance: T) -> pl.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
-    print("FILE_TO_DF")
-    logger.warning("FILE_TO_DF")
     filetype = file_instance.file.name.split(".")[-1].lower()
-    logger.warning(filetype)
-
     if filetype == "csv":
         df = pl.read_csv(
             file_instance.file.path,
@@ -265,8 +262,6 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
             truncate_ragged_lines=True,
         )
     elif filetype in ["xls", "xlsx"]:
-        print("XLSX")
-        logger.warning(file_instance.file.path)
         df = pl.read_excel(
             source=file_instance.file.path,
             has_header=True,
