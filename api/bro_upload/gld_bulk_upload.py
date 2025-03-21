@@ -322,10 +322,14 @@ def create_gld_sourcedocs_data(
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
     sourcedocument_data.update(
         {
-            "observationId": f"_{uuid.uuid4()}",
+            "observationId": sourcedocument_data.get(
+                "observationId", f"_{uuid.uuid4()}"
+            ),
             "observationProcessId": f"_{uuid.uuid4()}",
             "measurementTimeseriesId": f"_{uuid.uuid4()}",
-            "date": _convert_resulttime_to_date(sourcedocument_data["resultTime"]),
+            "date": _convert_resulttime_to_date(
+                sourcedocument_data.get("resultTime", "1900-01-01T00:00:00Z")
+            ),
             "validationStatus": sourcedocument_data.get(
                 "validationStatus",
                 sourcedocument_data.get("statusQualityControl", None),

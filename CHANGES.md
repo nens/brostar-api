@@ -2,9 +2,7 @@
 
 ## 1.22 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: Improve GLD-ReplaceBulk
 
 ## 1.21 (2025-03-21)
 
