@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.22 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.21 (2025-03-21)
 
 -   Improve prometheus setup
