@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.21 (unreleased)
+## 1.21 (2025-03-21)
 
 -   Improve prometheus setup
 -   Enhancement: GLD-BulkImport datetime/text handling
