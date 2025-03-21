@@ -40,7 +40,7 @@ SETTINGS_DIR = os.path.dirname(os.path.realpath(__file__))
 BASE_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../"))
 BUILDOUT_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, "../.."))
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "host.docker.internal", "127.0.0.1", "0.0.0.0"]
 
 if not DEBUG:
     ALLOWED_HOSTS = [".brostar.nl"]
@@ -90,6 +90,8 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
+# PROMETHEUS
+PROMETHEUS_METRIC_NAMESPACE = "brostar"
 
 AUTHENTICATION_BACKENDS = [
     "nens_auth_client.backends.RemoteUserBackend",
@@ -145,6 +147,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
     "https://staging.brostar.nl",
+    "https://www.brostar.nl",
 ]
 
 # Database

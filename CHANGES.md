@@ -2,9 +2,8 @@
 
 ## 1.21 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Improve prometheus setup
+-   Enhancement: GLD-BulkImport datetime/text handling
 
 ## 1.20 (2025-03-19)
 
