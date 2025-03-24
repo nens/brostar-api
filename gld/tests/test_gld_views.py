@@ -1,9 +1,11 @@
+import datetime
+
 import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
-from api.models import Organisation
+from api.models import InviteUser, Organisation
 from api.tests import fixtures
 from gld.models import GLD, Observation
 
@@ -41,19 +43,26 @@ class GLDViewTestCase(APITestCase):
     def _create_test_user(self):
         from django.contrib.auth.models import User
 
-        return User.objects.create_user(
+        InviteUser.objects.create(
+            email="test@gmail.com",
+            organisation=self.organisation,
+        )
+
+        user = User.objects.create_user(
             username="testuser", email="test@gmail.com", password="testpassword"
         )
+
+        return user
 
     def test_gld_list_view(self):
         url = reverse("api:gld:gld-list")  # Use the name defined in gld/urls.py
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_gld_detail_view(self):
-    #     url = reverse("api:gld:gld-detail", kwargs={"uuid": self.gld.uuid})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_gld_detail_view(self):
+        url = reverse("api:gld:gld-detail", kwargs={"uuid": self.gld.uuid})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class ObservationViewTestCase(APITestCase):
@@ -63,26 +72,39 @@ class ObservationViewTestCase(APITestCase):
             data_owner=self.organisation, bro_id="GLD000012234"
         )
         self.observation = Observation.objects.create(
-            gld=self.gld, observation_id="OBS001", data_owner=self.organisation
+            gld=self.gld,
+            observation_id="OBS001",
+            data_owner=self.organisation,
+            begin_position=datetime.date(2024, 1, 1),
+            end_position=datetime.date(2025, 1, 1),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
         )
+        print(self.organisation)
+        print(self.observation.data_owner)
         # Create and authenticate a user
         self.user = self.client.force_authenticate(user=self._create_test_user())
 
     def _create_test_user(self):
         from django.contrib.auth.models import User
 
-        return User.objects.create_user(
+        _invite = InviteUser.objects.create(
+            email="test@gmail.com",
+            organisation=self.organisation,
+        )
+        user = User.objects.create_user(
             username="testuser", email="test@gmail.com", password="testpassword"
         )
+
+        return user
 
     def test_observation_list_view(self):
         url = reverse("api:gld:observation-list")  # Use the name defined in gld/urls.py
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_observation_detail_view(self):
-    #     url = reverse(
-    #         "api:gld:observation-detail", kwargs={"uuid": self.observation.uuid}
-    #     )
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_observation_detail_view(self):
+        url = reverse(
+            "api:gld:observation-detail", kwargs={"uuid": self.observation.uuid}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

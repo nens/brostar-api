@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from api.models import Organisation  # Assuming Organisation exists in api.models
@@ -34,6 +36,9 @@ class ObservationModelTestCase(TestCase):
             gld=self.gld,
             observation_id="OBS001",
             data_owner=self.organisation,
+            begin_position=datetime.date(2024, 1, 1),
+            end_position=datetime.date(2025, 1, 1),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
         )
 
     def test_observation_creation(self):
@@ -53,6 +58,9 @@ class MeasurementTvpModelTestCase(TestCase):
             gld=self.gld,
             observation_id="OBS001",
             data_owner=self.organisation,
+            begin_position=datetime.date(2024, 1, 1),
+            end_position=datetime.date(2025, 1, 1),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
         )
         self.measurement = MeasurementTvp.objects.create(
             observation=self.observation,

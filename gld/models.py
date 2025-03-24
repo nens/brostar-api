@@ -49,9 +49,9 @@ class Observation(models.Model):
         GLD, on_delete=models.CASCADE, null=False, related_name="observations"
     )
     observation_id = models.CharField(max_length=100)
-    begin_position = models.CharField(max_length=100, null=True)
-    end_position = models.CharField(max_length=100, null=True)
-    result_time = models.CharField(max_length=100, null=True)
+    begin_position = models.DateField(max_length=100, null=False)
+    end_position = models.DateField(max_length=100, null=False)
+    result_time = models.DateTimeField(max_length=100, null=False)
     validation_status = models.CharField(max_length=100, null=True)
     investigator_kvk = models.CharField(max_length=100, null=True)
     observation_type = models.CharField(max_length=100, null=True)
