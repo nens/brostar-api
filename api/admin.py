@@ -102,7 +102,11 @@ class UploadTaskAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner", "bro_id")
+    list_filter = (
+        "data_owner",
+        "registration_type",
+        "request_type",
+    )
 
 
 class BulkUploadAdmin(admin.ModelAdmin):

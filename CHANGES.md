@@ -6,6 +6,7 @@
 -   Enhancement: Improve GLD-ReplaceBulk
 -   Enhancement: Char to Datefield for Observations (start, end result)
 -   Enhancement: Extend GMW documentation
+-   Enhancement: Improve admin functionality for GMN, GLD and GMW
 -   Maintenance: Add additional testing
 
 ## 1.21 (2025-03-21)
