@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from django.conf import settings
 from requests.exceptions import HTTPError, RequestException
@@ -155,8 +157,8 @@ def test_gld_import(gld_object_importer: object_import.GLDObjectImporter):
 
     observation_instance = Observation.objects.filter(gld=gld_instance)
     assert observation_instance.count() == gld_instance.nr_of_observations
-    assert observation_instance[0].end_position == "08-01-2025"
-    assert observation_instance[0].begin_position == "14-11-2024"
+    assert observation_instance[0].end_position == datetime.date(2025, 1, 8)
+    assert observation_instance[0].begin_position == datetime.date(2024, 11, 14)
     assert observation_instance[0].observation_type == "reguliereMeting"
     assert observation_instance[0].validation_status == "voorlopig"
 
