@@ -76,3 +76,11 @@ class MeasuringpointSerializer(
                 .first()
                 .uuid
             )
+
+
+class IntermediateEventSerializer(
+    UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
+):
+    class Meta:
+        model = gmn_models.IntermediateEvent
+        fields = "__all__"
