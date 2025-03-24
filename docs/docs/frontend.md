@@ -84,9 +84,29 @@ In de upload taak tabel vind je informatie over alle aanleveringen die zijn geda
 
 Hoe werkt een GMW-Constructie?
 
+Goeie vraag! In een GMW-Constructie geef je alle informatie die nodig is voor het aanmaken van een put in de BRO. Dit is een flinke lijst, en er zijn dus behoorlijk wat gegevens die je zult moeten invullen. Mocht je niet weten wat een bepaald veld betekend, dan is eer een link naar de BRO-Documentatie boven in het scherm. Hier vindt je de informatie van de Basis Registratie zelf.
+
+Een put bestaat uit verschillende onderdelen. Bovenin het formulier vind je alle put informatie. Onderin het scherm kun je monitoringsbuizen toevoegen. Gebruik het plusje om een buis toe te voegen. Mocht je te maken hebben met een zoutwacher, dan kan het zijn dat er een geo-ohmkabel aan je monitoringsbuis vast zit. Deze kan je dan ook weer onderaan toevoegen samen met de elektrodes.
+
+We proberen al wat ondersteuning te bieden door de keuzes te beperken tot het kwaliteitsregime. Echter kunnen BRO-termen soms lastig zijn. Kom je er niet uit? Schroom niet om de [servicedesk](mailto:servicedesk@nelen-schuurmans.nl) te benaderen.
+
 #### GMW-Tussentijdse gebeurtenissen
 
-Hoe werkt een GMW-Tussentijdse gebeurtenis? Dit formulier is gebaseerd op de keuze: 'gebeurtenis type'. Afhankelijk van de waarde van dit veld veranderd het invoer formulier, en het document type dat je opstuurt naar de BRO. Op dit moment worden alle berichten, afgezien van electrode status, ondersteund.
+Hoe werkt een GMW-Tussentijdse gebeurtenis? Dit formulier is gebaseerd op de keuze: 'gebeurtenis type'. Afhankelijk van de waarde van dit veld veranderd het invoer formulier, en het document type dat je opstuurt naar de BRO. Op dit moment worden alle berichten, afgezien van electrode status, ondersteund. Dat zijn er dus 13:
+
+1. Beschermconstructie: Om een wijziging aan de beschermconstructie door te geven. Dit kan ook bij het inkorten of oplengen van een buis.
+2. Bepaling maaiveld: Wanneer het maaiveld door natuurlijke omstandigheden verzakt op hoger wordt.
+3. Bepaling posities: Wanneer het maaiveld en de buis door natuurlijke omstandigheden verzakken of op worden gehoogd.
+4. Buis inplaatsen: Wanneer een buis(deel) wordt ingeplaatst.
+5. Buis inkorten: Wanneer een buis wordt afgezaagd.
+6. Buis oplengen: Wanneer een buis wordt opgehoogd.
+7. Buisstatus: Wanneer de buisstatus veranderd. Hij is bijvoorbeeld plat gereden en niet meer bruikbaar.
+8. Eigenaar: Wanneer de buis van eigenaar veranderd. Let op! Dit wijzigd niet de bronhouder, die eindverantwoordelijke is.
+9. Inmeting maaiveld: Wanneer tijdens een ronde het maaiveld opnieuw wordt gemeten, maar het maaiveld stabiel is.
+10. Inmeting posities: Wanneer tijdens een ronde het maaiveld en/of de buispositie opnieuw wordt gemeten, maar het maaiveld stabiel is.
+11. Maaiveld verlegd: Wanneer het maaiveld op onnatuurlijke wijze is opgehoogd of afgegraven.
+12. Onderhouder: Wanneer de onderhouder van de locatie is gewijzigd.
+13. Opgeruimd: Wanneer de locatie is opgeruimd / verwijderd.
 
 Over het algemeen zijn de invoer velden van deze berichten redelijk eenvoudig, het gaat maar om een beperkt aantal gegevens.
 

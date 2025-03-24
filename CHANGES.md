@@ -5,6 +5,7 @@
 -   Functionality: Add GMN-IntermediateEvents
 -   Enhancement: Improve GLD-ReplaceBulk
 -   Enhancement: Char to Datefield for Observations (start, end result)
+-   Enhancement: Extend GMW documentation
 -   Maintenance: Add additional testing
 
 ## 1.21 (2025-03-21)
