@@ -1,3 +1,4 @@
+import datetime
 import logging
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
@@ -12,7 +13,7 @@ from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD, Observation
 from gmn.choices import GMN_EVENT_MAPPING
-from gmn.models import GMN, Measuringpoint
+from gmn.models import GMN, IntermediateEvent, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger(__name__)
@@ -189,11 +190,16 @@ class GMNObjectImporter(ObjectImporter):
                 monitoring_tube_data = monitoring_tube_reference.get(
                     "GroundwaterMonitoringTube", {}
                 )
+                bro_id = monitoring_tube_data.get("broId", None)
+                tube_nr = monitoring_tube_data.get("tubeNumber", None)
+                mp_start_date = mp_data.get("startDate", {}).get("brocom:date", None)
+                mp_end_date = mp_data.get("endDate", {}).get("brocom:date", None)
+
+                mp_code = mp_data.get("measuringPointCode", None)
                 event_date = monitoring_tube_data.get("startDate", {}).get(
                     "brocom:date", None
                 )
-                mp_code = mp_data.get("measuringPointCode", None)
-                bro_id = monitoring_tube_data.get("broId", None)
+                end_date = mp_data.get("endDate", {}).get("brocom:date", None)
                 logger.info(f"{event_date} and {mp_code}")
 
                 event = self.events_df.filter(
@@ -201,18 +207,27 @@ class GMNObjectImporter(ObjectImporter):
                     & pl.col("measuringPointCode").eq(mp_code)
                 )
                 logger.info(event)
+
                 if not event.is_empty():
                     event_name = event.item(0, 0)
                     event_type = GMN_EVENT_MAPPING[event_name]
+                    IntermediateEvent.objects.update_or_create(
+                        gmn=self.gmn_obj,
+                        data_owner=self.gmn_obj.data_owner,
+                        measuringpoint_code=mp_code,
+                        event_date=event_date,
+                        event_type=event_type,
+                        defaults={"gmw_bro_id": bro_id, "tube_number": tube_nr},
+                    )
                 else:
                     event_type = "GMN_StartRegistration"
 
                 defaults = {
-                    "measuringpoint_start_date": mp_data.get("startDate", {}).get(
-                        "brocom:date", None
-                    ),
-                    "tube_number": monitoring_tube_data.get("tubeNumber", None),
+                    "measuringpoint_start_date": mp_start_date,
+                    "measuringpoint_end_date": mp_end_date,
+                    "tube_number": tube_nr,
                     "tube_start_date": event_date,
+                    "tube_end_date": end_date,
                     "event_type": event_type,
                 }
                 logger.info(defaults)
@@ -685,6 +700,12 @@ OBSERVATION_NAMESPACE = {
 }
 
 
+def date_or_none(string: str | None) -> datetime.date:
+    """DD-MM-YYYY to Datetime.Date"""
+    if string:
+        return datetime.datetime.strptime(string, "%d-%m-%Y").date()
+
+
 class GLDObjectImporter(ObjectImporter):
     bro_domain = "GLD"
 
@@ -834,6 +855,8 @@ class GLDObjectImporter(ObjectImporter):
             logger.info(self.gld.bro_id)
             logger.info(observation_id)
             procedure = self._format_procedure(observation_element)
+            begin_position = date_or_none(observation.get("startDate", None))
+            end_position = date_or_none(observation.get("endDate", None))
 
             observation = Observation.objects.update_or_create(
                 gld=self.gld,
@@ -841,8 +864,8 @@ class GLDObjectImporter(ObjectImporter):
                 observation_id=observation_id,
                 defaults=(
                     {
-                        "begin_position": observation.get("startDate", None),
-                        "end_position": observation.get("endDate", None),
+                        "begin_position": begin_position,
+                        "end_position": end_position,
                         "observation_type": observation.get("observationType", None),
                         "validation_status": observation.get("observationStatus", None),
                         "investigator_kvk": procedure.get("InvestigatorKvk", None),

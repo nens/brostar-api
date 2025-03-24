@@ -20,7 +20,7 @@ class DateTimeStringFilter(filters.Filter):
             return qs.none()
 
 
-class GldFilter(filters.FilterSet, DateTimeFilterMixin):
+class GldFilter(DateTimeFilterMixin):
     research_first_date__gt = DateFilter(
         field_name="research_first_date", lookup_expr="gt"
     )
@@ -39,7 +39,7 @@ class GldFilter(filters.FilterSet, DateTimeFilterMixin):
         exclude = ["linked_gmns"]
 
 
-class ObservationFilter(filters.FilterSet, DateTimeFilterMixin):
+class ObservationFilter(DateTimeFilterMixin):
     begin_position__gt = DateFilter(field_name="begin_position", lookup_expr="gt")
     begin_position__gte = DateFilter(field_name="begin_position", lookup_expr="gte")
     begin_position__lt = DateFilter(field_name="begin_position", lookup_expr="lt")
@@ -50,7 +50,7 @@ class ObservationFilter(filters.FilterSet, DateTimeFilterMixin):
         fields = "__all__"
 
 
-class MeasurementTvpFilter(filters.FilterSet, DateTimeFilterMixin):
+class MeasurementTvpFilter(DateTimeFilterMixin):
     time = DateTimeStringFilter(field_name="time")
 
     class Meta:

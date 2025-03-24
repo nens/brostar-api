@@ -1,8 +1,8 @@
 from typing import Any
 
-import django_filters
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
+from django_filters import rest_framework as filters
 from rest_framework.reverse import reverse
 
 from api import models as api_models
@@ -67,21 +67,16 @@ class RequiredFieldsMixin:
             field.required = True
 
 
-class DateTimeFilterMixin:
-    created__gt = django_filters.DateTimeFilter(field_name="created", lookup_expr="gt")
-    created__gte = django_filters.DateTimeFilter(
-        field_name="created", lookup_expr="gte"
-    )
-    created__lt = django_filters.DateTimeFilter(field_name="created", lookup_expr="lt")
-    created__lte = django_filters.DateTimeFilter(
-        field_name="created", lookup_expr="lte"
-    )
+class DateTimeFilterMixin(filters.FilterSet):
+    created__gt = filters.DateTimeFilter(field_name="created", lookup_expr="gt")
+    created__gte = filters.DateTimeFilter(field_name="created", lookup_expr="gte")
+    created__lt = filters.DateTimeFilter(field_name="created", lookup_expr="lt")
+    created__lte = filters.DateTimeFilter(field_name="created", lookup_expr="lte")
 
-    updated__gt = django_filters.DateTimeFilter(field_name="updated", lookup_expr="gt")
-    updated__gte = django_filters.DateTimeFilter(
-        field_name="updated", lookup_expr="gte"
-    )
-    updated__lt = django_filters.DateTimeFilter(field_name="updated", lookup_expr="lt")
-    updated__lte = django_filters.DateTimeFilter(
-        field_name="updated", lookup_expr="lte"
-    )
+    updated__gt = filters.DateTimeFilter(field_name="updated", lookup_expr="gt")
+    updated__gte = filters.DateTimeFilter(field_name="updated", lookup_expr="gte")
+    updated__lt = filters.DateTimeFilter(field_name="updated", lookup_expr="lt")
+    updated__lte = filters.DateTimeFilter(field_name="updated", lookup_expr="lte")
+
+    class Meta:
+        abstract = True

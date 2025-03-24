@@ -17,4 +17,14 @@ urlpatterns = [
         views.MeasuringpointDetailView.as_view(),
         name="measuringpoint-detail",
     ),
+    path(
+        "events/",
+        views.EventListView.as_view(),
+        name="intermediateevent-list",
+    ),
+    path(
+        "events/<uuid:uuid>/",
+        views.EventDetailView.as_view(),
+        name="intermediateevent-detail",
+    ),
 ]

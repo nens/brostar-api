@@ -26,6 +26,17 @@ def user():
     return user
 
 
+def organisation_user(organisation):
+    _invite_user = api_models.InviteUser.objects.create(
+        email="test@example.com",
+        organisation=organisation,
+    )
+    user = User.objects.create_user(
+        username="test_user", email="test@example.com", password="test_password"
+    )
+    return user
+
+
 @pytest.fixture
 def userprofile(user, organisation):
     userprofile = api_models.UserProfile.objects.get(

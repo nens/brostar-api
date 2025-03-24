@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from api.models import Organisation
@@ -28,7 +30,12 @@ class ObservationSerializerTestCase(TestCase):
             data_owner=self.organisation, bro_id="GLD0000001234"
         )
         self.observation = Observation.objects.create(
-            gld=self.gld, observation_id="OBS001", data_owner=self.organisation
+            gld=self.gld,
+            observation_id="OBS001",
+            data_owner=self.organisation,
+            begin_position=datetime.date(2024, 1, 1),
+            end_position=datetime.date(2025, 1, 1),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
         )
 
     def test_serializer_data(self):
@@ -46,7 +53,12 @@ class MeasurementTvpSerializerTestCase(TestCase):
             data_owner=self.organisation, bro_id="GLD0000001234"
         )
         self.observation = Observation.objects.create(
-            gld=self.gld, observation_id="OBS001", data_owner=self.organisation
+            gld=self.gld,
+            observation_id="OBS001",
+            data_owner=self.organisation,
+            begin_position=datetime.date(2024, 1, 1),
+            end_position=datetime.date(2025, 1, 1),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
         )
         self.measurement = MeasurementTvp.objects.create(
             observation=self.observation,

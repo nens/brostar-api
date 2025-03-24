@@ -35,3 +35,18 @@ class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAP
     queryset = gmn_models.Measuringpoint.objects.all()
     serializer_class = serializers.MeasuringpointSerializer
     lookup_field = "uuid"
+
+
+class EventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+    serializer_class = serializers.IntermediateEventSerializer
+    queryset = gmn_models.IntermediateEvent.objects.all().order_by("-created")
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.IntermediateEventFilter
+    filterset_fields = "__all__"
+
+
+class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
+    queryset = gmn_models.IntermediateEvent.objects.all()
+    serializer_class = serializers.IntermediateEventSerializer
+    lookup_field = "uuid"
