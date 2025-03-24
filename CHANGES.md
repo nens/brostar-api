@@ -2,7 +2,10 @@
 
 ## 1.22 (unreleased)
 
+-   Functionality: Add GMN-IntermediateEvents
 -   Enhancement: Improve GLD-ReplaceBulk
+-   Enhancement: Char to Datefield for Observations (start, end result)
+-   Maintenance: Add additional testing
 
 ## 1.21 (2025-03-21)
 
