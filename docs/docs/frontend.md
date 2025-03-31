@@ -2,14 +2,13 @@
 
 ## Introductie
 
-Als gebruiker van BROSTAR is het handig om toelichting te hebben over de verschillende schermen. Hoewel we je bij de onboarding al zoveel mogelijk wegwijs proberen te maken, zal je niet in één keer alles begrijpen. Op deze pagina leggen we de verschillende schermen en tabbladen uit, zodat jij zelf aan de slag kan.
+Als gebruiker van BROSTAR is het handig om toelichting te hebben over de verschillende schermen. Hoewel we je bij de onboarding al zoveel mogelijk wegwijs proberen te maken, zal niet alles in één keer te begrijpen zijn. Op deze pagina leggen we de verschillende schermen en tabbladen uit, zodat jij zelf aan de slag kan.
 
 ## Het dashboard
 
 Bij het dashboard spreken we over het overzicht dat te bereiken is via: https://www.brostar.nl/. Hierin start je altijd met de kaart als aanzicht, en heb je de verschillende tabbladen (GMW, GMN, GLD, Upload) tot je beschikking. Binnen dit overzicht kan je controleren wat er **op dit moment** in de BRO zit.
 
-!!! note
-Als je niet direct een nieuwe locatie ziet staan, synchroniseer opnieuw je data. Als je ziet dat een taak succesvol is verwerkt, dan is het document doorgeleverd aan de BRO. Dat betekend dat de gegevens al op te halen zijn, ook als die nog niet altijd terug te zien zijn in het BRO-Loket.
+!!! Als je niet direct een nieuwe locatie ziet staan, synchroniseer opnieuw je data. Als je ziet dat een taak succesvol is verwerkt, dan is het document doorgeleverd aan de BRO. Dat betekend dat de gegevens al op te halen zijn, ook als die nog niet altijd terug te zien zijn in het BRO-Loket.
 
 ### Aanmaken van nieuwe berichten (+)
 
@@ -42,8 +41,7 @@ Het vervangen van een gebeurtenis kan door op de gebeurtenis naam te klikken. De
 
 Goeie vraag! Niet altijd is de initiële levering volledig juist gelopen. Als je hierachter komt wel je deze gegevens corrigeren. Dat is mogelijk met een vervang verzoek. Met een vervang verzoek van de GMW-Constructie kan je vrijwel alle gegevens veranderen. Dit past **niet** de chronologie van de put aan. Dit betekend dat een verandering in de maaiveldhoogte, wat vaak over tijd gebeurt, niet veranderd moet worden met de correctie van een GMW-Constructie, maar met de registratie van een GMW-InmetingMaaiveld (een GMW-Gebeurtenis).
 
-!!! note
-Vindt meer over het aanleveren van GMW-Gebeurtenissen onder ...
+!!! Vindt meer over het aanleveren van GMW-Gebeurtenissen onder ...
 
 **Waarom zou je een GMW-Gebeurtenis vervangen?**
 
@@ -79,10 +77,11 @@ Let hierbij wel op: je dient alle metingen uit de reeks aan te leveren, niet all
 In de upload taak tabel vind je informatie over alle aanleveringen die zijn gedaan onder jou organisatie. Op deze manier krijg je een goed inzicht van hoeveel, hoe vaak en hoe succesvol jou leveringen lopen. Ook krijg je hier feedback op je levering mocht er toch iets niet helemaal correct zijn rondom je waardes.
 
 ### GMW-Aanleveringen
+Om de grondwatermetingen aan te leveren, moeten eerst de meetnetten aangemaakt worden. Dat wordt eerst via 'GMW-Constructie' gedaan. Tussentijdse gebeurtenissen kunnen daarna aangegeven worden.
 
 #### GMW-Constructie
 
-Hoe werkt een GMW-Constructie?
+Hoe werkt een GMW-Constructie? 
 
 Goeie vraag! In een GMW-Constructie geef je alle informatie die nodig is voor het aanmaken van een put in de BRO. Dit is een flinke lijst, en er zijn dus behoorlijk wat gegevens die je zult moeten invullen. Mocht je niet weten wat een bepaald veld betekend, dan is eer een link naar de BRO-Documentatie boven in het scherm. Hier vindt je de informatie van de Basis Registratie zelf.
 
@@ -112,32 +111,49 @@ Over het algemeen zijn de invoer velden van deze berichten redelijk eenvoudig, h
 
 ### GMN-Leveringen
 
+Om een GMN levering te volbrengen, dient er informatie aangeleverd te worden via het formulier dat te zien valt bij de roze '+'-knop rechtsbovenin het scherm. Vanuit daar kan men klikken op 'GWN-Meetnet', wat zal resulteren in een formulier dat zich boven de kaart bevindt. vanuit deze knop kan er gekozen worden voor de optie 'Start registratie', 'Meetpunt toevoegen' en 'Beeindigen'. Hieronder wordt ingegaan op deze drie opties.
+
+![grondwatermeetnet afbeelding](./assets/grondwatermeetnet.png)
+
 #### GMN-StartRegistratie
 
-Hoe werkt een GMN-StartRegistratie?
+Om een grondwatermeetnet aan te maken dient er op de knop 'Start registratie' te klikken. Dan moet er metadata ingevuld worden. Deze data bevat het Projectnummer, de naam van het project en de interne naam van het project. Deze velden zijn verplicht. In het veld 'bronhouder' dient de partij die eigenaar is van de data aangeklikt worden. Daarna bij 'kader aanlevering' dient aangegeven te worden voor welk project het dient. Het doel van de monitoring moet vermeld worden in de knop daar rechts naast. Er is rechts in het scherm een verdere knop om een meetpunten bestand te uploaden. Dit wordt gebruikt om buizen aan een ander meetnet te voegen.
+Een template van dit .csv bestand is alsvolgd.
+
+| measuringPointCode |      broId      | tubeNumber |
+|--------------------|-----------------|------------|
+| groenerveld-1      | GMW000000003624 | 1          |
+| VRD-3              | GMW000000085624 | 3          |
+
 
 #### GMN-Meetpunt
 
-Hoe werkt een GMN-Meetpunt?
+Een meetpunt kan toegevoegd worden via de knop 'Meetpunt toevoegen'. Vergelijkbare informatie als bij 'Start registratie' zal ingevuld dienen te worden. Daarnaast zal het meetnet waar het meetpunt aan toegevoegd wordt ingevuld dienen te worden.
 
 #### GMN-Beeindigen
 
-Hoe werkt een GMN-Beeindigen?
+Om door te voeren dat een grondwatermeetnet niet meer actief bemeten wordt, dient men op deze knop te drukken. Hierbij dient wederom vergelijkbare informatie gegeven worden zoals bij de twee vorige knoppen.
 
 ### GLD-Leveringen
+Om de tijdreeksen van grondwaterstanden toe te voegen, wordt de knop GLD - tijdreeks (Groundwater Level Dossier) gebruikt. Vanuit daar zijn er wederom de drie knoppen 'Start registratie', 'Aanvulling' en 'Beeindigen'. 
 
 #### GLD-StartRegistratie
-
-Hoe werkt een GLD-StartRegistratie?
+Als er op de knop 'Start registratie' geklikt wordt, komt een formulier tevoorschijn. Hier moet metadata worden ingevuld betreffende iedere tijdreeks. Dat zijn projectnummer, interne naam, het kwaliteitsregime, de specifieke put, de bronhouder en het buisnummer. Daaronder is zichtbaar welke grondwatertijdreeksen er momenteel worden gebruikt. 
 
 #### GLD-Aanvulling
+Bij de knop aanvulling moet de .csv van de tijdreeks aangeleverd worden. Hierbij dient als metadata de projectnummer, kwaliteitsregime, BRO-ID tijdreeksdossier en bronhouder ingevuld worden. Als laatste dient het tijdseries bestand aangeleverd te worden. Gebruik hierbij de volgende template als voorbeeld.
 
-Hoe werkt een GLD-Aanvulling?
+| broId            | tijd                     | waarde | statusKwaliteitControle | censuurReden           | censuurLimiet |
+|------------------|--------------------------|--------|-------------------------|------------------------|---------------|
+| GLD000000012345  | 2025-01-01T14:15:01+0100 | 1,32   | goedgekeurd             |                        |               |
+| GLD000000012345  | 2025-01-01T15:15:01+0100 | 4,32   | afgekeurd               | groterDanLimietWaarde  | 3,3           |
+| GLD000000012345  | 2025-01-01T16:15:01+0100 | 3,22   | goedgekeurd             |                        |               |
+| GLD000000012345  | 2025-01-01T17:15:01+0100 |-1,18   | afgekeurd               | kleinerDanLimietWaarde | -0,5          |
 
 #### GLD-Beeindigen
 
-Hoe werkt een GMN-Beeindigen?
+Om de tijdreeks te beeindigen, moet op deze knop gedrukt worden. Hierbij wordt aangegeven dat de meting niet meer wordt bijgehouden, bijvoorbeeld als een peilbuis verwijderd wordt.
 
 ### GAR
 
-Hoe werkt een GAR levering?
+De grondwaterkwaliteitsmetingen (GAR) kunnen worden ingeladen via deze knop. Deze knop is wederom te vinden door op de '+'-knop te drukken en daarna op 'GAR - kwaliteit'. Hier dient het formulier ingevuld te worden met als metadata projectnummer, kwaliteitsregime en de bronhouder. Daarna bij gegevens de bemonsteringsoperator, oftewel de partij die het monster neemt. Daarna de procedure en beoordelingsprocedure. Bij bestanden dient het veldwerk bestand en lab bestand geupload te worden.
