@@ -6,6 +6,7 @@ from typing import IO, Any
 
 import polars as pl
 import requests
+import requests.adapters
 import xmltodict
 from django.conf import settings
 
@@ -16,7 +17,7 @@ from gmn.choices import GMN_EVENT_MAPPING
 from gmn.models import GMN, IntermediateEvent, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 class ObjectImporter(ABC):
@@ -42,12 +43,24 @@ class ObjectImporter(ABC):
 
         self.bro_id = bro_id
         self.data_owner = data_owner
+        self.s = requests.Session()
+        retry = requests.adapters.Retry(
+            total=6,
+            backoff_factor=0.5,
+        )
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=5, pool_maxsize=5, max_retries=retry
+        )
+        self.s.mount("http://", adapter)
+        self.s.mount("https://", adapter)
 
     def run(self) -> None:
         url = self._create_download_url()
         xml_data = self._download_xml(url)
+        logger.info(f"Downloaded XML data for {self.bro_domain} with ID {self.bro_id}")
         json_data = self._convert_xml_to_json(xml_data)
         self._save_data_to_database(json_data)
+        logger.info(f"Saved data for {self.bro_domain} with ID {self.bro_id}")
 
     def _create_download_url(self) -> str:
         """Creates the import url for a given bro object."""
@@ -116,7 +129,6 @@ class GMNObjectImporter(ObjectImporter):
                 "measuringPointCode": measuring_point_codes,
             }
         )
-        logger.info(self.events_df)
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
@@ -200,13 +212,11 @@ class GMNObjectImporter(ObjectImporter):
                     "brocom:date", None
                 )
                 end_date = mp_data.get("endDate", {}).get("brocom:date", None)
-                logger.info(f"{event_date} and {mp_code}")
 
                 event = self.events_df.filter(
                     pl.col("eventDate").eq(event_date)
                     & pl.col("measuringPointCode").eq(mp_code)
                 )
-                logger.info(event)
 
                 if not event.is_empty():
                     event_name = event.item(0, 0)
@@ -230,7 +240,6 @@ class GMNObjectImporter(ObjectImporter):
                     "tube_end_date": end_date,
                     "event_type": event_type,
                 }
-                logger.info(defaults)
 
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
@@ -483,9 +492,6 @@ class GMWObjectImporter(ObjectImporter):
             for tube in event_data:
                 tube_data = {}
                 for key in tube.keys():
-                    data = tube[key]
-                    logger.info(tube)
-                    logger.info(data)
                     if isinstance(tube[key], (str | int)):
                         tube_data[key] = tube[key]
                     else:
@@ -496,7 +502,6 @@ class GMWObjectImporter(ObjectImporter):
 
         tube_data = {}
         for key in event_data.keys():
-            data = event_data[key]
             if isinstance(event_data[key], (str | int)):
                 tube_data[key] = event_data[key]
             else:
@@ -747,9 +752,6 @@ class GLDObjectImporter(ObjectImporter):
                 "linked_gmns": gmn_ids,
             },
         )[0]
-
-        logger.info(f"Updated or created: {self.gld}")
-        logger.info("Starting observations procedure.")
         self._save_observations()
 
     def _gmn_ids(self, gld_data: dict[list[dict[str, any]]]) -> list:
@@ -803,8 +805,6 @@ class GLDObjectImporter(ObjectImporter):
                 value = named_value.find(".//om:value", OBSERVATION_NAMESPACE).text
                 procedure.update({name: value})
 
-            logger.info(f"{name}, {value}")
-
         process_reference_element = observation.find(
             ".//waterml:processReference", OBSERVATION_NAMESPACE
         )
@@ -836,14 +836,11 @@ class GLDObjectImporter(ObjectImporter):
         except AttributeError:
             logger.info("No chamberOfCommerceNumber found.")
 
-        logger.info(procedure)
         return procedure
 
     def _save_observations(self):
         observation_summary = self._observation_summary()
-        logger.info(f"The observation summary contains: {observation_summary}")
         for observation in observation_summary:
-            logger.info(f"Processing {observation}")
             observation_id = observation.get("observationId", None)
             if not observation_id:
                 continue
@@ -852,8 +849,6 @@ class GLDObjectImporter(ObjectImporter):
             observation_element = observation_tree.find(
                 ".//observation", namespaces=OBSERVATION_NAMESPACE
             )
-            logger.info(self.gld.bro_id)
-            logger.info(observation_id)
             procedure = self._format_procedure(observation_element)
             begin_position = date_or_none(observation.get("startDate", None))
             end_position = date_or_none(observation.get("endDate", None))
@@ -883,7 +878,6 @@ class GLDObjectImporter(ObjectImporter):
                     }
                 ),
             )[0]
-            logger.info(f"Observation updated or created: {observation}")
 
 
 class FRDObjectImporter(ObjectImporter):

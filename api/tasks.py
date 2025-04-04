@@ -8,7 +8,7 @@ from api.bro_upload.gld_bulk_upload import GLDBulkUploader
 from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import BRODelivery
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 @shared_task

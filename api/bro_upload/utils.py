@@ -7,7 +7,7 @@ from django.conf import settings
 
 import api.models as api_models
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:

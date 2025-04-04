@@ -14,7 +14,7 @@ from api.models import Organisation, UploadFile, UploadTask
 from gar import models as gar_models
 from gmw import models as gmw_models
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 T = TypeVar("T", bound=models.Model)
 

@@ -119,28 +119,57 @@ TEMPLATES = [
     },
 ]
 
+LOG_DIR = "/var/logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "detailed": {
+            "format": "%(asctime)s: %(name)s %(levelname)s %(message)s",
+            "datefmt": "%Y-%m-%dT%H:%M:%S",
+        },
+    },
     "handlers": {
-        "console": {
+        "task_file": {
             "level": "DEBUG",
-            "class": "logging.StreamHandler",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "task.log"),
+            "formatter": "detailed",
+        },
+        "access_file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "access.log"),
+            "formatter": "detailed",
+        },
+        "general_file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "general.log"),
+            "formatter": "detailed",
         },
     },
     "loggers": {
-        "": {
-            "handlers": ["console"],
-            "level": "DEBUG" if DEBUG else "INFO",
-            "propagate": True,
+        "task": {
+            "handlers": ["task_file"],
+            "level": "DEBUG",
+            "propagate": False,
         },
-        "django": {
-            "handlers": ["console"],
-            "level": "INFO",  # DEBUG level would also print sql statements
+        "access": {
+            "handlers": ["access_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        "general": {
+            "handlers": ["general_file"],
+            "level": "DEBUG",
             "propagate": False,
         },
     },
 }
+
 
 WSGI_APPLICATION = "brostar_api.wsgi.application"
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

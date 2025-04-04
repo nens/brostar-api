@@ -11,7 +11,7 @@ from api.bro_import import bulk_import, config
 from .. import models as api_models
 from . import utils
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 class XMLGenerationError(Exception):
@@ -68,7 +68,6 @@ class BRODelivery:
         # Generate the XML file.
         try:
             xml_file = self._generate_xml_file()
-            print(xml_file)
             self.upload_task_instance.progress = 25.00
             self.upload_task_instance.save()
         except Exception as e:

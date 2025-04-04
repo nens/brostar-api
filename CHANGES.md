@@ -7,6 +7,8 @@
 -   Enhancement: Char to Datefield for Observations (start, end result)
 -   Enhancement: Extend GMW documentation
 -   Enhancement: Improve admin functionality for GMN, GLD and GMW
+-   Enhancement: Improve logger settings
+-   Enhancement: Add retry to BRO import
 -   Maintenance: Add additional testing
 
 ## 1.21 (2025-03-21)

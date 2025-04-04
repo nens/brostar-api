@@ -11,7 +11,7 @@ from . import models as api_models
 
 admin.site.unregister(APIKey)  # unused model
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 @admin.register(api_models.PersonalAPIKey)
