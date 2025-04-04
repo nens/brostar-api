@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.23 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.22 (2025-04-04)
 
 -   Functionality: Add GMN-IntermediateEvents
