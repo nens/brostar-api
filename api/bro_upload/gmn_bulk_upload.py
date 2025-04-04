@@ -7,7 +7,7 @@ import polars as pl
 
 from api import models as api_models
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 T = TypeVar("T", bound="api_models.UploadFile")

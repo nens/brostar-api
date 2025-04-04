@@ -13,7 +13,7 @@ from api.bro_upload.upload_datamodels import (
     TimeValuePair,
 )
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 T = TypeVar("T", bound="api_models.UploadFile")

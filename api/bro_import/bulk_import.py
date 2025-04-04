@@ -11,7 +11,7 @@ from gld.models import GLD
 from gmn.models import GMN
 from gmw.models import GMW
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("general")
 
 
 class FetchBROIDsError(Exception):
