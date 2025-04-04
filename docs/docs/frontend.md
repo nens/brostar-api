@@ -81,7 +81,7 @@ Om de grondwatermetingen aan te leveren, moeten eerst de meetnetten aangemaakt w
 
 #### GMW-Constructie
 
-Hoe werkt een GMW-Constructie? 
+Hoe werkt een GMW-Constructie?
 
 Goeie vraag! In een GMW-Constructie geef je alle informatie die nodig is voor het aanmaken van een put in de BRO. Dit is een flinke lijst, en er zijn dus behoorlijk wat gegevens die je zult moeten invullen. Mocht je niet weten wat een bepaald veld betekend, dan is eer een link naar de BRO-Documentatie boven in het scherm. Hier vindt je de informatie van de Basis Registratie zelf.
 
@@ -135,10 +135,10 @@ Een meetpunt kan toegevoegd worden via de knop 'Meetpunt toevoegen'. Vergelijkba
 Om door te voeren dat een grondwatermeetnet niet meer actief bemeten wordt, dient men op deze knop te drukken. Hierbij dient wederom vergelijkbare informatie gegeven worden zoals bij de twee vorige knoppen.
 
 ### GLD-Leveringen
-Om de tijdreeksen van grondwaterstanden toe te voegen, wordt de knop GLD - tijdreeks (Groundwater Level Dossier) gebruikt. Vanuit daar zijn er wederom de drie knoppen 'Start registratie', 'Aanvulling' en 'Beeindigen'. 
+Om de tijdreeksen van grondwaterstanden toe te voegen, wordt de knop GLD - tijdreeks (Groundwater Level Dossier) gebruikt. Vanuit daar zijn er wederom de drie knoppen 'Start registratie', 'Aanvulling' en 'Beeindigen'.
 
 #### GLD-StartRegistratie
-Als er op de knop 'Start registratie' geklikt wordt, komt een formulier tevoorschijn. Hier moet metadata worden ingevuld betreffende iedere tijdreeks. Dat zijn projectnummer, interne naam, het kwaliteitsregime, de specifieke put, de bronhouder en het buisnummer. Daaronder is zichtbaar welke grondwatertijdreeksen er momenteel worden gebruikt. 
+Als er op de knop 'Start registratie' geklikt wordt, komt een formulier tevoorschijn. Hier moet metadata worden ingevuld betreffende iedere tijdreeks. Dat zijn projectnummer, interne naam, het kwaliteitsregime, de specifieke put, de bronhouder en het buisnummer. Daaronder is zichtbaar welke grondwatertijdreeksen er momenteel worden gebruikt.
 
 #### GLD-Aanvulling
 Bij de knop aanvulling moet de .csv van de tijdreeks aangeleverd worden. Hierbij dient als metadata de projectnummer, kwaliteitsregime, BRO-ID tijdreeksdossier en bronhouder ingevuld worden. Als laatste dient het tijdseries bestand aangeleverd te worden. Gebruik hierbij de volgende template als voorbeeld.
