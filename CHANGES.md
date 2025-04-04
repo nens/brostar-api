@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.23 (unreleased)
+## 1.23 (2025-04-04)
 
 -   Hotfix: Add request timeouts
 
