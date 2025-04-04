@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.22 (unreleased)
+## 1.22 (2025-04-04)
 
 -   Functionality: Add GMN-IntermediateEvents
 -   Enhancement: Improve GLD-ReplaceBulk
