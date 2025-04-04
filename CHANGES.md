@@ -2,9 +2,7 @@
 
 ## 1.23 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: Add request timeouts
 
 ## 1.22 (2025-04-04)
 

@@ -27,6 +27,7 @@ def validate_xml_file(
             data=xml_file,
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
+            timeout=60,
         )
         r.raise_for_status()
 
@@ -46,6 +47,7 @@ def create_upload_url(bro_username: str, bro_password: str, project_number: str)
             url,
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
+            timeout=60,
         )
         r.raise_for_status()
         upload_url = r.headers["Location"]
@@ -74,6 +76,7 @@ def add_xml_to_upload(
             auth=(bro_username, bro_password),
             data=xml_file,
             params={"filename": "BROStar request"},
+            timeout=60,
         )
         r.raise_for_status()
         return r.headers["Location"]
@@ -101,6 +104,7 @@ def create_delivery(
             headers={"Content-type": "application/json"},
             data=json.dumps(payload),
             auth=(bro_username, bro_password),
+            timeout=60,
         )
         r.raise_for_status()
 
@@ -119,6 +123,7 @@ def check_delivery_status(
         r = requests.get(
             url=delivery_url,
             auth=(bro_username, bro_password),
+            timeout=20,
         )
 
         return r.json()
