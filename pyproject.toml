@@ -85,3 +85,7 @@ ignore-packages = ["api", "gmn", "gmw", "gld", "gar", "frd", "psycopg2-binary", 
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
+
+[[tool.uv.index]]
+name = "lizard_packages"
+url = "https://packages.lizard.net/"
