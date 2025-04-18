@@ -3,6 +3,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from .models import InviteUser, UploadTask, UserProfile
+from .tasks import upload_task
 
 
 @receiver(post_save, sender=User)
@@ -36,3 +37,15 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
         instance.metadata.update({"correctionReason": "eigenCorrectie"})
         instance.bro_errors = ""
         instance.status = "PENDING"
+
+
+@receiver(post_save, sender=UploadTask)
+def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
+    """Handle registration where it should be an insert."""
+    if instance.status == "PENDING" and instance.data_owner:
+        # Accessing the authenticated user's username and token
+        username = instance.data_owner.bro_user_token
+        password = instance.data_owner.bro_user_password
+
+        # Start the celery task
+        upload_task(instance.uuid, username, password)
