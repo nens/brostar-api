@@ -27,31 +27,29 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - uses: pre-commit/action@v3.0.1
-
-      - name: Install the project
-        run: uv sync --locked --all-extras --dev
-
-      - name: Running Pytests
-        run: uv run pytest . -vv
+      - name: Test
+        run: |
+          docker compose run --rm web uv pip list
+          docker compose run --rm web uvx pytest . -vv
 
       - name: Coverage
         run: |
-          uv run coverage run -m pytest
-          uv run coverage xml
-          uv run coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          uv run coverage report --fail-under 10 --format text
+          docker compose run web uvx coverage run -m pytest
+          docker compose run web uvx coverage xml
+          docker compose run web uvx coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker compose run web uvx coverage report --fail-under 10 --format text
 
-      - name: Pull docker image
-        run: docker compose pull
+      - name: Publish the Docker image
+        run: |
+          docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker tag docker.io/library/brostar-api-web ghcr.io/nens/brostar-api:main
+          docker push ghcr.io/nens/brostar-api:main
+        if: github.ref == 'refs/heads/main'
+        # Running this job only for main branch.
 
       - name: Publish tag as production docker image
         run: |
