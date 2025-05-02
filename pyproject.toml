@@ -51,6 +51,7 @@ testpaths = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
 log_level = "DEBUG"
 django_find_project = false
 DJANGO_SETTINGS_MODULE = "brostar_api.settings"
+pythonpath = ["."]
 
 [tool.coverage.run]
 source = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
