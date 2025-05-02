@@ -34,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "pyproject.toml"
+          python-version-file: "pyproject.toml"
       - uses: pre-commit/action@v3.0.1
 
       - name: Install the project
