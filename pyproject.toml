@@ -8,6 +8,7 @@ name = "brostar-api"
 requires-python = ">=3.11"
 dependencies = [
     "celery[redis]",
+    "coverage",
     "django-cors-headers",
     "django-encrypted-model-fields",
     "django-filter",
@@ -95,6 +96,7 @@ url = "https://packages.lizard.net/"
 
 [dependency-groups]
 dev = [
+    "coverage",
     "django>=5.0.14",
     "djangorestframework>=3.16.0",
     "pandas>=2.2.3",
