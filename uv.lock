@@ -129,7 +129,13 @@ test = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "django" },
+    { name = "djangorestframework" },
+    { name = "pandas" },
+    { name = "polars" },
     { name = "pytest" },
+    { name = "pytest-django" },
+    { name = "pytest-mock" },
 ]
 
 [package.metadata]
@@ -166,7 +172,15 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=8.3.5" }]
+dev = [
+    { name = "django", specifier = ">=5.0.14" },
+    { name = "djangorestframework", specifier = ">=3.16.0" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "polars", specifier = ">=1.27.1" },
+    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest-django", specifier = ">=4.11.1" },
+    { name = "pytest-mock", specifier = ">=3.14.0" },
+]
 
 [[package]]
 name = "celery"
