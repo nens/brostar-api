@@ -120,8 +120,12 @@ TEMPLATES = [
     },
 ]
 
+LOG_FOLDERS = ["general", "access", "task_file"]
 LOG_DIR = "/var/logs"
 os.makedirs(LOG_DIR, exist_ok=True)
+for log in LOG_FOLDERS:
+    os.makedirs(f"{LOG_DIR}/{log}", exist_ok=True)
+
 
 LOGGING = {
     "version": 1,
@@ -133,6 +137,11 @@ LOGGING = {
         },
     },
     "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "detailed",
+        },
         "task_file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
@@ -154,17 +163,17 @@ LOGGING = {
     },
     "loggers": {
         "task": {
-            "handlers": ["task_file"],
+            "handlers": ["task_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
         "access": {
-            "handlers": ["access_file"],
+            "handlers": ["access_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
         "general": {
-            "handlers": ["general_file"],
+            "handlers": ["general_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
@@ -279,7 +288,6 @@ CELERY_TASK_QUEUES = (
     # Define all your requested queues
     Queue("default", Exchange("default"), routing_key="default"),
     Queue("Upload", Exchange("Upload"), routing_key="Upload"),
-    Queue("StatusCheck", Exchange("StatusCheck"), routing_key="StatusCheck"),
 )
 
 # Default queue if not specified

@@ -50,28 +50,6 @@ services:
       redis:
         condition: service_started
 
-  celery_status_check:
-    environment:
-      # # Can be set in .env, we'll pass them on. settings.py has some defaults.
-      - FIELD_ENCRYPTION_KEY
-      - SECRET_KEY
-      - NENS_AUTH_ISSUER
-      - NENS_AUTH_CLIENT_ID
-      - NENS_AUTH_CLIENT_SECRET
-    build: .
-    command: >
-      celery -A brostar_api worker
-      -Q StatusCheck
-      --concurrency=3
-      --max-memory-per-child=50000
-      --loglevel=INFO
-      --hostname=status@%h
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-
   celery_upload:
     environment:
       # # Can be set in .env, we'll pass them on. settings.py has some defaults.
@@ -103,7 +81,6 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
     build: .
-    image: uv-brostar:0.1.2
     command: uv run python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
@@ -116,8 +93,6 @@ services:
       redis:
         condition: service_started
       celery_default:
-        condition: service_started
-      celery_status_check:
         condition: service_started
       celery_upload:
         condition: service_started

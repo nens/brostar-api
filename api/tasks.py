@@ -140,14 +140,14 @@ def check_delivery_status_task(context):
     upload_task_instance.progress = 100.0 if bro_id else 95.0
     upload_task_instance.status = "COMPLETED" if bro_id else "UNFINISHED"
     upload_task_instance.log = (
-        "The upload was done successfully"
+        f"Upload geslaagd: {bro_id}"
         if bro_id
         else "After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually."
     )
     upload_task_instance.save()
 
 
-@shared_task
+@shared_task(queue="default")
 def import_bro_data_task(import_task_instance_uuid: str) -> None:
     """Celery task that imports the data based on a KvK and BRO Domain.
 
@@ -162,7 +162,7 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         logger.exception(e)
 
 
-@shared_task
+@shared_task(queue="Upload")
 def upload_bro_data_task(
     upload_task_instance_uuid: str,
     bro_username: str,
@@ -198,14 +198,14 @@ def upload_task(
     """
     workflow = chain(
         generate_xml_file_task.s(upload_task_instance_uuid),
-        validate_xml_file_task.s(),
-        deliver_xml_file_task.s(bro_username, bro_password),
+        validate_xml_file_task.s(bro_username, bro_password),
+        deliver_xml_file_task.s(),
         check_delivery_status_task.s(),
     )
     workflow.apply_async()
 
 
-@shared_task
+@shared_task(queue="Upload")
 def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     fieldwork_upload_file_uuid: str,
@@ -223,7 +223,7 @@ def gar_bulk_upload_task(
         logger.exception(e)
 
 
-@shared_task
+@shared_task(queue="Upload")
 def gld_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     measurement_tvp_file_uuid: str,
@@ -239,7 +239,7 @@ def gld_bulk_upload_task(
         logger.exception(e)
 
 
-@shared_task
+@shared_task(queue="Upload")
 def gmn_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     file_uuid: str,
