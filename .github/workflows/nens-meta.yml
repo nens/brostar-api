@@ -37,13 +37,13 @@ jobs:
           docker compose build
           docker compose pull
       - name: Test
-        run: docker compose run web pytest
+        run: docker compose run web uvx pytest . -vv
       - name: Coverage
         run: |
-          docker compose run web coverage run -m pytest
-          docker compose run web coverage xml
-          docker compose run web coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          docker compose run web coverage report --fail-under 10 --format text
+          docker compose run web uvx coverage run -m pytest
+          docker compose run web uvx coverage xml
+          docker compose run web uvx coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker compose run web uvx coverage report --fail-under 10 --format text
 
       - name: Publish the Docker image
         run: |
