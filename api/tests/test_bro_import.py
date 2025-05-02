@@ -3,14 +3,23 @@ import datetime
 import pytest
 from django.conf import settings
 from requests.exceptions import HTTPError, RequestException
+from rest_framework.test import APIClient
 
 from api.bro_import import bulk_import, object_import
+from api.models import ImportTask, UploadTask
 from api.tests import fixtures
 from gld.models import GLD, Observation
 from gmw.models import GMW, Event, MonitoringTube
 
+user = fixtures.user
+userprofile = fixtures.userprofile
 organisation = fixtures.organisation
 importtask = fixtures.importtask
+
+
+@pytest.fixture
+def api_client():
+    return APIClient()
 
 
 @pytest.fixture
@@ -205,3 +214,70 @@ def test_gmw_import(gmw_object_importer: object_import.GMWObjectImporter):
 
     monitoring_tubes = MonitoringTube.objects.filter(gmw=gmw_instance)
     assert monitoring_tubes.count() == gmw_instance.nr_of_tubes
+
+
+@pytest.mark.django_db
+def test_create_import_task(api_client, user, organisation):
+    api_client.force_authenticate(user=user)
+
+    # Prepare POST data
+    post_data = {
+        "bro_domain": "GLD",
+        "kvk_number": "27376655",
+        "data_owner": organisation.uuid,
+    }
+
+    # Use Django REST Framework style endpoint
+    url = "/api/importtasks/"
+
+    # Make POST request
+    response = api_client.post(url, post_data, content_type="application/json")
+
+    # Validate response
+    assert response.status_code == 201, f"Unexpected response: {response.content}"
+
+    # Fetch and validate the ImportTask
+    task = ImportTask.objects.first()
+    assert task is not None
+    assert task.data_owner == organisation
+    assert task.bro_domain == "GLD"
+    assert task.kvk_number == "27376655"
+
+
+@pytest.mark.django_db
+def test_create_upload_task(api_client, user, organisation):
+    api_client.force_authenticate(user=user)
+
+    # Prepare POST data
+    post_data = {
+        "bro_domain": "GMW",
+        "project_number": "1",
+        "registration_type": "GMW_WellHeadProtector",
+        "request_type": "registration",
+        "sourcedocument_data": {
+            "eventDate": "2021-01-01",
+            "wellHeadProtector": "koker",
+        },
+        "metadata": {
+            "broId": "GMW000001234",
+            "qualityRegime": "IMBRO/A",
+            "deliveryAccountableParty": "12345678",
+            "requestReference": "dummy-test",
+        },
+        "data_owner": str(organisation.uuid),
+    }
+
+    # Use Django REST Framework style endpoint
+    url = "/api/uploadtasks/"
+
+    # Make POST request
+    response = api_client.post(url, post_data, content_type="application/json")
+
+    # Validate response
+    assert response.status_code == 201, f"Unexpected response: {response.content}"
+
+    # Fetch and validate the ImportTask
+    task = UploadTask.objects.first()
+    assert task is not None
+    assert task.data_owner == organisation
+    assert task.bro_domain == "GMW"

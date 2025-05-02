@@ -205,6 +205,7 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
     }
 
     response = api_client.post(url, data, format="json")
+    print(response.json())
 
     assert response.status_code == status.HTTP_201_CREATED
 
