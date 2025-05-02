@@ -1,234 +1,253 @@
 import uuid
 from datetime import date, datetime
+from typing import Any
 
-from pydantic import BaseModel, root_validator, validator
+from pydantic import BaseModel, field_validator, model_validator
+
+from .type_helpers import (
+    BroDomainOptions,
+    CorrectionReasonOptions,
+    QualityRegimeOptions,
+    RegistrationTypeOptions,
+    RequestTypeOptions,
+)
+
 
 ## Uploadtask models
+def to_camel(string: str) -> str:
+    parts = string.split("_")
+    return parts[0] + "".join(word.capitalize() for word in parts[1:])
 
 
-# Upload task metadata
-class UploadTaskMetadata(BaseModel):
-    requestReference: str
-    deliveryAccountableParty: str | None = None
-    qualityRegime: str
-    broId: str | None = None
-    correctionReason: str | None = None
-    dateToBeCorrected: str | date | None = None
+class CamelModel(BaseModel):
+    class Config:
+        validate_by_name = True
+        extra = "ignore"
+
+        # Ensure aliasing works for all fields with underscores
+        @staticmethod
+        def alias_generator(field_name: str) -> str:
+            return to_camel(field_name)
 
 
-class GARBulkUploadMetadata(BaseModel):
-    requestReference: str
-    qualityRegime: str
-    deliveryAccountableParty: str | None = None
-    qualityControlMethod: str | None = (
-        None  # options: https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Beoordelingsprocedure
-    )
-    groundwaterMonitoringNets: list[str] | None = None
-    samplingOperator: str | int | None = None
+## Uploadtask models
+class UploadTaskMetadata(CamelModel):
+    request_reference: str
+    delivery_accountable_party: str | None = None
+    bro_id: str | None = None
+    quality_regime: QualityRegimeOptions
+    correction_reason: CorrectionReasonOptions | None = None
 
 
-class GLDBulkUploadMetadata(BaseModel):
-    requestReference: str
-    qualityRegime: str
-    deliveryAccountableParty: str | None = None
-    broId: str
+class GARBulkUploadMetadata(CamelModel):
+    request_reference: str
+    quality_regime: str
+    delivery_accountable_party: str | None = None
+    quality_control_method: str | None = None
+    groundwater_monitoring_nets: list[str] | None = None
+    sampling_operator: int | None = None
 
 
-class GMNBulkUploadMetadata(BaseModel):
-    requestReference: str
-    qualityRegime: str
-    deliveryAccountableParty: str | None = None
-    broId: str
+class GLDBulkUploadMetadata(CamelModel):
+    request_reference: str
+    quality_regime: str
+    delivery_accountable_party: str | None = None
+    bro_id: str
 
 
-class GLDBulkUploadSourcedocumentData(BaseModel):
-    validationStatus: str | None = None
-    investigatorKvk: str
-    observationType: str
-    evaluationProcedure: str
-    measurementInstrumentType: str
-    processReference: str
-    airPressureCompensationType: str | None = None
-    beginPosition: str | None = None
-    endPosition: str | None = None
-    resultTime: str | None = None
+class GMNBulkUploadMetadata(CamelModel):
+    request_reference: str
+    quality_regime: str
+    delivery_accountable_party: str | None = None
+    bro_id: str
+
+
+class GLDBulkUploadSourcedocumentData(CamelModel):
+    validation_status: str | None = None
+    investigator_kvk: str
+    observation_type: str
+    evaluation_procedure: str
+    measurement_instrument_type: str
+    process_reference: str
+    air_pressure_compensation_type: str | None = None
+    begin_position: str | None = None
+    end_position: str | None = None
+    result_time: str | None = None
 
 
 # GMN sourcedocs_data
-class MeasuringPoint(BaseModel):
-    measuringPointCode: str
-    broId: str
-    tubeNumber: str | int
+class MeasuringPoint(CamelModel):
+    measuring_point_code: str
+    bro_id: str
+    tube_number: int
 
 
-class GMNStartregistration(BaseModel):
-    objectIdAccountableParty: str
+class GMNStartregistration(CamelModel):
+    object_id_accountable_party: str
     name: str
-    deliveryContext: str
-    monitoringPurpose: str
-    groundwaterAspect: str
-    startDateMonitoring: str
-    measuringPoints: list[MeasuringPoint]
+    delivery_context: str
+    monitoring_purpose: str
+    groundwater_aspect: str
+    start_date_monitoring: str
+    measuring_points: list[MeasuringPoint]
 
 
-class GMNMeasuringPoint(BaseModel):
-    eventDate: str
-    measuringPointCode: str
-    broId: str
-    tubeNumber: str | int
+class GMNMeasuringPoint(CamelModel):
+    event_date: str
+    measuring_point_code: str
+    bro_id: str
+    tube_number: int
 
 
-class GMNMeasuringPointEndDate(BaseModel):
-    eventDate: str | None = None
-    yearMonth: str | None = None
-    year: str | None = None
-    voidReason: str | None = None
-    measuringPointCode: str
-    broId: str
-    tubeNumber: str | int
+class GMNMeasuringPointEndDate(CamelModel):
+    event_date: str | None = None
+    measuring_point_code: str
+    bro_id: str
+    tube_number: int
 
 
-class GMNTubeReference(BaseModel):
-    eventDate: str
-    measuringPointCode: str
-    broId: str
-    tubeNumber: str | int
+class GMNTubeReference(CamelModel):
+    event_date: str
+    measuring_point_code: str
+    bro_id: str
+    tube_number: int
 
 
-class GMNClosure(BaseModel):
-    endDateMonitoring: str
+class GMNClosure(CamelModel):
+    end_date_monitoring: str
 
 
 # GMW sourcedocs_data
-class Electrode(BaseModel):
-    electrodeNumber: str | int
-    electrodePackingMaterial: str
-    electrodeStatus: str
-    electrodePosition: str | float
+class Electrode(CamelModel):
+    electrode_number: int
+    electrode_packing_material: str
+    electrode_status: str
+    electrode_position: float | None = None
 
 
-class GeoOhmCable(BaseModel):
-    cableNumber: str | int
+class GeoOhmCable(CamelModel):
+    cable_number: int
     electrodes: list[Electrode]
 
 
-class MonitoringTube(BaseModel):
-    tubeNumber: str | int
-    tubeType: str
-    artesianWellCapPresent: str
-    sedimentSumpPresent: str
-    numberOfGeoOhmCables: str | int  # Should this not be derived from 'geoohmcables'
-    tubeTopDiameter: str | float | None = None
-    variableDiameter: str | float
-    tubeStatus: str
-    tubeTopPosition: str | float
-    tubeTopPositioningMethod: str
-    tubePackingMaterial: str
-    tubeMaterial: str
+class MonitoringTube(CamelModel):
+    tube_number: int
+    tube_type: str
+    artesian_well_cap_present: str
+    sediment_sump_present: str
+    number_of_geo_ohm_cables: int = 0
+    tube_top_diameter: int | None = None
+    variable_diameter: str | None = None
+    tube_status: str
+    tube_top_position: float
+    tube_top_positioning_method: str
+    tube_packing_material: str
+    tube_material: str
     glue: str
-    screenLength: str | float
-    screenProtection: str | None = None
-    sockMaterial: str
-    plainTubePartLength: str | float
-    sedimentSumpLength: str | float | None = None
-    geoOhmCables: list[GeoOhmCable] | None = None
+    screen_length: float
+    screen_protection: str | None = None
+    sock_material: str
+    plain_tube_part_length: float
+    sediment_sump_length: float | None = None
+    geo_ohm_cables: list[GeoOhmCable] | None = None
 
 
-class GMWConstruction(BaseModel):
-    objectIdAccountableParty: str
-    deliveryContext: str
-    constructionStandard: str
-    initialFunction: str
-    numberOfMonitoringTubes: (
-        str | int
-    )  # Should this not be derived from 'monitoringTubes'
-    groundLevelStable: str
-    wellStability: str | None = None
+class GMWConstruction(CamelModel):
+    object_id_accountable_party: str
+    delivery_context: str
+    construction_standard: str
+    initial_function: str
+    number_of_monitoring_tubes: int
+    ground_level_stable: str
+    well_stability: str | None = None
     owner: str | None = None
-    maintenanceResponsibleParty: str | None = None
-    wellHeadProtector: str
-    wellConstructionDate: str
-    deliveredLocation: str
-    horizontalPositioningMethod: str
-    localVerticalReferencePoint: str
-    offset: str | float
-    verticalDatum: str
-    groundLevelPosition: str | float | None = None
-    groundLevelPositioningMethod: str
-    monitoringTubes: list[MonitoringTube]
+    maintenance_responsible_party: str | None = None
+    well_head_protector: str
+    well_construction_date: str
+    delivered_location: str
+    horizontal_positioning_method: str
+    local_vertical_reference_point: str
+    offset: float
+    vertical_datum: str
+    ground_level_position: float | None = None
+    ground_level_positioning_method: str
+    monitoring_tubes: list["MonitoringTube"]
+    date_to_be_corrected: str | None = None
 
 
-class GMWEvent(BaseModel):
-    eventDate: str
+# noqa: N815 - Using mixedCase to match API requirements
+class GMWEvent(CamelModel):
+    event_date: str
 
 
+# noqa: N815 - Using mixedCase to match API requirements
 class GMWElectrodeStatus(GMWEvent):
     electrodes: list[Electrode]
 
 
 class GMWGroundLevel(GMWEvent):
-    wellStability: str = "stabielNAP"
-    groundLevelStable: str = "nee"
-    groundLevelPosition: str | float
-    groundLevelPositioningMethod: str
+    well_stability: str = "stabielNAP"
+    ground_level_stable: str = "nee"
+    ground_level_position: float
+    ground_level_positioning_method: str
 
 
 class GMWGroundLevelMeasuring(GMWEvent):
-    groundLevelPosition: str | float
-    groundLevelPositioningMethod: str
+    ground_level_position: float
+    ground_level_positioning_method: str
 
 
 class GMWInsertion(GMWEvent):
-    tubeNumber: str | int
-    tubeTopPosition: str | float
-    tubeTopPositioningMethod: str
-    insertedPartLength: str | float
-    insertedPartDiameter: str | float
-    insertedPartMaterial: str | float
+    tube_number: int
+    tube_top_position: float
+    tube_top_positioning_method: str
+    inserted_part_length: float
+    inserted_part_diameter: int
+    inserted_part_material: str
 
 
-class MonitoringTubeLengthening(BaseModel):
-    tubeNumber: str | int
-    variableDiameter: str = "ja"
-    tubeTopDiameter: str | float | None = None
-    tubeTopPosition: str | float
-    tubeTopPositioningMethod: str
-    tubeMaterial: str | None = None
+class MonitoringTubeLengthening(CamelModel):
+    tube_number: int
+    variable_diameter: str = "ja"
+    tube_top_diameter: int | None = None
+    tube_top_position: float
+    tube_top_positioning_method: str
+    tube_material: str | None = None
     glue: str | None = None
-    plainTubePartLength: str | float
+    plain_tube_part_length: float
 
 
 class GMWLengthening(GMWEvent):
-    wellHeadProtector: str | None = None
-    monitoringTubes: list[MonitoringTubeLengthening]
+    well_head_protector: str | None = None
+    monitoring_tubes: list[MonitoringTubeLengthening]
 
 
 class GMWMaintainer(GMWEvent):
-    maintenanceResponsibleParty: str
+    maintenance_responsible_party: str
 
 
 class GMWOwner(GMWEvent):
     owner: str
 
 
-class MonitoringTubePositions(BaseModel):
-    tubeNumber: str | int
-    tubeTopPosition: str | float
-    tubeTopPositioningMethod: str
+class MonitoringTubePositions(CamelModel):
+    tube_number: int
+    tube_top_position: float
+    tube_top_positioning_method: str
 
 
 class GMWPositions(GMWEvent):
-    wellStability: str = "nee"
-    groundLevelStable: str = "instabiel"
-    groundLevelPosition: str | float
-    groundLevelPositioningMethod: str
-    monitoringTubes: list[MonitoringTubePositions]
+    well_stability: str = "nee"
+    ground_level_stable: str = "instabiel"
+    ground_level_position: float
+    ground_level_positioning_method: str
+    monitoring_tubes: list[MonitoringTubePositions]
 
 
 class GMWPositionsMeasuring(GMWEvent):
-    monitoringTubes: list[MonitoringTubePositions]
-    groundLevelPosition: str | float | None = None
-    groundLevelPositioningMethod: str | None = None
+    monitoring_tubes: list[MonitoringTubePositions]
+    ground_level_position: float | None = None
+    ground_level_positioning_method: str | None = None
 
 
 class GMWRemoval(GMWEvent):
@@ -236,251 +255,247 @@ class GMWRemoval(GMWEvent):
 
 
 class GMWShift(GMWEvent):
-    groundLevelPosition: str | float
-    groundLevelPositioningMethod: str
+    ground_level_position: float
+    ground_level_positioning_method: str
 
 
-class MonitoringTubeShortening(BaseModel):
-    tubeNumber: str | int
-    tubeTopPosition: str | float
-    tubeTopPositioningMethod: str
-    plainTubePartLength: str | float
+class MonitoringTubeShortening(CamelModel):
+    tube_number: int
+    tube_top_position: float
+    tube_top_positioning_method: str
+    plain_tube_part_length: float
 
 
 class GMWShortening(GMWEvent):
-    wellHeadProtector: str | None = None
-    monitoringTubes: list[MonitoringTubeShortening]
+    well_head_protector: str | None = None
+    monitoring_tubes: list[MonitoringTubeShortening]
 
 
-class MonitoringTubeStatus(BaseModel):
-    tubeNumber: str | int
-    tubeStatus: str
+class MonitoringTubeStatus(CamelModel):
+    tube_number: int
+    tube_status: str
 
 
 class GMWTubeStatus(GMWEvent):
-    monitoringTubes: list[MonitoringTubeStatus]
+    monitoring_tubes: list[MonitoringTubeStatus]
 
 
 class GMWWellHeadProtector(GMWEvent):
-    wellHeadProtector: str
+    well_head_protector: str
 
 
-# GAR sourcedocs_data
-class FieldMeasurement(BaseModel):
-    parameter: str | int
+class FieldMeasurement(CamelModel):
+    parameter: int
     unit: str
-    fieldMeasurementValue: str | float
-    qualityControlStatus: str
+    field_measurement_value: float
+    quality_control_status: str
 
 
-class FieldResearch(BaseModel):
-    samplingDateTime: str | datetime
-    samplingOperator: str | None = None
-    samplingStandard: str
-    pumpType: str
-    primaryColour: str | None = None
-    secondaryColour: str | None = None
-    colourStrength: str | None = None
-    abnormalityInCooling: str
-    abnormalityInDevice: str
-    pollutedByEngine: str
-    filterAerated: str
-    groundWaterLevelDroppedTooMuch: str
-    abnormalFilter: str
-    sampleAerated: str
-    hoseReused: str
-    temperatureDifficultToMeasure: str
-    fieldMeasurements: list[FieldMeasurement] | None = None
+class FieldResearch(CamelModel):
+    sampling_date_time: str | datetime
+    sampling_operator: str | None = None
+    sampling_standard: str
+    pump_type: str
+    primary_colour: str | None = None
+    secondary_colour: str | None = None
+    colour_strength: str | None = None
+    abnormality_in_cooling: str
+    abnormality_in_device: str
+    polluted_by_engine: str
+    filter_aerated: str
+    ground_water_level_dropped_too_much: str
+    abnormal_filter: str
+    sample_aerated: str
+    hose_reused: str
+    temperature_difficult_to_measure: str
+    field_measurements: list[FieldMeasurement] | None = None
 
-    @validator("samplingDateTime", pre=True, always=True)
+    @field_validator("sampling_date_time", mode="before")
     def format_datetime(cls, value):
-        """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
             return value.isoformat()
         return value
 
 
-class Analysis(BaseModel):
+class Analysis(CamelModel):
     parameter: str | int
     unit: str
-    analysisMeasurementValue: str | float
-    limitSymbol: str | None = None
-    reportingLimit: str | float | None = None
-    qualityControlStatus: str
+    analysis_measurement_value: float
+    limit_symbol: str | None = None
+    reporting_limit: str | float | None = None
+    quality_control_status: str
 
 
-class AnalysisProcess(BaseModel):
+class AnalysisProcess(CamelModel):
     date: str | date
-    analyticalTechnique: str
-    valuationMethod: str
+    analytical_technique: str
+    valuation_method: str
     analyses: list[Analysis]
 
-    @validator("date", pre=True, always=True)
+    @field_validator("date", mode="before")
     def format_date(cls, value):
-        """Ensure date is always serialized as a string, in BRO required format"""
         if isinstance(value, date):
             return value.strftime("%Y-%m-%d")
         return value
 
 
-class LaboratoryAnalysis(BaseModel):
-    responsibleLaboratoryKvk: str | None = None
-    analysisProcesses: list[AnalysisProcess] = []
+class LaboratoryAnalysis(CamelModel):
+    responsible_laboratory_kvk: str | None = None
+    analysis_processes: list[AnalysisProcess] = []
 
 
-class GAR(BaseModel):
-    objectIdAccountableParty: str
-    qualityControlMethod: str
-    groundwaterMonitoringNets: list[str] | None = None
-    gmwBroId: str
-    tubeNumber: str | int
-    fieldResearch: FieldResearch
-    laboratoryAnalyses: list[LaboratoryAnalysis] | None = None
+class GAR(CamelModel):
+    object_id_accountable_party: str
+    quality_control_method: str
+    groundwater_monitoring_nets: list[str] | None = None
+    gmw_bro_id: str
+    tube_number: str | int
+    field_research: FieldResearch
+    laboratory_analyses: list[LaboratoryAnalysis] | None = None
 
 
-# GLD
-class GLDStartregistration(BaseModel):
-    objectIdAccountableParty: str | None = None
-    groundwaterMonitoringNets: list[str] | None = None
-    gmwBroId: str
-    tubeNumber: str | int
+class GLDStartregistration(CamelModel):
+    object_id_accountable_party: str | None = None
+    groundwater_monitoring_nets: list[str] | None = None
+    gmw_bro_id: str
+    tube_number: str | int
 
 
-class TimeValuePair(BaseModel):
-    time: str | datetime
-    value: float | str | None = None
-    statusQualityControl: str = "onbekend"
-    censorReason: str | None = None
-    censoringLimitvalue: str | float | None = None
+class TimeValuePair(CamelModel):
+    time: str
+    value: float | None = None
+    status_quality_control: str = "onbekend"
+    censor_reason: str | None = None
+    censoring_limitvalue: float | None = None
 
-    @validator("time", pre=True, always=True)
+    @field_validator("time", mode="before")
     def format_datetime(cls, value):
-        """Ensure datetime is always serialized as BRO required format"""
         if isinstance(value, datetime):
             return value.isoformat(sep="T", timespec="seconds")
         return value
 
 
-class GLDAddition(BaseModel):
+class GLDAddition(CamelModel):
     date: str | None = None
-    observationId: str | None = None
-    observationProcessId: str | None = None
-    measurementTimeseriesId: str | None = None
-    validationStatus: str | None = None
-    investigatorKvk: str
-    observationType: str
-    evaluationProcedure: str
-    measurementInstrumentType: str
-    processReference: str
-    airPressureCompensationType: str | None = None
-    beginPosition: str
-    endPosition: str
-    resultTime: str | None = None
-    timeValuePairs: list[TimeValuePair]
+    observation_id: str | None = None
+    observation_process_id: str | None = None
+    measurement_timeseries_id: str | None = None
+    validation_status: str | None = None
+    investigator_kvk: str
+    observation_type: str
+    evaluation_procedure: str
+    measurement_instrument_type: str
+    process_reference: str
+    air_pressure_compensation_type: str | None = None
+    begin_position: str
+    end_position: str
+    result_time: str | None = None
+    time_value_pairs: list[TimeValuePair]
 
-    @validator("observationId", pre=True, always=True)
-    def format_observationId(cls, value):
-        """Ensure the observationId is always filled with an uuid"""
-        if not value:
-            return f"_{uuid.uuid4()}"
-        return value
+    @model_validator(mode="before")
+    def generate_missing_ids(cls, data):
+        if isinstance(data, dict):
+            # Handle the UUIDs
+            if not data.get("observation_id"):
+                data["observation_id"] = f"_{uuid.uuid4()}"
 
-    @validator("observationProcessId", pre=True, always=True)
-    def format_observationProcessId(cls, value):
-        """Ensure the observationProcessId is always filled with an uuid"""
-        if not value:
-            return f"_{uuid.uuid4()}"
-        return value
+            if not data.get("observation_process_id"):
+                data["observation_process_id"] = f"_{uuid.uuid4()}"
 
-    @validator("measurementTimeseriesId", pre=True, always=True)
-    def format_measurementTimeseriesId(cls, value):
-        """Ensure the measurementTimeseriesId is always filled with an uuid"""
-        if not value:
-            return f"_{uuid.uuid4()}"
-        return value
+            if not data.get("measurement_timeseries_id"):
+                data["measurement_timeseries_id"] = f"_{uuid.uuid4()}"
 
-    @root_validator(pre=True)
-    def format_validationStatus(cls, values):
-        """Ensure the measurementTimeseriesId is always filled with an uuid"""
-        # Check and set `validationStatus`
-        if values.get("observationType") == "reguliereMeting" and not values.get(
-            "validationStatus"
-        ):
-            values["validationStatus"] = "onbekend"
-        elif values.get("observationType") == "controlemeting":
-            values["validationStatus"] = None
+            # Handle validation status
+            if data.get("observation_type") == "reguliereMeting" and not data.get(
+                "validation_status"
+            ):
+                data["validation_status"] = "onbekend"
+            elif data.get("observation_type") == "controlemeting":
+                data["validation_status"] = None
 
-        return values
+        return data
 
 
-# FRD
-class FRDStartRegistration(BaseModel):
-    objectIdAccountableParty: str | None = None
-    groundwaterMonitoringNets: list[str] | None = None
-    gmwBroId: str
-    tubeNumber: str | int
+class GLDClosure(CamelModel):
+    event_date: str
 
 
-class MeasurementConfiguration(BaseModel):
-    measurementConfigurationID: str
-    measurementE1CableNumber: str | int
-    measurementE1ElectrodeNumber: str | int
-    measurementE2CableNumber: str | int
-    measurementE2ElectrodeNumber: str | int
-    currentE1CableNumber: str | int
-    currentE1ElectrodeNumber: str | int
-    currentE2CableNumber: str | int
-    currentE2ElectrodeNumber: str | int
+class FRDStartRegistration(CamelModel):
+    object_id_accountable_party: str | None = None
+    groundwater_monitoring_nets: list[str] | None = None
+    gmw_bro_id: str
+    tube_number: int
 
 
-class FRDGemMeasurementConfiguration(BaseModel):
-    measurementConfigurations: list[MeasurementConfiguration]
+class MeasurementConfiguration(CamelModel):
+    measurement_configuration_id: str
+    measurement_e1_cable_number: int
+    measurement_e1_electrode_number: int
+    measurement_e2_cable_number: int
+    measurement_e2_electrode_number: int
+    current_e1_cable_number: int
+    current_e1_electrode_number: int
+    current_e2_cable_number: int
+    current_e2_electrode_number: int
 
 
-class FRDEmmInstrumentConfiguration(BaseModel):
-    instrumentConfigurationID: str
-    relativePositionTransmitterCoil: str | int
-    relativePositionPrimaryReceiverCoil: str | int
-    secondaryReceiverCoilAvailable: str
-    relativePositionSecondaryReceiverCoil: str | int | None = None
-    coilFrequencyKnown: str
-    coilFrequency: str | int | None = None
-    instrumentLength: str | int
+class FRDGemMeasurementConfiguration(CamelModel):
+    measurement_configurations: list[MeasurementConfiguration]
 
 
-class FRDEmmMeasurement(BaseModel):
-    measurementDate: date | str
-    measurementOperatorKvk: str
-    determinationProcedure: str
-    measurementEvaluationProcedure: str
-    measurementSeriesCount: str | int
-    measurementSeriesValues: str
-    relatedInstrumentConfigurationId: str
-    calculationOperatorKvk: str
-    calculationEvaluationProcedure: str
-    calculationCount: str | int
-    calculationValues: str
+class FRDEmmInstrumentConfiguration(CamelModel):
+    instrument_configuration_id: str
+    relative_position_transmitter_coil: str | int
+    relative_position_primary_receiver_coil: str | int
+    secondary_receiver_coil_available: str
+    relative_position_secondary_receiver_coil: str | int | None = None
+    coil_frequency_known: str
+    coil_frequency: int | None = None
+    instrument_length: int
 
 
-class GemMeasurement(BaseModel):
-    value: str | int
+class FRDEmmMeasurement(CamelModel):
+    measurement_date: date | str
+    measurement_operator_kvk: str
+    determination_procedure: str
+    measurement_evaluation_procedure: str
+    measurement_series_count: int
+    measurement_series_values: str
+    related_instrument_configuration_id: str
+    calculation_operator_kvk: str
+    calculation_evaluation_procedure: str
+    calculation_count: int
+    calculation_values: str
+
+
+class GemMeasurement(CamelModel):
+    value: float
     unit: str
     configuration: str
 
 
-class RelatedCalculatedApparentFormationResistance(BaseModel):
-    calculationOperatorKvk: str
-    evaluationProcedure: str
-    elementCount: str | int
+class RelatedCalculatedApparentFormationResistance(CamelModel):
+    calculation_operator_kvk: str
+    evaluation_procedure: str
+    element_count: int
     values: str
 
 
-class FRDGemMeasurement(BaseModel):
-    measurementDate: str | date
-    measurementOperatorKvk: str
-    determinationProcedure: str
-    evaluationProcedure: str
+class FRDGemMeasurement(CamelModel):
+    measurement_date: str | date
+    measurement_operator_kvk: str
+    determination_procedure: str
+    evaluation_procedure: str
     measurements: list[GemMeasurement]
-    relatedCalculatedApparentFormationResistance: (
+    related_calculated_apparent_formation_resistance: (
         RelatedCalculatedApparentFormationResistance | None
     ) = None
+
+
+class UploadTask(BaseModel):
+    bro_domain: BroDomainOptions
+    project_number: str
+    registration_type: RegistrationTypeOptions
+    request_type: RequestTypeOptions
+    sourcedocument_data: Any
+    metadata: UploadTaskMetadata
