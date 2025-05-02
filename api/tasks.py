@@ -23,7 +23,7 @@ logger = logging.getLogger("general")
 logger = getLogger(__name__)
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def generate_xml_file_task(upload_task_instance_uuid: str):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=upload_task_instance_uuid
@@ -50,7 +50,7 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
         raise RuntimeError(f"Error generating XML file: {e}") from e
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
@@ -75,7 +75,7 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
     return context
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def deliver_xml_file_task(context):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
@@ -107,7 +107,7 @@ def deliver_xml_file_task(context):
     return context
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def check_delivery_status_task(context):
     delivery_status = "AANGELEVERD"
     retry_count = 0
@@ -162,7 +162,7 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         logger.exception(e)
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def upload_bro_data_task(
     upload_task_instance_uuid: str,
     bro_username: str,
@@ -181,7 +181,7 @@ def upload_bro_data_task(
         logger.exception(e)
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_name):
     """Handle task errors by updating the UploadTask status and marking it as completed.
 
@@ -244,7 +244,7 @@ def upload_task(
     workflow.apply_async()
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     fieldwork_upload_file_uuid: str,
@@ -262,7 +262,7 @@ def gar_bulk_upload_task(
         logger.exception(e)
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def gld_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     measurement_tvp_file_uuid: str,
@@ -278,7 +278,7 @@ def gld_bulk_upload_task(
         logger.exception(e)
 
 
-@shared_task(queue="Upload")
+@shared_task(queue="upload")
 def gmn_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     file_uuid: str,

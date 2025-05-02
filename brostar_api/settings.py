@@ -287,7 +287,7 @@ CELERY_RESULT_EXPIRES = 60 * 60 * 24
 CELERY_TASK_QUEUES = (
     # Define all your requested queues
     Queue("default", Exchange("default"), routing_key="default"),
-    Queue("Upload", Exchange("Upload"), routing_key="Upload"),
+    Queue("upload", Exchange("upload"), routing_key="upload"),
 )
 
 # Default queue if not specified

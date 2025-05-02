@@ -17,7 +17,7 @@ dependencies = [
     "django-prometheus",
     "drf-yasg",
     "fastexcel",
-    "markdown > 3",  # DRF api docs
+    "markdown > 3", # DRF api docs
     "mkdocs-material",
     "nens-auth-client",
     "openpyxl",
@@ -33,6 +33,8 @@ dependencies = [
     "whitenoise",
     "xlsx2csv",
     "xmltodict",
+    "pytest>=8.3.5",
+    "pre-commit>=4.2.0",
 ]
 description = "Simplify data management for BRO"
 authors = []
@@ -90,3 +92,8 @@ include = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
 [[tool.uv.index]]
 name = "lizard_packages"
 url = "https://packages.lizard.net/"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]

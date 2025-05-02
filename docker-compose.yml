@@ -61,7 +61,7 @@ services:
     build: .
     command: >
       celery -A brostar_api worker
-      -Q Upload
+      -Q upload
       --concurrency=1
       --max-memory-per-child=200000
       --loglevel=INFO
