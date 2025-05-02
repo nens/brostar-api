@@ -2,8 +2,8 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from .models import InviteUser, UploadTask, UserProfile
-from .tasks import upload_task
+from . import tasks
+from .models import ImportTask, InviteUser, UploadTask, UserProfile
 
 
 @receiver(post_save, sender=User)
@@ -48,4 +48,12 @@ def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
         password = instance.data_owner.bro_user_password
 
         # Start the celery task
-        upload_task(instance.uuid, username, password)
+        tasks.upload_task(instance.uuid, username, password)
+
+
+@receiver(post_save, sender=ImportTask)
+def post_save_import_task(sender, instance: ImportTask, created, **kwargs):
+    """Handle registration where it should be an insert."""
+    if instance.status == "PENDING":
+        # Start the celery task
+        tasks.import_bro_data_task.delay(instance.uuid)
