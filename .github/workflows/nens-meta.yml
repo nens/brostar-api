@@ -44,10 +44,10 @@ jobs:
 
       - name: Coverage
         run: |
-          docker compose run web uv coverage run -m pytest
-          docker compose run web uv coverage xml
-          docker compose run web uv coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          docker compose run web uv coverage report --fail-under 10 --format text
+          docker compose run web uv run coverage run -m pytest
+          docker compose run web uv run coverage xml
+          docker compose run web uv run coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker compose run web uv run coverage report --fail-under 10 --format text
 
       - name: Publish the Docker image
         run: |
