@@ -181,6 +181,36 @@ def upload_bro_data_task(
         logger.exception(e)
 
 
+@shared_task(queue="Upload")
+def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_name):
+    """Handle task errors by updating the UploadTask status and marking it as completed.
+
+    Args:
+        request: The request object
+        exc: The exception that was raised
+        traceback: The traceback
+        upload_task_instance_uuid: The UUID of the UploadTask instance
+        step_name: The name of the step that failed
+    """
+
+    # Get the upload task instance
+    upload_task = api_models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
+
+    # Get the exception class and message
+    error_type = exc.__class__.__name__
+    error_message = str(exc)
+
+    logger.warning(f"Error during {step_name}: {error_type} - {error_message}")
+
+    # Update the task status
+    upload_task.status = "failed"
+    upload_task.log = error_message
+    upload_task.save()
+
+    # Returning None or False will prevent the chain from continuing
+    return None
+
+
 def upload_task(
     upload_task_instance_uuid: str,
     bro_username: str,
@@ -196,11 +226,20 @@ def upload_task(
     The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
+    # Add error handling to each task using .on_error()
     workflow = chain(
-        generate_xml_file_task.s(upload_task_instance_uuid),
-        validate_xml_file_task.s(bro_username, bro_password),
-        deliver_xml_file_task.s(),
-        check_delivery_status_task.s(),
+        generate_xml_file_task.s(upload_task_instance_uuid).on_error(
+            handle_task_error.s(upload_task_instance_uuid, "generate_xml")
+        ),
+        validate_xml_file_task.s(bro_username, bro_password).on_error(
+            handle_task_error.s(upload_task_instance_uuid, "validate_xml")
+        ),
+        deliver_xml_file_task.s().on_error(
+            handle_task_error.s(upload_task_instance_uuid, "deliver_xml")
+        ),
+        check_delivery_status_task.s().on_error(
+            handle_task_error.s(upload_task_instance_uuid, "check_delivery")
+        ),
     )
     workflow.apply_async()
 
