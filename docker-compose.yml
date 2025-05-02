@@ -38,7 +38,7 @@ services:
       - NENS_AUTH_CLIENT_SECRET
     build: .
     command: >
-      celery -A brostar_api worker
+      uv celery -A brostar_api worker
       -Q default
       --concurrency=2
       --max-memory-per-child=100000
@@ -60,7 +60,7 @@ services:
       - NENS_AUTH_CLIENT_SECRET
     build: .
     command: >
-      celery -A brostar_api worker
+      uv celery -A brostar_api worker
       -Q upload
       --concurrency=1
       --max-memory-per-child=200000

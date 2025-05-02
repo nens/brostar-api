@@ -1,13 +1,13 @@
 FROM python:3.12
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
-WORKDIR /code
-
 RUN uv venv .venv
 # Use the virtual environment automatically
 ENV VIRTUAL_ENV=.venv
 # Place entry points in the environment at the front of the path
-ENV PATH="/code/.venv/bin:$PATH"
+ENV PATH=".venv/bin:$PATH"
+
+WORKDIR /code
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
@@ -26,5 +26,3 @@ RUN uv tool install pytest
 
 RUN uv pip install -e .[test]
 RUN uv run python manage.py collectstatic --force
-
-# CMD ["uv", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -31,17 +31,23 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - name: Test
+
+      - uses: pre-commit/action@v3.0.1
+
+      - name: Pull / Build Docker
         run: |
-          docker compose run --rm web uv pip list
-          docker compose run --rm web uvx pytest . -vv
+          docker compose pull
+          docker compose build
+
+      - name: Run tests
+        run: docker compose run web uv run pytest . -vv
 
       - name: Coverage
         run: |
-          docker compose run web uvx coverage run -m pytest
-          docker compose run web uvx coverage xml
-          docker compose run web uvx coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          docker compose run web uvx coverage report --fail-under 10 --format text
+          docker compose run web uv coverage run -m pytest
+          docker compose run web uv coverage xml
+          docker compose run web uv coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker compose run web uv coverage report --fail-under 10 --format text
 
       - name: Publish the Docker image
         run: |
