@@ -9,6 +9,7 @@ import requests
 import requests.adapters
 import xmltodict
 from django.conf import settings
+from requests.auth import HTTPBasicAuth
 
 from frd.models import FRD
 from gar.models import GAR
@@ -37,13 +38,19 @@ class ObjectImporter(ABC):
 
     bro_domain: str
 
-    def __init__(self, bro_id: str, data_owner: str) -> None:
+    def __init__(self, bro_id: str, data_owner) -> None:
         if not bro_id.startswith(self.bro_domain):
             raise ValueError(f"Incorrect BRO-ID for domain: {self.bro_domain}")
 
         self.bro_id = bro_id
         self.data_owner = data_owner
         self.s = requests.Session()
+        auth = HTTPBasicAuth(
+            username="f0107eb3abf3|85101117|1772",
+            password="3d149a3d2f71730bb05a2626d442c3f2347991581d7c98387e50967891e8228b",
+        )
+        self.s.headers = {"Content-Type": "application/json"}
+        self.s.auth = auth
         retry = requests.adapters.Retry(
             total=6,
             backoff_factor=0.5,
@@ -111,7 +118,6 @@ class GMNObjectImporter(ObjectImporter):
         event_dates = []
         measuring_point_codes = []
         for event in events_data:
-            print(event)
             event_type = event.get("eventName", {}).get("#text", None)
             event_date = event.get("eventDate", {}).get("brocom:date", None)
             measuring_point_code = event.get("measuringPointCode", {})
@@ -253,6 +259,28 @@ class GMNObjectImporter(ObjectImporter):
 class GMWObjectImporter(ObjectImporter):
     bro_domain = "GMW"
 
+    def retrieve_internal_id(
+        self,
+        bro_id: str,
+    ) -> str:
+        bronhouder_url = settings.BRONHOUDERSPORTAAL_URL
+        try:
+            r = self.s.get(
+                url=f"{bronhouder_url}/api/v2/transacties/?zoekveld=broId&zoektekst={bro_id}",
+                timeout=15,
+            )
+        except Exception as e:
+            logger.exception(e)
+            return None
+
+        bronhouder_data = pl.DataFrame(r.json()["transacties"])
+        if bronhouder_data.is_empty():
+            return None
+
+        intern_ids = bronhouder_data.select("objectIdBronhouder")
+        intern_id = intern_ids.item(-1, 0)
+        return intern_id
+
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
             "dispatchDocument", {}
@@ -288,7 +316,9 @@ class GMWObjectImporter(ObjectImporter):
         well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
             "wellConstructionDate", {}
         )
+        intern_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", None))
         self.gmw_obj = GMW.objects.update_or_create(
+            intern_id=intern_id,
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={

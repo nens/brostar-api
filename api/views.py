@@ -254,8 +254,9 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
-        data_owner = user_profile.organisation
-        serializer.validated_data["data_owner"] = data_owner
+        if user_profile.organisation:
+            data_owner = user_profile.organisation
+            serializer.validated_data["data_owner"] = data_owner
 
         kvk_number = serializer.validated_data.get("kvk_number")
         if not kvk_number:
@@ -345,8 +346,9 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
-        data_owner = user_profile.organisation
-        serializer.validated_data["data_owner"] = data_owner
+        if user_profile.organisation:
+            data_owner = user_profile.organisation
+            serializer.validated_data["data_owner"] = data_owner
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)

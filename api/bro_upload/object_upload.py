@@ -149,7 +149,9 @@ class BRODelivery:
                 retries_count += 1
 
         self.upload_task_instance.status = "UNFINISHED"
-        self.upload_task_instance.log = "After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually."
+        self.upload_task_instance.log = (
+            "Na 45 seconden nog niet DOORGELEVERD. Controleer handmatig."
+        )
         self.upload_task_instance.save()
 
         return
