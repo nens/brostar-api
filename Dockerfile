@@ -22,6 +22,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen
 
 RUN uv tool install celery
+RUN uv tool install pytest
+
 RUN uv pip install -e .[test]
 RUN uv run python manage.py collectstatic --force
 
