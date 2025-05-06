@@ -320,11 +320,13 @@ def create_gld_sourcedocs_data(
     measurement_tvps: list[TimeValuePair], sourcedocument_data: dict
 ) -> dict:
     """Creates a GLDAddition (the pydantic model), based on a row of the merged df of the GLD bulk upload input."""
+    observation_id = sourcedocument_data.get("observationId")
+    if observation_id in ["", None]:
+        observation_id = f"_{uuid.uuid4()}"
+
     sourcedocument_data.update(
         {
-            "observationId": sourcedocument_data.get(
-                "observationId", f"_{uuid.uuid4()}"
-            ),
+            "observationId": observation_id,
             "observationProcessId": f"_{uuid.uuid4()}",
             "measurementTimeseriesId": f"_{uuid.uuid4()}",
             "date": _convert_resulttime_to_date(

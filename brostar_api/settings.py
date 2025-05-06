@@ -1,6 +1,7 @@
 import os
 
 import sentry_sdk
+from kombu import Exchange, Queue
 
 # Environment variables can get a value from an .env file via docker-compose.
 # In development, you'll need to set the NENS_AUTH_* ones.
@@ -119,8 +120,12 @@ TEMPLATES = [
     },
 ]
 
+LOG_FOLDERS = ["general", "access", "task_file"]
 LOG_DIR = "/var/logs"
 os.makedirs(LOG_DIR, exist_ok=True)
+for log in LOG_FOLDERS:
+    os.makedirs(f"{LOG_DIR}/{log}", exist_ok=True)
+
 
 LOGGING = {
     "version": 1,
@@ -132,6 +137,11 @@ LOGGING = {
         },
     },
     "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "detailed",
+        },
         "task_file": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
@@ -153,17 +163,17 @@ LOGGING = {
     },
     "loggers": {
         "task": {
-            "handlers": ["task_file"],
+            "handlers": ["task_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
         "access": {
-            "handlers": ["access_file"],
+            "handlers": ["access_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
         "general": {
-            "handlers": ["general_file"],
+            "handlers": ["general_file", "console"],
             "level": "DEBUG",
             "propagate": False,
         },
@@ -267,8 +277,26 @@ REST_FRAMEWORK = {
 
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)
+
 # TODO: fix celery env settings
 CELERY_BROKER_URL = "redis://redis:6379/0"
+# Auto-expire results after 1 day
+CELERY_RESULT_EXPIRES = 60 * 60 * 24
+
+# New queue configuration
+CELERY_TASK_QUEUES = (
+    # Define all your requested queues
+    Queue("default", Exchange("default"), routing_key="default"),
+    Queue("upload", Exchange("upload"), routing_key="upload"),
+)
+
+# Default queue if not specified
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TASK_DEFAULT_EXCHANGE = "default"
+CELERY_TASK_DEFAULT_ROUTING_KEY = "default"
+
+# Add memory limits to prevent memory issues
+CELERY_WORKER_MAX_MEMORY_PER_CHILD = 150000  # in KB, adjust as needed
 
 if SENTRY_DSN:
     # SENTRY_DSN will only be set on staging/production, btw.

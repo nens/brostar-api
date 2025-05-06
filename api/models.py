@@ -11,7 +11,7 @@ from encrypted_model_fields.fields import EncryptedCharField
 from nens_auth_client.models import Invitation
 from rest_framework_api_key.models import AbstractAPIKey
 
-from api import choices, tasks
+from api import choices
 
 
 class PersonalAPIKey(AbstractAPIKey):
@@ -177,9 +177,6 @@ class ImportTask(ExportModelOperationsMixin("importtask"), models.Model):
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
-        if self.status == "PENDING":
-            # Start the celery task
-            tasks.import_bro_data_task.delay(self.uuid)
 
     def __str__(self) -> str:
         return f"{self.bro_domain} import - {self.data_owner}"
@@ -215,13 +212,6 @@ class UploadTask(ExportModelOperationsMixin("uploadtask"), models.Model):
 
     def save(self, *args: Any, **kwargs: Any) -> None:
         super().save(*args, **kwargs)
-        if self.status == "PENDING" and self.data_owner:
-            # Accessing the authenticated user's username and token
-            username = self.data_owner.bro_user_token
-            password = self.data_owner.bro_user_password
-
-            # Start the celery task
-            tasks.upload_bro_data_task.delay(self.uuid, username, password)
 
     def __str__(self) -> str:
         return f"{self.data_owner}: {self.registration_type} ({self.request_type})"

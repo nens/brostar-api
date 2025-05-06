@@ -30,20 +30,24 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version-file: "pyproject.toml"
+
       - uses: pre-commit/action@v3.0.1
-      - name: Build/pull docker
+
+      - name: Pull / Build Docker
         run: |
-          docker compose build
           docker compose pull
-      - name: Test
-        run: docker compose run web pytest
+          docker compose build
+
+      - name: Run tests
+        run: docker compose run web uv run pytest . -vv
+
       - name: Coverage
         run: |
-          docker compose run web coverage run -m pytest
-          docker compose run web coverage xml
-          docker compose run web coverage report --format markdown >> $GITHUB_STEP_SUMMARY
-          docker compose run web coverage report --fail-under 10 --format text
+          docker compose run web uv run coverage run -m pytest
+          docker compose run web uv run coverage xml
+          docker compose run web uv run coverage report --format markdown >> $GITHUB_STEP_SUMMARY
+          docker compose run web uv run coverage report --fail-under 10 --format text
 
       - name: Publish the Docker image
         run: |

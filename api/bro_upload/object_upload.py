@@ -113,6 +113,7 @@ class BRODelivery:
 
                 try:
                     # Add 1 to the organisations request count
+                    # Requery to make sure request count matches latest state
                     organisation = api_models.Organisation.objects.get(
                         uuid=self.upload_task_instance.data_owner.uuid
                     )
@@ -144,10 +145,13 @@ class BRODelivery:
                     ) from e
             else:
                 time.sleep(10)
+                self.upload_task_instance.progress += 5
                 retries_count += 1
 
         self.upload_task_instance.status = "UNFINISHED"
-        self.upload_task_instance.log = "After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually."
+        self.upload_task_instance.log = (
+            "Na 45 seconden nog niet DOORGELEVERD. Controleer handmatig."
+        )
         self.upload_task_instance.save()
 
         return

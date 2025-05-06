@@ -205,6 +205,7 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
     }
 
     response = api_client.post(url, data, format="json")
+    print(response.json())
 
     assert response.status_code == status.HTTP_201_CREATED
 
@@ -276,16 +277,11 @@ def test_uploadtask_check_status(
         "api:uploadtask-check-status", kwargs={"uuid": upload_task_instance.uuid}
     )
 
-    # Check 201 response for status = PENDING
-    response = api_client.post(url)
-    assert response.status_code == status.HTTP_201_CREATED
-
     # Check 303 response for status = PROCESSING
-    upload_task_instance.status = "PROCESSING"
-    upload_task_instance.save()
-
     response = api_client.post(url)
     assert response.status_code == status.HTTP_303_SEE_OTHER
+
+    # SHOULD NEVER REMAIN ON PENDING AS POST SAVE SHOULD THEN SET IT TO PROCESSING AND START A TASK.
 
     # Check 303 response for status = COMPLETED
     upload_task_instance.status = "COMPLETED"

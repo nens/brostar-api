@@ -8,6 +8,7 @@ name = "brostar-api"
 requires-python = ">=3.11"
 dependencies = [
     "celery[redis]",
+    "coverage",
     "django-cors-headers",
     "django-encrypted-model-fields",
     "django-filter",
@@ -17,7 +18,7 @@ dependencies = [
     "django-prometheus",
     "drf-yasg",
     "fastexcel",
-    "markdown > 3",  # DRF api docs
+    "markdown > 3", # DRF api docs
     "mkdocs-material",
     "nens-auth-client",
     "openpyxl",
@@ -33,6 +34,8 @@ dependencies = [
     "whitenoise",
     "xlsx2csv",
     "xmltodict",
+    "pytest>=8.3.5",
+    "pre-commit>=4.2.0",
 ]
 description = "Simplify data management for BRO"
 authors = []
@@ -51,6 +54,7 @@ testpaths = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
 log_level = "DEBUG"
 django_find_project = false
 DJANGO_SETTINGS_MODULE = "brostar_api.settings"
+pythonpath = ["."]
 
 [tool.coverage.run]
 source = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
@@ -85,3 +89,19 @@ ignore-packages = ["api", "gmn", "gmw", "gld", "gar", "frd", "psycopg2-binary", 
 
 [tool.pyright]
 include = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
+
+[[tool.uv.index]]
+name = "lizard_packages"
+url = "https://packages.lizard.net/"
+
+[dependency-groups]
+dev = [
+    "coverage",
+    "django>=5.0.14",
+    "djangorestframework>=3.16.0",
+    "pandas>=2.2.3",
+    "polars>=1.27.1",
+    "pytest>=8.3.5",
+    "pytest-django>=4.11.1",
+    "pytest-mock>=3.14.0",
+]
