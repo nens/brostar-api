@@ -1,9 +1,13 @@
+import logging
+
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from . import tasks
 from .models import ImportTask, InviteUser, UploadTask, UserProfile
+
+logger = logging.getLogger(__name__)
 
 
 @receiver(post_save, sender=User)
@@ -43,6 +47,12 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
 def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
     """Handle registration where it should be an insert."""
     if instance.status == "PENDING" and instance.data_owner:
+        instance._skip_signal = True
+        instance.status = "PROCESSING"
+        instance.progress = 5
+        instance.log = "Starting task."
+        instance.save()
+
         # Accessing the authenticated user's username and token
         username = instance.data_owner.bro_user_token
         password = instance.data_owner.bro_user_password

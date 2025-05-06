@@ -11,7 +11,6 @@ from api.bro_upload.gar_bulk_upload import GARBulkUploader
 from api.bro_upload.gld_bulk_upload import GLDBulkUploader
 from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import (
-    BRODelivery,
     DeliveryError,
     XMLGenerator,
     XMLValidationError,
@@ -38,7 +37,8 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
         )
         xml = generator.create_xml_file()
         upload_task_instance.progress = 25
-        upload_task_instance.save(update_fields=["progress"])
+        upload_task_instance.log = "XML generated."
+        upload_task_instance.save(update_fields=["progress", "log"])
 
         return {
             "upload_task_instance_uuid": upload_task_instance_uuid,
@@ -52,6 +52,9 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
 
 @shared_task(queue="upload")
 def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
+    if context is None:
+        return None
+
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
     )
@@ -71,12 +74,16 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
         raise XMLValidationError("Errors while validating the XML file")
 
     upload_task_instance.progress = 50.0
-    upload_task_instance.save()
+    upload_task_instance.log = "XML Validated."
+    upload_task_instance.save(update_fields=["progress", "log"])
     return context
 
 
 @shared_task(queue="upload")
 def deliver_xml_file_task(context):
+    if context is None:
+        return None
+
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
     )
@@ -102,6 +109,7 @@ def deliver_xml_file_task(context):
     )
     upload_task_instance.bro_delivery_url = delivery_url
     upload_task_instance.progress = 75.0
+    upload_task_instance.log = "XML delivered."
     upload_task_instance.save()
     context["delivery_url"] = delivery_url
     return context
@@ -109,6 +117,9 @@ def deliver_xml_file_task(context):
 
 @shared_task(queue="upload")
 def check_delivery_status_task(context):
+    if context is None:
+        return None
+
     delivery_status = "AANGELEVERD"
     retry_count = 0
     bro_id = None
@@ -142,7 +153,7 @@ def check_delivery_status_task(context):
     upload_task_instance.log = (
         f"Upload geslaagd: {bro_id}"
         if bro_id
-        else "After 4 times checking, the delivery status in the BRO was still not 'DOORGELEVERD'. Please checks its status manually."
+        else "Na 4 keer (40s) een controle te hebben gedaan was de status in de BRO nog niet 'DOORGELEVERD'. Kijk handmatig."
     )
     upload_task_instance.save()
 
@@ -158,25 +169,6 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
     try:
         importer = bulk_import.BulkImporter(import_task_instance_uuid)
         importer.run()
-    except Exception as e:
-        logger.exception(e)
-
-
-@shared_task(queue="upload")
-def upload_bro_data_task(
-    upload_task_instance_uuid: str,
-    bro_username: str,
-    bro_password: str,
-) -> None:
-    """Celery task that uploads data to the BRO.
-
-    It is called when a valid POST request is done on the uploadtask endpoint is done.
-    The BRODelivery class is used to handle the whole proces of delivery.
-    The status and logging of the process can be found in the UploadTask instance.
-    """
-    try:
-        uploader = BRODelivery(upload_task_instance_uuid, bro_username, bro_password)
-        uploader.process()
     except Exception as e:
         logger.exception(e)
 
@@ -203,7 +195,7 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
     logger.warning(f"Error during {step_name}: {error_type} - {error_message}")
 
     # Update the task status
-    upload_task.status = "failed"
+    upload_task.status = "FAILED"
     upload_task.log = error_message
     upload_task.save()
 
@@ -226,6 +218,12 @@ def upload_task(
     The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
+    # Make sure the upload task does not have pending before starting the async queries.
+    task = api_models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
+    task.progress = "10"
+    task.log = "Upload task started."
+    task.save()
+
     # Add error handling to each task using .on_error()
     workflow = chain(
         generate_xml_file_task.s(upload_task_instance_uuid).on_error(

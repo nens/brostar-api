@@ -7,6 +7,8 @@ Quite a big rework. Both for better performance and conforming to python norms.
 -   Added additional celery worker: ['default', 'upload']
 -   Converted Pydantic Models to snake_case
 -   Added internal id for GMW
+-   Improved logging during upload task
+-   Added more tests
 
 ## 1.23 (2025-04-04)
 
