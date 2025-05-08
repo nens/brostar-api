@@ -62,7 +62,7 @@ def test_fetch_bro_ids_fail(mocker, bulk_importer):
 @pytest.fixture
 def gmn_object_importer(organisation):
     return object_import.GMNObjectImporter(
-        bro_id="GMN1234567890", data_owner=organisation.uuid
+        bro_id="GMN1234567890", data_owner=organisation
     )
 
 
@@ -264,7 +264,7 @@ def test_create_upload_task(api_client, user, organisation):
             "deliveryAccountableParty": "12345678",
             "requestReference": "dummy-test",
         },
-        "data_owner": str(organisation.uuid),
+        "data_owner": organisation.uuid,
     }
 
     # Use Django REST Framework style endpoint
