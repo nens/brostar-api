@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.25 (unreleased)
+## 1.25 (2025-05-08)
 
 -   Still import if internal ID not retrievable
 
