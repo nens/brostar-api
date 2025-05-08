@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.24 (unreleased)
+## 1.24 (2025-05-08)
 
 Quite a big rework. Both for better performance and conforming to python norms.
 
