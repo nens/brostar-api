@@ -11,6 +11,7 @@ import xmltodict
 from django.conf import settings
 from requests.auth import HTTPBasicAuth
 
+from api.models import Organisation
 from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD, Observation
@@ -38,7 +39,7 @@ class ObjectImporter(ABC):
 
     bro_domain: str
 
-    def __init__(self, bro_id: str, data_owner) -> None:
+    def __init__(self, bro_id: str, data_owner: Organisation) -> None:
         if not bro_id.startswith(self.bro_domain):
             raise ValueError(f"Incorrect BRO-ID for domain: {self.bro_domain}")
 
@@ -46,8 +47,8 @@ class ObjectImporter(ABC):
         self.data_owner = data_owner
         self.s = requests.Session()
         auth = HTTPBasicAuth(
-            username="f0107eb3abf3|85101117|1772",
-            password="3d149a3d2f71730bb05a2626d442c3f2347991581d7c98387e50967891e8228b",
+            username=data_owner.bro_user_token,
+            password=data_owner.bro_user_password,
         )
         self.s.headers = {"Content-Type": "application/json"}
         self.s.auth = auth
@@ -273,7 +274,11 @@ class GMWObjectImporter(ObjectImporter):
             logger.exception(e)
             return None
 
-        bronhouder_data = pl.DataFrame(r.json()["transacties"])
+        transacties = r.json().get("transacties", None)
+        if transacties is None:
+            return None
+
+        bronhouder_data = pl.DataFrame(transacties)
         if bronhouder_data.is_empty():
             return None
 

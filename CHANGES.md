@@ -2,9 +2,7 @@
 
 ## 1.25 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Still import if internal ID not retrievable
 
 ## 1.24 (2025-05-08)
 
