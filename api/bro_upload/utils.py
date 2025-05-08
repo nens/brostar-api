@@ -12,7 +12,7 @@ logger = logging.getLogger("general")
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
     """Transforms the verbose pydantic errors to a readable format"""
-    return {err["loc"][-1]: err["msg"] for err in errors}
+    return {" - ".join(err["loc"]): err["msg"] for err in errors}
 
 
 def validate_xml_file(

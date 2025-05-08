@@ -205,9 +205,98 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
     }
 
     response = api_client.post(url, data, format="json")
-    print(response.json())
 
     assert response.status_code == status.HTTP_201_CREATED
+
+    # Additional check to assert the returned data
+    response_data = response.json()
+    assert response_data["bro_domain"] == data["bro_domain"]
+    assert response_data["project_number"] == data["project_number"]
+    assert response_data["registration_type"] == data["registration_type"]
+    assert response_data["request_type"] == data["request_type"]
+    assert response_data["metadata"] == data["metadata"]
+    assert response_data["sourcedocument_data"] == data["sourcedocument_data"]
+    assert response_data["data_owner"] == str(organisation.uuid)
+
+
+@pytest.mark.django_db
+def test_uploadtask_view_post_valid_gld_addition_data(
+    api_client, user, userprofile, organisation
+):
+    """Test posting on the uploadtask enpoint
+    Note: userprofile needs to be used as fixture for this test
+    """
+    api_client.force_authenticate(user=user)
+    url = "/api/uploadtasks/"
+
+    data = {
+        "bro_domain": "GLD",
+        "project_number": "1",
+        "registration_type": "GLD_Addition",
+        "request_type": "registration",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+            "broId": "GLD00000001234",
+        },
+        "sourcedocument_data": {
+            "beginPosition": "2021-01-19",
+            "date": "2025-01-09",
+            "endPosition": "2025-01-09",
+            "investigatorKvk": "24483298",
+            "observationType": "reguliereMeting",
+            "processReference": "NPR_ISO.TR23211v2009",
+            "evaluationProcedure": "oordeelDeskundig",
+            "measurementInstrumentType": "drukSensor",
+            "airPressureCompensationType": "knmimeting",
+            "resultTime": "2025-01-09T09:52:00+01:00",
+            "timeValuePairs": [
+                {
+                    "censorReason": None,
+                    "censoringLimitvalue": None,
+                    "statusQualityControl": "onbeslist",
+                    "time": "2021-01-19T09:16:00+01:00",
+                    "value": -1.8,
+                },
+                {
+                    "censorReason": None,
+                    "censoringLimitvalue": None,
+                    "statusQualityControl": "onbeslist",
+                    "time": "2021-02-04T09:55:00+01:00",
+                    "value": -1.72,
+                },
+            ],
+            "validationStatus": "voorlopig",
+        },
+        "data_owner": organisation.uuid,
+    }
+
+    response = api_client.post(url, data, format="json")
+    print(response.json())
+    assert response.status_code == status.HTTP_201_CREATED
+
+    # Additional check to assert the returned data
+    response_data = response.json()
+    assert response_data["bro_domain"] == data["bro_domain"]
+    assert response_data["project_number"] == data["project_number"]
+    assert response_data["registration_type"] == data["registration_type"]
+    assert response_data["request_type"] == data["request_type"]
+    assert response_data["metadata"] == data["metadata"]
+    assert isinstance(response_data["sourcedocument_data"]["observationId"], str)
+    assert isinstance(
+        response_data["sourcedocument_data"]["measurementTimeseriesId"], str
+    )
+    assert isinstance(response_data["sourcedocument_data"]["observationProcessId"], str)
+    assert (
+        response_data["sourcedocument_data"]["measurementInstrumentType"]
+        == data["sourcedocument_data"]["measurementInstrumentType"]
+    )
+    assert (
+        response_data["sourcedocument_data"]["timeValuePairs"]
+        == data["sourcedocument_data"]["timeValuePairs"]
+    )
+    assert response_data["data_owner"] == str(organisation.uuid)
 
 
 @pytest.mark.django_db

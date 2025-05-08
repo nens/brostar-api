@@ -6,8 +6,11 @@ Quite a big rework. Both for better performance and conforming to python norms.
 
 -   Added additional celery worker: ['default', 'upload']
 -   Converted Pydantic Models to snake_case
--   Added internal id for GMW
+-   Added internal id for GMW (if available in bronhouder portaal)
 -   Improved logging during upload task
+-   Improved serialization
+-   Improved sourcedocument error response
+-   Added BRO-ID on UploadTask completed log
 -   Added more tests
 
 ## 1.23 (2025-04-04)

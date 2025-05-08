@@ -3,6 +3,7 @@ import datetime
 from django.test import TestCase
 
 from api.models import Organisation
+from api.tests import fixtures
 from gld.models import GLD, MeasurementTvp, Observation
 from gld.serializers import (
     GLDSerializer,
@@ -35,7 +36,7 @@ class ObservationSerializerTestCase(TestCase):
             data_owner=self.organisation,
             begin_position=datetime.date(2024, 1, 1),
             end_position=datetime.date(2025, 1, 1),
-            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=fixtures.TZ_INFO),
         )
 
     def test_serializer_data(self):
@@ -58,7 +59,7 @@ class MeasurementTvpSerializerTestCase(TestCase):
             data_owner=self.organisation,
             begin_position=datetime.date(2024, 1, 1),
             end_position=datetime.date(2025, 1, 1),
-            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=fixtures.TZ_INFO),
         )
         self.measurement = MeasurementTvp.objects.create(
             observation=self.observation,
