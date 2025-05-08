@@ -77,10 +77,8 @@ class ObservationViewTestCase(APITestCase):
             data_owner=self.organisation,
             begin_position=datetime.date(2024, 1, 1),
             end_position=datetime.date(2025, 1, 1),
-            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=fixtures.TZ_INFO),
         )
-        print(self.organisation)
-        print(self.observation.data_owner)
         # Create and authenticate a user
         self.user = self.client.force_authenticate(user=self._create_test_user())
 

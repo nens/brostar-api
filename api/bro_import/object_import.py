@@ -838,7 +838,7 @@ class GLDObjectImporter(ObjectImporter):
         process_reference_element = observation.find(
             ".//waterml:processReference", OBSERVATION_NAMESPACE
         )
-        if process_reference_element:
+        if process_reference_element is not None:
             process_reference = process_reference_element.attrib.get(
                 "{http://www.w3.org/1999/xlink}href", "None:None"
             ).split(":")[-1]

@@ -3,6 +3,7 @@ import datetime
 from django.test import TestCase
 
 from api.models import Organisation  # Assuming Organisation exists in api.models
+from api.tests import fixtures
 from gld.models import GLD, MeasurementTvp, Observation
 
 
@@ -38,7 +39,7 @@ class ObservationModelTestCase(TestCase):
             data_owner=self.organisation,
             begin_position=datetime.date(2024, 1, 1),
             end_position=datetime.date(2025, 1, 1),
-            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=fixtures.TZ_INFO),
         )
 
     def test_observation_creation(self):
@@ -60,7 +61,7 @@ class MeasurementTvpModelTestCase(TestCase):
             data_owner=self.organisation,
             begin_position=datetime.date(2024, 1, 1),
             end_position=datetime.date(2025, 1, 1),
-            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0),
+            result_time=datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=fixtures.TZ_INFO),
         )
         self.measurement = MeasurementTvp.objects.create(
             observation=self.observation,

@@ -332,7 +332,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     )
                     # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
                     serializer.validated_data["sourcedocument_data"] = (
-                        validated_sourcedocument_data.dict()
+                        validated_sourcedocument_data.model_dump(by_alias=True)
                     )
                 # Else, just a pydantic validation is required
                 else:
@@ -340,9 +340,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
-                return Response(
-                    {"detail": e.errors()}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)

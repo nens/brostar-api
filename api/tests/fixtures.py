@@ -1,10 +1,13 @@
 import pytest
+import pytz
 from django.contrib.auth.models import User
 
 from api import models as api_models
 from gar import models as gar_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
+
+TZ_INFO = pytz.timezone("Europe/Amsterdam")
 
 
 @pytest.fixture

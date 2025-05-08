@@ -47,7 +47,7 @@ version = "1.24.dev0"
 test = ["pytest"] # pytest added by nens-meta
 
 [tool.setuptools]
-packages = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
+py-modules = ["api", "gmn", "gmw", "gld", "gar", "frd"]
 
 [tool.pytest.ini_options]
 testpaths = ["brostar_api", "api", "gmn", "gmw", "gld", "gar", "frd"]
