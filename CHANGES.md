@@ -2,9 +2,7 @@
 
 ## 1.26 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: get data owner instance
 
 ## 1.25 (2025-05-08)
 

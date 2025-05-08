@@ -39,16 +39,18 @@ class ObjectImporter(ABC):
 
     bro_domain: str
 
-    def __init__(self, bro_id: str, data_owner: Organisation) -> None:
+    def __init__(self, bro_id: str, data_owner: str) -> None:
         if not bro_id.startswith(self.bro_domain):
             raise ValueError(f"Incorrect BRO-ID for domain: {self.bro_domain}")
 
         self.bro_id = bro_id
         self.data_owner = data_owner
+
+        data_owner_instance = Organisation.objects.get(uuid=data_owner)
         self.s = requests.Session()
         auth = HTTPBasicAuth(
-            username=data_owner.bro_user_token,
-            password=data_owner.bro_user_password,
+            username=data_owner_instance.bro_user_token,
+            password=data_owner_instance.bro_user_password,
         )
         self.s.headers = {"Content-Type": "application/json"}
         self.s.auth = auth
