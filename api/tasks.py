@@ -46,8 +46,8 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
         }
 
     except Exception as e:
-        logger.exception(e)
-        raise RuntimeError(f"Error generating XML file: {e}") from e
+        logger.exception(RuntimeError(f"Error generating XML file: {e}"))
+        return
 
 
 @shared_task(queue="upload")
@@ -69,12 +69,15 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
     context.update({"bro_password": bro_password, "bro_username": bro_username})
 
     if validation_response["status"] != "VALIDE":
+        upload_task_instance.progress = 50.0
+        upload_task_instance.log = "XML is not valid"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
-        raise XMLValidationError("Errors while validating the XML file")
+        logger.exception(XMLValidationError("Errors while validating the XML file"))
+        return
 
     upload_task_instance.progress = 50.0
-    upload_task_instance.log = "XML Validated."
+    upload_task_instance.log = "XML is valid"
     upload_task_instance.save(update_fields=["progress", "log"])
     return context
 
@@ -120,6 +123,9 @@ def check_delivery_status_task(context):
     if context is None:
         return None
 
+    upload_task_instance = api_models.UploadTask.objects.get(
+        uuid=context["upload_task_instance_uuid"]
+    )
     delivery_status = "AANGELEVERD"
     retry_count = 0
     bro_id = None
@@ -131,7 +137,16 @@ def check_delivery_status_task(context):
         errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
-            raise DeliveryError(f"Errors found after delivering the XML file: {errors}")
+            logger.exception(
+                DeliveryError(f"Errors found after delivering the XML file: {errors}")
+            )
+            upload_task_instance.progress = 80
+            upload_task_instance.status = "FAILED"
+            upload_task_instance.log = (
+                f"Errors found after delivering the XML file: {errors}"
+            )
+            upload_task_instance.save()
+            return
 
         delivery_status = delivery_info["status"]
         delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
@@ -144,9 +159,6 @@ def check_delivery_status_task(context):
             bro_id = delivery_info["brondocuments"][0]["broId"]
         time.sleep(10)
 
-    upload_task_instance = api_models.UploadTask.objects.get(
-        uuid=context["upload_task_instance_uuid"]
-    )
     upload_task_instance.bro_id = bro_id
     upload_task_instance.progress = 100.0 if bro_id else 95.0
     upload_task_instance.status = "COMPLETED" if bro_id else "UNFINISHED"
