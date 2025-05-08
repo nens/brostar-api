@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.26 (unreleased)
+## 1.26 (2025-05-08)
 
 -   Hotfix: get data owner instance
 
