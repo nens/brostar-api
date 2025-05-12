@@ -123,7 +123,7 @@ class GARBulkUploader:
                 )
 
                 uploadtask_sourcedocument_data_dict = (
-                    uploadtask_sourcedocument_data.model_dump()
+                    uploadtask_sourcedocument_data.model_dump(by_alias=True)
                 )
 
                 api_models.UploadTask.objects.create(

@@ -127,22 +127,10 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        fieldwork_file = validated_data.pop("fieldwork_file", None)
-        lab_file = validated_data.pop("lab_file", None)
-        measurement_tvp_file = validated_data.pop("measurement_tvp_file", None)
-
+        # Remove the files for the upload creation.
+        validated_data.pop("fieldwork_file", None)
+        validated_data.pop("lab_file", None)
+        validated_data.pop("measurement_tvp_file", None)
         bulk_upload = api_models.BulkUpload.objects.create(**validated_data)
-
-        if fieldwork_file:
-            api_models.UploadFile.objects.create(
-                bulk_upload=bulk_upload, file=fieldwork_file
-            )
-        if lab_file:
-            api_models.UploadFile.objects.create(bulk_upload=bulk_upload, file=lab_file)
-
-        if measurement_tvp_file:
-            api_models.UploadFile.objects.create(
-                bulk_upload=bulk_upload, file=measurement_tvp_file
-            )
 
         return bulk_upload

@@ -2,9 +2,9 @@
 
 ## 1.27 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: share docker volumes
+-   Bugfix: use alias for bulk to uploadtask
+-   Enhancement: improve serializer functionality for bulk
 
 ## 1.26 (2025-05-08)
 

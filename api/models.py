@@ -250,9 +250,6 @@ class BulkUpload(ExportModelOperationsMixin("bulkupload"), models.Model):
     )
     log = models.TextField(blank=True)
     progress = models.FloatField(blank=True, null=True)
-    file = models.ForeignKey(
-        "UploadFile", on_delete=models.SET_NULL, null=True, blank=True
-    )
 
     def __str__(self) -> str:
         return f"{self.data_owner}: Bulk upload {self.bulk_upload_type}"

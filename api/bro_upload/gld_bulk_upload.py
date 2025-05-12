@@ -113,19 +113,12 @@ class GLDBulkUploader:
             api_models.BulkUpload.objects.get(uuid=bulk_upload_instance_uuid)
         )
         self.bulk_upload_instance.status = "PROCESSING"
+        self.bulk_upload_instance.progress = 5
         self.bulk_upload_instance.save()
 
-        if self.bulk_upload_instance.file:
-            self.measurement_tvp_file = self.bulk_upload_instance.file
-        else:
-            self.measurement_tvp_file: api_models.UploadFile = (
-                api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
-            )
-            self.bulk_upload_instance.file = self.measurement_tvp_file
-
-        self.bulk_upload_instance.save()
-
-        logger.warning(self.measurement_tvp_file.file)
+        self.measurement_tvp_file: api_models.UploadFile = (
+            api_models.UploadFile.objects.get(uuid=measurement_tvp_file_uuid)
+        )
 
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
         uploadtask_metadata = self.bulk_upload_instance.metadata
@@ -146,10 +139,8 @@ class GLDBulkUploader:
             .sort("time")
             .drop_nulls(subset="time")
         )
-        logger.warning(current_measurements_df)
 
         time = current_measurements_df.select("time")
-        logger.info(time)
         begin_position = time.item(0, 0)
         end_position = time.item(-1, 0)
 
@@ -166,7 +157,7 @@ class GLDBulkUploader:
             result_time = end_position
 
         measurement_tvps: list[dict] = [
-            TimeValuePair(**row).model_dump()
+            TimeValuePair(**row).model_dump(by_alias=True)
             for row in current_measurements_df.iter_rows(named=True)
         ]
 
@@ -264,7 +255,6 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
     elif filetype in ["xls", "xlsx"]:
         df = pl.read_excel(
             source=file_instance.file.path,
-            has_header=True,
         )
     elif filetype == "zip":
         with zipfile.ZipFile(file_instance.file) as z:

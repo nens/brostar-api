@@ -37,6 +37,9 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
     build: .
+    volumes:
+      - .:/code
+      - ./media:/media  # <- this is crucial
     command: >
       uv run celery -A brostar_api worker
       -Q default
@@ -59,6 +62,9 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
     build: .
+    volumes:
+      - .:/code
+      - ./media:/media  # <- this is crucial
     command: >
       uv run celery -A brostar_api worker
       -Q upload

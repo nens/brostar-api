@@ -556,7 +556,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             file=measurement_tvp_file,
         )
         measurement_tvp_file_instance.save()
-
         # Start celery task
         tasks.gld_bulk_upload_task.delay(
             bulk_upload_instance.uuid,

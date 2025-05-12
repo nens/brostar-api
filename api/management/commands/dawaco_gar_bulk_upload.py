@@ -230,7 +230,9 @@ def handle_gar_delivery(
         # Skipping this one.
         return
 
-    uploadtask_sourcedocument_data_dict = uploadtask_sourcedocument_data.model_dump()
+    uploadtask_sourcedocument_data_dict = uploadtask_sourcedocument_data.model_dump(
+        by_alias=True
+    )
 
     UploadTask.objects.create(
         data_owner=organisation_instance,
