@@ -11,7 +11,7 @@ De BROSTAR bestaat uit een [open-source API](https://github.com/nens/brostar-api
 ## API
 
 !!! note
-Klik [hier](api.md) voor de technische documentatie van de BROSTAR API.
+    Klik [hier](api.md) voor de technische documentatie van de BROSTAR API.
 
 De basis van de BROSTAR is de API. De API heeft 2 belangrijke hoofdfunctionaliteiten:
 
@@ -20,7 +20,7 @@ De basis van de BROSTAR is de API. De API heeft 2 belangrijke hoofdfunctionalite
     Importeer data vanuit de BRO in de database van de BROSTAR. Het gaat hierbij om actuele metadata van de objecten, en niet de gehele geschiedenis. In de filosofie van de BROSTAR is de BRO zelf de waarheid en altijd het meest up-to-date. Na een import is het mogelijk om deze gegevens op te vragen en in te zien.
 
     !!! note
-    Het is mogelijk om openbare data van andere organisaties vanuit de BRO te importeren
+        Het is mogelijk om openbare data van andere organisaties vanuit de BRO te importeren
 
 -   **Upload taken**:
 
@@ -31,7 +31,7 @@ De API van de BROSTAR is dus een krachtig hulpmiddel bij zowel beheren van besta
 ## Frontend
 
 !!! note
-Klik [hier](frontend.md) voor een uitgebreidere functionele documentatie van de frontend.
+    Klik [hier](frontend.md) voor een uitgebreidere functionele documentatie van de frontend.
 
 De frontend is de visuele component van de BROSTAR. Deze is ontwikkeld zodat ook personen zonder scripting ervaring laagdrempelig data kunnen aanleveren. Dit maakt het mogelijk voor bronhouders om het databeheer zelf in handen te nemen.
 
@@ -51,7 +51,7 @@ De status van een levering wordt bijgehouden. Als een levering niet geslaagd is,
 _Voorbeeld van de foutmeldingen bij een gefaalde taak. Op de achtergrond zijn succesvolle taken te zien._
 
 !!! info
-De frontend is nog vol in ontwikkeling. Momenteel zijn de type berichten die mogelijk zijn vanuit de frontend beperkt. Als er vanuit meerdere gebruikers wensen tot uitbreiding zijn, worden deze gerealiseerd.
+    De frontend is nog vol in ontwikkeling. Momenteel zijn de type berichten die mogelijk zijn vanuit de frontend beperkt. Als er vanuit meerdere gebruikers wensen tot uitbreiding zijn, worden deze gerealiseerd.
 
 ## Productie vs Demo
 
@@ -61,4 +61,4 @@ Met een licensie op de BROSTAR krijgt een organisatie een eigen omgeving op beid
 
 ## Interesse?
 
-Heb je interesse om een demo van de BROSTAR te krijgen of om tijdelijk op de staging omgeving te testen? Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Interesse in de BROSTAR)
+Heb je interesse om een demo van de BROSTAR te krijgen of om tijdelijk op de staging omgeving te testen? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Interesse in de BROSTAR)
