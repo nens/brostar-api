@@ -8,7 +8,8 @@ Als gebruiker van BROSTAR is het handig om toelichting te hebben over de verschi
 
 Bij het dashboard spreken we over het overzicht dat te bereiken is via: https://www.brostar.nl/. Hierin start je altijd met de kaart als aanzicht, en heb je de verschillende tabbladen (GMW, GMN, GLD, Upload) tot je beschikking. Binnen dit overzicht kan je controleren wat er **op dit moment** in de BRO zit.
 
-!!! Als je niet direct een nieuwe locatie ziet staan, synchroniseer opnieuw je data. Als je ziet dat een taak succesvol is verwerkt, dan is het document doorgeleverd aan de BRO. Dat betekend dat de gegevens al op te halen zijn, ook als die nog niet altijd terug te zien zijn in het BRO-Loket.
+!!! Note
+    Als je niet direct een nieuwe locatie ziet staan, synchroniseer opnieuw je data. Als je ziet dat een taak succesvol is verwerkt, dan is het document doorgeleverd aan de BRO. Dat betekend dat de gegevens al op te halen zijn, ook als die nog niet altijd terug te zien zijn in het BRO-Loket.
 
 ### Aanmaken van nieuwe berichten (+)
 
@@ -41,7 +42,8 @@ Het vervangen van een gebeurtenis kan door op de gebeurtenis naam te klikken. De
 
 Goeie vraag! Niet altijd is de initiële levering volledig juist gelopen. Als je hierachter komt wel je deze gegevens corrigeren. Dat is mogelijk met een vervang verzoek. Met een vervang verzoek van de GMW-Constructie kan je vrijwel alle gegevens veranderen. Dit past **niet** de chronologie van de put aan. Dit betekend dat een verandering in de maaiveldhoogte, wat vaak over tijd gebeurt, niet veranderd moet worden met de correctie van een GMW-Constructie, maar met de registratie van een GMW-InmetingMaaiveld (een GMW-Gebeurtenis).
 
-!!! Vindt meer over het aanleveren van GMW-Gebeurtenissen onder ...
+!!! Note
+    Vindt meer over het aanleveren van GMW-Gebeurtenissen onder ...
 
 **Waarom zou je een GMW-Gebeurtenis vervangen?**
 
