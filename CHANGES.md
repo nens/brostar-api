@@ -2,9 +2,7 @@
 
 ## 1.28 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: Allow ZIP files for GLD-Bulkuploads
 
 ## 1.27 (2025-05-12)
 
