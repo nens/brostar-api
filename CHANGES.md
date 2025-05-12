@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.27 (unreleased)
+## 1.27 (2025-05-12)
 
 -   Bugfix: share docker volumes
 -   Bugfix: use alias for bulk to uploadtask
