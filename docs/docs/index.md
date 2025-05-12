@@ -61,4 +61,4 @@ Met een licensie op de BROSTAR krijgt een organisatie een eigen omgeving op beid
 
 ## Interesse?
 
-Heb je interesse om een demo van de BROSTAR te krijgen of om tijdelijk op de staging omgeving te testen? Contact [info@nelen-schuurmans.com](mailto:info@nelen-schuurmans.com?subject=Interesse in de BROSTAR)
+Heb je interesse om een demo van de BROSTAR te krijgen of om tijdelijk op de staging omgeving te testen? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Interesse in de BROSTAR)
