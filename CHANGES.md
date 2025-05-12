@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.28 (unreleased)
+## 1.28 (2025-05-12)
 
 -   Enhancement: Allow ZIP files for GLD-Bulkuploads
 
