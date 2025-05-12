@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.28 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.27 (2025-05-12)
 
 -   Bugfix: share docker volumes
