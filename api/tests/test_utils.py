@@ -8,6 +8,7 @@ import requests
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from api.bro_upload.utils import (
+    T,
     add_xml_to_upload,
     check_delivery_status,
     create_delivery,
@@ -24,6 +25,7 @@ from api.tests.fixtures import bulk_upload, organisation
 
 organisation
 bulk_upload
+T
 
 
 # Test simplify_validation_errors function
@@ -244,14 +246,20 @@ def test_read_zip_with_csv_and_excel(monkeypatch, bulk_upload):
     )
     upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
 
-    monkeypatch.setattr("api.read_csv", lambda f: pl.DataFrame({"csv_col": [1]}))
     monkeypatch.setattr(
-        "api.pl.read_excel", lambda source: pl.DataFrame({"excel_col": [99]})
+        "api.bro_upload.utils.read_csv", lambda f: pl.DataFrame({"measurement": [1]})
+    )
+    monkeypatch.setattr(
+        "api.bro_upload.utils.read_excel",
+        lambda source: pl.DataFrame({"measurement": [99]}),
     )
 
     df = read_zip(upload)
     assert isinstance(df, pl.DataFrame)
-    assert "csv_col" in df.columns or "excel_col" in df.columns
+    assert "measurement" in df.columns
+    items = [1, 99]
+    for item in items:
+        assert item in df.select("measurement").to_series(0).to_list()
 
 
 @pytest.mark.django_db
@@ -266,7 +274,7 @@ def test_file_to_df_csv(bulk_upload):
 @pytest.mark.django_db
 def test_file_to_df_excel(monkeypatch, bulk_upload):
     monkeypatch.setattr(
-        "api.pl.read_excel", lambda source: pl.DataFrame({"col": [123]})
+        "api.bro_upload.utils.read_excel", lambda source: pl.DataFrame({"col": [123]})
     )
     file = SimpleUploadedFile(
         "sheet.xlsx", b"excel content", content_type="application/vnd.ms-excel"
@@ -278,8 +286,8 @@ def test_file_to_df_excel(monkeypatch, bulk_upload):
 
 
 @pytest.mark.django_db
-def test_file_to_df_invalid_extension():
+def test_file_to_df_invalid_extension(bulk_upload):
     file = SimpleUploadedFile("note.txt", b"not a csv", content_type="text/plain")
-    upload = UploadFile.objects.create(file=file)
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
     with pytest.raises(ValueError, match="Unsupported file type"):
         file_to_df(upload)

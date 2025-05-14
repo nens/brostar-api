@@ -20,7 +20,7 @@ def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
 
 
 def read_csv(file: T | bytes) -> pl.DataFrame:
-    if isinstance(file, T):
+    if isinstance(file, api_models.UploadFile):
         return pl.read_csv(
             file.file.path,
             has_header=True,
@@ -32,6 +32,16 @@ def read_csv(file: T | bytes) -> pl.DataFrame:
         has_header=True,
         ignore_errors=False,
         truncate_ragged_lines=True,
+    )
+
+
+def read_excel(file: T | bytes) -> pl.DataFrame:
+    if isinstance(file, api_models.UploadFile):
+        return pl.read_excel(
+            source=file.file.path,
+        )
+    return pl.read_excel(
+        source=file,
     )
 
 
@@ -60,16 +70,12 @@ def read_zip(file_instance: T) -> pl.DataFrame:
         for csv_file in csv_files:
             with z.open(csv_file) as file:
                 file_bytes = file.read()  # Read the file as bytes
-                dfs.append(read_csv(file))
+                dfs.append(read_csv(file_bytes))
 
         for excel in excel_files:
             with z.open(excel) as file:
                 file_bytes = file.read()  # Read the file as bytes
-                dfs.append(
-                    pl.read_excel(
-                        source=file_bytes,
-                    )
-                )
+                dfs.append(read_excel(file_bytes))
 
         # Combine all DataFrames into one, or return a list if separate DataFrames are desired
         return pl.concat(dfs)
@@ -81,9 +87,7 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
     if filetype == "csv":
         df = read_csv(file_instance)
     elif filetype in ["xls", "xlsx"]:
-        df = pl.read_excel(
-            source=file_instance.file.path,
-        )
+        df = read_excel(file_instance)
     elif filetype == "zip":
         df = read_zip(file_instance)
     else:
