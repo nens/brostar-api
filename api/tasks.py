@@ -71,6 +71,7 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
     if validation_response["status"] != "VALIDE":
         upload_task_instance.progress = 50.0
         upload_task_instance.log = "XML is not valid"
+        upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
         logger.exception(XMLValidationError("Errors while validating the XML file"))

@@ -2,9 +2,8 @@
 
 ## 1.29 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: further testing
+-   Enhancement: GLD-Bulk naming
 
 ## 1.28 (2025-05-12)
 

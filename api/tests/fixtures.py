@@ -82,3 +82,33 @@ def importtask(organisation):
         kvk_number=organisation.kvk_number,
         status="PENDING",
     )
+
+
+@pytest.fixture
+def bulk_upload(organisation):
+    return api_models.BulkUpload.objects.create(
+        data_owner=organisation,
+        project_number="1111",
+        bulk_upload_type="GMN",
+        request_type="registration",
+        metadata={
+            "broId": "GMN000001234",
+            "projectNumber": "1111",
+            "qualityRegime": "IMBRO/A",
+            "requestReference": "GMN_MeasuringPoints_Bulk_BROSTAR_Request",
+            "deliveryAccountableParty": "27376655",
+        },
+        sourcedocument_data={
+            "name": "gmn",
+            "deliveryContext": "kaderrichtlijnWater",
+            "measuringPoints": [],
+            "endDateMonitoring": "2025-01-12",
+            "groundwaterAspect": "kwaliteit",
+            "monitoringPurpose": "strategischBeheerKwaliteitLandelijk",
+            "startDateMonitoring": "2025-01-10",
+            "objectIdAccountableParty": "gmn",
+        },
+        status="PROCESSING",
+        log="",
+        progress=20.0,
+    )
