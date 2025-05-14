@@ -4,6 +4,7 @@
 
 -   Enhancement: further testing
 -   Enhancement: GLD-Bulk naming
+-   Feature: added gmw-duplicates handler
 
 ## 1.28 (2025-05-12)
 

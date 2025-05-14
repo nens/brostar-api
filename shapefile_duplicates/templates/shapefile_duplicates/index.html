@@ -1,0 +1,181 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BRO-GMW Checker</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'shapefile_duplicates/css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h3>Nelen & Schuurmans: GMW - duplicaat controle</h3>
+            </div>
+            <div class="card-body">
+              {% with messages=get_flashed_messages %} <!-- Fixed this line -->
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                  {% endfor %}
+                {% endif %}
+              {% endwith %}
+
+              <form
+                action="{% url 'shapefile_duplicates:process' %}"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="mb-3">
+                  <label for="kvk_number" class="form-label">KVK Nummer</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="kvk_number"
+                    name="kvk_number"
+                    required
+                    placeholder="Voer KVK nummer in"
+                  />
+                  <div class="form-text">Voer een KVK nummer in.</div>
+                </div>
+
+                <div class="mb-4">
+                  <h5>Upload opties</h5>
+                  <ul class="nav nav-tabs" id="uploadTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link active"
+                        id="zip-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#zip-pane"
+                        type="button"
+                        role="tab"
+                      >
+                        ZIP bestand
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="files-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#files-pane"
+                        type="button"
+                        role="tab"
+                      >
+                        Individuele bestanden
+                      </button>
+                    </li>
+                  </ul>
+
+                  <div
+                    class="tab-content p-3 border border-top-0 rounded-bottom"
+                    id="uploadTabContent"
+                  >
+                    <!-- Zip File Upload -->
+                    <div
+                      class="tab-pane fade show active"
+                      id="zip-pane"
+                      role="tabpanel"
+                    >
+                      <div class="mb-3">
+                        <label for="zip_file" class="form-label"
+                          >Zipped Shapefile</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="zip_file"
+                          name="zip_file"
+                          accept=".zip"
+                        />
+                        <div class="form-text">
+                          Upload een ZIP met daarin op zijn minst een .shp en .shx
+                          bestand (en eventueel andere shapefile zoals proj e.d.).
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Individual Files Upload -->
+                    <div class="tab-pane fade" id="files-pane" role="tabpanel">
+                      <div class="mb-3">
+                        <label for="shp_file" class="form-label"
+                          >SHP File (verplicht)</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="shp_file"
+                          name="shp_file"
+                          accept=".shp"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="shx_file" class="form-label"
+                          >SHX File (verplicht)</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="shx_file"
+                          name="shx_file"
+                          accept=".shx"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="dbf_file" class="form-label"
+                          >DBF File (optioneel)</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="dbf_file"
+                          name="dbf_file"
+                          accept=".dbf"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="prj_file" class="form-label"
+                          >PRJ File (optioneel)</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="prj_file"
+                          name="prj_file"
+                          accept=".prj"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary">Process</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'shapefile_duplicates/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'shapefile_duplicates/js/main.js' %}"></script>
+  </body>
+</html>

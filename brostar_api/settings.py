@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "gar.apps.GarConfig",
     "gld.apps.GldConfig",
     "frd.apps.FrdConfig",
+    "shapefile_duplicates.apps.ShapefileDuplicatesConfig",
     "nens_auth_client",
     "django_prometheus",
     "django.contrib.admin",
