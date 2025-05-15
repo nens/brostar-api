@@ -1,18 +1,31 @@
+import io
+import zipfile
 from unittest import mock
 
+import polars as pl
 import pytest
 import requests
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from api.bro_upload.utils import (
+    T,
     add_xml_to_upload,
     check_delivery_status,
     create_delivery,
     create_upload_url,
+    file_to_df,
     include_delivery_responsible_party,
+    read_csv,
+    read_zip,
     simplify_validation_errors,
     validate_xml_file,
 )
-from api.models import Organisation
+from api.models import Organisation, UploadFile
+from api.tests.fixtures import bulk_upload, organisation
+
+organisation
+bulk_upload
+T
 
 
 # Test simplify_validation_errors function
@@ -196,3 +209,85 @@ def test_include_delivery_responsible_party():
     # Test when data_owner is None
     result = include_delivery_responsible_party("87654321", None)
     assert result  # Responsible party should be included when no data_owner
+
+
+@pytest.mark.django_db
+def test_read_csv_from_uploadfile(bulk_upload):
+    file = SimpleUploadedFile(
+        "data.csv", b"name,age\nAlice,30\nBob,25", content_type="text/csv"
+    )
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
+    df = read_csv(upload)
+    assert isinstance(df, pl.DataFrame)
+    assert df.shape == (2, 2)
+    assert df.columns == ["name", "age"]
+
+
+@pytest.mark.django_db
+def test_read_csv_from_bytes():
+    df = read_csv(b"name,age\nAlice,30\nBob,25")
+    assert isinstance(df, pl.DataFrame)
+    assert df.shape == (2, 2)
+
+
+@pytest.mark.django_db
+def test_read_zip_with_csv_and_excel(monkeypatch, bulk_upload):
+    csv_data = b"name,age\nAlice,30"
+    fake_excel_data = b"dummy content"
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as zip_file:
+        zip_file.writestr("test.csv", csv_data)
+        zip_file.writestr("sheet.xlsx", fake_excel_data)
+
+    buffer.seek(0)
+    file = SimpleUploadedFile(
+        "archive.zip", buffer.read(), content_type="application/zip"
+    )
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
+
+    monkeypatch.setattr(
+        "api.bro_upload.utils.read_csv", lambda f: pl.DataFrame({"measurement": [1]})
+    )
+    monkeypatch.setattr(
+        "api.bro_upload.utils.read_excel",
+        lambda source: pl.DataFrame({"measurement": [99]}),
+    )
+
+    df = read_zip(upload)
+    assert isinstance(df, pl.DataFrame)
+    assert "measurement" in df.columns
+    items = [1, 99]
+    for item in items:
+        assert item in df.select("measurement").to_series(0).to_list()
+
+
+@pytest.mark.django_db
+def test_file_to_df_csv(bulk_upload):
+    file = SimpleUploadedFile("data.csv", b"a,b\n1,2\n3,4", content_type="text/csv")
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
+    df = file_to_df(upload)
+    assert isinstance(df, pl.DataFrame)
+    assert df.shape == (2, 2)
+
+
+@pytest.mark.django_db
+def test_file_to_df_excel(monkeypatch, bulk_upload):
+    monkeypatch.setattr(
+        "api.bro_upload.utils.read_excel", lambda source: pl.DataFrame({"col": [123]})
+    )
+    file = SimpleUploadedFile(
+        "sheet.xlsx", b"excel content", content_type="application/vnd.ms-excel"
+    )
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
+    df = file_to_df(upload)
+    assert isinstance(df, pl.DataFrame)
+    assert df.shape[0] == 1
+
+
+@pytest.mark.django_db
+def test_file_to_df_invalid_extension(bulk_upload):
+    file = SimpleUploadedFile("note.txt", b"not a csv", content_type="text/plain")
+    upload = UploadFile.objects.create(bulk_upload=bulk_upload, file=file)
+    with pytest.raises(ValueError, match="Unsupported file type"):
+        file_to_df(upload)

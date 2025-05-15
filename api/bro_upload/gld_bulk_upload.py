@@ -2,8 +2,6 @@ import datetime
 import logging
 import time
 import uuid
-import zipfile
-from typing import TypeVar
 
 import polars as pl
 import pytz
@@ -12,11 +10,11 @@ from api import models as api_models
 from api.bro_upload.upload_datamodels import (
     TimeValuePair,
 )
+from api.bro_upload.utils import file_to_df
 
 logger = logging.getLogger("general")
 
 
-T = TypeVar("T", bound="api_models.UploadFile")
 amsterdam_tz = pytz.timezone("Europe/Amsterdam")
 
 
@@ -123,9 +121,6 @@ class GLDBulkUploader:
     def deliver_one_addition(self, bro_id: str, current_measurements_df: pl.DataFrame):
         uploadtask_metadata = self.bulk_upload_instance.metadata
         uploadtask_metadata["broId"] = bro_id
-        uploadtask_metadata["requestReference"] += (
-            f"{bro_id} {uploadtask_metadata['qualityRegime']}"  # Maybe still change this
-        )
         # Convert naive datetime to Dutch timezone (Europe/Amsterdam)
         current_measurements_df = current_measurements_df.with_columns(
             pl.col("time").dt.replace_time_zone(
@@ -143,6 +138,13 @@ class GLDBulkUploader:
         time = current_measurements_df.select("time")
         begin_position = time.item(0, 0)
         end_position = time.item(-1, 0)
+
+        observation_type = self.bulk_upload_instance.sourcedocument_data.get(
+            "observationType", None
+        )
+        uploadtask_metadata["requestReference"] = (
+            f"{bro_id}: {uploadtask_metadata['qualityRegime']}_{observation_type}_{begin_position}-{end_position}"
+        )
 
         begin_position = str_to_datetime(begin_position)
         end_position = str_to_datetime(end_position)
@@ -240,80 +242,6 @@ class GLDBulkUploader:
         if self.bulk_upload_instance.progress >= 100:
             self.bulk_upload_instance.status = "COMPLETED"
             self.bulk_upload_instance.save()
-
-
-def read_csv(file: T | bytes) -> pl.DataFrame:
-    if isinstance(file, T):
-        return pl.read_csv(
-            file.file.path,
-            has_header=True,
-            ignore_errors=False,
-            truncate_ragged_lines=True,
-        )
-    return pl.read_csv(
-        source=file,
-        has_header=True,
-        ignore_errors=False,
-        truncate_ragged_lines=True,
-    )
-
-
-def read_zip(file_instance: T) -> pl.DataFrame:
-    csv_files = []
-    xls_files = []
-    xlsx_files = []
-    with zipfile.ZipFile(file_instance.file) as z:
-        for f in z.namelist():
-            file_type = f.split(".")[-1]
-            match file_type:
-                case "csv":
-                    csv_files.append(f)
-                case "xls":
-                    xls_files.append(f)
-                case "xlsx":
-                    xlsx_files.append(f)
-
-        xlsx_files.extend(xls_files)
-        excel_files = xlsx_files
-        if not csv_files and not excel_files:
-            raise ValueError("No CSV and no Excel files found in the zip archive.")
-
-        # Read all CSV files into Polars DataFrames
-        dfs = []
-        for csv_file in csv_files:
-            with z.open(csv_file) as file:
-                file_bytes = file.read()  # Read the file as bytes
-                dfs.append(read_csv(file))
-
-        for excel in excel_files:
-            with z.open(excel) as file:
-                file_bytes = file.read()  # Read the file as bytes
-                dfs.append(
-                    pl.read_excel(
-                        source=file_bytes,
-                    )
-                )
-
-        # Combine all DataFrames into one, or return a list if separate DataFrames are desired
-        return pl.concat(dfs)
-
-
-def file_to_df(file_instance: T) -> pl.DataFrame:
-    """Reads out csv or excel files and returns a pandas df."""
-    filetype = file_instance.file.name.split(".")[-1].lower()
-    if filetype == "csv":
-        df = read_csv(file_instance)
-    elif filetype in ["xls", "xlsx"]:
-        df = pl.read_excel(
-            source=file_instance.file.path,
-        )
-    elif filetype == "zip":
-        df = read_zip(file_instance)
-    else:
-        raise ValueError(
-            "Unsupported file type. Only CSV and Excel, or ZIP files are supported."
-        )
-    return df
 
 
 def _convert_resulttime_to_date(result_time: str) -> str:

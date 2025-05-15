@@ -46,3 +46,4 @@ docker-compose.override.yml
 *.log
 /media/
 /docs/site/
+*/uploads/*

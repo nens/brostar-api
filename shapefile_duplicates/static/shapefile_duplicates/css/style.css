@@ -1,0 +1,55 @@
+/* Main Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f1f8ff;
+}
+
+/* Table Styling for Excel Display */
+.excel-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.table th {
+    background-color: #f1f8ff;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    font-weight: 600;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.075);
+}
+
+/* Form styling */
+.form-text {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+#bottom-logo {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: 100px; /* Adjust size as needed */
+    opacity: 0.8;  /* Optional: slight transparency */
+    z-index: 1000; /* Ensure it's above other elements */
+}

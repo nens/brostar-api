@@ -1,7 +1,9 @@
 import json
 import logging
-from typing import Any
+import zipfile
+from typing import Any, TypeVar
 
+import polars as pl
 import requests
 from django.conf import settings
 
@@ -9,10 +11,90 @@ import api.models as api_models
 
 logger = logging.getLogger("general")
 
+T = TypeVar("T", bound="api_models.UploadFile")
+
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
     """Transforms the verbose pydantic errors to a readable format"""
     return {" - ".join(err["loc"]): err["msg"] for err in errors}
+
+
+def read_csv(file: T | bytes) -> pl.DataFrame:
+    if isinstance(file, api_models.UploadFile):
+        return pl.read_csv(
+            file.file.path,
+            has_header=True,
+            ignore_errors=False,
+            truncate_ragged_lines=True,
+        )
+    return pl.read_csv(
+        source=file,
+        has_header=True,
+        ignore_errors=False,
+        truncate_ragged_lines=True,
+    )
+
+
+def read_excel(file: T | bytes) -> pl.DataFrame:
+    if isinstance(file, api_models.UploadFile):
+        return pl.read_excel(
+            source=file.file.path,
+        )
+    return pl.read_excel(
+        source=file,
+    )
+
+
+def read_zip(file_instance: T) -> pl.DataFrame:
+    csv_files = []
+    xls_files = []
+    xlsx_files = []
+    with zipfile.ZipFile(file_instance.file) as z:
+        for f in z.namelist():
+            file_type = f.split(".")[-1]
+            match file_type:
+                case "csv":
+                    csv_files.append(f)
+                case "xls":
+                    xls_files.append(f)
+                case "xlsx":
+                    xlsx_files.append(f)
+
+        xlsx_files.extend(xls_files)
+        excel_files = xlsx_files
+        if not csv_files and not excel_files:
+            raise ValueError("No CSV and no Excel files found in the zip archive.")
+
+        # Read all CSV files into Polars DataFrames
+        dfs = []
+        for csv_file in csv_files:
+            with z.open(csv_file) as file:
+                file_bytes = file.read()  # Read the file as bytes
+                dfs.append(read_csv(file_bytes))
+
+        for excel in excel_files:
+            with z.open(excel) as file:
+                file_bytes = file.read()  # Read the file as bytes
+                dfs.append(read_excel(file_bytes))
+
+        # Combine all DataFrames into one, or return a list if separate DataFrames are desired
+        return pl.concat(dfs)
+
+
+def file_to_df(file_instance: T) -> pl.DataFrame:
+    """Reads out csv or excel files and returns a pandas df."""
+    filetype = file_instance.file.name.split(".")[-1].lower()
+    if filetype == "csv":
+        df = read_csv(file_instance)
+    elif filetype in ["xls", "xlsx"]:
+        df = read_excel(file_instance)
+    elif filetype == "zip":
+        df = read_zip(file_instance)
+    else:
+        raise ValueError(
+            "Unsupported file type. Only CSV and Excel, or ZIP files are supported."
+        )
+    return df
 
 
 def validate_xml_file(
