@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import sentry_sdk
 from kombu import Exchange, Queue
@@ -254,6 +255,7 @@ STORAGES = {
 MEDIA_ROOT = "/media"
 MEDIA_URL = "/media/"
 
+CSV_DIR = Path("/tmp/csv_files")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

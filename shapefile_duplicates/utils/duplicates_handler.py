@@ -1,8 +1,8 @@
 import csv
-import json
 from collections import defaultdict
 from datetime import datetime
-from pathlib import Path
+
+from django.conf import settings
 
 
 class RANKING:
@@ -461,31 +461,10 @@ class GMWDuplicatesHandler:
                 feature = features_dict[bro_id]
                 features.append(feature)
 
-        # Prepare the CSV file
-        json_file = (
-            Path(__file__).resolve().parent.parent
-            / "uploads"
-            / "tmp"
-            / f"ranking_{date}_{kvk_number}.json"
-        )
-        json_file1 = (
-            Path(__file__).resolve().parent.parent
-            / "uploads"
-            / "tmp"
-            / f"result_{date}_{kvk_number}.json"
-        )
-        csv_file = (
-            Path(__file__).resolve().parent.parent
-            / "uploads"
-            / f"result_{date}_{kvk_number}.csv"
-        )
-
-        with open(json_file, "w") as f:
-            json.dump(self.ranking, f, indent=4)
-
-        with open(json_file1, "w") as f:
-            json.dump(self.features, f, indent=4)
-
+        csv_dir = settings.CSV_DIR
+        csv_dir.mkdir(exist_ok=True)
+        csv_file_name = f"result_{date}_{kvk_number}.csv"
+        csv_file = f"{csv_dir}/{csv_file_name}"
         with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
             if not features:
                 raise ValueError("No features to write")
@@ -509,3 +488,5 @@ class GMWDuplicatesHandler:
 
                 row["coordinates"] = coordinates
                 writer.writerow(row)
+
+        return csv_file_name

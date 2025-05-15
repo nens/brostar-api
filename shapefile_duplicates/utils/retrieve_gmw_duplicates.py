@@ -54,7 +54,8 @@ def run(kvk_number=None, bro_type: str = "gmw", shapefile=None):
     GMWDH = GMWDuplicatesHandler(DR.features)
     GMWDH.get_duplicates(properties=["well_code", "nitg_code"])
     GMWDH.rank_duplicates()
-    GMWDH.store_duplicates(
+    filename = GMWDH.store_duplicates(
         kvk_number=kvk_number, date=datetime.datetime.now().strftime("%Y%m%d")
     )
+    return filename
     # GMWDH.omit_duplicates()
