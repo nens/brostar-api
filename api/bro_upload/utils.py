@@ -112,7 +112,6 @@ def validate_xml_file(
             timeout=60,
         )
         r.raise_for_status()
-
         return r.json()
 
     except requests.RequestException as e:

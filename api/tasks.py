@@ -11,9 +11,7 @@ from api.bro_upload.gar_bulk_upload import GARBulkUploader
 from api.bro_upload.gld_bulk_upload import GLDBulkUploader
 from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import (
-    DeliveryError,
     XMLGenerator,
-    XMLValidationError,
 )
 
 logger = logging.getLogger("general")
@@ -74,7 +72,7 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
-        logger.exception(XMLValidationError("Errors while validating the XML file"))
+        logger.exception("Errors while validating the XML file")
         return
 
     upload_task_instance.progress = 50.0
@@ -138,9 +136,7 @@ def check_delivery_status_task(context):
         errors = delivery_info["brondocuments"][0]["errors"]
 
         if errors:
-            logger.exception(
-                DeliveryError(f"Errors found after delivering the XML file: {errors}")
-            )
+            logger.exception(f"Errors found after delivering the XML file: {errors}")
             upload_task_instance.progress = 80
             upload_task_instance.status = "FAILED"
             upload_task_instance.log = (
