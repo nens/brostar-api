@@ -163,34 +163,16 @@ class GMWDuplicatesHandler:
                 bro_id = properties.get("bro_id", None)
                 regime = properties.get("quality_regime", None)
 
-                # Extract relevant timestamps
-                ## get the latest data from the GLD
-
-                timestamps = [
-                    # properties.get("object_registration_time", None),
-                    # properties.get("latest_addition_time", None),
-                    # properties.get("registration_completion_time", None)
-                    isoformat(properties.get("well_construction_date", None))
-                ]
-                # Parse and find the most recent non-None datetime
-                dates = [datetime.fromisoformat(ts) for ts in timestamps if ts]
-                latest_date = max(dates) if dates else None
-
                 if regime == "IMBRO":
                     tier = "IMBRO"
                 elif regime == "IMBRO/A":
-                    if latest_date and latest_date <= datetime(
-                        2021, 1, 1
-                    ):  # , tzinfo=latest_date.tzinfo):
-                        tier = "IMBRO/A_OLD"
-                    else:
-                        tier = "IMBRO/A_NEW"
+                    tier = "IMBRO/A"
                 else:
                     tier = "OTHER"
 
                 ranking_tiers[tier].append(bro_id)
 
-            tier_priority = ["IMBRO", "IMBRO/A_OLD", "IMBRO/A_NEW", "OTHER"]
+            tier_priority = ["IMBRO", "IMBRO/A", "OTHER"]
 
             # Assign dynamic ranks
             current_rank = 1
@@ -263,7 +245,7 @@ class GMWDuplicatesHandler:
         def well_construction_date_ranking(features: list[dict[str, dict]]):
             ranking = {}
             dates = {}
-
+            unknown = {}
             for feature in features:
                 properties = feature.get("properties", {})
                 bro_id = properties.get("bro_id", None)
@@ -274,6 +256,7 @@ class GMWDuplicatesHandler:
                         date_obj = datetime.fromisoformat(date_str)
                         dates[bro_id] = date_obj
                     except ValueError:
+                        unknown[bro_id] = date_obj
                         raise Exception(
                             "Something went wrong with converting to isoformat"
                         )
@@ -281,11 +264,14 @@ class GMWDuplicatesHandler:
             prev_date = None
             current_rank = 0
             dates_sorted = sorted(dates.items(), key=lambda x: x[1], reverse=True)
-            for i, (bro_id, date) in enumerate(dates_sorted):
+            for i, (bro_id, date) in enumerate(dates_sorted, start=1):
                 if date != prev_date:
-                    current_rank = i + 1
+                    current_rank = i
                     prev_date = date
                 ranking[bro_id] = current_rank
+
+            current_rank += 1
+            ranking.update({bro_id: current_rank for bro_id, _ in unknown})
 
             return normalize_ranking(ranking)
 
