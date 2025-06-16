@@ -45,7 +45,7 @@ def process_shp(kvk_number: str, shp_file, shx_file):
             destination.write(chunk)
 
     logger.info("Processing shapefile [SHP]")
-    process_shapefile(kvk_number=kvk_number, shapefile=shp_filepath)
+    return process_shapefile(kvk_number=kvk_number, shapefile=shp_filepath)
 
 
 def process_zip(kvk_number: str, zip_file) -> str:
@@ -168,6 +168,10 @@ def process(request):  # noqa: C901
             request,
             "Please upload either individual shapefile components or a zip file",
         )
+        return redirect("shapefile_duplicates:index")
+
+    if filename is None:
+        messages.error(request, "Geen features in de shapefile")
         return redirect("shapefile_duplicates:index")
 
     csv_dir = settings.CSV_DIR

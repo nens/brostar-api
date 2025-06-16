@@ -257,9 +257,6 @@ class GMWDuplicatesHandler:
                         dates[bro_id] = date_obj
                     except ValueError:
                         unknown[bro_id] = date_obj
-                        raise Exception(
-                            "Something went wrong with converting to isoformat"
-                        )
 
             prev_date = None
             current_rank = 0
@@ -453,7 +450,7 @@ class GMWDuplicatesHandler:
         csv_file = f"{csv_dir}/{csv_file_name}"
         with open(csv_file, mode="w", newline="", encoding="utf-8") as file:
             if not features:
-                raise ValueError("No features to write")
+                return None
 
             # Extract column headers from the first feature
             first_feature = features[0]
