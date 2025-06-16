@@ -115,10 +115,13 @@ class GMNObjectImporter(ObjectImporter):
         self._create_events_df(intermediate_events)
         self._save_measuringpoint_data(measuringpoint_data)
 
-    def _create_events_df(self, events_data: list[dict, Any]) -> None:
+    def _create_events_df(self, events_data: list[dict, Any] | dict[str, Any]) -> None:
         event_types = []
         event_dates = []
         measuring_point_codes = []
+        if isinstance(events_data, dict):
+            events_data = [events_data]
+
         for event in events_data:
             event_type = event.get("eventName", {}).get("#text", None)
             event_date = event.get("eventDate", {}).get("brocom:date", None)
