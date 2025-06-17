@@ -186,6 +186,15 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         logger.exception(e)
 
 
+def convert_error_to_bro_error(error_message: str):
+    if error_message.__contains__("404 Client Error"):
+        return "Projectnummer klopt waarschijnlijk niet. Controleer deze."
+    elif error_message.__contains__("401") or error_message.__contains__("403"):
+        return "Niet gemachtigd voor object of project. Controleer machtigingen en dataleverancierschap."
+    else:
+        return error_message
+
+
 @shared_task(queue="upload")
 def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_name):
     """Handle task errors by updating the UploadTask status and marking it as completed.
@@ -210,6 +219,7 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
     # Update the task status
     upload_task.status = "FAILED"
     upload_task.log = error_message
+    upload_task.bro_errors = [convert_error_to_bro_error(error_message)]
     upload_task.save()
 
     # Returning None or False will prevent the chain from continuing
