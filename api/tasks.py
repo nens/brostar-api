@@ -158,6 +158,7 @@ def check_delivery_status_task(context):
         ):
             # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
             bro_id = delivery_info["brondocuments"][0]["broId"]
+            break
         time.sleep(10)
 
     upload_task_instance.bro_id = bro_id
