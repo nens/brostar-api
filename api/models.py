@@ -211,6 +211,10 @@ class UploadTask(ExportModelOperationsMixin("uploadtask"), models.Model):
     bro_delivery_url = models.CharField(max_length=500, blank=True, null=True)
 
     def save(self, *args: Any, **kwargs: Any) -> None:
+        # Create GMW, GMN, GLD and FRD creation based on:
+        # BRO-ID
+        # Metadata
+        # Sourcedocument data
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
