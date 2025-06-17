@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: postgis/postgis:14-3.4
+    image: postgis/postgis:14-3.5
     environment:
       POSTGRES_USER: 'brostar'
       POSTGRES_PASSWORD: 'brostar'
