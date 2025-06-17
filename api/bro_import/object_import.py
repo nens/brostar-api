@@ -199,6 +199,9 @@ class GMNObjectImporter(ObjectImporter):
     def _save_measuringpoint_data(
         self, measuringpoint_data: list[dict[str, Any]]
     ) -> None:
+        if isinstance(measuringpoint_data, dict):
+            measuringpoint_data = [measuringpoint_data]
+
         for measuringpoint in measuringpoint_data:
             mp_data = measuringpoint.get("MeasuringPoint", {})
 
@@ -808,7 +811,7 @@ class GLDObjectImporter(ObjectImporter):
 
         return gmn_ids
 
-    def _observation_summary(self):
+    def _observation_summary(self) -> list[dict[str, Any]]:
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
         r = requests.get(url=url)
         r.raise_for_status()
@@ -879,6 +882,9 @@ class GLDObjectImporter(ObjectImporter):
 
     def _save_observations(self):
         observation_summary = self._observation_summary()
+        if isinstance(observation_summary, dict):
+            observation_summary = [observation_summary]
+
         for observation in observation_summary:
             observation_id = observation.get("observationId", None)
             if not observation_id:
