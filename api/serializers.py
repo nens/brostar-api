@@ -68,8 +68,12 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         is_list_view = hasattr(view, "action") and view.action == "list"
 
         # Remove 'sourcedocument_data' only in list view when registration_type is "GLD_Addition"
+
         if is_list_view and representation.get("registration_type") == "GLD_Addition":
             src_data = representation.get("sourcedocument_data", {})
+            if "timeValuePairs" not in src_data.keys():
+                return representation
+
             tvps = src_data.pop("timeValuePairs")
             src_data["timeValuePairsCount"] = len(tvps)
             representation["sourcedocument_data"] = src_data
