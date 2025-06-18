@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.29 (unreleased)
+## 1.29 (2025-06-18)
 
 -   Enhancement: further testing
 -   Enhancement: GLD-Bulk naming
