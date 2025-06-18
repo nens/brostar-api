@@ -1,12 +1,11 @@
-from rest_framework import routers
+from django.urls import path
 
 from . import views
 
 app_name = "gar"
 
-router = routers.DefaultRouter()
-router.register("gars", views.GARViewSet, basename="gar")
-
-urlpatterns = []
-
-urlpatterns += router.urls
+urlpatterns = [
+    path("gars/", views.GARViewSet.as_view(), name="gar-list"),
+    path("ids/", views.GARIdsList.as_view(), name="gar-ids"),
+    path("gars/<uuid:uuid>/", views.GARDetailView.as_view(), name="gar-detail"),
+]

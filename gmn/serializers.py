@@ -13,6 +13,33 @@ class GMNSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
         fields = "__all__"
 
 
+class MeasuringPointOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmn_models.Measuringpoint
+        fields = [
+            "uuid",
+            "event_type",
+            "gmw_bro_id",
+            "tube_number",
+            "tube_start_date",
+            "tube_end_date",
+        ]
+
+
+class GMNOverviewSerializer(serializers.ModelSerializer):
+    measuring_points = MeasuringPointOverviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = gmn_models.GMN
+        fields = [
+            "uuid",
+            "bro_id",
+            "name",
+            "quality_regime",
+            "measuring_points",
+        ]
+
+
 class MeasuringpointSerializer(
     UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
 ):
@@ -76,6 +103,17 @@ class MeasuringpointSerializer(
                 .first()
                 .uuid
             )
+
+
+class GMNIdsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmn_models.GMN
+        fields = [
+            "uuid",
+            "bro_id",
+            "delivery_accountable_party",
+            "data_owner",
+        ]
 
 
 class IntermediateEventSerializer(

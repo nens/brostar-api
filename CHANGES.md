@@ -4,7 +4,21 @@
 
 -   Enhancement: further testing
 -   Enhancement: GLD-Bulk naming
+-   Enhancement: Improve error logging for better upload task information
+-   Feature: added removal option
 -   Feature: added gmw-duplicates handler
+-   Feature: add GMW ids endpoint for quick id retrieval
+-   Feature: add GMW overview endpoint for overview view retrieval
+-   Feature: add GLD ids endpoint for quick id retrieval
+-   Feature: add GLD overview endpoint for overview view retrieval
+-   Feature: add GMN ids endpoint for quick id retrieval
+-   Feature: add GMN overview endpoint for overview view retrieval
+-   Feature: add FRD ids endpoint for quick id retrieval
+-   Feature: add FRD overview endpoint for overview view retrieval
+-   Feature: add GAR ids endpoint for quick id retrieval
+-   Feature: add UploadTask overview endpoint for overview view retrieval
+-   Bugfix: GMN-Import task
+-   Bugfix: Uploadtask correction routing
 
 ## 1.28 (2025-05-12)
 

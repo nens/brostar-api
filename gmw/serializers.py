@@ -38,6 +38,63 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
         return obj.nr_of_intermediate_events
 
 
+class MonitoringTubeOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmw_models.MonitoringTube
+        fields = ["uuid", "tube_number", "tube_status"]
+
+
+class EventsOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmw_models.Event
+        fields = ["uuid", "event_name", "event_date"]
+
+
+class GMWOverviewSerializer(serializers.ModelSerializer):
+    linked_gmns = serializers.SerializerMethodField()
+    tubes = MonitoringTubeOverviewSerializer(many=True, read_only=True)
+    events = EventsOverviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = gmw_models.GMW
+        fields = [
+            "uuid",
+            "bro_id",
+            "linked_gmns",
+            "standardized_location",
+            "nitg_code",
+            "well_construction_date",
+            "quality_regime",
+            "removed",
+            "tubes",
+            "events",
+        ]
+
+    def get_linked_gmns(self, obj: gmw_models.GMW) -> list[gmn_models.GMN] | None:
+        try:
+            linked_gmns = set(
+                measuringpoint.gmn.uuid
+                for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                    gmw_bro_id=obj.bro_id
+                )
+            )
+            return list(linked_gmns)
+
+        except ObjectDoesNotExist:
+            return None
+
+
+class GMWIdsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmw_models.GMW
+        fields = [
+            "uuid",
+            "bro_id",
+            "delivery_accountable_party",
+            "data_owner",
+        ]
+
+
 class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
     gmw_well_code = serializers.SerializerMethodField()
     gmw_bro_id = serializers.SerializerMethodField()

@@ -9,7 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from pydantic import ValidationError
-from rest_framework import permissions, status, views, viewsets
+from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -471,6 +471,28 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         xml_str = xml_generator.create_xml_file()
 
         return HttpResponse(xml_str, content_type="application/xml")
+
+
+class UploadTaskOverviewList(generics.ListAPIView):
+    """
+    API endpoint that provides a filtered, paginated list of upload tasks with summary information.
+
+    This endpoint returns an overview of all upload tasks, supporting filtering via query parameters.
+    The response uses a lightweight serializer for performance and summary display.
+
+    **Query Parameters**:
+        - Any field supported by the UploadTaskFilter (see filterset for details).
+
+    **Returns**:
+        - 200 OK: A paginated list of upload task overviews.
+    """
+
+    queryset = models.UploadTask.objects.all()
+    serializer_class = serializers.UploadTaskOverviewSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.UploadTaskFilter
+    filterset_fields = "__all__"
 
 
 class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):

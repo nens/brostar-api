@@ -16,6 +16,24 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     filterset_fields = "__all__"
 
 
+class GMNIdsList(generics.ListAPIView):
+    queryset = gmn_models.GMN.objects.all()
+    serializer_class = serializers.GMNIdsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmnFilter
+    filterset_fields = "__all__"
+
+
+class GMNOverviewList(generics.ListAPIView):
+    queryset = gmn_models.GMN.objects.all()
+    serializer_class = serializers.GMNOverviewSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmnFilter
+    filterset_fields = "__all__"
+
+
 class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = gmn_models.GMN.objects.all()
     serializer_class = serializers.GMNSerializer

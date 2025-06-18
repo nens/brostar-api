@@ -22,6 +22,24 @@ class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     lookup_field = "uuid"
 
 
+class GMWOverviewList(generics.ListAPIView):
+    queryset = gmw_models.GMW.objects.all()
+    serializer_class = serializers.GMWOverviewSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmwFilter
+    filterset_fields = "__all__"
+
+
+class GMWIdsList(generics.ListAPIView):
+    queryset = gmw_models.GMW.objects.all()
+    serializer_class = serializers.GMWIdsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GmwFilter
+    filterset_fields = "__all__"
+
+
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.MonitoringTubeSerializer
     queryset = gmw_models.MonitoringTube.objects.all().order_by("-created")

@@ -81,6 +81,21 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         return representation
 
 
+class UploadTaskOverviewSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    class Meta:
+        model = api_models.UploadTask
+        fields = [
+            "uuid",
+            "status",
+            "bro_domain",
+            "registration_type",
+            "request_type",
+            "created",
+            "log",
+            "bro_errors",
+        ]
+
+
 class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
     fieldwork_file = serializers.FileField(write_only=True, required=False)
     lab_file = serializers.FileField(write_only=True, required=False)

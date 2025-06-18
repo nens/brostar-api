@@ -55,7 +55,9 @@ class Measuringpoint(models.Model):
     """
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gmn = models.ForeignKey(GMN, on_delete=models.CASCADE)
+    gmn = models.ForeignKey(
+        GMN, on_delete=models.CASCADE, related_name="measuring_points"
+    )
     event_type = models.CharField(choices=GMN_EVENT_TYPES, max_length=50, null=True)
     measuringpoint_code = models.CharField(max_length=50, null=True)
     measuringpoint_start_date = models.DateField(null=True)

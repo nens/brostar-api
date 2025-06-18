@@ -22,6 +22,48 @@ class GLDSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSeriali
         return obj.nr_of_observations
 
 
+class GLDIdsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GLD
+        fields = [
+            "uuid",
+            "bro_id",
+            "delivery_accountable_party",
+            "data_owner",
+        ]
+
+
+class ObservationOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Observation
+        fields = [
+            "uuid",
+            "observation_type",
+            "validation_status",
+            "begin_position",
+            "end_position",
+            "measurement_instrument_type",
+        ]
+
+
+class GLDOverviewSerializer(serializers.ModelSerializer):
+    observations = ObservationOverviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = GLD
+        fields = [
+            "uuid",
+            "bro_id",
+            "linked_gmns",
+            "gmw_bro_id",
+            "tube_number",
+            "research_first_date",
+            "research_last_date",
+            "quality_regime",
+            "observations",
+        ]
+
+
 class ObservationSerializer(
     UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
 ):

@@ -6,6 +6,8 @@ app_name = "gmn"
 
 urlpatterns = [
     path("gmns/", views.GMNListView.as_view(), name="gmn-list"),
+    path("ids/", views.GMNIdsList.as_view(), name="gmn-ids"),
+    path("overview/", views.GMNOverviewList.as_view(), name="gmn-overview"),
     path("gmns/<uuid:uuid>/", views.GMNDetailView.as_view(), name="gmn-detail"),
     path(
         "measuringpoints/",

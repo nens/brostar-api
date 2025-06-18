@@ -21,6 +21,11 @@ urlpatterns = [
     path("gar/", include("gar.urls", namespace="gar")),
     path("gld/", include("gld.urls", namespace="gld")),
     path("frd/", include("frd.urls", namespace="frd")),
+    path(
+        "uploadtasks/overview/",
+        views.UploadTaskOverviewList.as_view(),
+        name="uploadtask-overview",
+    ),
 ]
 
 urlpatterns += router.urls

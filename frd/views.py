@@ -15,6 +15,14 @@ class FRDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     filterset_fields = "__all__"
 
 
+class FRDIdsList(generics.ListAPIView):
+    queryset = frd_models.FRD.objects.all()
+    serializer_class = serializers.FRDIdsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = "__all__"
+
+
 class FRDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = frd_models.FRD.objects.all()
     serializer_class = serializers.FRDSerializer

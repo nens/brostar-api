@@ -15,6 +15,24 @@ class GLDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     filterset_class = filters.GldFilter
 
 
+class GLDIdsList(generics.ListAPIView):
+    queryset = gld_models.GLD.objects.all()
+    serializer_class = serializers.GLDIdsSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GldFilter
+    filterset_fields = "__all__"
+
+
+class GLDOverviewList(generics.ListAPIView):
+    queryset = gld_models.GLD.objects.all()
+    serializer_class = serializers.GLDOverviewSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GldFilter
+    filterset_fields = "__all__"
+
+
 class GLDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = gld_models.GLD.objects.all()
     serializer_class = serializers.GLDSerializer

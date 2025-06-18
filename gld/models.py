@@ -13,17 +13,17 @@ class GLD(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
     bro_id = models.CharField(max_length=18)
+    delivery_accountable_party = models.CharField(max_length=8, null=True)
     linked_gmns = JSONField(
         "Gmns", default=list, blank=False
     )  # In GLD XMLs these are actually returned.
-    delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)
     tube_number = models.CharField(max_length=100, null=True)
     research_first_date = models.DateField(null=True, blank=True)
     research_last_date = models.DateField(null=True, blank=True)
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     observations = Manager["Observation"]
 
