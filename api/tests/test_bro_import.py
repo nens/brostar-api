@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import pytest
 from django.conf import settings
@@ -224,14 +225,16 @@ def test_create_import_task(api_client, user, organisation):
     post_data = {
         "bro_domain": "GLD",
         "kvk_number": "27376655",
-        "data_owner": organisation.uuid,
+        "data_owner": str(organisation.uuid),
     }
 
     # Use Django REST Framework style endpoint
     url = "/api/importtasks/"
 
     # Make POST request
-    response = api_client.post(url, post_data, content_type="application/json")
+    response = api_client.post(
+        url, data=json.dumps(post_data), content_type="application/json"
+    )
 
     # Validate response
     assert response.status_code == 201, f"Unexpected response: {response.content}"
@@ -264,14 +267,16 @@ def test_create_upload_task(api_client, user, organisation):
             "deliveryAccountableParty": "12345678",
             "requestReference": "dummy-test",
         },
-        "data_owner": organisation.uuid,
+        "data_owner": str(organisation.uuid),
     }
 
     # Use Django REST Framework style endpoint
     url = "/api/uploadtasks/"
 
     # Make POST request
-    response = api_client.post(url, post_data, content_type="application/json")
+    response = api_client.post(
+        url, data=json.dumps(post_data), content_type="application/json"
+    )
 
     # Validate response
     assert response.status_code == 201, f"Unexpected response: {response.content}"
