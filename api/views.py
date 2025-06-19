@@ -473,7 +473,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         return HttpResponse(xml_str, content_type="application/xml")
 
 
-class UploadTaskOverviewList(generics.ListAPIView):
+class UploadTaskOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
     API endpoint that provides a filtered, paginated list of upload tasks with summary information.
 

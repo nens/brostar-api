@@ -2,9 +2,8 @@
 
 ## 1.30 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: Improve API Docstrings
+-   Bugfix: add user-org coupling for new api pages
 
 ## 1.29 (2025-06-18)
 
