@@ -1,11 +1,11 @@
-from django_filters import DateFilter
+from django_filters import DateFilter, FilterSet
 
 from api.mixins import DateTimeFilterMixin
 
 from .models import GMN, IntermediateEvent, Measuringpoint
 
 
-class GmnFilter(DateTimeFilterMixin):
+class GmnFilter(DateTimeFilterMixin, FilterSet):
     start_date_monitoring__gt = DateFilter(
         field_name="start_date_monitoring", lookup_expr="gt"
     )
@@ -24,7 +24,7 @@ class GmnFilter(DateTimeFilterMixin):
         fields = "__all__"
 
 
-class MeasuringPointFilter(DateTimeFilterMixin):
+class MeasuringPointFilter(DateTimeFilterMixin, FilterSet):
     measuringpoint_start_date__gt = DateFilter(
         field_name="measuringpoint_start_date", lookup_expr="gt"
     )
@@ -43,7 +43,7 @@ class MeasuringPointFilter(DateTimeFilterMixin):
         fields = "__all__"
 
 
-class IntermediateEventFilter(DateTimeFilterMixin):
+class IntermediateEventFilter(DateTimeFilterMixin, FilterSet):
     measuringpoint_start_date__gt = DateFilter(
         field_name="event_date", lookup_expr="gt"
     )

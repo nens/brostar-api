@@ -1,4 +1,4 @@
-from django_filters import DateFilter
+from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -7,13 +7,13 @@ from gmn.models import Measuringpoint
 from .models import GMW, Event, MonitoringTube
 
 
-class GmwFilter(DateTimeFilterMixin):
+class GmwFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = GMW
         fields = "__all__"
 
 
-class MonitoringTubeFilter(DateTimeFilterMixin):
+class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
     gmn_bro_id = filters.CharFilter(method="filter_by_gmn_bro_id")
     gmw_bro_id = filters.CharFilter(method="filter_by_gmw_bro_id")
 
@@ -30,7 +30,7 @@ class MonitoringTubeFilter(DateTimeFilterMixin):
         return queryset.filter(gmw__bro_id=value)
 
 
-class EventFilter(DateTimeFilterMixin):
+class EventFilter(DateTimeFilterMixin, FilterSet):
     gmw_bro_id = filters.CharFilter(method="filter_by_gmw_bro_id")
     event_date__gt = DateFilter(field_name="event_date", lookup_expr="gt")
     event_date__gte = DateFilter(field_name="event_date", lookup_expr="gte")

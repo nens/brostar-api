@@ -7,16 +7,17 @@ requires = ["setuptools>=69"]
 name = "brostar-api"
 requires-python = ">=3.11"
 dependencies = [
+    "setuptools>=69",
     "celery[redis]",
     "coverage",
     "django-cors-headers",
     "django-encrypted-model-fields",
-    "django-filter",
+    "django-filter==24.2",
     "django==5.0.*",
-    "djangorestframework",
+    "djangorestframework==3.15.1",
     "djangorestframework-api-key",
     "django-prometheus",
-    "drf-yasg",
+    "drf-yasg==1.21.7",
     "fastexcel",
     "markdown > 3", # DRF api docs
     "mkdocs-material",
@@ -101,7 +102,7 @@ url = "https://packages.lizard.net/"
 dev = [
     "coverage",
     "django>=5.0.14",
-    "djangorestframework>=3.16.0",
+    "djangorestframework>=3.15.1",
     "pandas>=2.2.3",
     "polars>=1.27.1",
     "pytest>=8.3.5",

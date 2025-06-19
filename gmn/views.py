@@ -20,7 +20,6 @@ class GMNListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmnFilter
-    filterset_fields = "__all__"
 
 
 class GMNIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -35,7 +34,6 @@ class GMNIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmnFilter
-    filterset_fields = "__all__"
 
 
 class GMNOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -50,7 +48,6 @@ class GMNOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmnFilter
-    filterset_fields = "__all__"
 
 
 class GMNDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -82,7 +79,6 @@ class MeasuringpointListView(mixins.UserOrganizationMixin, generics.ListAPIView)
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.MeasuringPointFilter
-    filterset_fields = "__all__"
 
 
 class MeasuringpointDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -108,7 +104,6 @@ class EventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.IntermediateEventFilter
-    filterset_fields = "__all__"
 
 
 class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):

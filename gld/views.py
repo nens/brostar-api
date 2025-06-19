@@ -35,7 +35,6 @@ class GLDIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GldFilter
-    filterset_fields = "__all__"
 
 
 class GLDOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -51,7 +50,6 @@ class GLDOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GldFilter
-    filterset_fields = "__all__"
 
 
 class GLDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -83,7 +81,6 @@ class ObservationListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ObservationFilter
-    filterset_fields = "__all__"
 
 
 class ObservationDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):

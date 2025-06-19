@@ -67,7 +67,7 @@ class RequiredFieldsMixin:
             field.required = True
 
 
-class DateTimeFilterMixin(filters.FilterSet):
+class DateTimeFilterMixin:
     created__gt = filters.DateTimeFilter(field_name="created", lookup_expr="gt")
     created__gte = filters.DateTimeFilter(field_name="created", lookup_expr="gte")
     created__lt = filters.DateTimeFilter(field_name="created", lookup_expr="lt")
@@ -77,6 +77,3 @@ class DateTimeFilterMixin(filters.FilterSet):
     updated__gte = filters.DateTimeFilter(field_name="updated", lookup_expr="gte")
     updated__lt = filters.DateTimeFilter(field_name="updated", lookup_expr="lt")
     updated__lte = filters.DateTimeFilter(field_name="updated", lookup_expr="lte")
-
-    class Meta:
-        abstract = True

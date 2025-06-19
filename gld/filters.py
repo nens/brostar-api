@@ -1,6 +1,6 @@
 import datetime
 
-from django_filters import DateFilter
+from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -20,7 +20,7 @@ class DateTimeStringFilter(filters.Filter):
             return qs.none()
 
 
-class GldFilter(DateTimeFilterMixin):
+class GldFilter(DateTimeFilterMixin, FilterSet):
     research_first_date__gt = DateFilter(
         field_name="research_first_date", lookup_expr="gt"
     )
@@ -39,7 +39,7 @@ class GldFilter(DateTimeFilterMixin):
         exclude = ["linked_gmns"]
 
 
-class ObservationFilter(DateTimeFilterMixin):
+class ObservationFilter(DateTimeFilterMixin, FilterSet):
     begin_position__gt = DateFilter(field_name="begin_position", lookup_expr="gt")
     begin_position__gte = DateFilter(field_name="begin_position", lookup_expr="gte")
     begin_position__lt = DateFilter(field_name="begin_position", lookup_expr="lt")
@@ -50,7 +50,7 @@ class ObservationFilter(DateTimeFilterMixin):
         fields = "__all__"
 
 
-class MeasurementTvpFilter(DateTimeFilterMixin):
+class MeasurementTvpFilter(DateTimeFilterMixin, FilterSet):
     time = DateTimeStringFilter(field_name="time")
 
     class Meta:

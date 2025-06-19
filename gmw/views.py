@@ -17,10 +17,8 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     serializer_class = serializers.GMWSerializer
     queryset = gmw_models.GMW.objects.all().order_by("-created")
-
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
-    filterset_fields = "__all__"
 
 
 class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -45,7 +43,6 @@ class GMWOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
-    filterset_fields = "__all__"
 
 
 class GMWIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -60,7 +57,6 @@ class GMWIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
-    filterset_fields = "__all__"
 
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
