@@ -79,7 +79,7 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GLD_Closure", "GLD_Closure"),
     ("FRD_StartRegistration", "FRD_StartRegistration"),
     ("FRD_GEM_MeasurementConfiguration", "FRD_GEM_MeasurementConfiguration"),
-    ("FRD_GEM_Measurement", "GLD_CloFRD_GEM_Measurementsure"),
+    ("FRD_GEM_Measurement", "FRD_GEM_Measurements"),
     ("FRD_EMM_InstrumentConfiguration", "FRD_EMM_InstrumentConfiguration"),
     ("FRD_EMM_Measurement", "FRD_EMM_Measurement"),
     ("FRD_Closure", "FRD_Closure"),
