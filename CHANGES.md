@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.30 (unreleased)
+## 1.30 (2025-06-20)
 
 -   Enhancement: Improve API Docstrings
 -   Bugfix: add user-org coupling for new api pages
