@@ -10,8 +10,8 @@
     <FRD_GEM_MeasurementConfiguration gml:id="id_0001">
       {% for config in sourcedocs_data.measurementConfigurations %}
       <measurementConfiguration>
-        <frdcom:MeasurementConfiguration gml:id="{{ metadata.measurementConfigurationID }}">
-          <frdcom:measurementConfigurationID>{{ config.measurementConfigurationID }}</frdcom:measurementConfigurationID>
+        <frdcom:MeasurementConfiguration gml:id="{{ config.measurementConfigurationId }}">
+          <frdcom:measurementConfigurationID>{{ config.measurementConfigurationId }}</frdcom:measurementConfigurationID>
           <frdcom:measurementPair>
             <frdcom:electrode1>
               <frdcom:cableNumber>{{ config.measurementE1CableNumber }}</frdcom:cableNumber>
