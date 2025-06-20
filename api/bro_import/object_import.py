@@ -286,7 +286,10 @@ class GMWObjectImporter(ObjectImporter):
             return None
 
         bronhouder_data = pl.DataFrame(transacties)
-        if bronhouder_data.is_empty():
+        if (
+            bronhouder_data.is_empty()
+            or "objectIdBronhouder" not in bronhouder_data.columns
+        ):
             return None
 
         intern_ids = bronhouder_data.select("objectIdBronhouder")
