@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.31 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.30 (2025-06-20)
 
 -   Enhancement: Improve API Docstrings
