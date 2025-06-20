@@ -470,7 +470,7 @@ class FRDEmmMeasurement(CamelModel):
 
 class GemMeasurement(CamelModel):
     value: float
-    unit: str
+    unit: str = "Ohm"
     configuration: str
 
 

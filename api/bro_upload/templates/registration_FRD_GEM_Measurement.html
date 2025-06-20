@@ -23,7 +23,6 @@
             <frdcom:relatedMeasurementConfiguration xlink:href="{{ measurement.configuration }}" />
           </frdcom:measure>
           {% endfor %}
-          {% if relatedCalculatedApparentFormationResistance in sourcedocs_data %}
           <frdcom:relatedCalculatedApparentFormationResistance>
             <frdcom:CalculatedApparentFormationResistance gml:id="id_0003">
               <frdcom:calculationOperator>
@@ -48,7 +47,6 @@
               </frdcom:apparentFormationResistanceSeries>
             </frdcom:CalculatedApparentFormationResistance>
           </frdcom:relatedCalculatedApparentFormationResistance>
-          {% endif %}
         </frdcom:GeoElectricMeasurement>
       </relatedGeoElectricMeasurement>
     </FRD_GEM_Measurement>
