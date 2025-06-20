@@ -9,19 +9,19 @@
   <sourceDocument>
     <FRD_EMM_InstrumentConfiguration gml:id="id_0001">
       <instrumentConfiguration>
-        <frdcom:InstrumentConfiguration gml:id="{{ soucedocs_data.instrumentConfigurationID }}">
-          <frdcom:instrumentConfigurationID>{{ soucedocs_data.instrumentConfigurationID }}</frdcom:instrumentConfigurationID>
-          <frdcom:relativePositionTransmitterCoil uom="cm">{{ soucedocs_data.relativePositionTransmitterCoil }}</frdcom:relativePositionTransmitterCoil>
-          <frdcom:relativePositionPrimaryReceiverCoil uom="cm">{{ soucedocs_data.relativePositionPrimaryReceiverCoil }}</frdcom:relativePositionPrimaryReceiverCoil>
-          <frdcom:secondaryReceiverCoilAvailable>{{ soucedocs_data.secondaryReceiverCoilAvailable }}</frdcom:secondaryReceiverCoilAvailable>
-          {% if soucedocs_data.relativePositionSecondaryReceiverCoil %}
-          <frdcom:relativePositionSecondaryReceiverCoil uom="cm">{{ soucedocs_data.relativePositionSecondaryReceiverCoil }}</frdcom:relativePositionSecondaryReceiverCoil>
+        <frdcom:InstrumentConfiguration gml:id="{{ sourcedocs_data.instrumentConfigurationID }}">
+          <frdcom:instrumentConfigurationID>{{ sourcedocs_data.instrumentConfigurationID }}</frdcom:instrumentConfigurationID>
+          <frdcom:relativePositionTransmitterCoil uom="cm">{{ sourcedocs_data.relativePositionTransmitterCoil }}</frdcom:relativePositionTransmitterCoil>
+          <frdcom:relativePositionPrimaryReceiverCoil uom="cm">{{ sourcedocs_data.relativePositionPrimaryReceiverCoil }}</frdcom:relativePositionPrimaryReceiverCoil>
+          <frdcom:secondaryReceiverCoilAvailable>{{ sourcedocs_data.secondaryReceiverCoilAvailable }}</frdcom:secondaryReceiverCoilAvailable>
+          {% if sourcedocs_data.relativePositionSecondaryReceiverCoil %}
+          <frdcom:relativePositionSecondaryReceiverCoil uom="cm">{{ sourcedocs_data.relativePositionSecondaryReceiverCoil }}</frdcom:relativePositionSecondaryReceiverCoil>
           {% endif %}
-          <frdcom:coilFrequencyKnown>{{ soucedocs_data.coilFrequencyKnown }}</frdcom:coilFrequencyKnown>
-          {% if soucedocs_data.coilFrequency %}
-          <frdcom:coilFrequency uom="kHz">{{ soucedocs_data.coilFrequency }}</frdcom:coilFrequency>
+          <frdcom:coilFrequencyKnown>{{ sourcedocs_data.coilFrequencyKnown }}</frdcom:coilFrequencyKnown>
+          {% if sourcedocs_data.coilFrequency %}
+          <frdcom:coilFrequency uom="kHz">{{ sourcedocs_data.coilFrequency }}</frdcom:coilFrequency>
           {% endif %}
-          <frdcom:instrumentLength uom="cm">{{ soucedocs_data.instrumentLength }}</frdcom:instrumentLength>
+          <frdcom:instrumentLength uom="cm">{{ sourcedocs_data.instrumentLength }}</frdcom:instrumentLength>
         </frdcom:InstrumentConfiguration>
       </instrumentConfiguration>
     </FRD_EMM_InstrumentConfiguration>
