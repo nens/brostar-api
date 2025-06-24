@@ -2,9 +2,9 @@
 
 ## 1.31 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Enhancement: FRD templates have been improved
+-   Enhancement: Added general BRO information to the docs
+-   Bugfix: Added retry max to uploadtask
 
 ## 1.30 (2025-06-20)
 
