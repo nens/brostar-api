@@ -68,18 +68,18 @@ class GARBulkUploader:
         try:
             # Rename headers
             fieldwork_df_rename_dict = {
-                "BRO-ID": "bro_id",
+                "BRO ID": "bro_id",
                 "Datum bemonsterd": "date",
-                "Filter nr": "filter_num",
+                "Filter nummer": "filter_num",
             }
             fieldwork_df = rename_df_columns(fieldwork_df, fieldwork_df_rename_dict)
             lab_df_rename_dict = {
-                "GMW BRO ID": "bro_id",
+                "BRO ID": "bro_id",
                 "Datum veldwerk": "date",
-                "filter/buisnr": "filter_num",
+                "Filter nummer": "filter_num",
             }
             lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
-
+            
             # Merge the 2 dfs
             merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
 
@@ -93,6 +93,8 @@ class GARBulkUploader:
                 "Projectcode lab",
                 "Monsternummer lab",
             ]
+
+
             trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
 
             assert len(trimmed_df) > 0, (
