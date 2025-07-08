@@ -13,7 +13,7 @@ class GMW(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    intern_id = models.CharField(
+    internal_id = models.CharField(
         max_length=50,
         null=True,
         blank=True,
