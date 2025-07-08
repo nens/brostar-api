@@ -68,15 +68,15 @@ class GARBulkUploader:
         try:
             # Rename headers
             fieldwork_df_rename_dict = {
-                "BRO-ID": "bro_id",
+                "GMW BRO ID": "bro_id",
                 "Datum bemonsterd": "date",
-                "Filter nr": "filter_num",
+                "Filternummer": "filter_num",
             }
             fieldwork_df = rename_df_columns(fieldwork_df, fieldwork_df_rename_dict)
             lab_df_rename_dict = {
                 "GMW BRO ID": "bro_id",
                 "Datum veldwerk": "date",
-                "filter/buisnr": "filter_num",
+                "Filternummer": "filter_num",
             }
             lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
 
@@ -93,6 +93,7 @@ class GARBulkUploader:
                 "Projectcode lab",
                 "Monsternummer lab",
             ]
+
             trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
 
             assert len(trimmed_df) > 0, (
@@ -111,6 +112,9 @@ class GARBulkUploader:
         # Step 3: Prepare data for uploadtask per row
         uploadtask_metadata = {
             "qualityRegime": self.bulk_upload_instance.metadata["qualityRegime"],
+            "deliveryAccountableParty": self.bulk_upload_instance.metadata[
+                "deliveryAccountableParty"
+            ],
             "requestReference": self.bulk_upload_instance.metadata["requestReference"],
         }
 
