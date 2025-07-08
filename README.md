@@ -1,9 +1,11 @@
-# BROStar API
+# BROSTAR API
+
+Aanleveren aan de Basis Registratie Ondergrond is niet altijd even makkelijk. Om het lever proces te vereenvoudigen, en zodat het wiel niet iedere keer opnieuw hoeft uitgevonden te worden. Op https://www.brostar.nl vind je de SaaS, met product informatie. Deze front-end geeft doormiddel van formulieren de mogelijkheid om zonder programmeer ervaring toch wijzigingen te doen in de BRO.
 
 
 ## Introduction
 
-BROStar is a data management product for the Dutch *Basis Registratie Ondergrond* (BRO). The code for the backend is stored in this repository. It consists of an API for importing, storing, and delivering data. The backend is open source, and can be self-hosted. The frontend is developed and hosted by Nelen & Schuurmans. This is a web application created on top of the API, making the data management of BRO data very accessible. Interested? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl).
+BROSTAR is a data management product for the Dutch *Basis Registratie Ondergrond* (BRO). The code for the backend is stored in this repository. It consists of an API for importing, storing, and delivering data. The backend is open source, and can be self-hosted. The frontend is developed and hosted by Nelen & Schuurmans. This is a web application created on top of the API, making the data management of BRO data very accessible. Interested? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl).
 
 
 ## Project description
