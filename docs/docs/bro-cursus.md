@@ -24,6 +24,7 @@ De cursus is speciaal ontwikkeld voor professionals die dagelijks werken met gro
 
 #### Wettelijke verplichtingen
 We gaan uitgebreid in op alle aspecten van bronhouderschap die wettelijk verplicht zijn:
+
 - **Leverplicht**: Wat, wanneer en hoe moet u aanleveren?
 - **Gebruiksplicht**: Hoe gebruikt u BRO-gegevens in uw eigen processen?
 - **Terugmeldplicht**: Wat te doen bij ontdekking van fouten in de BRO?
@@ -31,6 +32,7 @@ We gaan uitgebreid in op alle aspecten van bronhouderschap die wettelijk verplic
 
 #### BRO-registratieobjecten in de praktijk
 We behandelen de belangrijkste registratieobjecten voor grondwatermonitoring:
+
 - **GMW (Grondwatermonitoringput)**: Eigenschappen en beheer van monitoringputten
 - **GMN (Grondwatermonitoringnet)**: Opzet en beheer van monitoringnetwerken
 - **GLD (Grondwaterstandonderzoek)**: Registratie van grondwaterstandsmetingen
@@ -39,6 +41,7 @@ We behandelen de belangrijkste registratieobjecten voor grondwatermonitoring:
 
 #### Praktische uitdagingen en oplossingen
 Aan de hand van concrete casussen bespreken we:
+
 - Omgaan met gegevensaanpassingen en correcties
 - Afhandeling van terugleveringen van de BRO
 - Troubleshooting bij technische problemen
