@@ -277,6 +277,14 @@ class GMWObjectImporter(ObjectImporter):
                 url=f"{bronhouder_url}/api/v2/transacties/?zoekveld=broId&zoektekst={bro_id}",
                 timeout=15,
             )
+            # Check if the request was successful
+            r.raise_for_status()
+
+            # Check if response has content
+            if not r.content or len(r.content.strip()) == 0:
+                logger.warning(f"Empty response for bro_id: {bro_id}")
+                return None
+
         except Exception as e:
             logger.exception(e)
             return None
@@ -292,9 +300,9 @@ class GMWObjectImporter(ObjectImporter):
         ):
             return None
 
-        intern_ids = bronhouder_data.select("objectIdBronhouder")
-        intern_id = intern_ids.item(-1, 0)
-        return intern_id
+        internal_ids = bronhouder_data.select("objectIdBronhouder")
+        internal_id = internal_ids.item(-1, 0)
+        return internal_id
 
     def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
         dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
@@ -331,9 +339,9 @@ class GMWObjectImporter(ObjectImporter):
         well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
             "wellConstructionDate", {}
         )
-        intern_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", None))
+        internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", None))
         self.gmw_obj = GMW.objects.update_or_create(
-            intern_id=intern_id,
+            internal_id=internal_id,
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
