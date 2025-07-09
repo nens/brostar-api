@@ -166,9 +166,9 @@ class GMWConstruction(CamelModel):
     well_construction_date: str
     delivered_location: str
     horizontal_positioning_method: str
-    local_vertical_reference_point: str
-    offset: float
-    vertical_datum: str
+    local_vertical_reference_point: str = "NAP"
+    offset: float = 0.000
+    vertical_datum: str = "NAP"
     ground_level_position: float | None = None
     ground_level_positioning_method: str
     monitoring_tubes: list["MonitoringTube"]
