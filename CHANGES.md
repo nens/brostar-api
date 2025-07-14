@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.32 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.31 (2025-07-14)
 
 -   Enhancement: FRD templates have been improved
