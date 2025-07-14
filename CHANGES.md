@@ -5,6 +5,8 @@
 -   Enhancement: FRD templates have been improved
 -   Enhancement: Added general BRO information to the docs
 -   Bugfix: Added retry max to uploadtask
+-   GAR: Changed Excel formatting
+-   Documentation: more information to be found, more pages.
 
 ## 1.30 (2025-06-20)
 
