@@ -2,9 +2,7 @@
 
 ## 1.32 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: retry count
 
 ## 1.31 (2025-07-14)
 
