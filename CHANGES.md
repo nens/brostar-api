@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.32 (unreleased)
+## 1.32 (2025-07-17)
 
 -   Hotfix: retry count
 
