@@ -2,9 +2,7 @@
 
 ## 1.33 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: retry check v2
 
 ## 1.32 (2025-07-17)
 
