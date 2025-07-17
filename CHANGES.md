@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.33 (unreleased)
+## 1.33 (2025-07-17)
 
 -   Hotfix: retry check v2
 
