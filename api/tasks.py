@@ -130,7 +130,7 @@ def check_delivery_status_task(context):
     delivery_status = "AANGELEVERD"
     retry_count = 0
     bro_id = None
-    while delivery_status != "DOORGELEVERD" or retry_count > 4:
+    while delivery_status != "DOORGELEVERD" or retry_count < 4:
         delivery_info = utils.check_delivery_status(
             context["delivery_url"], context["bro_username"], context["bro_password"]
         )
