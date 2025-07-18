@@ -159,6 +159,7 @@ class GMWConstruction(CamelModel):
     initial_function: str
     number_of_monitoring_tubes: int
     ground_level_stable: str
+    nitg_code: str | None = None
     well_stability: str | None = None
     owner: str | None = None
     maintenance_responsible_party: str | None = None

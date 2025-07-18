@@ -2,9 +2,8 @@
 
 ## 1.34 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Add NITG-Code to GMWConstruction
+-   Correct TypeHelper for GLD_StartRegistration
 
 ## 1.33 (2025-07-17)
 

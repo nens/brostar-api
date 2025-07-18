@@ -28,7 +28,7 @@ RegistrationTypeOptions = Literal[
     "GMN_TubeReference",
     "GMN_Closure",
     "GAR",
-    "GLD_Startregistration",
+    "GLD_StartRegistration",
     "GLD_Addition",
     "GLD_Closure",
 ]
