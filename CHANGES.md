@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.35 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.34 (2025-07-30)
 
 -   Add NITG-Code to GMWConstruction
