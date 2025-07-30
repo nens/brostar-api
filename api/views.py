@@ -392,7 +392,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         if upload_task.status in ["COMPLETED", "FAILED"]:
             return Response(
                 {
-                    "message": f"The upload task has allready finished with status: {upload_task.status}. Check the detail for more info."
+                    "message": f"The upload task has already finished with status: {upload_task.status}. Check the detail for more info."
                 },
                 status=status.HTTP_303_SEE_OTHER,
             )

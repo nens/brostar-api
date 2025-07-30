@@ -29,9 +29,10 @@
             {% for monitoringtube in sourcedocs_data.monitoringTubes %}
             <ns:monitoringTube>
                 <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-                {% if monitoringtube.variableDiameter %}
-                <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
+                {% if monitoringtube.tubeTopDiameter %}
+                <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
                 {% endif %}
+                <ns:variableDiameter>ja</ns:variableDiameter>
                 <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
                 <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
                 {% if monitoringtube.tubeMaterial %}
@@ -42,9 +43,6 @@
                 <ns:glue codeSpace="urn:bro:gmw:Glue">{{ monitoringtube.glue }}</ns:glue>
                 {% endif %}
                 <ns:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns:plainTubePartLength>
-                {% if monitoringtube.tubeTopDiameter %}
-                <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
-                {% endif %}
             </ns:monitoringTube>
             {% endfor %}
         </ns:GMW_Lengthening>
