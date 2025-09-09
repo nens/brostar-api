@@ -47,7 +47,7 @@ def test_monitoring_tube_lengthening_defaults():
         tube_top_positioning_method="0tot2cmwaterpassing",
         plain_tube_part_length=5.0,
     )
-    assert tube.variable_diameter == "ja"
+    assert tube.variable_diameter is None
     assert tube.model_dump(by_alias=True)["tubeNumber"] == 1
 
 

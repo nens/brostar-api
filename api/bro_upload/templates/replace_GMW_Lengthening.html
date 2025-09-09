@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ns:replaceRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
   xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0" xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
   xmlns:ns3="http://www.opengis.net/gml/3.2">
@@ -32,7 +33,9 @@
         {% if monitoringtube.tubeTopDiameter %}
         <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
         {% endif %}
-        <ns:variableDiameter>ja</ns:variableDiameter>
+        {% if monitoringtube.variableDiameter %}
+        <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
+        {% endif %}
         <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
         <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
         {% if monitoringtube.tubeMaterial %}
