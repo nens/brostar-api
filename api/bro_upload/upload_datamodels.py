@@ -209,7 +209,7 @@ class GMWInsertion(GMWEvent):
 
 class MonitoringTubeLengthening(CamelModel):
     tube_number: int
-    variable_diameter: str = "ja"
+    variable_diameter: str | None = None
     tube_top_diameter: int | None = None
     tube_top_position: float
     tube_top_positioning_method: str

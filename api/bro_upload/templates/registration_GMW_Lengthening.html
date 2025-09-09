@@ -32,7 +32,9 @@
                 {% if monitoringtube.tubeTopDiameter %}
                 <ns:tubeTopDiameter uom="mm">{{ monitoringtube.tubeTopDiameter }}</ns:tubeTopDiameter>
                 {% endif %}
-                <ns:variableDiameter>ja</ns:variableDiameter>
+                {% if monitoringtube.variableDiameter %}
+                <ns:variableDiameter>{{ monitoringtube.variableDiameter }}</ns:variableDiameter>
+                {% endif %}
                 <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
                 <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
                 {% if monitoringtube.tubeMaterial %}
