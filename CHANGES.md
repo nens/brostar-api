@@ -2,9 +2,8 @@
 
 ## 1.37 (unreleased)
 
-
-- Bugfix: status check endpoint on completed task
-
+-   Bugfix: status check endpoint on completed task
+-   Add cleanup task for uploadtasks model
 
 ## 1.36 (2025-09-10)
 
