@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.36 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.35 (2025-09-10)
 
 -   Change variable diameter in templates
