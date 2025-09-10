@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.35 (unreleased)
+## 1.35 (2025-09-10)
 
 -   Change variable diameter in templates
 -   Add XML version to templates
