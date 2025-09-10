@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import zipfile
@@ -148,7 +149,7 @@ def add_xml_to_upload(
     bro_password: str,
 ) -> str:
     """Add the XML to the upload request, which is step 2 of 3 in the upload process."""
-
+    datetime_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     upload_url = f"{upload_url}/brondocumenten"
 
     try:
@@ -157,7 +158,7 @@ def add_xml_to_upload(
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
             data=xml_file,
-            params={"filename": "BROStar request"},
+            params={"filename": f"{datetime_str}_BROSTAR_request.xml"},
             timeout=60,
         )
         r.raise_for_status()

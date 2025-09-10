@@ -2,9 +2,7 @@
 
 ## 1.36 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Hotfix: more neat filename and extension
 
 ## 1.35 (2025-09-10)
 
