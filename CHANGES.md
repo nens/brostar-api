@@ -2,9 +2,8 @@
 
 ## 1.35 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Change variable diameter in templates
+-   Add XML version to templates
 
 ## 1.34 (2025-07-30)
 
