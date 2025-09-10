@@ -3,7 +3,7 @@
 ## 1.37 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix: status check endpoint on completed task
 
 
 ## 1.36 (2025-09-10)
