@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.37 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.36 (2025-09-10)
 
 -   Hotfix: more neat filename and extension
