@@ -419,6 +419,10 @@ def test_uploadtask_check_status(
     response = api_client.post(url)
     assert response.status_code == status.HTTP_200_OK
 
+    # Set status to unfinished again, as it was updated in the previous call.
+    upload_task_instance.status = "UNFINISHED"
+    upload_task_instance.save()
+
     # Check 200 response for status = UNFINISHED -> UNFINISHED
     mock_check_delivery_status.return_value = {
         "brondocuments": [
