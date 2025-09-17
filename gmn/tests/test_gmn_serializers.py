@@ -29,6 +29,7 @@ def test_gmn_deserialization(gmn, organisation):
     input_data = {
         "data_owner": organisation.uuid,
         "bro_id": "GMN123456789",
+        "internal_id": "TEST_GMN",
         "delivery_accountable_party": "12345678",
         "quality_regime": "IMBRO",
         "name": "test",

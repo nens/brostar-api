@@ -27,6 +27,7 @@ from api.bro_upload.upload_datamodels import (
     UploadTaskMetadata,
 )
 from api.choices import registration_type_datamodel_mapping
+from api.utils import drop_empty_strings
 from brostar_api import __version__
 
 
@@ -336,7 +337,13 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     )
                 # Else, just a pydantic validation is required
                 else:
-                    validation_class(**serializer.validated_data["sourcedocument_data"])
+                    sourcedocument_data = drop_empty_strings(
+                        serializer.validated_data["sourcedocument_data"]
+                    )
+                    validation_class(**sourcedocument_data)
+                    serializer.validated_data["sourcedocument_data"] = (
+                        sourcedocument_data
+                    )
 
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
