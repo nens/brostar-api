@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.38 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.37 (2025-09-17)
 
 -   Bugfix: status check endpoint on completed task
