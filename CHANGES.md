@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.37 (unreleased)
+## 1.37 (2025-09-17)
 
 -   Bugfix: status check endpoint on completed task
 -   Add cleanup task for uploadtasks model
