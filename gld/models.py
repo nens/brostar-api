@@ -13,6 +13,12 @@ class GLD(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    internal_id = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text="Alleen beschikbaar voor de eigenaar van de put.",
+    )
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     linked_gmns = JSONField(
