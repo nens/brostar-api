@@ -220,6 +220,62 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
 
 
 @pytest.mark.django_db
+def test_uploadtask_view_post_valid_data2(api_client, user, userprofile, organisation):
+    """Test posting on the uploadtask enpoint
+    Note: userprofile needs to be used as fixture for this test
+    """
+    api_client.force_authenticate(user=user)
+    url = "/api/uploadtasks/"
+
+    data = {
+        "bro_domain": "GMN",
+        "project_number": "1",
+        "registration_type": "GMW_Lengthening",
+        "request_type": "registration",
+        "metadata": {
+            "broId": "GMW000000084957",
+            "projectNumber": "1255",
+            "qualityRegime": "IMBRO",
+            "requestReference": "BROSTAR_Request",
+            "deliveryAccountableParty": "27376655",
+        },
+        "sourcedocument_data": {
+            "eventDate": "2025-08-12",
+            "monitoringTubes": [
+                {
+                    "glue": "geen",
+                    "tubeNumber": "1",
+                    "tubeMaterial": "pvc",
+                    "tubeTopDiameter": "",
+                    "tubeTopPosition": "0.700",
+                    "variableDiameter": "",
+                    "plainTubePartLength": "1.3",
+                    "tubeTopPositioningMethod": "waterpassing0tot2cm",
+                }
+            ],
+        },
+        "data_owner": organisation.uuid,
+    }
+
+    data["sourcedocument_data"]["monitoringTubes"][0].pop("tubeTopDiameter")
+    data["sourcedocument_data"]["monitoringTubes"][0].pop("variableDiameter")
+
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    # Additional check to assert the returned data
+    response_data = response.json()
+    assert response_data["bro_domain"] == data["bro_domain"]
+    assert response_data["project_number"] == data["project_number"]
+    assert response_data["registration_type"] == data["registration_type"]
+    assert response_data["request_type"] == data["request_type"]
+    assert response_data["metadata"] == data["metadata"]
+    assert response_data["sourcedocument_data"] == data["sourcedocument_data"]
+    assert response_data["data_owner"] == str(organisation.uuid)
+
+
+@pytest.mark.django_db
 def test_uploadtask_view_post_valid_gld_addition_data(
     api_client, user, userprofile, organisation
 ):
@@ -359,6 +415,7 @@ def test_uploadtask_check_status(
         metadata={},
         sourcedocument_data={},
         data_owner=organisation,
+        bro_id="GMN1234",
         status="PENDING",
     )
 
@@ -372,7 +429,7 @@ def test_uploadtask_check_status(
 
     # SHOULD NEVER REMAIN ON PENDING AS POST SAVE SHOULD THEN SET IT TO PROCESSING AND START A TASK.
 
-    # Check 303 response for status = COMPLETED
+    # Check 303 response for status = COMPLETED, also triggerrs signal, so should include valid data.
     upload_task_instance.status = "COMPLETED"
     upload_task_instance.save()
 

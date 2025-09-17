@@ -4,6 +4,12 @@
 
 -   Bugfix: status check endpoint on completed task
 -   Add cleanup task for uploadtasks model
+-   Bugfix: handle empty strings to None (for other sourcedoc info then GLDAddition)
+-   Bugfix: handle GMW creation after succesful uploadtask
+-   Bugfix: redo creation of GMW on succesful upload
+-   Enhancement: add creation of GLD on succesful upload
+-   Enhancement: add creation of GMN on succesful upload
+-   Enhancement: add creation of FRD on succesful upload
 
 ## 1.36 (2025-09-10)
 

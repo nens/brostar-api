@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.db.models import JSONField
 
 
 class FRD(models.Model):
@@ -12,7 +13,16 @@ class FRD(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    internal_id = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        help_text="Alleen beschikbaar voor de eigenaar van de put.",
+    )
     bro_id = models.CharField(max_length=18)
+    linked_gmns = JSONField(
+        "Gmns", default=list, blank=False
+    )  # In GLD XMLs these are actually returned.
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)
