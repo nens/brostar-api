@@ -2,9 +2,7 @@
 
 ## 1.38 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: cleanup task
 
 ## 1.37 (2025-09-17)
 
