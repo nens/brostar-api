@@ -11,7 +11,6 @@ from api.bro_upload.gld_bulk_upload import GLDBulkUploader
 from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import (
     XMLGenerator,
-    XMLValidationError,
 )
 
 logger = logging.getLogger("general")
@@ -72,8 +71,8 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
-        logger.exception(XMLValidationError("Errors while validating the XML file"))
-        return
+        logger.exception("Errors while validating the XML file")
+        return None
 
     upload_task_instance.progress = 50.0
     upload_task_instance.log = "XML is valid"
@@ -117,8 +116,8 @@ def deliver_xml_file_task(context):
     return context
 
 
-@shared_task(queue="upload", max_retries=5, retry_backoff=5)
-def check_delivery_status_task(context):
+@shared_task(bind=True, queue="upload", max_retries=10, retry_backoff=5)
+def check_delivery_status_task(self, context):
     if context is None:
         return None
 
@@ -146,6 +145,14 @@ def check_delivery_status_task(context):
         upload_task_instance.progress = 100.0
         upload_task_instance.save()
         return context
+
+    # If not completed and not errors, retry the task
+    try:
+        raise self.retry()
+    except self.MaxRetriesExceededError:
+        upload_task_instance.status = "UNFINISHED"
+        upload_task_instance.progress = 95.0
+        upload_task_instance.save()
 
 
 @shared_task(queue="default")
