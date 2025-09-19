@@ -142,6 +142,7 @@ def check_delivery_status_task(self, context):
         bro_id = delivery_info["brondocuments"][0]["broId"]
         upload_task_instance.bro_id = bro_id
         upload_task_instance.status = "COMPLETED"
+        upload_task_instance.log = f"Upload geslaagd: {bro_id}"
         upload_task_instance.progress = 100.0
         upload_task_instance.save()
         return context
