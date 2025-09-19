@@ -43,7 +43,7 @@ services:
     command: >
       uv run celery -A brostar_api worker
       -Q default
-      --concurrency=2
+      --concurrency=4
       --max-memory-per-child=100000
       --loglevel=INFO
       --hostname=default@%h
@@ -68,8 +68,8 @@ services:
     command: >
       uv run celery -A brostar_api worker
       -Q upload
-      --concurrency=1
-      --max-memory-per-child=200000
+      --concurrency=4
+      --max-memory-per-child=250000
       --loglevel=INFO
       --hostname=upload@%h
     depends_on:

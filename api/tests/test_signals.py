@@ -2,11 +2,11 @@
 import pytest
 
 from api.models import UploadTask
-from api.tests.fixtures import organisation  # noqa: F401
+from api.tests.fixtures import gmw, organisation  # noqa: F401
 from frd.models import FRD
 from gld.models import GLD  # Example model to check side effects
 from gmn.models import GMN
-from gmw.models import GMW, MonitoringTube  # Example model to check side effects
+from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
 
 from ..models import Organisation
 
@@ -80,7 +80,7 @@ def test_post_save_uploadtask_triggers_create_objects_gmw(organisation: Organisa
     #    For example, if create_objects makes DB entries:
     assert GMW.objects.filter(bro_id="BRO123").exists()
 
-    gmw = GMW.objects.get(bro_id="BRO123")
+    gmw = GMW.objects.get(bro_id="BRO123")  # noqa: F811
     assert gmw.well_construction_date == "2025-09-02"
     assert gmw.nitg_code == "B12A1234"
     assert gmw.internal_id == "test_upload"
@@ -212,3 +212,60 @@ def test_post_save_uploadtask_triggers_create_objects_frd(organisation: Organisa
 
     frd = FRD.objects.get(bro_id="BRO123")
     assert frd.internal_id == "test_upload"
+
+
+EVENT_TYPES = [
+    "GMW_Positions",
+    "GMW_PositionsMeasuring",
+    "GMW_WellHeadProtector",
+    "GMW_Owner",
+    "GMW_Shift",
+    "GMW_GroundLevel",
+    "GMW_GroundLevelMeasuring",
+    "GMW_Insertion",
+    "GMW_TubeStatus",
+    "GMW_Lengthening",
+    "GMW_Shortening",
+    "GMW_ElectrodeStatus",
+    "GMW_Maintainer",
+]
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_create_objects_gmw_event(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """
+    Test that saving an UploadTask with status COMPLETED calls create_objects.
+    We don’t mock, so we directly check the side effects on the database.
+    """
+    # 2. Create a completed UploadTask
+    for event in EVENT_TYPES:
+        UploadTask.objects.create(
+            data_owner=organisation,
+            bro_domain="GMW",
+            registration_type=event,
+            request_type="registration",
+            status="COMPLETED",
+            bro_id=gmw.bro_id,
+            metadata={
+                "qualityRegime": "IMBRO/A",
+                "requestReference": "BROSTAR_Request",
+                "deliveryAccountableParty": "50616641",
+            },
+            sourcedocument_data={
+                "objectIdAccountableParty": "test_upload",
+                "eventDate": "2025-09-10",
+                "gmwBroId": "BRO123",
+                "tubeNumber": 1,
+                "linkedGmns": ["GMN00000123456"],
+            },
+        )
+
+        # 3. Since post_save signal should have fired,
+        #    we check whether create_objects did its work.
+        #    Here you should assert on the *real side effects* of create_objects.
+        #    For example, if create_objects makes DB entries:
+        assert GMW.objects.filter(bro_id=gmw.bro_id).exists()
+        assert Event.objects.filter(gmw=gmw, event_name=event).exists()

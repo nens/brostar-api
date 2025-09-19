@@ -3,6 +3,8 @@
 ## 1.38 (unreleased)
 
 -   Bugfix: cleanup task
+-   Performance: add more concurrency to the celery instance
+-   Performance: use celery retries instead of sleep
 
 ## 1.37 (2025-09-17)
 

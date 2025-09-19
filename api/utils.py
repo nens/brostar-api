@@ -1,9 +1,10 @@
 import logging
+from functools import partial
 
 from frd.models import FRD
 from gld.models import GLD
 from gmn.models import GMN
-from gmw.models import GMW, MonitoringTube
+from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,31 @@ def create_gmw(
     return
 
 
+def create_gmw_event(
+    *,
+    bro_id: str,
+    event_type: str,
+    metadata: dict,
+    sourcedocument_data: dict,
+    data_owner: str,
+) -> None:
+    """Generic factory for creating GMW events."""
+    try:
+        gmw = GMW.objects.get(bro_id=bro_id, data_owner=data_owner)
+    except GMW.DoesNotExist:
+        logger.error(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
+        return
+
+    Event.objects.create(
+        gmw=gmw,
+        event_name=event_type,
+        event_date=sourcedocument_data.get("eventDate"),
+        metadata=metadata,
+        sourcedocument_data=sourcedocument_data,
+        data_owner=data_owner,
+    )
+
+
 def find_linked_gmns(gmn_bro_ids: list[str] | str) -> list[GMN]:
     if isinstance(gmn_bro_ids, str):
         gmn_bro_ids = [gmn_bro_ids]
@@ -134,12 +160,35 @@ def create_frd(
     return
 
 
+# Build mapping with pre-bound event types
 CREATE_FUNCTION_MAPPING = {
     "GMW_Construction": create_gmw,
+    "GMW_Positions": partial(create_gmw_event, event_type="GMW_Positions"),
+    "GMW_PositionsMeasuring": partial(
+        create_gmw_event, event_type="GMW_PositionsMeasuring"
+    ),
+    "GMW_WellHeadProtector": partial(
+        create_gmw_event, event_type="GMW_WellHeadProtector"
+    ),
+    "GMW_Owner": partial(create_gmw_event, event_type="GMW_Owner"),
+    "GMW_Shift": partial(create_gmw_event, event_type="GMW_Shift"),
+    "GMW_GroundLevel": partial(create_gmw_event, event_type="GMW_GroundLevel"),
+    "GMW_GroundLevelMeasuring": partial(
+        create_gmw_event, event_type="GMW_GroundLevelMeasuring"
+    ),
+    "GMW_Insertion": partial(create_gmw_event, event_type="GMW_Insertion"),
+    "GMW_TubeStatus": partial(create_gmw_event, event_type="GMW_TubeStatus"),
+    "GMW_Lengthening": partial(create_gmw_event, event_type="GMW_Lengthening"),
+    "GMW_Shortening": partial(create_gmw_event, event_type="GMW_Shortening"),
+    "GMW_ElectrodeStatus": partial(create_gmw_event, event_type="GMW_ElectrodeStatus"),
+    "GMW_Maintainer": partial(create_gmw_event, event_type="GMW_Maintainer"),
+    # "GMW_Removal": create_gmw_removal,
     "GLD_StartRegistration": create_gld,
+    # "GLD_Addition": create_gld_addition,
     "GMN_StartRegistration": create_gmn,
+    # "GMN_MeasuringPoint": create_gmn_measuringpoint,
     "FRD_StartRegistration": create_frd,
-    # "GAR": create_gar,                    # TODO: implement GAR creation
+    # "GAR": create_gar,  # TODO
 }
 
 
@@ -152,7 +201,10 @@ def create_objects(
 ) -> None:
     try:
         CREATE_FUNCTION_MAPPING[registration_type](
-            bro_id, metadata, sourcedocument_data, data_owner
+            bro_id=bro_id,
+            metadata=metadata,
+            sourcedocument_data=sourcedocument_data,
+            data_owner=data_owner,
         )
     except KeyError:
         logger.warning(

@@ -1,5 +1,4 @@
 import logging
-import time
 from logging import getLogger
 
 from celery import chain, shared_task
@@ -11,7 +10,6 @@ from api.bro_upload.gar_bulk_upload import GARBulkUploader
 from api.bro_upload.gld_bulk_upload import GLDBulkUploader
 from api.bro_upload.gmn_bulk_upload import GMNBulkUploader
 from api.bro_upload.object_upload import (
-    DeliveryError,
     XMLGenerator,
     XMLValidationError,
 )
@@ -119,7 +117,7 @@ def deliver_xml_file_task(context):
     return context
 
 
-@shared_task(queue="upload")
+@shared_task(queue="upload", max_retries=5, retry_backoff=5)
 def check_delivery_status_task(context):
     if context is None:
         return None
@@ -127,51 +125,27 @@ def check_delivery_status_task(context):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
     )
-    delivery_status = "AANGELEVERD"
-    retry_count = 0
-    bro_id = None
-    while delivery_status != "DOORGELEVERD" and retry_count < 4:
-        delivery_info = utils.check_delivery_status(
-            context["delivery_url"], context["bro_username"], context["bro_password"]
-        )
-
-        errors = delivery_info["brondocuments"][0]["errors"]
-
-        if errors:
-            logger.exception(
-                DeliveryError(f"Errors found after delivering the XML file: {errors}")
-            )
-            upload_task_instance.progress = 80
-            upload_task_instance.status = "FAILED"
-            upload_task_instance.log = (
-                f"Errors found after delivering the XML file: {errors}"
-            )
-            upload_task_instance.save()
-            return
-
-        delivery_status = delivery_info["status"]
-        delivery_brondocument_status = delivery_info["brondocuments"][0]["status"]
-
-        if (
-            delivery_status == "DOORGELEVERD"
-            and delivery_brondocument_status == "OPGENOMEN_LVBRO"
-        ):
-            # Set BRO id to self to enable an import task based on the bro id. This keeps the data up2date in the api.
-            bro_id = delivery_info["brondocuments"][0]["broId"]
-            break
-
-        time.sleep(10)
-        retry_count += 1
-
-    upload_task_instance.bro_id = bro_id
-    upload_task_instance.progress = 100.0 if bro_id else 95.0
-    upload_task_instance.status = "COMPLETED" if bro_id else "UNFINISHED"
-    upload_task_instance.log = (
-        f"Upload geslaagd: {bro_id}"
-        if bro_id
-        else "Na 4 keer (40s) een controle te hebben gedaan was de status in de BRO nog niet 'DOORGELEVERD'. Kijk handmatig."
+    delivery_info = utils.check_delivery_status(
+        context["delivery_url"], context["bro_username"], context["bro_password"]
     )
-    upload_task_instance.save()
+    errors = delivery_info["brondocuments"][0]["errors"]
+
+    if errors:
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = f"Errors: {errors}"
+        upload_task_instance.save()
+        return
+
+    if (
+        delivery_info["status"] == "DOORGELEVERD"
+        and delivery_info["brondocuments"][0]["status"] == "OPGENOMEN_LVBRO"
+    ):
+        bro_id = delivery_info["brondocuments"][0]["broId"]
+        upload_task_instance.bro_id = bro_id
+        upload_task_instance.status = "COMPLETED"
+        upload_task_instance.progress = 100.0
+        upload_task_instance.save()
+        return context
 
 
 @shared_task(queue="default")
