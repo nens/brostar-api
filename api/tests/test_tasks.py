@@ -69,7 +69,6 @@ def test_deliver_xml_file_task(
 
 @mock.patch("api.tasks.api_models.UploadTask.objects.get")
 @mock.patch("api.tasks.utils.check_delivery_status")
-@mock.patch("api.tasks.time.sleep", return_value=None)  # avoid real delays
 def test_check_delivery_status_task_delivered(mock_sleep, mock_check_status, mock_get):
     mock_instance = mock.Mock()
     mock_get.return_value = mock_instance
