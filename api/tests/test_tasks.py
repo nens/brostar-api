@@ -91,3 +91,46 @@ def test_check_delivery_status_task_delivered(mock_check_status, mock_get):
     assert mock_instance.status == "COMPLETED"
     assert mock_instance.bro_id == "GMW00000083478"
     assert mock_instance.save.called
+
+
+@mock.patch("api.tasks.api_models.UploadTask.objects.get")
+@mock.patch("api.tasks.utils.check_delivery_status")
+def test_check_delivery_status_task_retries(mock_check_status, mock_get):
+    mock_instance = mock.Mock()
+    mock_get.return_value = mock_instance
+
+    # Simulate delivery status not completed (no errors)
+    mock_check_status.return_value = {
+        "status": "PROCESSING",
+        "brondocuments": [{"status": "PROCESSING", "errors": []}],
+    }
+
+    # Patch self.retry to simulate 4 retries, then succeed
+    retry_call_count = {"count": 0}
+
+    def fake_retry(*args, **kwargs):
+        retry_call_count["count"] += 1
+        # Simulate MaxRetriesExceededError on 4th retry
+        if retry_call_count["count"] >= 4:
+            raise check_delivery_status_task.MaxRetriesExceededError()
+        raise check_delivery_status_task.retry()  # Will normally retry
+
+    # Patch the retry method of the task
+    with mock.patch.object(check_delivery_status_task, "retry", side_effect=fake_retry):
+        context = {
+            "upload_task_instance_uuid": "uuid",
+            "delivery_url": "url",
+            "bro_username": "u",
+            "bro_password": "p",
+        }
+
+        # Run the task; it should go through 4 retries
+        check_delivery_status_task(context)
+
+    # Check that retry was called 4 times
+    assert retry_call_count["count"] == 4
+
+    # Check that the task was marked UNFINISHED after exceeding retries
+    assert mock_instance.status == "UNFINISHED"
+    assert mock_instance.progress == 95.0
+    assert mock_instance.save.called
