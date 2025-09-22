@@ -3,6 +3,7 @@
 ## 1.38 (unreleased)
 
 -   Bugfix: cleanup task
+-   Bugfix: correctly handle check_status on failed deliveries
 -   Performance: add more concurrency to the celery instance
 -   Performance: use celery retries instead of sleep
 

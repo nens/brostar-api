@@ -417,13 +417,15 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             delivery_info = utils.check_delivery_status(
                 delivery_url, bro_username, bro_password
             )
-            errors = delivery_info["brondocuments"][0]["errors"]
+            errors = delivery_info["brondocuments"][0].get("errors", [])
 
             # Check restuls in FAILED
-            if errors:
+            if len(errors) > 0:
                 upload_task.bro_errors = errors
                 upload_task.log = "The delivery failed"
                 upload_task.status = "FAILED"
+                upload_task.save()
+
                 return Response(
                     {
                         "message": "The upload failed. Check the detail page for more info."

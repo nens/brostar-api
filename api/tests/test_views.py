@@ -426,6 +426,7 @@ def test_uploadtask_check_status(
     # Check 303 response for status = PROCESSING
     response = api_client.post(url)
     assert response.status_code == status.HTTP_303_SEE_OTHER
+    assert upload_task_instance.log == "Starting task."
 
     # SHOULD NEVER REMAIN ON PENDING AS POST SAVE SHOULD THEN SET IT TO PROCESSING AND START A TASK.
 
@@ -443,23 +444,87 @@ def test_uploadtask_check_status(
     response = api_client.post(url)
     assert response.status_code == status.HTTP_303_SEE_OTHER
 
-    # Check 303 response for status = UNFINISHED -> FAILED
-    upload_task_instance.status = "UNFINISHED"
-    upload_task_instance.save()
 
+@pytest.mark.django_db
+@patch("api.bro_upload.utils.check_delivery_status")
+def test_uploadtask_check_status_unfinished_failed(
+    mock_check_delivery_status, api_client, user, userprofile, organisation
+):
+    """Test post on uploadtasks/check-status endpoint
+    Note: userprofile needs to be used as fixture for this test
+    """
+    api_client.force_authenticate(user=user)
+
+    upload_task_instance = api_models.UploadTask.objects.create(
+        bro_domain="GMN",
+        project_number="1",
+        registration_type="GMN_StartRegistration",
+        request_type="registration",
+        metadata={},
+        sourcedocument_data={},
+        data_owner=organisation,
+        bro_id="GMN1234",
+        status="UNFINISHED",
+        progress=95.0,
+        log="Check manually",
+    )
+
+    url = reverse(
+        "api:uploadtask-check-status", kwargs={"uuid": upload_task_instance.uuid}
+    )
+
+    # Check 303 response for status = UNFINISHED -> FAILED
     mock_check_delivery_status.return_value = {
         "brondocuments": [
             {
                 "errors": ["ERROR!!!"],
-                "status": "OPGENOMEN_LVBRO",
+                "status": "NIET-VALIDE",
                 "broId": "GMN1234",
             }
         ],
-        "status": "DOORGELEVERD",
+        "status": "FAILED",
     }
 
     response = api_client.post(url)
     assert response.status_code == status.HTTP_303_SEE_OTHER
+    assert (
+        response.data["message"]
+        == "The upload failed. Check the detail page for more info."
+    )
+
+    upload_task_instance.refresh_from_db()
+    assert upload_task_instance.status == "FAILED"
+    assert upload_task_instance.log == "The delivery failed"
+    assert upload_task_instance.bro_errors == "['ERROR!!!']"
+
+
+@pytest.mark.django_db
+@patch("api.bro_upload.utils.check_delivery_status")
+def test_uploadtask_check_status_unfinished_complete(
+    mock_check_delivery_status, api_client, user, userprofile, organisation
+):
+    """Test post on uploadtasks/check-status endpoint
+    Note: userprofile needs to be used as fixture for this test
+    """
+    api_client.force_authenticate(user=user)
+
+    upload_task_instance = api_models.UploadTask.objects.create(
+        bro_domain="GMN",
+        project_number="1",
+        registration_type="GMN_StartRegistration",
+        request_type="registration",
+        metadata={},
+        sourcedocument_data={},
+        data_owner=organisation,
+        bro_id="GMN1234",
+        status="UNFINISHED",
+        progress=95.0,
+        log="Check manually",
+    )
+
+    url = reverse(
+        "api:uploadtask-check-status", kwargs={"uuid": upload_task_instance.uuid}
+    )
 
     # Check 200 response for status = UNFINISHED -> FINISHED
     mock_check_delivery_status.return_value = {
@@ -475,6 +540,11 @@ def test_uploadtask_check_status(
 
     response = api_client.post(url)
     assert response.status_code == status.HTTP_200_OK
+
+    upload_task_instance.refresh_from_db()
+    assert upload_task_instance.status == "COMPLETED"
+    assert upload_task_instance.log == f"Upload geslaagd: {upload_task_instance.bro_id}"
+    assert upload_task_instance.progress == 100.00
 
     # Set status to unfinished again, as it was updated in the previous call.
     upload_task_instance.status = "UNFINISHED"

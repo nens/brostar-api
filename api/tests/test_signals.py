@@ -269,3 +269,36 @@ def test_post_save_uploadtask_triggers_create_objects_gmw_event(
         #    For example, if create_objects makes DB entries:
         assert GMW.objects.filter(bro_id=gmw.bro_id).exists()
         assert Event.objects.filter(gmw=gmw, event_name=event).exists()
+
+
+@pytest.mark.django_db
+def test_pre_save_uploadtask_triggers_insert(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    task = UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMW",
+        registration_type="GMW_WellHeadProtector",
+        request_type="registration",
+        status="FAILED",
+        bro_id=gmw.bro_id,
+        metadata={
+            "qualityRegime": "IMBRO/A",
+            "requestReference": "BROSTAR_Request",
+            "deliveryAccountableParty": "50616641",
+        },
+        sourcedocument_data={
+            "objectIdAccountableParty": "test_upload",
+            "eventDate": "2025-09-10",
+            "gmwBroId": "BRO123",
+            "tubeNumber": 1,
+            "linkedGmns": ["GMN00000123456"],
+        },
+        bro_errors="Op 2025-01 gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis 2025-02 liggen.",
+    )
+
+    assert task.request_type == "insert"
+    assert task.bro_errors == ""
+    assert task.status == "PROCESSING"
+    assert task.metadata.get("correctionReason") == "eigenCorrectie"
