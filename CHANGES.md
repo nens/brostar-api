@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.38 (unreleased)
+## 1.38 (2025-09-22)
 
 -   Bugfix: cleanup task
 -   Bugfix: correctly handle check_status on failed deliveries
