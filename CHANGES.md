@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.39 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.38 (2025-09-22)
 
 -   Bugfix: cleanup task
