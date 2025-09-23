@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.40 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.39 (2025-09-23)
 
 -   Bugfix: geo_ohm_cables null on create signal
