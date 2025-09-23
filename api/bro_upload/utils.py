@@ -101,7 +101,14 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
 def validate_xml_file(
     xml_file: str, bro_username: str, bro_password: str, project_number: str
 ) -> dict[str, Any]:
-    """Validates a XML file with the Bronhouderportaal api."""
+    """
+    Validates a XML file with the Bronhouderportaal api.
+
+    If invalid should return:
+    - status
+    - errors
+
+    """
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
 
     try:
@@ -113,12 +120,30 @@ def validate_xml_file(
             timeout=60,
         )
         r.raise_for_status()
-
         return r.json()
 
-    except requests.RequestException as e:
-        logger.exception(e)
-        raise RuntimeError(f"Validate xml error: {e}")
+    except Exception as e:
+        status = "NIET-VALIDE"
+        if r.status_code == 401:
+            return {
+                "status": status,
+                "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
+            }
+        elif r.status_code == 403:
+            return {
+                "status": status,
+                "errors": f"Het gebruikte token heeft niet de juiste rechten voor project {project_number}",
+            }
+        elif r.status_code > 499:
+            return {
+                "status": status,
+                "errors": "De BRO API is momenteel niet beschikbaar. Neem contact op met servicedesk@nelen-schuurmans.nl",
+            }
+        else:
+            return {
+                "status": status,
+                "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
+            }
 
 
 def create_upload_url(bro_username: str, bro_password: str, project_number: str) -> str:

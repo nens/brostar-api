@@ -1,6 +1,5 @@
 import datetime
 import logging
-import time
 import uuid
 
 import polars as pl
@@ -129,7 +128,10 @@ class GLDBulkUploader:
         )
         current_measurements_df = (
             current_measurements_df.with_columns(
-                pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z")
+                pl.col("time").dt.strftime("%Y-%m-%dT%H:%M:%S%:z").alias("time"),
+                pl.col("statusQualityControl")
+                .fill_null("onbekend")
+                .alias("statusQualityControl"),
             )
             .sort("time")
             .drop_nulls(subset="time")
@@ -219,29 +221,14 @@ class GLDBulkUploader:
             )
 
             upload_task = self.deliver_one_addition(bro_id, current_measurements_df)
-
-            time.sleep(10)
             upload_task.refresh_from_db()
 
-            # Wait while the GLD_Addition is being processed
-            if upload_task.status in ["COMPLETED", "FAILED"]:
-                self.bulk_upload_instance.progress += progress
-
-            elif upload_task.status == "FAILED":
-                self.bulk_upload_instance.status = "FAILED"
-                self.bulk_upload_instance.log += f"Upload logging: {upload_task.log}.\n"
-
-            else:
-                self.bulk_upload_instance.status = "UNFINISHED"
-                self.bulk_upload_instance.log += (
-                    "After 10 seconds the upload is not yet finished."
-                )
-
-            self.bulk_upload_instance.save()
+            self.bulk_upload_instance.progress += progress
 
         if self.bulk_upload_instance.progress >= 100:
             self.bulk_upload_instance.status = "COMPLETED"
-            self.bulk_upload_instance.save()
+
+        self.bulk_upload_instance.save()
 
 
 def _convert_resulttime_to_date(result_time: str) -> str:

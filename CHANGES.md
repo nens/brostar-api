@@ -2,9 +2,7 @@
 
 ## 1.41 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: handle sentry errors.
 
 ## 1.40 (2025-09-23)
 
