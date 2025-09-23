@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.40 (unreleased)
+## 1.40 (2025-09-23)
 
 -   Bugfix: update or create instead
 -   Enhancement: add standardized location to GMW creation
