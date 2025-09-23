@@ -44,7 +44,7 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
 
     except Exception as e:
         logger.exception(RuntimeError(f"Error generating XML file: {e}"))
-        return
+        return None
 
 
 @shared_task(queue="upload")
@@ -96,12 +96,19 @@ def deliver_xml_file_task(context):
         bro_password,
         upload_task_instance.project_number,
     )
-    utils.add_xml_to_upload(
+    succes = utils.add_xml_to_upload(
         context["xml_file"],
         upload_url,
         bro_username,
         bro_password,
     )
+    if not succes:
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = "Error adding XML to upload"
+        upload_task_instance.save()
+        logger.exception("Error adding XML to upload")
+        return None
+
     delivery_url = utils.create_delivery(
         upload_url,
         bro_username,

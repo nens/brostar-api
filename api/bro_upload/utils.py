@@ -7,10 +7,21 @@ from typing import Any, TypeVar
 import polars as pl
 import requests
 from django.conf import settings
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 import api.models as api_models
 
 logger = logging.getLogger("general")
+
+retry_strategy = Retry(
+    total=5,  # total number of retries
+    backoff_factor=2,  # exponential backoff: 1s, 2s, 4s...
+    status_forcelist=[429, 500, 501, 502, 503, 504],  # retry on these codes
+    allowed_methods=["GET", "PATCH", "POST"],  # retry for POST as well (not default)
+    raise_on_status=False,
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
 
 T = TypeVar("T", bound="api_models.UploadFile")
 
@@ -111,8 +122,12 @@ def validate_xml_file(
     """
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
 
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     try:
-        r = requests.post(
+        r = session.post(
             url=url,
             data=xml_file,
             headers={"Content-Type": "application/xml"},
@@ -150,8 +165,12 @@ def create_upload_url(bro_username: str, bro_password: str, project_number: str)
     """POST to the BRO api to receive an upload id, which is step 1 of 3 in the upload process."""
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads"
 
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     try:
-        r = requests.post(
+        r = session.post(
             url,
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
@@ -177,8 +196,12 @@ def add_xml_to_upload(
     datetime_str = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
     upload_url = f"{upload_url}/brondocumenten"
 
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     try:
-        r = requests.post(
+        r = session.post(
             upload_url,
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
@@ -191,7 +214,7 @@ def add_xml_to_upload(
 
     except requests.RequestException as e:
         logger.exception(e)
-        raise RuntimeError(f"Add XML to upload error: {e}")
+        return None
 
 
 def create_delivery(
@@ -206,8 +229,12 @@ def create_delivery(
         f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
     )
 
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     try:
-        r = requests.post(
+        r = session.post(
             deliver_url,
             headers={"Content-type": "application/json"},
             data=json.dumps(payload),
@@ -220,15 +247,20 @@ def create_delivery(
 
     except requests.RequestException as e:
         logger.exception(e)
-        raise RuntimeError(f"Deliver uploaded XML error: {e}")
+        return None
 
 
 def check_delivery_status(
     delivery_url: str, bro_username: str, bro_password: str
 ) -> dict[str, Any]:
     """Checks the Delivery info. Step 4 of 4 in the upload process."""
+
+    session = requests.Session()
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+
     try:
-        r = requests.get(
+        r = session.get(
             url=delivery_url,
             auth=(bro_username, bro_password),
             timeout=20,
@@ -238,7 +270,7 @@ def check_delivery_status(
 
     except requests.RequestException as e:
         logger.exception(e)
-        raise RuntimeError(f"Delivery info check error: {e}")
+        return None
 
 
 def include_delivery_responsible_party(

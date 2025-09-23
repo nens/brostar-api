@@ -3,6 +3,7 @@
 ## 1.41 (unreleased)
 
 -   Bugfix: handle sentry errors.
+-   Bugfix: handle more errors for deliveries.
 
 ## 1.40 (2025-09-23)
 
