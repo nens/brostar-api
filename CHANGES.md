@@ -2,9 +2,7 @@
 
 ## 1.39 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: geo_ohm_cables null on create signal
 
 ## 1.38 (2025-09-22)
 

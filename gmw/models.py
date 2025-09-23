@@ -85,7 +85,7 @@ class MonitoringTube(models.Model):
     sediment_sump_present = models.CharField(max_length=100, null=True)
     sediment_sump_length = models.CharField(max_length=100, null=True, blank=True)
     number_of_geo_ohm_cables = models.CharField(max_length=100, null=True)
-    geo_ohm_cables = JSONField("Geoohm Cables", default=dict, blank=True)
+    geo_ohm_cables = JSONField("Geoohm Cables", default=list, blank=True)
     tube_top_diameter = models.CharField(max_length=100, null=True, blank=True)
     variable_diameter = models.CharField(max_length=100, null=True)
     tube_status = models.CharField(max_length=100, null=True)
