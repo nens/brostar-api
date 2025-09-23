@@ -2,9 +2,7 @@
 
 ## 1.40 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: update or create instead
 
 ## 1.39 (2025-09-23)
 
