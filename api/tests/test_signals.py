@@ -167,6 +167,7 @@ def test_post_save_uploadtask_triggers_create_objects_gmw2(organisation: Organis
     assert gmw.well_construction_date == "2025-09-02"
     assert gmw.nitg_code == "B12A1234"
     assert gmw.internal_id == "test_upload"
+    assert gmw.standardized_location is not None
 
     assert MonitoringTube.objects.filter(gmw=gmw).exists()
 

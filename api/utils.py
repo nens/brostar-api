@@ -1,6 +1,8 @@
 import logging
 from functools import partial
 
+from pyproj import Transformer
+
 from frd.models import FRD
 from gld.models import GLD
 from gmn.models import GMN
@@ -8,10 +10,17 @@ from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger(__name__)
 
+# Define transformer from RD New (EPSG:28992) to ETRS89 (EPSG:4258 = lat/lon)
+transformer = Transformer.from_crs("EPSG:28992", "EPSG:4258", always_xy=True)
+
 
 def create_gmw(
     bro_id: str, metadata: dict, sourcedocument_data: dict, data_owner: str
 ) -> None:
+    delivered_location = sourcedocument_data.get("deliveredLocation", "0 0").split(" ")
+    rd_x, rd_y = map(float, delivered_location)
+    lon, lat = transformer.transform(rd_x, rd_y)
+    standardized_location = f"{lat} {lon}"
     gmw = GMW.objects.update_or_create(
         bro_id=bro_id,
         data_owner=data_owner,
@@ -42,7 +51,7 @@ def create_gmw(
             "ground_level_positioning_method": sourcedocument_data.get(
                 "groundLevelPositioningMethod"
             ),
-            "standardized_location": sourcedocument_data.get("standardizedLocation"),
+            "standardized_location": standardized_location,
         },
     )[0]
     for tube in sourcedocument_data.get("monitoringTubes", []):

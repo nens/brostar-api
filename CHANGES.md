@@ -3,6 +3,7 @@
 ## 1.40 (unreleased)
 
 -   Bugfix: update or create instead
+-   Enhancement: add standardized location to GMW creation
 
 ## 1.39 (2025-09-23)
 
