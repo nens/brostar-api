@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.42 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.41 (2025-09-23)
 
 -   Bugfix: handle sentry errors.
