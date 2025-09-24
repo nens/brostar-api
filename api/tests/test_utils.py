@@ -62,131 +62,183 @@ def mock_requests():
 
 
 # Test validate_xml_file function (mocked)
-def test_validate_xml_file(mock_requests):
-    mock_post, _ = mock_requests
+def test_validate_xml_file():
+    with mock.patch("requests.Session.post") as mock_post:
+        # --- Successful validation ---
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"status": "VALID"}
+        mock_response.raise_for_status = mock.Mock()  # does nothing
+        mock_post.return_value = mock_response
 
-    # Mock successful API response
-    mock_response = mock.Mock()
-    mock_response.json.return_value = {"status": "VALID"}
-    mock_response.raise_for_status = mock.Mock()
-    mock_post.return_value = mock_response
+        result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
+        assert result == {"status": "VALID"}
 
-    result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
-    assert result == {"status": "VALID"}
+        # --- Generic HTTPError after r assignment ---
+        mock_response = mock.Mock()
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "API failure"
+        )
+        mock_response.status_code = 500
+        mock_post.return_value = mock_response
 
-    # Test request failure
-    mock_post.side_effect = requests.exceptions.RequestException("API failure")
-    with pytest.raises(RuntimeError, match="Validate xml error: API failure"):
-        validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
+        result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
+        assert result["status"] == "NIET-VALIDE"
+        assert "BRO API is momenteel niet beschikbaar" in result["errors"]
+
+        # --- Unauthorized (401) failure ---
+        mock_response = mock.Mock()
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "Auth failure"
+        )
+        mock_response.status_code = 401
+        mock_post.return_value = mock_response
+
+        result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
+        assert result["status"] == "NIET-VALIDE"
+        assert "niet gemachtigd" in result["errors"]
+
+        # --- Forbidden (403) failure ---
+        mock_response = mock.Mock()
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "Forbidden"
+        )
+        mock_response.status_code = 403
+        mock_post.return_value = mock_response
+
+        result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
+        assert result["status"] == "NIET-VALIDE"
+        assert "niet de juiste rechten" in result["errors"]
 
 
 # Test create_upload_url function (mocked)
-def test_create_upload_url(mock_requests):
-    mock_post, _ = mock_requests
+def test_create_upload_url():
+    with mock.patch("requests.Session.post") as mock_post:
+        # Mock successful API response
+        mock_response = mock.Mock()
+        mock_response.headers = {
+            "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads"
+        }
+        mock_response.raise_for_status = mock.Mock()
+        mock_post.return_value = mock_response
 
-    # Mock successful API response
-    mock_response = mock.Mock()
-    mock_response.headers = {
-        "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads"
-    }
-    mock_response.raise_for_status = mock.Mock()
-    mock_post.return_value = mock_response
+        project_number = "1234"
+        result = create_upload_url("bro_user", "bro_pass", project_number)
+        assert result["status"] == "OK"
+        assert (
+            result["upload_url"]
+            == "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads"
+        )
 
-    result = create_upload_url("bro_user", "bro_pass", "12345")
-    assert result == "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads"
+        # --- Generic HTTP failure after r assignment ---
+        mock_response = mock.Mock()
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "API failure"
+        )
+        mock_post.return_value = mock_response
 
-    # Test request failure
-    mock_post.side_effect = requests.exceptions.RequestException("API failure")
-    with pytest.raises(RuntimeError, match="Create upload url error: API failure"):
-        create_upload_url("bro_user", "bro_pass", "12345")
+        project_number = "12345"
+        result = create_upload_url("bro_user", "bro_pass", project_number)
+        assert result["status"] == "NIET-VALIDE"
+        assert result["errors"] == "Error: API failure."
+
+        # --- Unauthorized (401) failure after r assignment ---
+        mock_response = mock.Mock()
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError(
+            "Authentication failure"
+        )
+        mock_response.status_code = 401  # r.status_code
+        mock_post.return_value = mock_response
+
+        result = create_upload_url("bro_user", "bro_pass", project_number)
+        assert result["status"] == "NIET-VALIDE"
+        assert (
+            result["errors"]
+            == f"Het gebruikte token is niet gemachtigd voor project {project_number}"
+        )
 
 
 # Test add_xml_to_upload function (mocked)
-def test_add_xml_to_upload(mock_requests):
-    mock_post, _ = mock_requests
+def test_add_xml_to_upload():
+    with mock.patch("requests.Session.post") as mock_post:
+        # Mock successful API response
+        mock_response = mock.Mock()
+        mock_response.headers = {
+            "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/"
+        }
+        mock_response.raise_for_status = mock.Mock()
+        mock_post.return_value = mock_response
 
-    # Mock successful API response
-    mock_response = mock.Mock()
-    mock_response.headers = {
-        "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/"
-    }
-    mock_response.raise_for_status = mock.Mock()
-    mock_post.return_value = mock_response
-
-    result = add_xml_to_upload(
-        "<xml>data</xml>",
-        "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads",
-        "bro_user",
-        "bro_pass",
-    )
-    assert result == "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/"
-
-    # Test request failure
-    mock_post.side_effect = requests.exceptions.RequestException("API failure")
-    with pytest.raises(RuntimeError, match="Add XML to upload error: API failure"):
-        add_xml_to_upload(
+        result = add_xml_to_upload(
             "<xml>data</xml>",
             "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads",
             "bro_user",
             "bro_pass",
         )
+        assert result == "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/"
+
+        # Test request failure
+        mock_post.side_effect = requests.exceptions.RequestException("API failure")
+        result = add_xml_to_upload(
+            "<xml>data</xml>",
+            "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads",
+            "bro_user",
+            "bro_pass",
+        )
+        assert result is None
 
 
 # Test create_delivery function (mocked)
-def test_create_delivery(mock_requests):
-    mock_post, _ = mock_requests
+def test_create_delivery():
+    with mock.patch("requests.Session.post") as mock_post:
+        mock_response = mock.Mock()
+        mock_response.headers = {
+            "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen"
+        }
+        mock_response.raise_for_status = mock.Mock()
+        mock_post.return_value = mock_response
 
-    # Mock successful API response
-    mock_response = mock.Mock()
-    mock_response.headers = {
-        "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen"
-    }
-    mock_response.raise_for_status = mock.Mock()
-    mock_post.return_value = mock_response
-
-    result = create_delivery(
-        "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/0000013524",
-        "bro_user",
-        "bro_pass",
-        "1234",
-    )
-    assert result == "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen"
-
-    # Test request failure
-    mock_post.side_effect = requests.exceptions.RequestException("API failure")
-    with pytest.raises(RuntimeError, match="Deliver uploaded XML error: API failure"):
-        create_delivery(
+        result = create_delivery(
             "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/0000013524",
             "bro_user",
             "bro_pass",
             "1234",
         )
+        assert result == "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen"
+
+        # Test request failure
+        mock_post.side_effect = requests.exceptions.RequestException("API failure")
+        result = create_delivery(
+            "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/0000013524",
+            "bro_user",
+            "bro_pass",
+            "1234",
+        )
+        assert result is None
 
 
 # Test check_delivery_status function (mocked)
-def test_check_delivery_status(mock_requests):
-    mock_get = mock_requests[1]
+def test_check_delivery_status():
+    with mock.patch("requests.Session.get") as mock_get:
+        # Mock successful API response
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"status": "delivered"}
+        mock_get.return_value = mock_response
 
-    # Mock successful API response
-    mock_response = mock.Mock()
-    mock_response.json.return_value = {"status": "delivered"}
-    mock_get.return_value = mock_response
-
-    result = check_delivery_status(
-        "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen",
-        "bro_user",
-        "bro_pass",
-    )
-    assert result == {"status": "delivered"}
-
-    # Test request failure
-    mock_get.side_effect = requests.exceptions.RequestException("API failure")
-    with pytest.raises(RuntimeError, match="Delivery info check error: API failure"):
-        check_delivery_status(
+        result = check_delivery_status(
             "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen",
             "bro_user",
             "bro_pass",
         )
+        assert result == {"status": "delivered"}
+
+        # Test request failure
+        mock_get.side_effect = requests.exceptions.RequestException("API failure")
+        result = check_delivery_status(
+            "https://www.bronhouderportaal-bro.nl/api/v2/1234/leveringen",
+            "bro_user",
+            "bro_pass",
+        )
+        assert result is None
 
 
 # Test include_delivery_responsible_party function

@@ -52,7 +52,16 @@ def test_deliver_xml_file_task(
     mock_instance = mock.Mock()
     mock_get.return_value = mock_instance
 
-    mock_create_upload_url.return_value = "upload_url"
+    mock_create_upload_url.return_value = {
+        "status": "OK",
+        "upload_url": "http://publieke.broservices/api/v1/1234/uploads/12345",
+    }
+    mock_response = mock.Mock()
+    mock_response.headers = {
+        "Location": "https://www.bronhouderportaal-bro.nl/api/v2/1234/uploads/"
+    }
+    mock_response.raise_for_status = mock.Mock()
+    mock_add_xml.return_value = mock_response
     mock_create_delivery.return_value = "delivery_url"
 
     context = {
@@ -106,12 +115,13 @@ def test_check_delivery_status_task_retries(mock_check_status, mock_get):
     }
 
     # Patch self.retry to simulate 4 retries, then succeed
-    retry_call_count = {"count": 0}
+    retry_call_count = 0
 
     def fake_retry(*args, **kwargs):
-        retry_call_count["count"] += 1
+        nonlocal retry_call_count
+        retry_call_count += 1
         # Simulate MaxRetriesExceededError on 4th retry
-        if retry_call_count["count"] >= 4:
+        if retry_call_count >= 4:
             raise check_delivery_status_task.MaxRetriesExceededError()
         raise check_delivery_status_task.retry()  # Will normally retry
 
@@ -128,7 +138,7 @@ def test_check_delivery_status_task_retries(mock_check_status, mock_get):
         check_delivery_status_task(context)
 
     # Check that retry was called 4 times
-    assert retry_call_count["count"] == 4
+    assert retry_call_count == 4
 
     # Check that the task was marked UNFINISHED after exceeding retries
     assert mock_instance.status == "UNFINISHED"

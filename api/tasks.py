@@ -91,11 +91,20 @@ def deliver_xml_file_task(context):
     bro_username = context["bro_username"]
     bro_password = context["bro_password"]
 
-    upload_url = utils.create_upload_url(
+    upload = utils.create_upload_url(
         bro_username,
         bro_password,
         upload_task_instance.project_number,
     )
+    if upload["status"] != "OK":
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = (
+            f"Error creating upload URL: {upload.get('errors', 'Unknown error')}"
+        )
+        upload_task_instance.save()
+        return None
+
+    upload_url = upload["upload_url"]
     succes = utils.add_xml_to_upload(
         context["xml_file"],
         upload_url,
@@ -159,6 +168,7 @@ def check_delivery_status_task(self, context):
         raise self.retry()
     except self.MaxRetriesExceededError:
         upload_task_instance.status = "UNFINISHED"
+        upload_task_instance.log = "Na 1,5 uur is er nog geen resultaat bekend. Controleer het later handmatig."
         upload_task_instance.progress = 95.0
         upload_task_instance.save()
 
@@ -230,7 +240,6 @@ def upload_task(
     3. Delivers the XML to the BRO
 
     It is called when a valid POST request is done on the uploadtask endpoint is done.
-    The BRODelivery class is used to handle the whole proces of delivery.
     The status and logging of the process can be found in the UploadTask instance.
     """
     # Make sure the upload task does not have pending before starting the async queries.

@@ -3,7 +3,9 @@
 ## 1.42 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement: added removed, registration_status to GMW creation
+-   Enhancement: better error handling for tasks
+-   Refactor: cleaned the old BRODelivery class which was unused
 
 
 ## 1.41 (2025-09-23)

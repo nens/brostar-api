@@ -137,32 +137,48 @@ def validate_xml_file(
         r.raise_for_status()
         return r.json()
 
-    except Exception as e:
+    except requests.exceptions.HTTPError as e:
         status = "NIET-VALIDE"
-        if r.status_code == 401:
-            return {
-                "status": status,
-                "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
-            }
-        elif r.status_code == 403:
-            return {
-                "status": status,
-                "errors": f"Het gebruikte token heeft niet de juiste rechten voor project {project_number}",
-            }
-        elif r.status_code > 499:
-            return {
-                "status": status,
-                "errors": "De BRO API is momenteel niet beschikbaar. Neem contact op met servicedesk@nelen-schuurmans.nl",
-            }
-        else:
-            return {
-                "status": status,
-                "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
-            }
+        match r.status_code:
+            case 401:
+                return {
+                    "status": status,
+                    "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
+                }
+            case 403:
+                return {
+                    "status": status,
+                    "errors": f"Het gebruikte token heeft niet de juiste rechten voor project {project_number}",
+                }
+            case 500 | 502 | 503 | 504:
+                return {
+                    "status": status,
+                    "errors": "De BRO API is momenteel niet beschikbaar. Neem contact op met servicedesk@nelen-schuurmans.nl",
+                }
+            case _:
+                return {
+                    "status": status,
+                    "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
+                }
+
+    except Exception as e:
+        logger.exception(e)
+        return {
+            "status": "NIET-VALIDE",
+            "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
+        }
 
 
-def create_upload_url(bro_username: str, bro_password: str, project_number: str) -> str:
-    """POST to the BRO api to receive an upload id, which is step 1 of 3 in the upload process."""
+def create_upload_url(
+    bro_username: str, bro_password: str, project_number: str
+) -> dict[str, str]:
+    """
+    POST to the BRO api to receive an upload id, which is step 1 of 3 in the upload process.
+
+    Return:
+    - status
+    - upload_url (if status is OK)
+    """
     url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads"
 
     session = requests.Session()
@@ -179,11 +195,25 @@ def create_upload_url(bro_username: str, bro_password: str, project_number: str)
         r.raise_for_status()
         upload_url = r.headers["Location"]
 
-        return upload_url
+        return {"status": "OK", "upload_url": upload_url}
 
-    except requests.RequestException as e:
+    except requests.HTTPError as e:
         logger.exception(e)
-        raise RuntimeError(f"Create upload url error: {e}")
+        match r.status_code:
+            case 401:
+                return {
+                    "status": "NIET-VALIDE",
+                    "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
+                }
+            case _:
+                return {"status": "NIET-VALIDE", "errors": f"Error: {e}."}
+
+    except Exception as e:
+        logger.exception(e)
+        return {
+            "status": "NIET-VALIDE",
+            "errors": f"Er is een fout opgetreden bij het aanmaken van de upload: {e}.",
+        }
 
 
 def add_xml_to_upload(

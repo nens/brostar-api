@@ -52,9 +52,25 @@ def create_gmw(
                 "groundLevelPositioningMethod"
             ),
             "standardized_location": standardized_location,
+            "registration_status": "geregistreerd",
+            "removed": "nee",
         },
     )[0]
     for tube in sourcedocument_data.get("monitoringTubes", []):
+        position_tube_top = tube.get("tubeTopPosition")
+        plain_tube_length = tube.get("plainTubePartLength")
+        screen_top_position = (
+            position_tube_top - plain_tube_length
+            if (plain_tube_length is not None and position_tube_top is not None)
+            else None
+        )
+        screen_bottom_position = (
+            screen_top_position - tube.get("screenLength")
+            if (
+                screen_top_position is not None and tube.get("screenLength") is not None
+            )
+            else None
+        )
         MonitoringTube.objects.update_or_create(
             gmw=gmw,
             data_owner=gmw.data_owner,
@@ -69,7 +85,7 @@ def create_gmw(
                 "tube_top_diameter": tube.get("tubeTopDiameter"),
                 "variable_diameter": tube.get("variableDiameter"),
                 "tube_status": tube.get("tubeStatus"),
-                "tube_top_position": tube.get("tubeTopPosition"),
+                "tube_top_position": position_tube_top,
                 "tube_top_positioning_method": tube.get("tubeTopPositioningMethod"),
                 "tube_part_inserted": tube.get("tubePartInserted"),
                 "tube_in_use": tube.get("tubeInUse"),
@@ -79,9 +95,9 @@ def create_gmw(
                 "screen_length": tube.get("screenLength"),
                 "screen_protection": tube.get("screenProtection"),
                 "sock_material": tube.get("sockMaterial"),
-                "screen_top_position": tube.get("screenTopPosition"),
-                "screen_bottom_position": tube.get("screenBottomPosition"),
-                "plain_tube_part_length": tube.get("plainTubePartLength"),
+                "screen_top_position": screen_top_position,
+                "screen_bottom_position": screen_bottom_position,
+                "plain_tube_part_length": plain_tube_length,
             },
         )
 

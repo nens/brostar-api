@@ -94,6 +94,11 @@ def test_post_save_uploadtask_triggers_create_objects_gmw(organisation: Organisa
     assert int(monitoring_tube.tube_top_diameter) == 32
     assert monitoring_tube.geo_ohm_cables == []
 
+    assert monitoring_tube.tube_top_position == "0"
+    assert monitoring_tube.plain_tube_part_length == "1"
+    assert monitoring_tube.screen_top_position == "-1"  # 0 - 1 = -1
+    assert monitoring_tube.screen_bottom_position == "-2"  # 0 -1 - 1 = -2
+
 
 @pytest.mark.django_db
 def test_post_save_uploadtask_triggers_create_objects_gmw2(organisation: Organisation):  # noqa: F811
