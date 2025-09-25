@@ -1,0 +1,101 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basisregistratie Ondergrond - Berichten Hulp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h3>BROSTAR: Berichten hulp</h3>
+            </div>
+            <div class="card-body">
+              <button
+                class="btn btn-primary mb-3"
+                onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+              >
+                Mijn peilbuis heeft al een BRO-ID (Bijv. GMW000000004418)
+              </button>
+              <!-- Updated button that triggers modal instead of direct redirect -->
+              <button
+                  class="btn btn-primary mb-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#broIdModal"
+              >
+                  Mijn peilbuis heeft nog geen BRO-ID
+              </button>
+              <button
+                class="btn btn-primary mb-3"
+                onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+              >
+                Stap terug
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="broIdModal" tabindex="-1" aria-labelledby="broIdModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het <b>registreren</b> van een GMW-Inrichten bericht. Wil je deze direct via BROSTAR aanmaken?</p>
+                </div>
+                <div class="modal-footer d-flex flex-column gap-2">
+                    <button type="button" class="btn btn-success w-100" onclick="redirectToGMW()">
+                        Ja
+                    </button>
+                    <button type="button" class="btn btn-secondary w-100" onclick="redirectToBegin()">
+                        Terug naar het begin
+                    </button>
+                    <button type="button" class="btn btn-outline-primary w-100" onclick="redirectToPricing()">
+                        Nog geen account?
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+    <script>
+        function redirectToGMW() {
+            window.location.href = '/gmw/constructie/';
+        }
+
+        function redirectToBegin() {
+            // Replace with your actual Django URL
+            window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+        }
+
+        function redirectToPricing() {
+            // Replace with your actual Django URL for pricing page
+            window.location.href = "{% url 'miscellaneous:pricing' %}";
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
+  </body>
+</html>
+5

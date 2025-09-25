@@ -11,7 +11,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
     />
-    <link rel="stylesheet" href="{% static 'shapefile_duplicates/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style.css' %}" />
   </head>
   <body>
     <div class="container mt-5">
@@ -21,7 +21,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
               <h3>Processing Results</h3>
               <a
-                href="{% url 'shapefile_duplicates:download_file' download_filename %}"
+                href="{% url 'miscellaneous:download_file' download_filename %}"
                 class="btn btn-success"
               >
                 Download CSV
@@ -29,7 +29,7 @@
             </div>
             <div class="card-body">
               <div class="mb-3">
-                <a href="{% url 'shapefile_duplicates:index' %}" class="btn btn-outline-secondary">
+                <a href="{% url 'miscellaneous:index' %}" class="btn btn-outline-secondary">
                   ← Back to Form
                 </a>
               </div>
@@ -42,12 +42,12 @@
     </div>
 
     <img
-      src="{% static 'shapefile_duplicates/images/logo.png' %}"
+      src="{% static 'miscellaneous/images/logo.png' %}"
       alt="Logo"
       id="bottom-logo"
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'shapefile_duplicates/js/main.js' %}"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>
 </html>

@@ -9,7 +9,7 @@ from django.http import FileResponse
 from django.shortcuts import redirect, render
 from werkzeug.utils import secure_filename
 
-from shapefile_duplicates.utils.retrieve_gmw_duplicates import run as process_shapefile
+from miscellaneous.utils.retrieve_gmw_duplicates import run as process_shapefile
 
 # Setup logging
 logging.basicConfig(
@@ -25,9 +25,9 @@ def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def index(request):
+def duplicates_index(request):
     """Main page view with upload form"""
-    return render(request, "shapefile_duplicates/index.html")
+    return render(request, "miscellaneous/duplicaat_index.html")
 
 
 def process_shp(kvk_number: str, shp_file, shx_file):
@@ -134,16 +134,16 @@ def prepare_html(df: pd.DataFrame):
     return csv_html
 
 
-def process(request):  # noqa: C901
+def duplicates_process(request):  # noqa: C901
     """Process uploaded shapefile and KVK number"""
     if request.method != "POST":
-        return redirect("shapefile_duplicates:index")
+        return redirect("miscellaneous:duplicaat_index")
 
     # Check if KVK number is provided
     kvk_number = request.POST.get("kvk_number")
     if not kvk_number:
         messages.error(request, "KVK number is required")
-        return redirect("shapefile_duplicates:index")
+        return redirect("miscellaneous:duplicaat_index")
 
     # Check if files were uploaded
     logger.info(f"KVK number: {kvk_number} and files: {request.FILES}")
@@ -156,23 +156,23 @@ def process(request):  # noqa: C901
     if shp_file and shx_file:
         if not (allowed_file(shp_file.name) and allowed_file(shx_file.name)):
             messages.error(request, "Invalid file types")
-            return redirect("shapefile_duplicates:index")
+            return redirect("miscellaneous:duplicaat_index")
         filename = process_shp(kvk_number, shp_file, shx_file)
     elif zip_file:
         if not zip_file.name.endswith(".zip"):
             messages.error(request, "Please upload a .zip file")
-            return redirect("shapefile_duplicates:index")
+            return redirect("miscellaneous:duplicaat_index")
         filename = process_zip(kvk_number, zip_file)
     else:
         messages.error(
             request,
             "Please upload either individual shapefile components or a zip file",
         )
-        return redirect("shapefile_duplicates:index")
+        return redirect("miscellaneous:duplicaat_index")
 
     if filename is None:
         messages.error(request, "Geen features in de shapefile")
-        return redirect("shapefile_duplicates:index")
+        return redirect("miscellaneous:duplicaat_index")
 
     csv_dir = settings.CSV_DIR
     df: pd.DataFrame = pd.read_csv(f"{csv_dir}/{filename}")
@@ -181,11 +181,11 @@ def process(request):  # noqa: C901
 
     if csv_html is None:
         messages.error(request, "Error processing files")
-        return redirect("shapefile_duplicates:index")
+        return redirect("miscellaneous:duplicaat_index")
 
     return render(
         request,
-        "shapefile_duplicates/result.html",
+        "miscellaneous/result.html",
         {
             "csv_html": csv_html,
             "download_filename": filename,
@@ -193,8 +193,75 @@ def process(request):  # noqa: C901
     )
 
 
-def download_file(request, filename):
+def duplicates_download(request, filename):
     """Download the generated CSV file"""
     csv_dir = settings.CSV_DIR
     file = f"{csv_dir}/{filename}"
     return FileResponse(open(file, "rb"), as_attachment=True, filename=filename)
+
+
+### Berichten hulp views
+## General
+def berichten_index(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_index.html")
+
+
+## GMW
+def berichten_gmw(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw.html")
+
+
+def berichten_gmw_bestaand(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw_bestaand.html")
+
+
+## GLD
+def berichten_gld(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gld.html")
+
+
+def berichten_gld_bestaand(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gld_bestaand.html")
+
+
+## GMN
+def berichten_gmn(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmn.html")
+
+
+def berichten_gmn_bestaand(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmn_bestaand.html")
+
+
+## GAR
+def berichten_gar(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gar.html")
+
+
+def berichten_gar_bestaand(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gar_bestaand.html")
+
+
+## FRD
+def berichten_frd(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_frd.html")
+
+
+def berichten_frd_bestaand(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_frd_bestaand.html")
+
+
+def pricing(request):
+    """View for the pricing page"""
+    return render(request, "miscellaneous/pricing.html")
