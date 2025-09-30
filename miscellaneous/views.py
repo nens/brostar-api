@@ -128,7 +128,7 @@ def prepare_html(df: pd.DataFrame):
             border=0,
         )
     except Exception as e:
-        logger.exception(f"Error processing files: {str(e)}")
+        logger.warning(f"Error processing files: {str(e)}")
         csv_html = None
 
     return csv_html
@@ -215,7 +215,32 @@ def berichten_gmw(request):
 
 def berichten_gmw_bestaand(request):
     """View for the berichten-hulp page"""
-    return render(request, "miscellaneous/berichten_gmw_bestaand.html")
+    return render(request, "miscellaneous/berichten_gmw2.html")
+
+
+def berichten_gmw_gebeurtenissen(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw3.html")
+
+
+def berichten_gmw_gebeurtenissen_peilbuis(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw3a.html")
+
+
+def berichten_gmw_gebeurtenissen_filter(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw3b.html")
+
+
+def berichten_gmw_gebeurtenissen_organisatie(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw3c.html")
+
+
+def berichten_gmw_correctie(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmw4.html")
 
 
 ## GLD

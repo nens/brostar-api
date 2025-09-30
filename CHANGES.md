@@ -3,13 +3,14 @@
 ## 1.42 (unreleased)
 
 
+-   Bugfix: correct stall by GMN-bulktask
 -   Enhancement: added removed, registration_status to GMW creation
 -   Enhancement: better error handling for tasks
 -   Enhancement: no longer report common exceptions to sentry
+-   Feature: add base for message finder
+-   Feature: add messenger-help to BROSTAR
 -   Refactor: cleaned the old BRODelivery class which was unused
 -   Refactor: rename duplicates to miscellaneous
--   Feature: add base for message finder
--   Bugfix: correct stall by GMN-bulktask
 
 
 ## 1.41 (2025-09-23)

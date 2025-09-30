@@ -25,9 +25,9 @@
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gar_bestaand' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
         >
-          Mijn peilbuis heeft al een BRO-ID (Bijv. GAR00000123018)
+          Het gaat om de
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
@@ -58,7 +58,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="broIdModalLabel">GAR-StartRegistratie</h5>
+            <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten</h5>
             <button
               type="button"
               class="btn-close"
@@ -68,16 +68,15 @@
           </div>
           <div class="modal-body">
             <p>
-              Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het
-              <b>registreren</b> van een GAR bericht. Wil je deze direct via BROSTAR
-              aanmaken?
+              Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met een
+              GMW-Inrichten. Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
               class="btn btn-success w-100"
-              onclick="redirectToGar()"
+              onclick="redirectToGMW()"
             >
               Ja
             </button>
@@ -106,8 +105,8 @@
       id="bottom-logo"
     />
     <script>
-      function redirectToGar() {
-        window.location.href = "/gar/";
+      function redirectToGMW() {
+        window.location.href = "/gmw/constructie/";
       }
 
       function redirectToBegin() {
@@ -124,4 +123,3 @@
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>
 </html>
-5

@@ -23,26 +23,45 @@
         <p>Powered by: BROSTAR</p>
       </div>
       <div class="card-body">
+        <p>
+          We hebben het dus over een wijziging aan de peilbuis, door de tijd heen.
+          Waarmee heeft de wijziging te maken?
+        </p>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gar_bestaand' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
         >
-          Mijn peilbuis heeft al een BRO-ID (Bijv. GAR00000123018)
+          Het gaat om onderhoud dat impact heeft op de gehele locatie (bijv. een nieuwe
+          putdeksel)
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+        >
+          Het gaat om onderhoud dat impact heeft op één of meerdere filters in de
+          peilbuis (bijv. oplengen, of filterstatus wijzigen)
+        </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal"
         >
-          Mijn peilbuis heeft nog geen BRO-ID
+          De buis is verwijderd.
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+          style="background-color: lightgray"
+        >
+          Stap terug
         </button>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: lightgray;"
+          style="background-color: rgb(184, 184, 184)"
         >
-          Stap terug
+          Opnieuw beginnen
         </button>
       </div>
     </div>
@@ -58,7 +77,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="broIdModalLabel">GAR-StartRegistratie</h5>
+            <h5 class="modal-title" id="broIdModalLabel">GMW-Opruimen</h5>
             <button
               type="button"
               class="btn-close"
@@ -68,16 +87,15 @@
           </div>
           <div class="modal-body">
             <p>
-              Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het
-              <b>registreren</b> van een GAR bericht. Wil je deze direct via BROSTAR
-              aanmaken?
+              Wanneer de peilbuis verwijderd is, dan kan dat aangegeven worden door een
+              GMW-Opruimen bericht te registreren.
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
               class="btn btn-success w-100"
-              onclick="redirectToGar()"
+              onclick="redirectToGMW()"
             >
               Ja
             </button>
@@ -106,8 +124,8 @@
       id="bottom-logo"
     />
     <script>
-      function redirectToGar() {
-        window.location.href = "/gar/";
+      function redirectToGMW() {
+        window.location.href = "/gmw/gebeurtenissen/";
       }
 
       function redirectToBegin() {
@@ -124,4 +142,3 @@
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>
 </html>
-5

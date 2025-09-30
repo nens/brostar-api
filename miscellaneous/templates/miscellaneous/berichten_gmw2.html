@@ -23,35 +23,35 @@
         <p>Powered by: BROSTAR</p>
       </div>
       <div class="card-body">
+        <p>
+          Mooi dat er al een BRO-ID bekend is. Voor deze peilbuis, wat wil je wijzigen?
+        </p>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
+        >
+          Er is een foutje gemaakt bij de originele registratie.
+        </button>
+        <!-- Updated button that triggers modal instead of direct redirect -->
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
+        >
+          Tijdens onderhoud zijn er gegevens veranderd.
+        </button>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
+          style="background-color: lightgray"
         >
-          Putten (GMW)
+          Stap terug
         </button>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gld' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+          style="background-color: rgb(184, 184, 184)"
         >
-          Grondwaterstanden (GLD)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmn' %}'"
-        >
-          Meetnetten (GMN)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
-        >
-          Grondwatersamenstellingen (GAR)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
-        >
-          Formatieweerstandmetingen (FRD)
+          Opnieuw beginnen
         </button>
       </div>
     </div>
@@ -61,7 +61,21 @@
       alt="Logo"
       id="bottom-logo"
     />
+    <script>
+      function redirectToGMW() {
+        window.location.href = "/gmw/constructie/";
+      }
 
+      function redirectToBegin() {
+        // Replace with your actual Django URL
+        window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+      }
+
+      function redirectToPricing() {
+        // Replace with your actual Django URL for pricing page
+        window.location.href = "{% url 'miscellaneous:pricing' %}";
+      }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>

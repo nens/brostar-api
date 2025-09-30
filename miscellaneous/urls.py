@@ -24,6 +24,16 @@ urlpatterns = [
         name="berichten_gmw_bestaand",
     ),
     path(
+        "berichten-hulp/gmw/bestaand/correctie/",
+        views.berichten_gmw_correctie,
+        name="berichten_gmw_correctie",
+    ),
+    path(
+        "berichten-hulp/gmw/bestaand/gebeurtenissen/",
+        views.berichten_gmw_gebeurtenissen,
+        name="berichten_gmw_gebeurtenissen",
+    ),
+    path(
         "berichten-hulp/gld/bestaand/",
         views.berichten_gld_bestaand,
         name="berichten_gld_bestaand",
