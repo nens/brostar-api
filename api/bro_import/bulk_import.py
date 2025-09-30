@@ -74,7 +74,7 @@ class BulkImporter:
                     data_importer = self.object_importer_class(bro_id, self.data_owner)
                     data_importer.run()
                 except Exception as e:
-                    logger.exception(e)
+                    logger.warning(e)
                     raise DataImportError(
                         f"Error while importing data for bro id: {bro_id}: {e}"
                     ) from e

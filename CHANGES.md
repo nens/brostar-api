@@ -5,6 +5,7 @@
 
 -   Enhancement: added removed, registration_status to GMW creation
 -   Enhancement: better error handling for tasks
+-   Enhancement: no longer report common exceptions to sentry
 -   Refactor: cleaned the old BRODelivery class which was unused
 -   Refactor: rename duplicates to miscellaneous
 -   Feature: add base for message finder

@@ -52,11 +52,11 @@ class XMLGenerator:
             return rendered_xml
 
         except TemplateDoesNotExist as e:
-            logger.exception(e)
+            logger.warning(e)
             raise XMLGenerationError(
                 "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
             ) from e
 
         except Exception as e:
-            logger.exception(e)
+            logger.warning(e)
             raise XMLGenerationError(e) from e
