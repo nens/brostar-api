@@ -1,0 +1,200 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basisregistratie Ondergrond - Berichten Hulp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'miscellaneous/css/style_berichten.css' %}"
+    />
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
+        <p>Powered by: BROSTAR</p>
+      </div>
+      <div class="card-body">
+        <p>Welke gegevens zijn verkeerd?</p>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal1"
+        >
+          De peilbuis is op een ander moment geplaatst dan nu wordt aangegeven
+          (inrichtingsdatum).
+        </button>
+        <!-- Updated button that triggers modal instead of direct redirect -->
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal2"
+        >
+          Andere gegevens dan de inrichtingsdatum zijn verkeerd.
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+          style="background-color: lightgray"
+        >
+          Stap terug
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+          style="background-color: rgb(184, 184, 184)"
+        >
+          Opnieuw beginnen
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="broIdModal1"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GMW-Inrichten [Verschuiven]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een registratie in de tijd wilt veranderen, dan gaat dit met
+              een zogenoemd <b>verschuif</b> bericht [move]. Dit is een ander type
+              correctie dan je standaard vervangen, en heeft altijd te maken met de tijd
+              waarop een gebeurtenis heeft plaatsgevonden.
+              <p> </p>
+              Let op! Je hebt verschillende correctie redenen. Zorg dat je de juiste
+              kiest. Voor meer informatie, zie de documentatie op de
+              <a href="https://docs.brostar.nl/">BROSTAR documentatie</a>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-success w-100"
+              onclick="redirectToGMW()"
+            >
+              Ja
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary w-100"
+              onclick="redirectToBegin()"
+            >
+              Terug naar het begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary w-100"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten [Vervangen]</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een registratie in de tijd wilt veranderen, dan gaat dit met
+              een zogenoemd <b>vervang</b> bericht [replace]. Dit is een ander type
+              correctie dan je standaard vervangen, en heeft altijd te maken met de tijd
+              waarop een gebeurtenis heeft plaatsgevonden.
+              <p> </p>
+              Let op! Je hebt verschillende
+              correctie redenen. Zorg dat je de juiste kiest. Voor meer informatie, zie
+              de documentatie op de
+              <a href="https://docs.brostar.nl/">BROSTAR documentatie</a>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-success w-100"
+              onclick="redirectToGMW()"
+            >
+              Ja
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary w-100"
+              onclick="redirectToBegin()"
+            >
+              Terug naar het begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary w-100"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+    <script>
+      function redirectToGMW() {
+        window.location.href = "/?viewType=gmwTable";
+      }
+
+      function redirectToBegin() {
+        // Replace with your actual Django URL
+        window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+      }
+
+      function redirectToPricing() {
+        // Replace with your actual Django URL for pricing page
+        window.location.href = "{% url 'miscellaneous:pricing' %}";
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
+  </body>
+</html>

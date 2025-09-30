@@ -1,0 +1,64 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basisregistratie Ondergrond - Berichten Hulp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h3>BROSTAR: Kosten</h3>
+            </div>
+            <div class="card-body">
+              <div class="pricing-table">
+                <div class="pricing-option">
+                  <h4>BRO-Coordinator</h4>
+                  <p>Tot 120 berichten per jaar</p>
+                  <p>Euro 1050,- per jaar</p>
+                  <p>Technisch support team</p>
+                </div>
+                <div class="pricing-option">
+                  <h4>BRO-Piloot</h4>
+                  <p>Tot 2000 berichten per jaar</p>
+                  <p>Euro 3650,- per jaar</p>
+                  <p>Technisch support team</p>
+                </div>
+                <div class="pricing-option">
+                  <h4>BROSTAR</h4>
+                  <p>Onbeperkt berichten</p>
+                  <p>Euro 7750,- per jaar</p>
+                  <p>Technisch support team</p>
+                </div>
+              <button
+                class="btn btn-primary mb-3"
+                onclick="window.location.href='mailto:servicedesk@nelen-schuurmans.com'"
+              >
+                Contact Us
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
+  </body>
+</html>

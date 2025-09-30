@@ -49,8 +49,8 @@ urlpatterns = [
     path("api/", include(("api.urls", "api"), namespace="api")),
     path("prometheus/", include("django_prometheus.urls")),
     path(
-        "duplicates/",
-        include("shapefile_duplicates.urls", namespace="shapefile_duplicates"),
+        "",
+        include("miscellaneous.urls", namespace="public"),
     ),
 ]
 

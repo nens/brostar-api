@@ -34,7 +34,7 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
         )
         xml = generator.create_xml_file()
         upload_task_instance.progress = 25
-        upload_task_instance.log = "XML generated."
+        upload_task_instance.log = "XML gegenereerd."
         upload_task_instance.save(update_fields=["progress", "log"])
 
         return {
@@ -43,7 +43,7 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
         }
 
     except Exception as e:
-        logger.exception(RuntimeError(f"Error generating XML file: {e}"))
+        logger.warning(f"Error generating XML file: {e}")
         return None
 
 
@@ -67,15 +67,15 @@ def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
 
     if validation_response["status"] != "VALIDE":
         upload_task_instance.progress = 50.0
-        upload_task_instance.log = "XML is not valid"
+        upload_task_instance.log = "XML is niet geldig."
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
-        logger.exception("Errors while validating the XML file")
+        logger.warning("Errors tijdens het valideren van het XML bestand")
         return None
 
     upload_task_instance.progress = 50.0
-    upload_task_instance.log = "XML is valid"
+    upload_task_instance.log = "XML is succesvol gevalideerd."
     upload_task_instance.save(update_fields=["progress", "log"])
     return context
 
@@ -98,9 +98,7 @@ def deliver_xml_file_task(context):
     )
     if upload["status"] != "OK":
         upload_task_instance.status = "FAILED"
-        upload_task_instance.log = (
-            f"Error creating upload URL: {upload.get('errors', 'Unknown error')}"
-        )
+        upload_task_instance.log = f"Error tijdens het maken van de upload URL: {upload.get('errors', 'Unknown error')}"
         upload_task_instance.save()
         return None
 
@@ -113,9 +111,11 @@ def deliver_xml_file_task(context):
     )
     if not succes:
         upload_task_instance.status = "FAILED"
-        upload_task_instance.log = "Error adding XML to upload"
+        upload_task_instance.log = (
+            "Error tijdens het toevoegen van het XML bestand aan de upload"
+        )
         upload_task_instance.save()
-        logger.exception("Error adding XML to upload")
+        logger.warning("Error adding XML to upload")
         return None
 
     delivery_url = utils.create_delivery(
@@ -126,7 +126,7 @@ def deliver_xml_file_task(context):
     )
     upload_task_instance.bro_delivery_url = delivery_url
     upload_task_instance.progress = 75.0
-    upload_task_instance.log = "XML delivered."
+    upload_task_instance.log = "XML aangeleverd."
     upload_task_instance.save()
     context["delivery_url"] = delivery_url
     return context
@@ -165,6 +165,21 @@ def check_delivery_status_task(self, context):
 
     # If not completed and not errors, retry the task
     try:
+        # Current retry attempt (starting from 1)
+        retry_count = self.request.retries + 1
+
+        # Compute elapsed time based on exponential backoff
+        # Celery retry_backoff = 5 means: 5s, 10s, 20s, 40s, ...
+        total_time = sum(5 * (2**i) for i in range(retry_count))
+        unit = "seconds"
+
+        if total_time > 120:
+            total_time = round(total_time / 60, 1)
+            unit = "minutes"
+
+        upload_task_instance.log = f"XML aangeleverd: na status controle ({retry_count} - {total_time} {unit}) nog geen uitslag."
+        upload_task_instance.save()
+
         raise self.retry()
     except self.MaxRetriesExceededError:
         upload_task_instance.status = "UNFINISHED"
@@ -185,7 +200,7 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         importer = bulk_import.BulkImporter(import_task_instance_uuid)
         importer.run()
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)
 
 
 def convert_error_to_bro_error(error_message: str):
@@ -281,7 +296,7 @@ def gar_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)
 
 
 @shared_task(queue="upload")
@@ -297,7 +312,7 @@ def gld_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)
 
 
 @shared_task(queue="upload")
@@ -313,4 +328,4 @@ def gmn_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)

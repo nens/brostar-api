@@ -1,5 +1,4 @@
 import logging
-import time
 import zipfile
 from typing import TypeVar
 
@@ -170,27 +169,11 @@ class GMNBulkUploader:
                 event_date=row["eventDate"],
             )
             upload_tasks.append(upload_task)
-            time.sleep(5)
+            self.bulk_upload_instance.progress += progress / 2
+            self.bulk_upload_instance.log = f"Created {len(upload_tasks)} upload tasks."
+            self.bulk_upload_instance.save()
 
-        while len(upload_tasks) > 0:
-            time.sleep(5)
-            remaining_tasks = []
-            for task in upload_tasks:
-                task.refresh_from_db()
-                # Wait while the GLD_Addition is being processed
-                if task.status == "FAILED":
-                    self.bulk_upload_instance.log += (
-                        f"FAILED (task: {task.uuid}): {task.log}."
-                    )
-                    self.bulk_upload_instance.progress += progress
-                elif task.status in ["COMPLETED", "UNFINISHED"]:
-                    self.bulk_upload_instance.progress += progress
-                else:
-                    remaining_tasks.append(task)
-
-            upload_task = remaining_tasks
-
-        self.bulk_upload_instance.status = "FINISHED"
+        self.bulk_upload_instance.status = "COMPLETED"
         self.bulk_upload_instance.save()
 
 

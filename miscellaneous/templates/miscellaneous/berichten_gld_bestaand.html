@@ -1,0 +1,68 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basisregistratie Ondergrond - Berichten Hulp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{% static 'miscellaneous/css/style_berichten.css' %}"
+    />
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
+        <p>Powered by: BROSTAR</p>
+      </div>
+      <div class="card-body">
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
+        >
+          Putten (GMW)
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gld' %}'"
+        >
+          Grondwaterstanden (GLD)
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmn' %}'"
+        >
+          Meetnetten (GMN)
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
+        >
+          Grondwatersamenstellingen (GAR)
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
+        >
+          Formatieweerstandmetingen (FRD)
+        </button>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+/* Main Styles */
+body {
+    background-color: #ece0db;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 90vh; /* Full viewport height */
+    width: 90vw; /* Full width */
+    align-items: center;
+    justify-content: center;
+    margin-left: 5vw;
+    margin-top: 3vh;
+    border: solid 1px black;
+}
+
+.card-header {
+    background-color: #da6e2f;
+    border-bottom: solid 1px black;
+    text-align: center;
+    height: 80px;
+    width: 100%; /* Full width */
+    align-items: center;
+    justify-content: center;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh; /* Full viewport height minus header */
+}
+
+.card-body .btn {
+    width: 75vw; /* Fixed width for consistency */
+    height: 10vh;
+    background-color: lab(83.94% 5.45 31.13);
+    border: solid 1px black;
+    color: black;
+}
+
+.btn.btn-secondary.w-100 {
+    background-color: lightgrey;
+    border: solid 1px black;
+    color: black;
+}
+
+.card-body .btn:hover {
+    background-color: #c0a7c2(155, 186, 197);
+    box-shadow: #6c757d 0px 4px 8px;
+}
+
+
+
+/* Form styling */
+.form-text {
+    color: #000000;
+    font-size: 0.85rem;
+}
+
+#bottom-logo {
+    position: absolute;
+    bottom: 5vh;
+    right: 5vw;
+    width: 100px;   /* adjust as needed */
+    opacity: 0.8;   /* optional */
+}

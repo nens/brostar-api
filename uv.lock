@@ -99,7 +99,7 @@ wheels = [
 
 [[package]]
 name = "brostar-api"
-version = "1.38.dev0"
+version = "1.42.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "celery", extra = ["redis"] },
@@ -125,6 +125,7 @@ dependencies = [
     { name = "psycopg2-binary" },
     { name = "pyarrow" },
     { name = "pydantic" },
+    { name = "pyproj" },
     { name = "pytest" },
     { name = "pytest-django" },
     { name = "pytest-mock" },
@@ -179,6 +180,7 @@ requires-dist = [
     { name = "psycopg2-binary" },
     { name = "pyarrow" },
     { name = "pydantic" },
+    { name = "pyproj" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest", marker = "extra == 'test'" },
     { name = "pytest-django" },

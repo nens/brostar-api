@@ -162,7 +162,7 @@ def validate_xml_file(
                 }
 
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)
         return {
             "status": "NIET-VALIDE",
             "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
@@ -198,7 +198,7 @@ def create_upload_url(
         return {"status": "OK", "upload_url": upload_url}
 
     except requests.HTTPError as e:
-        logger.exception(e)
+        logger.warning(e)
         match r.status_code:
             case 401:
                 return {
@@ -209,7 +209,7 @@ def create_upload_url(
                 return {"status": "NIET-VALIDE", "errors": f"Error: {e}."}
 
     except Exception as e:
-        logger.exception(e)
+        logger.warning(e)
         return {
             "status": "NIET-VALIDE",
             "errors": f"Er is een fout opgetreden bij het aanmaken van de upload: {e}.",
@@ -243,7 +243,7 @@ def add_xml_to_upload(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        logger.exception(e)
+        logger.warning(e)
         return None
 
 
@@ -276,7 +276,7 @@ def create_delivery(
         return r.headers["Location"]
 
     except requests.RequestException as e:
-        logger.exception(e)
+        logger.warning(e)
         return None
 
 
@@ -299,7 +299,7 @@ def check_delivery_status(
         return r.json()
 
     except requests.RequestException as e:
-        logger.exception(e)
+        logger.warning(e)
         return None
 
 

@@ -286,7 +286,7 @@ class GMWObjectImporter(ObjectImporter):
                 return None
 
         except Exception as e:
-            logger.exception(e)
+            logger.warning(e)
             return None
 
         transacties = r.json().get("transacties", None)
