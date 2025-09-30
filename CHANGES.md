@@ -9,6 +9,7 @@
 -   Refactor: cleaned the old BRODelivery class which was unused
 -   Refactor: rename duplicates to miscellaneous
 -   Feature: add base for message finder
+-   Bugfix: correct stall by GMN-bulktask
 
 
 ## 1.41 (2025-09-23)
