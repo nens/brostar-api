@@ -1,11 +1,12 @@
+import datetime
 import logging
 from functools import partial
 
 from pyproj import Transformer
 
 from frd.models import FRD
-from gld.models import GLD
-from gmn.models import GMN
+from gld.models import GLD, Observation
+from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger(__name__)
@@ -132,6 +133,34 @@ def create_gmw_event(
     )
 
 
+def create_gmw_removal(
+    bro_id: str,
+    metadata: dict,
+    sourcedocument_data: dict,
+    data_owner: str,
+) -> None:
+    """Generic factory for creating GMW events."""
+    try:
+        gmw = GMW.objects.get(bro_id=bro_id, data_owner=data_owner)
+    except GMW.DoesNotExist:
+        logger.error(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
+        return
+
+    Event.objects.update_or_create(
+        gmw=gmw,
+        event_name="GMW_Removal",
+        event_date=sourcedocument_data.get("eventDate"),
+        data_owner=data_owner,
+        defaults={
+            "metadata": metadata,
+            "sourcedocument_data": sourcedocument_data,
+        },
+    )
+
+    gmw.removed = "ja"
+    gmw.save()
+
+
 def find_linked_gmns(gmn_bro_ids: list[str] | str) -> list[GMN]:
     if isinstance(gmn_bro_ids, str):
         gmn_bro_ids = [gmn_bro_ids]
@@ -161,6 +190,42 @@ def create_gld(
     return
 
 
+def create_gld_addition(
+    bro_id: str,
+    metadata: dict,
+    sourcedocument_data: dict,
+    data_owner: str,
+) -> None:
+    """Generic factory for creating GLD Observations."""
+    try:
+        gld = GLD.objects.get(bro_id=bro_id, data_owner=data_owner)
+    except GLD.DoesNotExist:
+        logger.error(f"GLD not found for bro_id={bro_id}, owner={data_owner}")
+        return
+
+    Observation.objects.update_or_create(
+        gld=gld,
+        observation_id=sourcedocument_data.get("observationId"),
+        data_owner=data_owner,
+        defaults={
+            "begin_position": sourcedocument_data.get("beginPosition"),
+            "end_position": sourcedocument_data.get("endPosition"),
+            "result_time": sourcedocument_data.get("resultTime"),
+            "validation_status": sourcedocument_data.get("validationStatus"),
+            "investigator_kvk": sourcedocument_data.get("investigatorKvk"),
+            "observation_type": sourcedocument_data.get("observationType"),
+            "process_reference": sourcedocument_data.get("processReference"),
+            "air_pressure_compensation_type": sourcedocument_data.get(
+                "airPressureCompensationType"
+            ),
+            "evaluation_procedure": sourcedocument_data.get("evaluationProcedure"),
+            "measurement_instrument_type": sourcedocument_data.get(
+                "measurementInstrumentType"
+            ),
+        },
+    )
+
+
 def create_gmn(
     bro_id: str, metadata: dict, sourcedocument_data: dict, data_owner: str
 ) -> None:
@@ -178,6 +243,70 @@ def create_gmn(
         },
     )
     return
+
+
+def create_gmn_measuringpoint(
+    *,
+    bro_id: str,
+    event_type: str,
+    metadata: dict,
+    sourcedocument_data: dict,
+    data_owner: str,
+) -> None:
+    """Generic factory for creating GMN Measuring Points."""
+    try:
+        gmn = GMN.objects.get(bro_id=bro_id, data_owner=data_owner)
+    except GMN.DoesNotExist:
+        logger.error(f"GMN not found for bro_id={bro_id}, owner={data_owner}")
+        return
+
+    last_measuring_point = (
+        Measuringpoint.objects.filter(
+            gmn=gmn,
+            measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+            data_owner=data_owner,
+            tube_start_date__lt=sourcedocument_data.get("eventDate"),
+        )
+        .order_by("-tube_start_date")
+        .first()
+    )
+
+    Measuringpoint.objects.update_or_create(
+        gmn=gmn,
+        data_owner=data_owner,
+        measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+        gmw_bro_id=sourcedocument_data.get("gmwBroId"),
+        tube_number=sourcedocument_data.get("tubeNumber"),
+        event_type=event_type,
+        defaults={
+            "tube_start_date": sourcedocument_data.get("eventDate"),
+            "measuringpoint_start_date": last_measuring_point.measuringpoint_start_date
+            if last_measuring_point
+            else sourcedocument_data.get("eventDate"),
+        },
+    )
+
+    if last_measuring_point and event_type == "GMN_MeasuringPointEndDate":
+        # Set all measuring points that started before this end date to have this end date
+        Measuringpoint.objects.filter(
+            gmn=gmn,
+            measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+            data_owner=data_owner,
+            tube_start_date__lt=datetime.datetime.strptime(
+                sourcedocument_data.get("eventDate"), "%Y-%m-%d"
+            ),
+        ).update(
+            measuringpoint_end_date=sourcedocument_data.get("eventDate"),
+        )
+
+        last_measuring_point.refresh_from_db()
+        # Update the last tube to have the tube_end_date as well
+        last_measuring_point.tube_end_date = sourcedocument_data.get("eventDate")
+        last_measuring_point.save()
+
+    elif last_measuring_point and event_type == "GMN_TubeReference":
+        last_measuring_point.tube_end_date = sourcedocument_data.get("eventDate")
+        last_measuring_point.save()
 
 
 def create_frd(
@@ -221,11 +350,19 @@ CREATE_FUNCTION_MAPPING = {
     "GMW_Shortening": partial(create_gmw_event, event_type="GMW_Shortening"),
     "GMW_ElectrodeStatus": partial(create_gmw_event, event_type="GMW_ElectrodeStatus"),
     "GMW_Maintainer": partial(create_gmw_event, event_type="GMW_Maintainer"),
-    # "GMW_Removal": create_gmw_removal,
+    "GMW_Removal": create_gmw_removal,
     "GLD_StartRegistration": create_gld,
-    # "GLD_Addition": create_gld_addition,
+    "GLD_Addition": create_gld_addition,
     "GMN_StartRegistration": create_gmn,
-    # "GMN_MeasuringPoint": create_gmn_measuringpoint,
+    "GMN_MeasuringPoint": partial(
+        create_gmn_measuringpoint, event_type="GMN_MeasuringPoint"
+    ),
+    "GMN_MeasuringPointEndDate": partial(
+        create_gmn_measuringpoint, event_type="GMN_MeasuringPointEndDate"
+    ),
+    "GMN_TubeReference": partial(
+        create_gmn_measuringpoint, event_type="GMN_TubeReference"
+    ),
     "FRD_StartRegistration": create_frd,
     # "GAR": create_gar,  # TODO
 }
