@@ -2,10 +2,10 @@
 import pytest
 
 from api.models import UploadTask
-from api.tests.fixtures import gmw, organisation  # noqa: F401
+from api.tests.fixtures import gld, gmn, gmw, organisation  # noqa: F401
 from frd.models import FRD
-from gld.models import GLD  # Example model to check side effects
-from gmn.models import GMN
+from gld.models import GLD, Observation  # Example model to check side effects
+from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
 
 from ..models import Organisation
@@ -216,11 +216,83 @@ def test_post_save_uploadtask_triggers_create_objects_gld(organisation: Organisa
     #    For example, if create_objects makes DB entries:
     assert GLD.objects.filter(bro_id="GLD000000012345").exists()
 
-    gld = GLD.objects.get(bro_id="GLD000000012345")
-    assert gld.internal_id == "test_upload"
-    assert gld.bro_id == "GLD000000012345"
-    assert gld.gmw_bro_id == "BRO123"
-    assert int(gld.tube_number) == 1
+    gld_instance = GLD.objects.get(bro_id="GLD000000012345")
+    assert gld_instance.internal_id == "test_upload"
+    assert gld_instance.bro_id == "GLD000000012345"
+    assert gld_instance.gmw_bro_id == "BRO123"
+    assert int(gld_instance.tube_number) == 1
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_create_objects_gld_observation(
+    organisation: Organisation,  # noqa: F811
+    gld: GLD,  # noqa: F811
+):
+    """
+    Test that saving an UploadTask with status COMPLETED calls create_objects.
+    We don’t mock, so we directly check the side effects on the database.
+    """
+    # 2. Create a completed UploadTask
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GLD_Addition",
+        request_type="registration",
+        status="COMPLETED",
+        bro_id=gld.bro_id,
+        metadata={
+            "broId": "GLD000000098254",
+            "qualityRegime": "IMBRO",
+            "requestReference": "GLD000000098254: IMBRO controlemeting 2021-02-04T12:20:14Z-None (2025-10-01T20:41:20Z)",
+            "deliveryAccountableParty": "08213234",
+        },
+        sourcedocument_data={
+            "date": "2025-05-08",
+            "resultTime": "2025-05-08T10:16:40+02:00",
+            "endPosition": "2025-05-08",
+            "beginPosition": "2021-08-23",
+            "observationId": "_1ae0ebbf-4845-4237-aa68-f6a0c3b7e6bc",
+            "timeValuePairs": [
+                {
+                    "time": "2025-02-05T13:38:31+01:00",
+                    "value": 5.74,
+                    "censorReason": None,
+                    "censoringLimitvalue": None,
+                    "statusQualityControl": "goedgekeurd",
+                },
+                {
+                    "time": "2025-05-08T10:16:40+02:00",
+                    "value": 5.2,
+                    "censorReason": None,
+                    "censoringLimitvalue": None,
+                    "statusQualityControl": "goedgekeurd",
+                },
+            ],
+            "investigatorKvk": "08213234",
+            "observationType": "controlemeting",
+            "processReference": "vitensMeetprotocolGrondwater",
+            "validationStatus": None,
+            "evaluationProcedure": "vitensBeoordelingsprotocolGrondwater",
+            "observationProcessId": "_aca10522-1541-492e-bd6f-753112d58249",
+            "measurementTimeseriesId": "_dfe508cf-862e-4b67-961a-45dcdd137f0d",
+            "measurementInstrumentType": "elektronischPeilklokje",
+            "airPressureCompensationType": None,
+        },
+    )
+
+    assert GLD.objects.filter(bro_id=gld.bro_id).exists()
+    assert Observation.objects.filter(gld=gld).exists()
+
+    observation = Observation.objects.get(gld=gld)
+
+    assert observation.observation_id == "_1ae0ebbf-4845-4237-aa68-f6a0c3b7e6bc"
+    assert observation.begin_position.isoformat() == "2021-08-23"
+    assert observation.end_position.isoformat() == "2025-05-08"
+    assert observation.result_time.isoformat() == "2025-05-08T08:16:40+00:00"
+    assert observation.investigator_kvk == "08213234"
+    assert observation.observation_type == "controlemeting"
+    assert observation.process_reference == "vitensMeetprotocolGrondwater"
+    assert observation.measurement_instrument_type == "elektronischPeilklokje"
 
 
 @pytest.mark.django_db
@@ -258,12 +330,12 @@ def test_post_save_uploadtask_triggers_create_objects_gmn(organisation: Organisa
     #    For example, if create_objects makes DB entries:
     assert GMN.objects.filter(bro_id="BRO123").exists()
 
-    gmn = GMN.objects.get(bro_id="BRO123")
-    assert gmn.internal_id == "test_upload"
-    assert gmn.name == "Test GMN"
-    assert gmn.delivery_context == "waterwetPeilbeheer"
-    assert gmn.monitoring_purpose == "natuurbeheer"
-    assert gmn.groundwater_aspect == "kwaliteit"
+    gmn_instance = GMN.objects.get(bro_id="BRO123")
+    assert gmn_instance.internal_id == "test_upload"
+    assert gmn_instance.name == "Test GMN"
+    assert gmn_instance.delivery_context == "waterwetPeilbeheer"
+    assert gmn_instance.monitoring_purpose == "natuurbeheer"
+    assert gmn_instance.groundwater_aspect == "kwaliteit"
 
 
 @pytest.mark.django_db
@@ -303,7 +375,7 @@ def test_post_save_uploadtask_triggers_create_objects_frd(organisation: Organisa
     assert frd.internal_id == "test_upload"
 
 
-EVENT_TYPES = [
+GMW_EVENT_TYPES = [
     "GMW_Positions",
     "GMW_PositionsMeasuring",
     "GMW_WellHeadProtector",
@@ -317,6 +389,7 @@ EVENT_TYPES = [
     "GMW_Shortening",
     "GMW_ElectrodeStatus",
     "GMW_Maintainer",
+    "GMW_Removal",
 ]
 
 
@@ -330,7 +403,7 @@ def test_post_save_uploadtask_triggers_create_objects_gmw_event(
     We don’t mock, so we directly check the side effects on the database.
     """
     # 2. Create a completed UploadTask
-    for event in EVENT_TYPES:
+    for event in GMW_EVENT_TYPES:
         UploadTask.objects.create(
             data_owner=organisation,
             bro_domain="GMW",
@@ -357,7 +430,82 @@ def test_post_save_uploadtask_triggers_create_objects_gmw_event(
         #    Here you should assert on the *real side effects* of create_objects.
         #    For example, if create_objects makes DB entries:
         assert GMW.objects.filter(bro_id=gmw.bro_id).exists()
+        if event == "GMW_Removal":
+            gmw = GMW.objects.get(bro_id=gmw.bro_id)
+            assert gmw.removed == "ja"
+
         assert Event.objects.filter(gmw=gmw, event_name=event).exists()
+
+
+GMN_EVENT_TYPES = [
+    "GMN_MeasuringPoint",
+    "GMN_TubeReference",
+    "GMN_MeasuringPointEndDate",
+]
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_create_objects_gmn_event(
+    organisation: Organisation,  # noqa: F811
+    gmn: GMN,  # noqa: F811
+):
+    """
+    Test that saving an UploadTask with status COMPLETED calls create_objects.
+    We don’t mock, so we directly check the side effects on the database.
+    """
+    # 2. Create a completed UploadTask
+    event_dates = ["2024-09-10", "2024-10-10", "2024-11-10"]
+    for event, event_date in zip(GMN_EVENT_TYPES, event_dates):
+        UploadTask.objects.create(
+            data_owner=organisation,
+            bro_domain="GMN",
+            registration_type=event,
+            request_type="registration",
+            status="COMPLETED",
+            bro_id=gmn.bro_id,
+            metadata={
+                "qualityRegime": "IMBRO/A",
+                "requestReference": "BROSTAR_Request",
+                "deliveryAccountableParty": "50616641",
+            },
+            sourcedocument_data={
+                "objectIdAccountableParty": "test_upload",
+                "eventDate": event_date,
+                "measuringpointCode": "MP1",
+                "gmwBroId": "GMW000000034567"
+                if event == "GMN_MeasuringPoint"
+                else "GMW000000012345",
+                "tubeNumber": 1,
+            },
+        )
+
+        # 3. Since post_save signal should have fired,
+        #    we check whether create_objects did its work.
+        #    Here you should assert on the *real side effects* of create_objects.
+        #    For example, if create_objects makes DB entries:
+        assert GMN.objects.filter(bro_id=gmn.bro_id).exists()
+        assert Measuringpoint.objects.filter(gmn=gmn, event_type=event).exists()
+
+        if event == "GMN_MeasuringPointEndDate":
+            measuringpoint = Measuringpoint.objects.get(
+                gmn=gmn, measuringpoint_code="MP1", event_type="GMN_MeasuringPoint"
+            )
+            assert measuringpoint.measuringpoint_end_date.isoformat() == "2024-11-10"
+            assert measuringpoint.measuringpoint_start_date.isoformat() == "2024-09-10"
+            assert measuringpoint.tube_end_date.isoformat() == "2024-10-10"
+
+            measuringpoint = Measuringpoint.objects.get(
+                gmn=gmn, measuringpoint_code="MP1", event_type="GMN_TubeReference"
+            )
+            assert measuringpoint.measuringpoint_end_date.isoformat() == "2024-11-10"
+            assert measuringpoint.measuringpoint_start_date.isoformat() == "2024-09-10"
+            assert measuringpoint.tube_end_date.isoformat() == "2024-11-10"
+
+        elif event == "GMN_TubeReference":
+            measuringpoint = Measuringpoint.objects.get(
+                gmn=gmn, measuringpoint_code="MP1", event_type="GMN_MeasuringPoint"
+            )
+            assert measuringpoint.tube_end_date.isoformat() == "2024-10-10"
 
 
 @pytest.mark.django_db

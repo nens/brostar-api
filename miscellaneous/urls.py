@@ -12,7 +12,7 @@ urlpatterns = [
         views.duplicates_download,
         name="duplicaat_download_file",
     ),
-    path("berichten-hulp/", views.berichten_index, name="berichten_index"),
+    path("berichten-hulp/uitleg/", views.berichten_uitleg, name="berichten_uitleg"),
     path("berichten-hulp/gmw/", views.berichten_gmw, name="berichten_gmw"),
     path("berichten-hulp/gld/", views.berichten_gld, name="berichten_gld"),
     path("berichten-hulp/gmn/", views.berichten_gmn, name="berichten_gmn"),

@@ -5,6 +5,9 @@
 
 -   Bugfix: correct stall by GMN-bulktask
 -   Enhancement: added removed, registration_status to GMW creation
+-   Enhancement: added handling of GMW_Removal (GMW)
+-   Enhancement: added creation of Observations (GLD)
+-   Enhancement: added creation of Measuringpoints (GMN)
 -   Enhancement: better error handling for tasks
 -   Enhancement: no longer report common exceptions to sentry
 -   Feature: add base for message finder
