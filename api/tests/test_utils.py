@@ -152,7 +152,7 @@ def test_create_upload_url():
         result = create_upload_url("bro_user", "bro_pass", project_number)
         assert result["status"] == "NIET-VALIDE"
         assert result["errors"] == [
-            f"Het gebruikte token is niet gemachtigd voor project {project_number}."
+            f"Het gebruikte token is niet gemachtigd voor project {project_number}"
         ]
 
 
