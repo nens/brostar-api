@@ -207,6 +207,11 @@ def berichten_index(request):
     return render(request, "miscellaneous/berichten_index.html")
 
 
+def berichten_uitleg(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_uitleg.html")
+
+
 ## GMW
 def berichten_gmw(request):
     """View for the berichten-hulp page"""

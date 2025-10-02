@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from api import models as api_models
 from gar import models as gar_models
+from gld import models as gld_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
 
@@ -55,6 +56,8 @@ def gmn(organisation):
     return gmn_models.GMN.objects.create(
         data_owner=organisation,
         bro_id="GMN123456789",
+        quality_regime="IMBRO/A",
+        name="Test GMN",
     )
 
 
@@ -63,6 +66,17 @@ def gmw(organisation):
     return gmw_models.GMW.objects.create(
         data_owner=organisation,
         bro_id="GMW123456789",
+    )
+
+
+@pytest.fixture
+def gld(organisation):
+    return gld_models.GLD.objects.create(
+        data_owner=organisation,
+        bro_id="GLD123456789",
+        gmw_bro_id="GMW123456789",
+        tube_number="1",
+        quality_regime="IMBRO/A",
     )
 
 
