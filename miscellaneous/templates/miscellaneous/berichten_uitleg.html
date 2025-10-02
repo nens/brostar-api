@@ -1,0 +1,54 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basisregistratie Ondergrond - Berichten Hulp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style_berichten.css' %}" />
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
+        <p>Powered by: BROSTAR</p>
+      </div>
+      <div class="card-body">
+        <h4>De Basisregistratie Ondergrond berichten tijdlijn</h4>
+        <p>
+          Om te begrijpen hoe een Basisregistratie-bericht werkt, is het belangrijk om te begrijpen hoe een registratie in de BRO is opgebouwed. Als het gaat om een nieuwe registratie, dan is er in de basisregistratie nog niks bekend over dit object - laten we voor dit voorbeeld een peilbuis nemen. De peilbuis moet dus in eerste instantie aangemaakt worden in de database met een zogenoemde 'GMW-Inrichten' bericht - dit is dus eigenlijk de start van de registratie, en wordt in andere BRO-domeinen dan ook vaak met StartRegistratie bestempeld.
+        </p>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+    <script>
+        function redirectToGMW() {
+            window.location.href = '/gmw/constructie/';
+        }
+
+        function redirectToBegin() {
+            // Replace with your actual Django URL
+            window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+        }
+
+        function redirectToPricing() {
+            // Replace with your actual Django URL for pricing page
+            window.location.href = "{% url 'miscellaneous:pricing' %}";
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/main.js' %}"></script>
+  </body>
+</html>
+5
