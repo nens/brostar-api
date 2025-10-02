@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.43 (unreleased)
+## 1.43 (2025-10-02)
 
 -   Hotfix: utils tests
 
