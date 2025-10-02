@@ -38,6 +38,8 @@ class XMLGenerator:
         self.metadata = metadata
         self.sourcedocs_data = sourcedocs_data
         self.template_filepath = f"{request_type}_{registration_type}.html"
+        self.status = "PENDING"
+        self.error_message = ""
 
     def create_xml_file(self) -> str:
         """Fills in the provided data into the templates"""
@@ -49,14 +51,19 @@ class XMLGenerator:
                     "sourcedocs_data": self.sourcedocs_data,
                 },
             )
+            self.status = "COMPLETED"
             return rendered_xml
 
         except TemplateDoesNotExist as e:
-            logger.warning(e)
-            raise XMLGenerationError(
-                "De aangeleverde combinatie van request type en registratie type is niet mogelijk. Als de combinatie in de BRO wel mogelijk is, vraag dan deze combinatie aan bij Nelen & Schuurmans."
-            ) from e
+            logger.info(f"Template does not exist: {e}")
+            self.status = "FAILED"
+            self.error_message = (
+                f"Template for {self.template_filepath.strip('.html')} does not exist."
+            )
+            return ""
 
         except Exception as e:
-            logger.warning(e)
-            raise XMLGenerationError(e) from e
+            logger.info(f"Failed during XML generation: {e}")
+            self.status = "FAILED"
+            self.error_message = f"Failed during XML generation: {e}"
+            return ""

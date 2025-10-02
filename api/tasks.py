@@ -26,21 +26,18 @@ def validate_xml_file_task(
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=upload_task_instance_uuid
     )
-    try:
-        generator = XMLGenerator(
-            upload_task_instance.registration_type,
-            upload_task_instance.request_type,
-            upload_task_instance.metadata,
-            upload_task_instance.sourcedocument_data,
-        )
-        xml = generator.create_xml_file()
-    except Exception as e:
+    generator = XMLGenerator(
+        upload_task_instance.registration_type,
+        upload_task_instance.request_type,
+        upload_task_instance.metadata,
+        upload_task_instance.sourcedocument_data,
+    )
+    xml = generator.create_xml_file()
+    if generator.status == "FAILED":
         upload_task_instance.status = "FAILED"
-        upload_task_instance.log = (
-            f"Error tijdens het genereren van het XML bestand: {str(e)}"
-        )
+        upload_task_instance.log = generator.error_message
         upload_task_instance.save()
-        logger.info(f"Error generating XML file: {e}")
+        logger.info(f"Error generating XML file: {generator.error_message}")
         return None
 
     validation_response = utils.validate_xml_file(
@@ -66,7 +63,9 @@ def validate_xml_file_task(
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
-        logger.warning("Errors tijdens het valideren van het XML bestand")
+        logger.info(
+            f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
+        )
         return None
 
     upload_task_instance.progress = 50.0
@@ -97,21 +96,18 @@ def deliver_xml_file_task(context):
         upload_task_instance.save()
         return None
 
-    try:
-        generator = XMLGenerator(
-            upload_task_instance.registration_type,
-            upload_task_instance.request_type,
-            upload_task_instance.metadata,
-            upload_task_instance.sourcedocument_data,
-        )
-        xml = generator.create_xml_file()
-    except Exception as e:
+    generator = XMLGenerator(
+        upload_task_instance.registration_type,
+        upload_task_instance.request_type,
+        upload_task_instance.metadata,
+        upload_task_instance.sourcedocument_data,
+    )
+    xml = generator.create_xml_file()
+    if generator.status == "FAILED":
         upload_task_instance.status = "FAILED"
-        upload_task_instance.log = (
-            f"Error tijdens het genereren van het XML bestand: {str(e)}"
-        )
+        upload_task_instance.log = generator.error_message
         upload_task_instance.save()
-        logger.info(f"Error generating XML file: {e}")
+        logger.info(f"Error generating XML file: {generator.error_message}")
         return None
 
     upload_url = upload["upload_url"]
@@ -132,7 +128,6 @@ def deliver_xml_file_task(context):
             "Error tijdens het toevoegen van het XML bestand aan de upload"
         )
         upload_task_instance.save()
-        logger.warning("Error adding XML to upload")
         return None
 
     delivery_url = utils.create_delivery(
@@ -217,7 +212,7 @@ def import_bro_data_task(import_task_instance_uuid: str) -> None:
         importer = bulk_import.BulkImporter(import_task_instance_uuid)
         importer.run()
     except Exception as e:
-        logger.warning(e)
+        logger.info(f"Error during bulk-import: {e}")
 
 
 def convert_error_to_bro_error(error_message: str):
@@ -248,7 +243,7 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
     error_type = exc.__class__.__name__
     error_message = str(exc)
 
-    logger.warning(f"Error during {step_name}: {error_type} - {error_message}")
+    logger.info(f"Error during {step_name}: {error_type} - {error_message}")
 
     # Update the task status
     upload_task.status = "FAILED"
@@ -310,7 +305,7 @@ def gar_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.warning(e)
+        logger.info(f"Error during GAR bulk upload: {e}")
 
 
 @shared_task(queue="upload")
@@ -326,7 +321,7 @@ def gld_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.warning(e)
+        logger.info(f"Error during GLD bulk upload: {e}")
 
 
 @shared_task(queue="upload")
@@ -342,4 +337,4 @@ def gmn_bulk_upload_task(
         )
         uploader.process()
     except Exception as e:
-        logger.warning(e)
+        logger.info(f"Error during GMN bulk upload: {e}")

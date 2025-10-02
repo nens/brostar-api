@@ -168,7 +168,7 @@ def find_linked_gmns(gmn_bro_ids: list[str] | str) -> list[GMN]:
     if len(gmns) != len(gmn_bro_ids):
         found_bro_ids = {gmn.bro_id for gmn in gmns}
         missing = set(gmn_bro_ids) - found_bro_ids
-        logger.warning(f"Could not find GMNs with bro_id(s): {', '.join(missing)}")
+        logger.info(f"Could not find GMNs with bro_id(s): {', '.join(missing)}")
     return list(gmns)
 
 
@@ -383,8 +383,8 @@ def create_objects(
             data_owner=data_owner,
         )
     except KeyError:
-        logger.warning(
-            f"No create function mapped for registration type: {registration_type}. \nNo objects created."
+        logger.info(
+            f"Unable to create as there is no function mapped for registration type: {registration_type}."
         )
         return
 

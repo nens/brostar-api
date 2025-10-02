@@ -1,5 +1,3 @@
-import pytest
-
 from api.bro_upload import object_upload, utils
 
 
@@ -35,18 +33,21 @@ def test_xml_generator1():
     )
 
     assert generator.create_xml_file()
+    assert generator.status == "COMPLETED"
 
 
 def test_xml_generator2():
     """Tests a non existing combination of registration_type and request type."""
-    with pytest.raises(object_upload.XMLGenerationError):
-        generator = object_upload.XMLGenerator(
-            registration_type="GMN_StartRegistration",
-            request_type="insert",
-            metadata={},
-            sourcedocs_data={},
-        )
-        generator.create_xml_file()
+    generator = object_upload.XMLGenerator(
+        registration_type="GMN_StartRegistration",
+        request_type="insert",
+        metadata={},
+        sourcedocs_data={},
+    )
+    generator.create_xml_file()
+
+    assert generator.status == "FAILED"
+    assert "does not exist" in generator.error_message
 
 
 def test_xml_generator3():
@@ -77,6 +78,7 @@ def test_xml_generator3():
     )
 
     assert generator.create_xml_file()
+    assert generator.status == "COMPLETED"
 
 
 def test_simplify_validation_errors():

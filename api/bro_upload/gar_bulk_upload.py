@@ -143,9 +143,7 @@ class GARBulkUploader:
                 self.bulk_upload_instance.progress += progress_per_row
                 self.bulk_upload_instance.save()
             except Exception as e:
-                logger.warning(
-                    f"Failed to upload GAR ({row.bro_id}) in bulk upload: {e}"
-                )
+                logger.info(f"Failed to upload GAR ({row.bro_id}) in bulk upload: {e}")
                 self.bulk_upload_instance.progress += progress_per_row
                 self.bulk_upload_instance.save()
                 # Skipping this row as it failed.
