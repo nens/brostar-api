@@ -95,7 +95,7 @@ def test_validate_xml_file():
 
         result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
         assert result["status"] == "NIET-VALIDE"
-        assert "niet gemachtigd" in result["errors"]
+        assert "niet gemachtigd" in str(result["errors"])
 
         # --- Forbidden (403) failure ---
         mock_response = mock.Mock()
@@ -107,7 +107,7 @@ def test_validate_xml_file():
 
         result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
         assert result["status"] == "NIET-VALIDE"
-        assert "niet de juiste rechten" in result["errors"]
+        assert "niet de juiste rechten" in str(result["errors"])
 
 
 # Test create_upload_url function (mocked)
@@ -151,10 +151,9 @@ def test_create_upload_url():
 
         result = create_upload_url("bro_user", "bro_pass", project_number)
         assert result["status"] == "NIET-VALIDE"
-        assert (
-            result["errors"]
-            == f"Het gebruikte token is niet gemachtigd voor project {project_number}"
-        )
+        assert result["errors"] == [
+            f"Het gebruikte token is niet gemachtigd voor project {project_number}."
+        ]
 
 
 # Test add_xml_to_upload function (mocked)

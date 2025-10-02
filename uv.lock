@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -99,7 +99,7 @@ wheels = [
 
 [[package]]
 name = "brostar-api"
-version = "1.42.dev0"
+version = "1.43.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "celery", extra = ["redis"] },
