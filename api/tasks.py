@@ -59,7 +59,7 @@ def validate_xml_file_task(
 
     if validation_response["status"] != "VALIDE":
         upload_task_instance.progress = 50.0
-        upload_task_instance.log = "XML is niet geldig."
+        upload_task_instance.log = "XML is niet geldig"
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
         upload_task_instance.save()
@@ -69,7 +69,7 @@ def validate_xml_file_task(
         return None
 
     upload_task_instance.progress = 50.0
-    upload_task_instance.log = "XML is succesvol gevalideerd."
+    upload_task_instance.log = "XML is succesvol gevalideerd"
     upload_task_instance.save(update_fields=["progress", "log"])
     return context
 
