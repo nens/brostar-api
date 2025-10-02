@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.42 (unreleased)
+## 1.42 (2025-10-02)
 
 
 -   Bugfix: correct stall by GMN-bulktask
