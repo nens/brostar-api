@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     "frd.apps.FrdConfig",
     "miscellaneous.apps.MiscellaneousConfig",
     "nens_auth_client",
-    "django_prometheus",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -81,7 +80,6 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 MIDDLEWARE = [
-    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -90,7 +88,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
-    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 # PROMETHEUS
@@ -195,11 +192,12 @@ CORS_ALLOWED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": "brostar",
         "USER": DATABASE_USER,
         "PASSWORD": DATABASE_PASSWORD,
         "HOST": DATABASE_HOST,
+        "CONN_MAX_AGE": 60,
     }
 }
 
