@@ -20,11 +20,12 @@ logger = getLogger(__name__)
 
 
 @shared_task(queue="upload")
-def generate_xml_file_task(upload_task_instance_uuid: str):
+def validate_xml_file_task(
+    upload_task_instance_uuid: str, bro_username: str, bro_password: str
+):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=upload_task_instance_uuid
     )
-
     try:
         generator = XMLGenerator(
             upload_task_instance.registration_type,
@@ -33,37 +34,31 @@ def generate_xml_file_task(upload_task_instance_uuid: str):
             upload_task_instance.sourcedocument_data,
         )
         xml = generator.create_xml_file()
-        upload_task_instance.progress = 25
-        upload_task_instance.log = "XML gegenereerd."
-        upload_task_instance.save(update_fields=["progress", "log"])
-
-        return {
-            "upload_task_instance_uuid": upload_task_instance_uuid,
-            "xml_file": xml,
-        }
-
     except Exception as e:
-        logger.warning(f"Error generating XML file: {e}")
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = (
+            f"Error tijdens het genereren van het XML bestand: {str(e)}"
+        )
+        upload_task_instance.save()
+        logger.info(f"Error generating XML file: {e}")
         return None
-
-
-@shared_task(queue="upload")
-def validate_xml_file_task(context: dict, bro_username: str, bro_password: str):
-    if context is None:
-        return None
-
-    upload_task_instance = api_models.UploadTask.objects.get(
-        uuid=context["upload_task_instance_uuid"]
-    )
 
     validation_response = utils.validate_xml_file(
-        context["xml_file"],
+        xml,
         bro_username,
         bro_password,
         upload_task_instance.project_number,
     )
 
-    context.update({"bro_password": bro_password, "bro_username": bro_username})
+    # Clean up memory
+    del generator
+    del xml
+
+    context = {
+        "upload_task_instance_uuid": upload_task_instance_uuid,
+        "bro_password": bro_password,
+        "bro_username": bro_username,
+    }
 
     if validation_response["status"] != "VALIDE":
         upload_task_instance.progress = 50.0
@@ -102,13 +97,35 @@ def deliver_xml_file_task(context):
         upload_task_instance.save()
         return None
 
+    try:
+        generator = XMLGenerator(
+            upload_task_instance.registration_type,
+            upload_task_instance.request_type,
+            upload_task_instance.metadata,
+            upload_task_instance.sourcedocument_data,
+        )
+        xml = generator.create_xml_file()
+    except Exception as e:
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = (
+            f"Error tijdens het genereren van het XML bestand: {str(e)}"
+        )
+        upload_task_instance.save()
+        logger.info(f"Error generating XML file: {e}")
+        return None
+
     upload_url = upload["upload_url"]
     succes = utils.add_xml_to_upload(
-        context["xml_file"],
+        xml,
         upload_url,
         bro_username,
         bro_password,
     )
+
+    # Clean up memory
+    del generator
+    del xml
+
     if not succes:
         upload_task_instance.status = "FAILED"
         upload_task_instance.log = (
@@ -265,12 +282,9 @@ def upload_task(
 
     # Add error handling to each task using .on_error()
     workflow = chain(
-        generate_xml_file_task.s(upload_task_instance_uuid).on_error(
-            handle_task_error.s(upload_task_instance_uuid, "generate_xml")
-        ),
-        validate_xml_file_task.s(bro_username, bro_password).on_error(
-            handle_task_error.s(upload_task_instance_uuid, "validate_xml")
-        ),
+        validate_xml_file_task.s(
+            upload_task_instance_uuid, bro_username, bro_password
+        ).on_error(handle_task_error.s(upload_task_instance_uuid, "validate_xml")),
         deliver_xml_file_task.s().on_error(
             handle_task_error.s(upload_task_instance_uuid, "deliver_xml")
         ),
