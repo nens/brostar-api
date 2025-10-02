@@ -128,7 +128,7 @@ def prepare_html(df: pd.DataFrame):
             border=0,
         )
     except Exception as e:
-        logger.warning(f"Error processing files: {str(e)}")
+        logger.info(f"Error processing files: {str(e)}")
         csv_html = None
 
     return csv_html

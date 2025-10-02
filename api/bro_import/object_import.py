@@ -282,11 +282,11 @@ class GMWObjectImporter(ObjectImporter):
 
             # Check if response has content
             if not r.content or len(r.content.strip()) == 0:
-                logger.warning(f"Empty response for bro_id: {bro_id}")
+                logger.info(f"Empty response for bro_id: {bro_id}")
                 return None
 
         except Exception as e:
-            logger.warning(e)
+            logger.info(f"Error fetching internal ID for bro_id {bro_id}: {e}")
             return None
 
         transacties = r.json().get("transacties", None)

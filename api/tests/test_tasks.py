@@ -1,42 +1,23 @@
-import uuid
 from unittest import mock
 
 from api.tasks import (
     check_delivery_status_task,
     deliver_xml_file_task,
-    generate_xml_file_task,
     validate_xml_file_task,
 )
 
 
 @mock.patch("api.tasks.api_models.UploadTask.objects.get")
-@mock.patch("api.tasks.XMLGenerator")
-def test_generate_xml_file_task(mock_generator_class, mock_get):
-    uuid_string = f"_{uuid.uuid4()}"
-    mock_instance = mock.Mock()
-    mock_get.return_value = mock_instance
-
-    mock_generator = mock.Mock()
-    mock_generator.create_xml_file.return_value = "<xml>dummy</xml>"
-    mock_generator_class.return_value = mock_generator
-
-    result = generate_xml_file_task(uuid_string)
-
-    assert result["upload_task_instance_uuid"] == uuid_string
-    assert result["xml_file"] == "<xml>dummy</xml>"
-    mock_instance.save.assert_called_once()
-
-
-@mock.patch("api.tasks.api_models.UploadTask.objects.get")
 @mock.patch("api.tasks.utils.validate_xml_file")
-def test_validate_xml_file_task_valid(mock_validate, mock_get):
+@mock.patch("api.bro_upload.object_upload.XMLGenerator.create_xml_file")
+def test_validate_xml_file_task_valid(mock_create, mock_validate, mock_get):
     mock_instance = mock.Mock()
     mock_get.return_value = mock_instance
 
-    context = {"upload_task_instance_uuid": "uuid", "xml_file": "<xml>dummy</xml>"}
     mock_validate.return_value = {"status": "VALIDE"}
+    mock_create.return_value = "<xml>data</xml>"
 
-    result = validate_xml_file_task(context, "user", "pass")
+    result = validate_xml_file_task("uuid", "user", "pass")
 
     assert result["bro_username"] == "user"
     assert mock_instance.save.called
@@ -46,12 +27,17 @@ def test_validate_xml_file_task_valid(mock_validate, mock_get):
 @mock.patch("api.tasks.utils.create_upload_url")
 @mock.patch("api.tasks.utils.add_xml_to_upload")
 @mock.patch("api.tasks.utils.create_delivery")
+@mock.patch("api.bro_upload.object_upload.XMLGenerator.create_xml_file")
 def test_deliver_xml_file_task(
-    mock_create_delivery, mock_add_xml, mock_create_upload_url, mock_get
+    mock_create_xml,
+    mock_create_delivery,
+    mock_add_xml,
+    mock_create_upload_url,
+    mock_get,
 ):
     mock_instance = mock.Mock()
     mock_get.return_value = mock_instance
-
+    mock_create_xml.return_value = "<xml>data</xml>"
     mock_create_upload_url.return_value = {
         "status": "OK",
         "upload_url": "http://publieke.broservices/api/v1/1234/uploads/12345",
