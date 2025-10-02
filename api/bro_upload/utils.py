@@ -143,29 +143,39 @@ def validate_xml_file(
             case 401:
                 return {
                     "status": status,
-                    "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
+                    "errors": [
+                        f"Het gebruikte token is niet gemachtigd voor project {project_number}"
+                    ],
                 }
             case 403:
                 return {
                     "status": status,
-                    "errors": f"Het gebruikte token heeft niet de juiste rechten voor project {project_number}",
+                    "errors": [
+                        f"Het gebruikte token heeft niet de juiste rechten voor project {project_number}"
+                    ],
                 }
             case 500 | 502 | 503 | 504:
                 return {
                     "status": status,
-                    "errors": "De BRO API is momenteel niet beschikbaar. Neem contact op met servicedesk@nelen-schuurmans.nl",
+                    "errors": [
+                        "De BRO API is momenteel niet beschikbaar. Neem contact op met servicedesk@nelen-schuurmans.nl"
+                    ],
                 }
             case _:
                 return {
                     "status": status,
-                    "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
+                    "errors": [
+                        f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}"
+                    ],
                 }
 
     except Exception as e:
         logger.info(e)
         return {
             "status": "NIET-VALIDE",
-            "errors": f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}",
+            "errors": [
+                f"Er is een fout opgetreden bij het valideren van het XML bestand: {e}"
+            ],
         }
 
 
@@ -203,16 +213,20 @@ def create_upload_url(
             case 401:
                 return {
                     "status": "NIET-VALIDE",
-                    "errors": f"Het gebruikte token is niet gemachtigd voor project {project_number}",
+                    "errors": [
+                        f"Het gebruikte token is niet gemachtigd voor project {project_number}"
+                    ],
                 }
             case _:
-                return {"status": "NIET-VALIDE", "errors": f"Error: {e}."}
+                return {"status": "NIET-VALIDE", "errors": [f"Error: {e}."]}
 
     except Exception as e:
         logger.info(e)
         return {
             "status": "NIET-VALIDE",
-            "errors": f"Er is een fout opgetreden bij het aanmaken van de upload: {e}.",
+            "errors": [
+                f"Er is een fout opgetreden bij het aanmaken van de upload: {e}."
+            ],
         }
 
 
