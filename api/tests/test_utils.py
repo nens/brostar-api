@@ -83,7 +83,7 @@ def test_validate_xml_file():
 
         result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
         assert result["status"] == "NIET-VALIDE"
-        assert "BRO API is momenteel niet beschikbaar" in result["errors"]
+        assert "BRO API is momenteel niet beschikbaar" in str(result["errors"])
 
         # --- Unauthorized (401) failure ---
         mock_response = mock.Mock()
@@ -139,7 +139,7 @@ def test_create_upload_url():
         project_number = "12345"
         result = create_upload_url("bro_user", "bro_pass", project_number)
         assert result["status"] == "NIET-VALIDE"
-        assert result["errors"] == "Error: API failure."
+        assert result["errors"] == ["Error: API failure."]
 
         # --- Unauthorized (401) failure after r assignment ---
         mock_response = mock.Mock()
