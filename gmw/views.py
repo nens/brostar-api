@@ -16,9 +16,10 @@ class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
 
     serializer_class = serializers.GMWSerializer
-    queryset = gmw_models.GMW.objects.all().order_by("-created")
+    queryset = gmw_models.GMW.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
+    ordering = ["id"]
 
 
 class GMWDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -43,6 +44,7 @@ class GMWOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
+    ordering = ["id"]
 
 
 class GMWIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -57,6 +59,7 @@ class GMWIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GmwFilter
+    ordering = ["id"]
 
 
 class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -72,6 +75,7 @@ class MonitoringTubeListView(mixins.UserOrganizationMixin, generics.ListAPIView)
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.MonitoringTubeFilter
+    ordering = ["id"]
 
 
 class MonitoringTubeDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -97,6 +101,7 @@ class EventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.EventFilter
+    ordering = ["id"]
 
 
 class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):

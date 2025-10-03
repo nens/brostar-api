@@ -1,3 +1,4 @@
+from django.db.models import JSONField
 from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
@@ -11,11 +12,25 @@ class GmwFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = GMW
         fields = "__all__"
+        filter_overrides = {
+            JSONField: {
+                "filter_class": filters.CharFilter,
+                "extra": {"lookup_expr": "icontains"},
+            }
+        }
 
 
 class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
-    gmn_bro_id = filters.CharFilter(method="filter_by_gmn_bro_id")
-    gmw_bro_id = filters.CharFilter(method="filter_by_gmw_bro_id")
+    gmn_bro_id = filters.CharFilter(
+        field_name="gmw__bro_id",  # dummy or related field for validation
+        method="filter_by_gmn_bro_id",
+        label="GMN BRO ID",
+    )
+    gmw_bro_id = filters.CharFilter(
+        field_name="gmw__bro_id",  # this one actually matches the model
+        method="filter_by_gmw_bro_id",
+        label="GMW BRO ID",
+    )
 
     class Meta:
         model = MonitoringTube

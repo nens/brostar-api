@@ -16,10 +16,11 @@ class GLDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
 
     serializer_class = serializers.GLDSerializer
-    queryset = gld_models.GLD.objects.all().order_by("-created")
+    queryset = gld_models.GLD.objects.all()
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GldFilter
+    ordering = ["id"]
 
 
 class GLDIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -35,6 +36,7 @@ class GLDIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GldFilter
+    ordering = ["id"]
 
 
 class GLDOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -50,6 +52,7 @@ class GLDOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.GldFilter
+    ordering = ["id"]
 
 
 class GLDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
@@ -81,6 +84,7 @@ class ObservationListView(mixins.UserOrganizationMixin, generics.ListAPIView):
 
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.ObservationFilter
+    ordering = ["id"]
 
 
 class ObservationDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):

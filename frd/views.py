@@ -3,8 +3,8 @@ from rest_framework import generics
 
 from api import mixins
 
+from . import filters, serializers
 from . import models as frd_models
-from . import serializers
 
 
 class FRDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -19,7 +19,8 @@ class FRDListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = frd_models.FRD.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_class = filters.FrdFilter
+    ordering = ["id"]
 
 
 class FRDIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -34,7 +35,8 @@ class FRDIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.FRDIdsSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_class = filters.FrdFilter
+    ordering = ["id"]
 
 
 class FRDDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):

@@ -3,7 +3,7 @@
 ## 1.44 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix: change filters to repair redoc and swagger
 
 
 ## 1.43 (2025-10-02)

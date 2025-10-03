@@ -1,6 +1,7 @@
 import datetime
 
-from django_filters import DateFilter, FilterSet
+from django.db.models import JSONField
+from django_filters import CharFilter, DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -36,7 +37,12 @@ class GldFilter(DateTimeFilterMixin, FilterSet):
 
     class Meta:
         model = gld_models.GLD
-        exclude = ["linked_gmns"]
+        fields = "__all__"
+        filter_overrides = {
+            JSONField: {
+                "filter_class": CharFilter,
+            },
+        }
 
 
 class ObservationFilter(DateTimeFilterMixin, FilterSet):

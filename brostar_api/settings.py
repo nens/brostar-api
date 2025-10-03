@@ -275,6 +275,11 @@ REST_FRAMEWORK = {
     ],
 }
 
+FILTERS_DEFAULT_FILTER_OVERRIDES = {
+    "django.db.models.JSONField": {
+        "filter_class": "django_filters.CharFilter",
+    },
+}
 
 # Automatically discover tasks in Django app
 CELERY_IMPORTS = ("api.tasks",)

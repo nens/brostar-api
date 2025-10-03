@@ -3,8 +3,8 @@ from rest_framework import generics
 
 from api import mixins
 
+from . import filters, serializers
 from . import models as gar_models
-from . import serializers
 
 
 class GARViewSet(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -20,6 +20,8 @@ class GARViewSet(mixins.UserOrganizationMixin, generics.ListAPIView):
     lookup_field = "uuid"
     queryset = gar_models.GAR.objects.all().order_by("-created")
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GarFilter
+    ordering = ["id"]
 
 
 class GARIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -34,7 +36,8 @@ class GARIdsList(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.GARIdsSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_class = filters.GarFilter
+    ordering = ["id"]
 
 
 class GARDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
