@@ -35,6 +35,21 @@ urlpatterns = [
         name="berichten_gmw_gebeurtenissen",
     ),
     path(
+        "berichten-hulp/gmw/bestaand/gebeurtenissen/locatie/",
+        views.berichten_gmw_gebeurtenissen_peilbuis,
+        name="berichten_gmw_gebeurtenissen_peilbuis",
+    ),
+    path(
+        "berichten-hulp/gmw/bestaand/gebeurtenissen/buis/",
+        views.berichten_gmw_gebeurtenissen_filter,
+        name="berichten_gmw_gebeurtenissen_filter",
+    ),
+    path(
+        "berichten-hulp/gmw/bestaand/gebeurtenissen/organisatie/",
+        views.berichten_gmw_gebeurtenissen_organisatie,
+        name="berichten_gmw_gebeurtenissen_organisatie",
+    ),
+    path(
         "berichten-hulp/gld/bestaand/",
         views.berichten_gld_bestaand,
         name="berichten_gld_bestaand",

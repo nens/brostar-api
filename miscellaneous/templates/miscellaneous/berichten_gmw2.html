@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,42 +19,50 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
-      </div>
-      <div class="card-body">
-        <p>
-          Mooi dat er al een BRO-ID bekend is. Voor deze peilbuis, wat wil je wijzigen?
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
         </p>
+      </div>
+      <p>
+        De peilbuis bestaat in de BRO. Wat wil je wijzigen?
+      </p>
+      <div class="card-body">
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
         >
-          Er is een foutje gemaakt bij de originele registratie.
+          Correctie van eerdere levering
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
         >
-          Tijdens onderhoud zijn er gegevens veranderd.
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
-          style="background-color: lightgray"
-        >
-          Stap terug
+          Onderhoud toevoegen
         </button>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: rgb(184, 184, 184)"
+          style="background-color: rgb(217, 217, 217)"
         >
           Opnieuw beginnen
         </button>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <img

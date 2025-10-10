@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,42 +19,56 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
+      <p>
+        Er bestaat een grondwaterstandsdossier in de BRO. Wat wil je doen?
+      </p>
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
         >
-          Putten (GMW)
+          Correctie van eerdere levering
+        </button>
+        <!-- Updated button that triggers modal instead of direct redirect -->
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
+        >
+          Het toevoegen van metingen
         </button>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gld' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
         >
-          Grondwaterstanden (GLD)
+          Afronden van het grondwaterstandsdossier
         </button>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmn' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+          style="background-color: rgb(217, 217, 217)"
         >
-          Meetnetten (GMN)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
-        >
-          Grondwatersamenstellingen (GAR)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
-        >
-          Formatieweerstandmetingen (FRD)
+          Opnieuw beginnen
         </button>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gld' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <img

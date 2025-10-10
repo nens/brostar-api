@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,16 +19,27 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
+      <p>Bij onderhoud aan het filter zijn er een aantal mogelijkheden voor berichten.</p>
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal"
         >
-          Mijn peilbuis heeft al een BRO-ID (Bijv. GMW000000004418)
+          De <u>eerste</u> bepaling van het bovenkantbuis (voorheen onbekend)
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
@@ -35,16 +47,36 @@
           data-bs-toggle="modal"
           data-bs-target="#broIdModal"
         >
-          Mijn peilbuis heeft nog geen BRO-ID
+          Het <u>herinmeten</u> van het bovenkantbuis
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal"
+        >
+          Verandering aan het maaiveld door <u>menselijk ingrijpen</u>
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal"
+        >
+          Verandering <u>beschermconstructie</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: lightgray;"
+          style="background-color: rgb(217, 217, 217)"
         >
-          Stap terug
+          Opnieuw beginnen
         </button>
-      </div>
+        </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <!-- Modal -->

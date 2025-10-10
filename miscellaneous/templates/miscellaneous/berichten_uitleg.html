@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -15,9 +16,18 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
       <div class="card-body">
         <h4>De Basisregistratie Ondergrond berichten tijdlijn</h4>
@@ -25,6 +35,12 @@
           Om te begrijpen hoe een Basisregistratie-bericht werkt, is het belangrijk om te begrijpen hoe een registratie in de BRO is opgebouwed. Als het gaat om een nieuwe registratie, dan is er in de basisregistratie nog niks bekend over dit object - laten we voor dit voorbeeld een peilbuis nemen. De peilbuis moet dus in eerste instantie aangemaakt worden in de database met een zogenoemde 'GMW-Inrichten' bericht - dit is dus eigenlijk de start van de registratie, en wordt in andere BRO-domeinen dan ook vaak met StartRegistratie bestempeld.
         </p>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <img

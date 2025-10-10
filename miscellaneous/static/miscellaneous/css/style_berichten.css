@@ -1,59 +1,104 @@
 /* Main Styles */
 body {
-    background-color: #ece0db;
+    background-color: #AEB9AA;
+    font-family: 'Matangi';
 }
 
-h3 {
-    font-weight: bold;
+p {
+    color: black;
+    font-size: 16;
+}
+
+.background-circle {
+    position: fixed;
+    top: 75%;
+    left: 75%;
+    width: 100%; /* Large enough to cover the viewport */
+    height: 100%; /* Large enough to cover the viewport */
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1; /* Ensure it's behind other content */
 }
 
 .card {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     height: 90vh; /* Full viewport height */
     width: 90vw; /* Full width */
     align-items: center;
     justify-content: center;
     margin-left: 5vw;
     margin-top: 3vh;
-    border: solid 1px black;
+    border: transparent;
 }
 
 .card-header {
-    background-color: #da6e2f;
-    border-bottom: solid 1px black;
+    background-color: white;
+    border-bottom: solid 1px transparent;
     text-align: center;
-    height: 80px;
+    height: 100px;
     width: 100%; /* Full width */
+    margin-bottom: 25px;
+    margin-top: 15px;
     align-items: center;
     justify-content: center;
 }
 
 .card-body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 70vw;
     height: 80vh; /* Full viewport height minus header */
+    margin-bottom: 20vh;
 }
 
 .card-body .btn {
+    flex: 1 1 calc(50% - 1rem); /* two columns */
+    padding: 1rem;
+    cursor: pointer;
     width: 75vw; /* Fixed width for consistency */
-    height: 10vh;
-    background-color: lab(83.94% 5.45 31.13);
-    border: solid 1px black;
-    color: black;
+    height: 15vh;
+    background-color: #E8EEE6;
+    border-color: transparent;
+    border-radius: 5px;
+    color: #DA5D2F;
 }
 
 .btn.btn-secondary.w-100 {
     background-color: lightgrey;
     border: solid 1px black;
+    border-radius: transparent;
     color: black;
 }
 
+.btn.btn-return {
+    background-color: white;
+    border: solid 1px #DA5D2F;
+    width: 125px; /* Fixed width for consistency */
+    height: 40px;
+    bottom: 20vh;
+    left: 10vw;
+    bottom: 5vh;
+    border-radius: 15px;
+    color: #DA5D2F;
+    position: absolute;
+}
+
 .card-body .btn:hover {
-    background-color: #c0a7c2(155, 186, 197);
+    background-color: #c4c9c2(155, 186, 197);
     box-shadow: #6c757d 0px 4px 8px;
 }
 
+
+/* Modal styling */
+.modal-header {
+    border-bottom: solid 1px #E8EEE6;
+}
+
+.modal-content b,
+.modal-content strong {
+    color: #DA5D2F;
+}
 
 
 /* Form styling */
@@ -65,7 +110,13 @@ h3 {
 #bottom-logo {
     position: absolute;
     bottom: 5vh;
-    right: 5vw;
+    right: calc(50% - 50px);
     width: 100px;   /* adjust as needed */
     opacity: 0.8;   /* optional */
+}
+
+.inline-logo {
+  height: 2.5em; /* smaller height */
+  vertical-align: middle;
+  margin: 0 0.25em;
 }

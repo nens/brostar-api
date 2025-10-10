@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,35 +19,37 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
+      <p>
+        Er is een BRO-ID, dus wil je...
+      </p>
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
         >
-          Putten (GMW)
+          Een levering corrigeren
         </button>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gld' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+          style="background-color: rgb(217, 217, 217)"
         >
-          Grondwaterstanden (GLD)
+          Opnieuw beginnen
         </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmn' %}'"
-        >
-          Meetnetten (GMN)
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
-        >
-          Grondwatersamenstellingen (GAR)
-        </button>
+      </div>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
@@ -54,6 +57,12 @@
           Formatieweerstandmetingen (FRD)
         </button>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <img

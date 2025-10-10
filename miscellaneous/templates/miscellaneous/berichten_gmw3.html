@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,52 +19,65 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
-      </div>
-      <div class="card-body">
-        <p>
-          We hebben het dus over een wijziging aan de peilbuis, door de tijd heen.
-          Waarmee heeft de wijziging te maken?
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
         </p>
+      </div>
+      <p>
+        We hebben het dus over een wijziging aan de peilbuis, door de tijd heen.
+        Waarmee heeft de wijziging te maken?
+      </p>
+      <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen_peilbuis' %}'"
         >
-          Het gaat om onderhoud dat impact heeft op de gehele locatie (bijv. een nieuwe
+          Onderhoud aan de <u>locatie</u> (bijv. een nieuwe
           putdeksel)
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen_filter' %}'"
         >
-          Het gaat om onderhoud dat impact heeft op één of meerdere filters in de
-          peilbuis (bijv. oplengen, of filterstatus wijzigen)
+          Onderhoud aan <u>buizen</u> (bijv. oplengen)
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen_organisatie' %}'"
+        >
+          Wijzigingen in <u>verantwoordelijke partij</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal"
         >
-          De buis is verwijderd.
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
-          style="background-color: lightgray"
-        >
-          Stap terug
+          De buis is <u>verwijderd</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: rgb(184, 184, 184)"
+          style="background-color: rgb(217, 217, 217)"
         >
           Opnieuw beginnen
         </button>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <!-- Modal -->

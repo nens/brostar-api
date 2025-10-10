@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -18,12 +19,21 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
+      <p>Welke gegevens zijn verkeerd?</p>
       <div class="card-body">
-        <p>Welke gegevens zijn verkeerd?</p>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
@@ -42,19 +52,18 @@
         </button>
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
-          style="background-color: lightgray"
-        >
-          Stap terug
-        </button>
-        <button
-          class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: rgb(184, 184, 184)"
+          style="background-color: rgb(217, 217, 217)"
         >
           Opnieuw beginnen
         </button>
       </div>
+      <button
+          class="btn btn-return mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
+        >
+          ← terug
+      </button>
     </div>
 
     <!-- Modal -->

@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -15,16 +16,26 @@
   </head>
   <body>
     <div class="card">
+      <div class="background-circle">
+
+      </div>
       <div class="card-header">
         <h3>Basisregistratie Ondergrond Berichten Assistent</h3>
-        <p>Powered by: BROSTAR</p>
+        <p>Powered by
+          <img
+            src="{% static 'miscellaneous/images/logo_new.svg' %}"
+            alt="BROSTAR logo"
+            class="inline-logo"
+          />
+        </p>
       </div>
+      <p>Mijn peilbuis ...</p>
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
           onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_bestaand' %}'"
         >
-          Mijn peilbuis heeft al een BRO-ID (Bijv. GMW000000004418)
+          Heeft een BRO-ID (Bijv. GMW000000004418)
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
@@ -32,16 +43,15 @@
             data-bs-toggle="modal"
             data-bs-target="#broIdModal"
         >
-            Mijn peilbuis heeft nog geen BRO-ID
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
-          style="background-color: lightgray;"
-        >
-          Stap terug
+          Heeft <u>geen</u> BRO-ID
         </button>
       </div>
+      <button
+        class="btn btn-return mb-3"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_index' %}'"
+      >
+        ← terug
+      </button>
     </div>
 
     <!-- Modal -->
@@ -53,7 +63,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het <b>registreren</b> van een GMW-Inrichten bericht. Wil je deze direct via BROSTAR aanmaken?</p>
+                    <p>
+                      Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het <b>registreren</b>
+                      van een GMW-Inrichten bericht.
+                    </p>
+                    <p>
+                      Wil je deze direct via BROSTAR aanmaken?
+                    </p>
                 </div>
                 <div class="modal-footer d-flex flex-column gap-2">
                     <button type="button" class="btn btn-success w-100" onclick="redirectToGMW()">
@@ -94,4 +110,3 @@
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>
 </html>
-5
