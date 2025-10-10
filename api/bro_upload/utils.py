@@ -132,7 +132,7 @@ def validate_xml_file(
             data=xml_file,
             headers={"Content-Type": "application/xml"},
             auth=(bro_username, bro_password),
-            timeout=60,
+            timeout=120,  # Update as Replace GMN_StartRegistration runs out of time.
         )
         r.raise_for_status()
         return r.json()
