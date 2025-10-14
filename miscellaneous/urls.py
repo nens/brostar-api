@@ -55,6 +55,11 @@ urlpatterns = [
         name="berichten_gld_bestaand",
     ),
     path(
+        "berichten-hulp/gld/bestaand/correctie/",
+        views.berichten_gld_correctie,
+        name="berichten_gld_correctie",
+    ),
+    path(
         "berichten-hulp/gmn/bestaand/",
         views.berichten_gmn_bestaand,
         name="berichten_gmn_bestaand",

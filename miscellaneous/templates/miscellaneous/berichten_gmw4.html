@@ -39,8 +39,7 @@
           data-bs-toggle="modal"
           data-bs-target="#broIdModal1"
         >
-          De peilbuis is op een ander moment geplaatst dan nu wordt aangegeven
-          (inrichtingsdatum).
+          Andere <u>inrichtingsdatum</u>
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
@@ -48,7 +47,14 @@
           data-bs-toggle="modal"
           data-bs-target="#broIdModal2"
         >
-          Andere gegevens dan de inrichtingsdatum zijn verkeerd.
+          Het <u>kwaliteitsregime</u> is verkeerd.
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal3"
+        >
+          Andere gegevens
         </button>
         <button
           class="btn btn-primary mb-3"
@@ -102,21 +108,21 @@
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
-              class="btn btn-success w-100"
+              class="btn btn-register"
               onclick="redirectToGMW()"
             >
-              Ja
+              Registreren →
             </button>
             <button
               type="button"
-              class="btn btn-secondary w-100"
+              class="btn btn-return"
               onclick="redirectToBegin()"
             >
-              Terug naar het begin
+              ← Begin
             </button>
             <button
               type="button"
-              class="btn btn-outline-primary w-100"
+              class="btn btn-outline-primary"
               onclick="redirectToPricing()"
             >
               Nog geen account?
@@ -128,6 +134,61 @@
     <div
       class="modal fade"
       id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten [Vervangen]</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              In het formulier - een zogenoemd <b>vervang</b> bericht [replace] - gebruikt u de <u>correctie reden</u> <b>kwaliteitsregime</b>. Dit is een ander type
+              correctie dan je standaard vervangen.
+              <p> </p>
+              Let op! Je hebt verschillende
+              correctie redenen. Zorg dat je dus voor <b>kwaliteitsregime</b> kiest. Voor meer informatie, zie
+              de documentatie op de
+              <a href="https://docs.brostar.nl/">BROSTAR documentatie</a>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGMW()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="broIdModal3"
       tabindex="-1"
       aria-labelledby="broIdModalLabel"
       aria-hidden="true"
@@ -159,21 +220,21 @@
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
-              class="btn btn-success w-100"
+              class="btn btn-register"
               onclick="redirectToGMW()"
             >
-              Ja
+              Registreren →
             </button>
             <button
               type="button"
-              class="btn btn-secondary w-100"
+              class="btn btn-return"
               onclick="redirectToBegin()"
             >
-              Terug naar het begin
+              ← Begin
             </button>
             <button
               type="button"
-              class="btn btn-outline-primary w-100"
+              class="btn btn-outline-primary"
               onclick="redirectToPricing()"
             >
               Nog geen account?

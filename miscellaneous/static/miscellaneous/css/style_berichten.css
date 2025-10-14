@@ -76,7 +76,6 @@ p {
     border: solid 1px #DA5D2F;
     width: 125px; /* Fixed width for consistency */
     height: 40px;
-    bottom: 20vh;
     left: 10vw;
     bottom: 5vh;
     border-radius: 15px;
@@ -91,8 +90,51 @@ p {
 
 
 /* Modal styling */
+.modal-content {
+    width: 500px;
+    height: 400px;
+}
+
+.modal-content .btn.btn-register {
+    background: linear-gradient(50deg, #F29C1F, #DA5D2F);
+    width: 110px; /* Fixed width for consistency */
+    height: 40px;
+    bottom: 10px;
+    right: 10px;
+    border-radius: 15px;
+    border: solid 1px #DA5D2F;
+    color: #ffffff;
+    position: absolute;
+}
+
+.modal-content .btn.btn-return {
+    background-color: white;
+    border: solid 1px #DA5D2F;
+    width: 110px; /* Fixed width for consistency */
+    height: 40px;
+    bottom: 10px;
+    left: 10px;
+    border-radius: 15px;
+    color: #DA5D2F;
+    position: absolute;
+}
+
+.modal-content .btn.btn-outline-primary {
+    background-color: white;
+    border: transparent;
+    height: 40px;
+    bottom: 10px;
+    left: 250px - calc(width/2);
+    color: #9dc67d;
+    position: absolute;
+}
+
 .modal-header {
     border-bottom: solid 1px #E8EEE6;
+}
+
+.modal-footer {
+    border-top: solid 0px #E8EEE6;
 }
 
 .modal-content b,

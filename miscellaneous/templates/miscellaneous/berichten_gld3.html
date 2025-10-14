@@ -32,36 +32,22 @@
           />
         </p>
       </div>
-      <p>Bij onderhoud aan het filter zijn er een aantal mogelijkheden voor berichten.</p>
+      <p>Welke gegevens zijn verkeerd?</p>
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal1"
         >
-          De <u>eerste</u> bepaling van het bovenkantbuis (voorheen onbekend)
+          Andere <u>peilbuis of filter</u>
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal2"
         >
-          Het <u>herinmeten</u> van het bovenkantbuis
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
-        >
-          Verandering aan het maaiveld door <u>menselijk ingrijpen</u>
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
-        >
-          Verandering <u>beschermconstructie</u>
+          Het <u>kwaliteitsregime</u> is verkeerd.
         </button>
         <button
           class="btn btn-primary mb-3"
@@ -70,19 +56,19 @@
         >
           Opnieuw beginnen
         </button>
-        </div>
+      </div>
       <button
-        class="btn btn-return mb-3"
-        onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
-      >
-        ← terug
+          class="btn btn-return mb-3"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gld_bestaand' %}'"
+        >
+          ← terug
       </button>
     </div>
 
     <!-- Modal -->
     <div
       class="modal fade"
-      id="broIdModal"
+      id="broIdModal1"
       tabindex="-1"
       aria-labelledby="broIdModalLabel"
       aria-hidden="true"
@@ -90,7 +76,9 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten</h5>
+            <h5 class="modal-title" id="broIdModalLabel">
+              GLD-StartRegistratie [Vervangen]
+            </h5>
             <button
               type="button"
               class="btn-close"
@@ -100,8 +88,11 @@
           </div>
           <div class="modal-body">
             <p>
-              Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met een
-              GMW-Inrichten. Wil je deze direct via BROSTAR aanmaken?
+              Wanneer je een put of buis wil corrigeren, dan gaat dit met
+              een zogenoemd <b>vervangen</b> bericht [replace].
+              <p> </p>
+              Let op! Je hebt verschillende correctie redenen - kies <b>eigenCorrectie</b> of <b>inOnderzoek</b> (als het dossier in onderzoek is). Voor meer informatie, zie de documentatie op de
+              <a href="https://docs.brostar.nl/">BROSTAR documentatie</a>
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
@@ -130,6 +121,61 @@
         </div>
       </div>
     </div>
+    <div
+      class="modal fade"
+      id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GLD-StartRegistratie [Vervangen]</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              In het formulier - een zogenoemd <b>vervang</b> bericht [replace] - gebruikt u de <u>correctie reden</u> <b>kwaliteitsregime</b>. Dit is een ander type
+              correctie dan je standaard vervangen.
+              <p> </p>
+              Let op! Je hebt verschillende
+              correctie redenen. Zorg dat je dus voor <b>kwaliteitsregime</b> kiest. Voor meer informatie, zie
+              de documentatie op de
+              <a href="https://docs.brostar.nl/">BROSTAR documentatie</a>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGLD()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <img
       src="{% static 'miscellaneous/images/logo.png' %}"
@@ -137,8 +183,8 @@
       id="bottom-logo"
     />
     <script>
-      function redirectToGMW() {
-        window.location.href = "/gmw/constructie/";
+      function redirectToGLD() {
+        window.location.href = "/?viewType=gldTable";
       }
 
       function redirectToBegin() {

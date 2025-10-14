@@ -256,7 +256,12 @@ def berichten_gld(request):
 
 def berichten_gld_bestaand(request):
     """View for the berichten-hulp page"""
-    return render(request, "miscellaneous/berichten_gld_bestaand.html")
+    return render(request, "miscellaneous/berichten_gld2.html")
+
+
+def berichten_gld_correctie(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gld3.html")
 
 
 ## GMN
@@ -267,7 +272,7 @@ def berichten_gmn(request):
 
 def berichten_gmn_bestaand(request):
     """View for the berichten-hulp page"""
-    return render(request, "miscellaneous/berichten_gmn_bestaand.html")
+    return render(request, "miscellaneous/berichten_gmn2.html")
 
 
 ## GAR
@@ -278,7 +283,7 @@ def berichten_gar(request):
 
 def berichten_gar_bestaand(request):
     """View for the berichten-hulp page"""
-    return render(request, "miscellaneous/berichten_gar_bestaand.html")
+    return render(request, "miscellaneous/berichten_gar2.html")
 
 
 ## FRD
@@ -289,7 +294,7 @@ def berichten_frd(request):
 
 def berichten_frd_bestaand(request):
     """View for the berichten-hulp page"""
-    return render(request, "miscellaneous/berichten_frd_bestaand.html")
+    return render(request, "miscellaneous/berichten_frd2.html")
 
 
 def pricing(request):

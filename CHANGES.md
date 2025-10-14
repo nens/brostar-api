@@ -4,6 +4,7 @@
 
 
 -   Bugfix: change filters to repair redoc and swagger
+- Enhancement: improve berichten-hulp further
 
 
 ## 1.43 (2025-10-02)

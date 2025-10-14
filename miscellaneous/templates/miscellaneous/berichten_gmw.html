@@ -64,7 +64,7 @@
                 </div>
                 <div class="modal-body">
                     <p>
-                      Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het <b>registreren</b>
+                      Wanneer je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met het <b>Registreren →</b>
                       van een GMW-Inrichten bericht.
                     </p>
                     <p>
@@ -72,14 +72,22 @@
                     </p>
                 </div>
                 <div class="modal-footer d-flex flex-column gap-2">
-                    <button type="button" class="btn btn-success w-100" onclick="redirectToGMW()">
-                        Ja
+                    <button type="button" class="btn btn-register" onclick="redirectToGMW()">
+                        Registreren →
                     </button>
-                    <button type="button" class="btn btn-secondary w-100" onclick="redirectToBegin()">
-                        Terug naar het begin
+                    <button
+                      type="button"
+                      class="btn btn-return"
+                      onclick="redirectToBegin()"
+                    >
+                      ← Begin
                     </button>
-                    <button type="button" class="btn btn-outline-primary w-100" onclick="redirectToPricing()">
-                        Nog geen account?
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      onclick="redirectToPricing()"
+                    >
+                      Nog geen account?
                     </button>
                 </div>
             </div>

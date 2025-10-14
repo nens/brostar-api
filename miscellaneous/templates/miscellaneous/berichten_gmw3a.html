@@ -37,7 +37,7 @@
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal1"
         >
           De <u>eerste</u> bepaling van het maaiveld (voorheen onbekend)
         </button>
@@ -45,21 +45,21 @@
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal2"
         >
           Het <u>herinmeten</u> van het maaiveld
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal3"
         >
           Verandering aan het maaiveld door <u>menselijk ingrijpen</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
-          data-bs-target="#broIdModal"
+          data-bs-target="#broIdModal4"
         >
           Verandering <u>beschermconstructie</u>
         </button>
@@ -82,7 +82,7 @@
     <!-- Modal -->
     <div
       class="modal fade"
-      id="broIdModal"
+      id="broIdModal1"
       tabindex="-1"
       aria-labelledby="broIdModalLabel"
       aria-hidden="true"
@@ -90,7 +90,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="broIdModalLabel">GMW-Inrichten</h5>
+            <h5 class="modal-title" id="broIdModalLabel">GMW-MaaiveldBepalen</h5>
             <button
               type="button"
               class="btn-close"
@@ -100,28 +100,29 @@
           </div>
           <div class="modal-body">
             <p>
-              Aha! Als je peilbuis nog geen BRO-ID heeft, dan moeten we beginnen met een
-              GMW-Inrichten. Wil je deze direct via BROSTAR aanmaken?
+              Bij de eerste <u>maaiveldbepaling</u> van een peilbuis gelden wat extra regels.
+              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldBepaling.
+              Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
-              class="btn btn-success w-100"
-              onclick="redirectToGMW()"
+              class="btn btn-register"
+              onclick="redirectToMaaiveldBepalen()"
             >
-              Ja
+              Registreren →
             </button>
             <button
               type="button"
-              class="btn btn-secondary w-100"
+              class="btn btn-return"
               onclick="redirectToBegin()"
             >
-              Terug naar het begin
+              ← Begin
             </button>
             <button
               type="button"
-              class="btn btn-outline-primary w-100"
+              class="btn btn-outline-primary"
               onclick="redirectToPricing()"
             >
               Nog geen account?
@@ -131,14 +132,176 @@
       </div>
     </div>
 
+    <div
+      class="modal fade"
+      id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GMW-MaaiveldInmeten</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Het <u>inmeten van het maaiveld</u> is een eenvoudig bericht.
+              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldInmeting.
+              Wil je deze direct via BROSTAR aanmaken?
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToMaaiveldInmeten()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="broIdModal3"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GMW-MaaiveldVerlegd</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer het <u>maaiveld is verlegd</u> door mensenlijk ingrijpen, dan heeft dit een apart bericht.
+              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-Verleggen.
+              Wil je deze direct via BROSTAR aanmaken?
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToMaaiveldBepalen()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div
+      class="modal fade"
+      id="broIdModal4"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">GMW-Beschermconstructie</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Het <u>wijzigen van de beschermconstructie</u> is dit eenvoudig door te geven.
+              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldBepaling.
+              Wil je deze direct via BROSTAR aanmaken?
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToMaaiveldBepalen()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="redirectToPricing()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <img
       src="{% static 'miscellaneous/images/logo.png' %}"
       alt="Logo"
       id="bottom-logo"
     />
     <script>
-      function redirectToGMW() {
-        window.location.href = "/gmw/constructie/";
+      function redirectToMaaiveldBepalen() {
+        window.location.href = "/gmw/gebeurtenissen/";
+      }
+
+      function redirectToMaaiveldInmeten() {
+        window.location.href = "/gmw/gebeurtenissen/";
       }
 
       function redirectToBegin() {
