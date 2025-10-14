@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.44 (unreleased)
+## 1.44 (2025-10-14)
 
 
 -   Bugfix: change filters to repair redoc and swagger
