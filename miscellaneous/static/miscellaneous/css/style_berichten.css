@@ -7,6 +7,7 @@ body {
 p {
     color: black;
     font-size: 16;
+    font-family: "Poppins", sans-serif;
 }
 
 .background-circle {
@@ -64,6 +65,25 @@ p {
     color: #DA5D2F;
 }
 
+.btn.btn-img{
+    padding: 1rem;
+    cursor: pointer;
+    width: 125px; /* Fixed width for consistency */
+    height: 50px;
+    background-color: #E8EEE6;
+    border-color: transparent;
+    border-radius: 5px;
+    color: #DA5D2F;
+}
+
+.btn.btn-img.left{
+    left: 10px;
+}
+
+.btn.btn-img.right{
+    right: 10px;
+}
+
 .btn.btn-secondary.w-100 {
     background-color: lightgrey;
     border: solid 1px black;
@@ -81,6 +101,7 @@ p {
     border-radius: 15px;
     color: #DA5D2F;
     position: absolute;
+    font-family: "Poppins", sans-serif;
 }
 
 .card-body .btn:hover {
@@ -93,18 +114,35 @@ p {
 .modal-content {
     width: 500px;
     height: 400px;
+    font-family: "Poppins", sans-serif;
+}
+
+.scrollable-content {
+overflow-y: auto;
+overflow-x: hidden;
+}
+
+/* Optional: smooth scrolling and hide scrollbar for a cleaner look */
+.scrollable-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+background-color: rgba(0, 0, 0, 0.3);
+border-radius: 3px;
 }
 
 .modal-content .btn.btn-register {
-    background: linear-gradient(50deg, #F29C1F, #DA5D2F);
+    background: linear-gradient(#F29C1F, #DA5D2F);
     width: 110px; /* Fixed width for consistency */
     height: 40px;
     bottom: 10px;
     right: 10px;
-    border-radius: 15px;
+    border-radius: 30px;
     border: solid 1px #DA5D2F;
     color: #ffffff;
     position: absolute;
+    font-family: "Poppins", sans-serif;
 }
 
 .modal-content .btn.btn-return {
@@ -114,9 +152,10 @@ p {
     height: 40px;
     bottom: 10px;
     left: 10px;
-    border-radius: 15px;
+    border-radius: 30px;
     color: #DA5D2F;
     position: absolute;
+    font-family: "Poppins", sans-serif;
 }
 
 .modal-content .btn.btn-outline-primary {
@@ -127,6 +166,7 @@ p {
     left: 250px - calc(width/2);
     color: #9dc67d;
     position: absolute;
+    font-family: "Poppins", sans-serif;
 }
 
 .modal-header {

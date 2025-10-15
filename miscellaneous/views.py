@@ -275,6 +275,11 @@ def berichten_gmn_bestaand(request):
     return render(request, "miscellaneous/berichten_gmn2.html")
 
 
+def berichten_gmn_correctie(request):
+    """View for the berichten-hulp page"""
+    return render(request, "miscellaneous/berichten_gmn3.html")
+
+
 ## GAR
 def berichten_gar(request):
     """View for the berichten-hulp page"""

@@ -34,7 +34,7 @@
         </p>
       </div>
       <p>
-        Er is een BRO-ID. Wat wil je wijzigen?
+        Je wilt een correctie doen aan een eerdere GMN-levering. Wat wil je wijzigen?
       </p>
       <div class="card-body">
         <button
@@ -42,29 +42,28 @@
           data-bs-toggle="modal"
           data-bs-target="#broIdModal1"
         >
-          <u>Correctie</u> van de <u>startregistratie</u>
+          <u>Correctie</u> van een <u>startregistratie</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal2"
         >
-          Het <u>toevoegen</u> van <u>geo-ohmkabel meetconfiguraties</u>
+          Wijziging <u>startdatum</u> van het meetnet
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal3"
         >
-          Het <u>toevoegen</u> van <u>geo-ohmkabel metingen</u>
+          <u>Wijzigen</u> van een meetpunt levering
         </button>
-        <!-- Updated button that triggers modal instead of direct redirect -->
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal4"
         >
-          <u>Afsluiten</u> van het dossier
+          <u>Verwijderen</u> van een meetpunt levering
         </button>
         <button
           class="btn btn-primary mb-3"
@@ -76,11 +75,12 @@
       </div>
       <button
         class="btn btn-return mb-3"
-        onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
+        onclick="window.location.href='{% url 'miscellaneous:berichten_gmn' %}'"
       >
         ← terug
       </button>
     </div>
+
 
     <div
       class="modal fade"
@@ -93,7 +93,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              FRD-StartRegistratie [vervangen]
+              GMN-StartRegistratie [vervangen]
             </h5>
             <button
               type="button"
@@ -104,13 +104,20 @@
           </div>
           <div class="modal-body">
             <p>
-              Wanneer gegevens wilt veranderen aan een eerder geleverde startregistratie, dan
-              gaat dit met een FRD-StartRegistratie <b>vervang</b> bericht [replace].
-            <p></p>
-              <u><b>Op dit moment is dit bericht nog niet geïmplementeerd. Geïnteresseerd? Neem contact met ons op!</b></u>
+              Wanneer je een tijdserie wilt corrigeren, dan
+              gaat dit met een GMN-StartRegistratie <b>vervangen</b> bericht [replace].
+              <p></p>
+              Let op! In de tabel klik je op het BRO-ID waarin je geïnteresseerd bent. In het daarop volgende scherm kan je wijzigingen doorvoeren.
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGMNMeetpunt()"
+            >
+              Vervangen →
+            </button>
             <button
               type="button"
               class="btn btn-return"
@@ -123,13 +130,12 @@
               class="btn btn-outline-primary"
               onclick="sendEmailTemplate()"
             >
-              Contact opnemen?
+              Nog geen account?
             </button>
           </div>
         </div>
       </div>
     </div>
-
 
     <div
       class="modal fade"
@@ -142,7 +148,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              FRD-Meetconfiguratie [registreren]
+              GMN-StartRegistratie [verschuiven]
             </h5>
             <button
               type="button"
@@ -153,15 +159,17 @@
           </div>
           <div class="modal-body">
             <p>
-              Wanneer metingen wilt doorgeven, moet je eerst meetconfiguraties hebben vastgelegd, en
-              dit gaat met een FRD-Meetconfiguratie <b>registreren</b> bericht [register].
+              Wanneer je een tijdserie wilt corrigeren, dan
+              gaat dit met een GMN-StartRegistratie <b>verschuiven</b> bericht [move].
+              <p></p>
+              <u><b>Op dit moment is dit bericht nog niet geïmplementeerd. Geïnteresseerd? Neem contact met ons op!</b></u>
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
               class="btn btn-register"
-              onclick="redirectToFRDConfiguratie()"
+              onclick="redirectToGMNAfsluiten()"
             >
               Registreren →
             </button>
@@ -195,7 +203,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              FRD-GeoOhmkabel Meting [vervangen]
+              GMN-Meetpunt... [vervangen]
             </h5>
             <button
               type="button"
@@ -206,17 +214,20 @@
           </div>
           <div class="modal-body">
             <p>
-              Wanneer je metingen wilt registreren binnen een formatieweestandsdossier dan gaat dit
-              met FRD-GeoOhmkabel Metingen <b>registreren</b> berichten [register].
+              Wanneer je een meetpunt wijziging wilt corrigeren, dan
+              gaat dit met een GMN-Meetpunt... <b>vervangen</b> bericht [replace].
+              <p></p>
+              Let op! In de tabel bevinden de meetpunt wijzigingen zich in het dropdown menu onder het BRO-ID waarin je geïnteresseert
+              bent. Klik op de blauwe naam aan de linker kant om een correctie uit te voeren.
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
               class="btn btn-register"
-              onclick="redirectToFRDMeting()"
+              onclick="redirectToGMNMeetpunt()"
             >
-              Registreren →
+              Vervangen →
             </button>
             <button
               type="button"
@@ -248,7 +259,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              FRD-Beeindigen [registreren]
+              GMN-Meetpunt... [verwijderen]
             </h5>
             <button
               type="button"
@@ -259,17 +270,23 @@
           </div>
           <div class="modal-body">
             <p>
-              Wanneer je een formatieweestandsdossier wilt afronden, dan
-              gaat dit met een FRD-Beeindigen <b>registreren</b> bericht [register].
+              Wanneer je een tijdserie wilt verwijderen, dan
+              gaat dit met een GMN-Meetpunt... <b>verwijderen</b> bericht [delete].
+              <p></p>
+              Let op! In de tabel is een dropdown menu beschikbaar als er aanvullingen onder een grondwaterstandsdossier
+              zijn geregistreerd. Deze aanvullingen hebben ieder een eigen regel.
+              <u>
+                Aan de rechterkant van deze regel staat het <b>prullenbakje</b> waarmee het bericht te verwijderen is.
+              </u>
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
               class="btn btn-register"
-              onclick="redirectToFRDBeeindigen()"
+              onclick="redirectToGMNMeetpunt()"
             >
-              Registreren →
+              Vervangen →
             </button>
             <button
               type="button"
@@ -290,6 +307,7 @@
       </div>
     </div>
 
+
     <img
       src="{% static 'miscellaneous/images/logo.png' %}"
       alt="Logo"
@@ -297,16 +315,12 @@
     />
 
     <script>
-      function redirectToFRDConfiguratie() {
-        window.location.href = "/frd/meetconfiguratie/";
+      function redirectToGMNMeetpunt() {
+        window.location.href = "/gmn/meetpunt/";
       }
 
-      function redirectToFRDMeting() {
-        window.location.href = "/frd/meting/";
-      }
-
-      function redirectToFRDBeeindigen() {
-        window.location.href = "/frd/beeindigen/";
+      function redirectToGMNAfsluiten() {
+        window.location.href = "/gmn/beeindigen/";
       }
 
       function redirectToBegin() {

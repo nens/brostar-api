@@ -5,6 +5,7 @@
 <html lang="en">
   <head>
     <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -101,7 +102,7 @@
           <div class="modal-body">
             <p>
               Bij de eerste <u>maaiveldbepaling</u> van een peilbuis gelden wat extra regels.
-              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldBepaling.
+              U geeft dit door, door middel van het <b>registreren</b> van GMW-MaaiveldBepaling.
               Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
@@ -123,7 +124,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -153,7 +154,7 @@
           <div class="modal-body">
             <p>
               Het <u>inmeten van het maaiveld</u> is een eenvoudig bericht.
-              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldInmeting.
+              U geeft dit door, door middel van het <b>registreren</b> van GMW-MaaiveldInmeting.
               Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
@@ -175,7 +176,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -205,7 +206,7 @@
           <div class="modal-body">
             <p>
               Wanneer het <u>maaiveld is verlegd</u> door mensenlijk ingrijpen, dan heeft dit een apart bericht.
-              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-Verleggen.
+              U geeft dit door, door middel van het <b>registreren</b> van GMW-Verleggen.
               Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
@@ -227,7 +228,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -258,7 +259,7 @@
           <div class="modal-body">
             <p>
               Het <u>wijzigen van de beschermconstructie</u> is dit eenvoudig door te geven.
-              U geeft dit door, door middel van het <b>Registreren →</b> van GMW-MaaiveldBepaling.
+              U geeft dit door, door middel van het <b>registreren</b> van GMW-MaaiveldBepaling.
               Wil je deze direct via BROSTAR aanmaken?
             </p>
           </div>
@@ -280,7 +281,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -309,10 +310,18 @@
         window.location.href = "{% url 'miscellaneous:berichten_index' %}";
       }
 
-      function redirectToPricing() {
-        // Replace with your actual Django URL for pricing page
-        window.location.href = "{% url 'miscellaneous:pricing' %}";
-      }
+      function sendEmailTemplate() {
+          const subject = encodeURIComponent("BROSTAR - Account Aanvraag");
+          const body = encodeURIComponent(
+            `Beste Servicedesk,\n\nIk ben geïnteresseerd in BROSTAR en zou een account aanvragen.\n\nNaam: \nEmail: \nOrganisatie: \nFunctie: \n\nBedankt.`
+          );
+
+          // Construct the mailto URL
+          const mailtoLink = `mailto:servicedesk@nelen-schuurmans.nl?subject=${subject}&body=${body}`;
+
+          // Open the user's default mail client
+          window.location.href = mailtoLink;
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>

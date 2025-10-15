@@ -5,6 +5,7 @@
 <html lang="en">
   <head>
     <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -38,7 +39,8 @@
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal1"
         >
           Een levering corrigeren
         </button>
@@ -50,19 +52,59 @@
           Opnieuw beginnen
         </button>
       </div>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_frd' %}'"
-        >
-          Formatieweerstandmetingen (FRD)
-        </button>
-      </div>
       <button
         class="btn btn-return mb-3"
         onclick="window.location.href='{% url 'miscellaneous:berichten_gar' %}'"
       >
         ← terug
       </button>
+    </div>
+<div
+      class="modal fade"
+      id="broIdModal1"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GAR [Vervangen]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een watersamenstellings onderzoek wilt corrigeren, dan gaat dit door
+              een GAR bericht te <b>corrigeren</b> [replace].
+              <p></p>
+              <u><b>Op dit moment is dit bericht nog niet geïmplementeerd. Geïnteresseerd? Neem contact met ons op!</b></u>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Contact opnemen?
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <img
@@ -71,6 +113,29 @@
       id="bottom-logo"
     />
 
+    <script>
+      function redirectToGMNAfsluiten() {
+        window.location.href = "/gmn/beeindigen/";
+      }
+
+      function redirectToBegin() {
+        // Replace with your actual Django URL
+        window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+      }
+
+      function sendEmailTemplate() {
+          const subject = encodeURIComponent("BROSTAR - Account Aanvraag");
+          const body = encodeURIComponent(
+            `Beste Servicedesk,\n\nIk ben geïnteresseerd in BROSTAR en zou een account aanvragen.\n\nNaam: \nEmail: \nOrganisatie: \nFunctie: \n\nBedankt.`
+          );
+
+          // Construct the mailto URL
+          const mailtoLink = `mailto:servicedesk@nelen-schuurmans.nl?subject=${subject}&body=${body}`;
+
+          // Open the user's default mail client
+          window.location.href = mailtoLink;
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>

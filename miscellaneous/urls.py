@@ -65,6 +65,11 @@ urlpatterns = [
         name="berichten_gmn_bestaand",
     ),
     path(
+        "berichten-hulp/gmn/correctie/",
+        views.berichten_gmn_correctie,
+        name="berichten_gmn_correctie",
+    ),
+    path(
         "berichten-hulp/gar/bestaand/",
         views.berichten_gar_bestaand,
         name="berichten_gar_bestaand",

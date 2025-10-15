@@ -5,6 +5,7 @@
 <html lang="en">
   <head>
     <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -38,16 +39,24 @@
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_correctie' %}'"
+          onclick="window.location.href='{% url 'miscellaneous:berichten_gmn_correctie' %}'"
         >
-          Correctie van een eerdere levering
+          Correctie van een <u>eerdere levering</u>
         </button>
         <!-- Updated button that triggers modal instead of direct redirect -->
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gmw_gebeurtenissen' %}'"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal1"
         >
-          Wijzigingen door de tijd Registreren →
+          Wijziging <u>samenstelling</u> door de tijd registreren
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal2"
+        >
+          Het meetnet <u>afsluiten</u>
         </button>
         <button
           class="btn btn-primary mb-3"
@@ -65,12 +74,157 @@
       </button>
     </div>
 
+
+    <div
+      class="modal fade"
+      id="broIdModal1"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GMN-Meetpunt... [registreren]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Er zijn hiervoor drie opties:
+              <ul>
+                <li>
+                  Een meetpunt toevoegen aan het meetnet (GMN-MeetpuntToevoegen)
+                </li>
+                <li>
+                  Een meetpunt beeindigen (GMN-MeetpuntEindDatum)
+                </li>
+                <li>
+                  Een buisvervangen binnen het meetnet (GMN-Buisverwijzing)
+                </li>
+              </ul>
+              Deze zijn alle drie uit te voeren binnen BROSTAR en gaan met een <b>registreren</b> bericht [register].
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGMNMeetpunt()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GMN-Beeindigen [Vervangen]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een meetnet wilt afsluiten, dan gaat dit met
+              een zogenoemd GMN-Beeindigen bericht te <b>registreren</b> [register].
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGMNAfsluiten()"
+            >
+              Registreren →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <img
       src="{% static 'miscellaneous/images/logo.png' %}"
       alt="Logo"
       id="bottom-logo"
     />
 
+    <script>
+      function redirectToGMNMeetpunt() {
+        window.location.href = "/gmn/meetpunt/";
+      }
+
+      function redirectToGMNAfsluiten() {
+        window.location.href = "/gmn/beeindigen/";
+      }
+
+      function redirectToBegin() {
+        // Replace with your actual Django URL
+        window.location.href = "{% url 'miscellaneous:berichten_index' %}";
+      }
+
+      function sendEmailTemplate() {
+          const subject = encodeURIComponent("BROSTAR - Account Aanvraag");
+          const body = encodeURIComponent(
+            `Beste Servicedesk,\n\nIk ben geïnteresseerd in BROSTAR en zou een account aanvragen.\n\nNaam: \nEmail: \nOrganisatie: \nFunctie: \n\nBedankt.`
+          );
+
+          // Construct the mailto URL
+          const mailtoLink = `mailto:servicedesk@nelen-schuurmans.nl?subject=${subject}&body=${body}`;
+
+          // Open the user's default mail client
+          window.location.href = mailtoLink;
+        }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
   </body>

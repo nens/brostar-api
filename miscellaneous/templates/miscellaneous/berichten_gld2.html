@@ -5,6 +5,7 @@
 <html lang="en">
   <head>
     <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basisregistratie Ondergrond - Berichten Hulp</title>
@@ -38,30 +39,39 @@
       <div class="card-body">
         <button
           class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gld_correctie' %}'"
-        >
-          Correctie van de startregistratie
-        </button>
-        <button
-          class="btn btn-primary mb-3"
-          onclick="window.location.href='{% url 'miscellaneous:berichten_gld_correctie' %}'"
-        >
-          Correctie van een tijdserie
-        </button>
-        <!-- Updated button that triggers modal instead of direct redirect -->
-        <button
-          class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal1"
         >
-          Het toevoegen van metingen
+          <u>Correctie</u> van de <u>startregistratie</u>
         </button>
         <button
           class="btn btn-primary mb-3"
           data-bs-toggle="modal"
           data-bs-target="#broIdModal2"
         >
-          Afronden van het grondwaterstandsdossier
+          Het <u>toevoegen</u> van <u>grondwaterstanden</u>
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal3"
+        >
+          Het <u>corrigeren</u> van <u>grondwaterstanden</u>
+        </button>
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal4"
+        >
+          Het <u>verwijderen</u> van <u>grondwaterstanden</u>
+        </button>
+        <!-- Updated button that triggers modal instead of direct redirect -->
+        <button
+          class="btn btn-primary mb-3"
+          data-bs-toggle="modal"
+          data-bs-target="#broIdModal5"
+        >
+          <u>Afronden</u> van het grondwaterstandsdossier
         </button>
         <button
           class="btn btn-primary mb-3"
@@ -78,6 +88,7 @@
         ← terug
       </button>
     </div>
+
     <div
       class="modal fade"
       id="broIdModal1"
@@ -89,7 +100,61 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              GLD-Aanvulling [Registreren →]
+              GLD-StartRegistratie [vervangen]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer gegevens wilt veranderen aan een eerder geleverde startregistratie, dan
+              gaat dit met een GLD-StartRegistratie <b>vervang</b> bericht [replace].
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGLDCorrection()"
+            >
+              Vervangen →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div
+      class="modal fade"
+      id="broIdModal2"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GLD-Aanvulling [registreren]
             </h5>
             <button
               type="button"
@@ -101,7 +166,9 @@
           <div class="modal-body">
             <p>
               Wanneer je een tijdserie wilt aanvullen met nieuwe metingen, dan
-              gaat dit met een GLD-Aanvulling <b>Registreren →</b> bericht [register].
+              gaat dit met een GLD-Aanvulling <b>registreren</b> bericht [register].
+              <p></p>
+              Let op! De correctie kan je doorvoeren door op het BRO-ID te klikken aan de linkerkant van de regel.
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
@@ -122,7 +189,7 @@
             <button
               type="button"
               class="btn btn-outline-primary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -133,7 +200,7 @@
 
     <div
       class="modal fade"
-      id="broIdModal2"
+      id="broIdModal3"
       tabindex="-1"
       aria-labelledby="broIdModalLabel"
       aria-hidden="true"
@@ -142,7 +209,123 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="broIdModalLabel">
-              GLD-Afsluiten [Registreren →]
+              GLD-Aanvulling [vervangen]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een tijdserie wilt corrigeren, dan
+              gaat dit met een GLD-Aanvulling <b>vervangen</b> bericht [register].
+              <p></p>
+              Let op! In de tabel bevinden de aanvullingen zich in het dropdown menu onder het BRO-ID waarin je geïnteresseert
+              bent. Wanneer je op de regel klikt en er zijn aanvullingen dan zal deze uitklappen. Klik op de blauwe naam aan
+              de linker kant om een correctie uit te voeren.
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGLDCorrection()"
+            >
+              Vervangen →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="broIdModal4"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GLD-Aanvulling [verwijderen]
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Wanneer je een tijdserie wilt verwijderen, dan
+              gaat dit met een GLD-Aanvulling <b>verwijder</b> bericht [delete].
+              <p></p>
+              Let op! In de tabel is een dropdown menu beschikbaar als er aanvullingen onder een grondwaterstandsdossier
+              zijn geregistreerd. Deze aanvullingen hebben ieder een eigen regel.
+              <u>
+                Aan de rechterkant van deze regel staat het <b>prullenbakje</b> waarmee het bericht te verwijderen is.
+              </u>
+            </p>
+          </div>
+          <div class="modal-footer d-flex flex-column gap-2">
+            <button
+              type="button"
+              class="btn btn-register"
+              onclick="redirectToGLDCorrection()"
+            >
+              Verwijderen →
+            </button>
+            <button
+              type="button"
+              class="btn btn-return"
+              onclick="redirectToBegin()"
+            >
+              ← Begin
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              onclick="sendEmailTemplate()"
+            >
+              Nog geen account?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="broIdModal5"
+      tabindex="-1"
+      aria-labelledby="broIdModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="broIdModalLabel">
+              GLD-Beeindigen [registreren]
             </h5>
             <button
               type="button"
@@ -154,14 +337,14 @@
           <div class="modal-body">
             <p>
               Wanneer je een tijdserie wilt afsluiten, dan
-              gaat dit met een GLD-Afsluiten <b>Registreren →</b> bericht [register].
+              gaat dit met een GLD-Beeindigen <b>registreren</b> bericht [register].
             </p>
           </div>
           <div class="modal-footer d-flex flex-column gap-2">
             <button
               type="button"
-              class="btn btn-primary"
-              onclick="redirectToGLDAfsluiten()"
+              class="btn btn-register"
+              onclick="redirectToGLDClosure()"
             >
               Registreren →
             </button>
@@ -175,7 +358,7 @@
             <button
               type="button"
               class="btn btn-tertiary"
-              onclick="redirectToPricing()"
+              onclick="sendEmailTemplate()"
             >
               Nog geen account?
             </button>
@@ -193,7 +376,15 @@
 
     <script>
       function redirectToGLDAddition() {
-        window.location.href = "/gld";
+        window.location.href = "/gld/aanvulling/";
+      }
+
+      function redirectToGLDCorrection() {
+        window.location.href = "/?viewType=gldTable";
+      }
+
+      function redirectToGLDClosure() {
+        window.location.href = "/gld/beeindigen/";
       }
 
       function redirectToBegin() {
@@ -201,10 +392,18 @@
         window.location.href = "{% url 'miscellaneous:berichten_index' %}";
       }
 
-      function redirectToPricing() {
-        // Replace with your actual Django URL for pricing page
-        window.location.href = "{% url 'miscellaneous:pricing' %}";
-      }
+      function sendEmailTemplate() {
+          const subject = encodeURIComponent("BROSTAR - Account Aanvraag");
+          const body = encodeURIComponent(
+            `Beste Servicedesk,\n\nIk ben geïnteresseerd in BROSTAR en zou een account aanvragen.\n\nNaam: \nEmail: \nOrganisatie: \nFunctie: \n\nBedankt.`
+          );
+
+          // Construct the mailto URL
+          const mailtoLink = `mailto:servicedesk@nelen-schuurmans.nl?subject=${subject}&body=${body}`;
+
+          // Open the user's default mail client
+          window.location.href = mailtoLink;
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'miscellaneous/js/main.js' %}"></script>
