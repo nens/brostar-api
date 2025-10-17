@@ -3,7 +3,7 @@
 ## 1.46 (unreleased)
 
 
-- Nothing changed yet.
+-   Re-enable validation task
 
 
 ## 1.45 (2025-10-17)

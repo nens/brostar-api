@@ -26,30 +26,30 @@ def validate_xml_file_task(
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=upload_task_instance_uuid
     )
-    # generator = XMLGenerator(
-    #     upload_task_instance.registration_type,
-    #     upload_task_instance.request_type,
-    #     upload_task_instance.metadata,
-    #     upload_task_instance.sourcedocument_data,
-    # )
-    # xml = generator.create_xml_file()
-    # if generator.status == "FAILED":
-    #     upload_task_instance.status = "FAILED"
-    #     upload_task_instance.log = generator.error_message
-    #     upload_task_instance.save()
-    #     logger.info(f"Error generating XML file: {generator.error_message}")
-    #     return None
+    generator = XMLGenerator(
+        upload_task_instance.registration_type,
+        upload_task_instance.request_type,
+        upload_task_instance.metadata,
+        upload_task_instance.sourcedocument_data,
+    )
+    xml = generator.create_xml_file()
+    if generator.status == "FAILED":
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.log = generator.error_message
+        upload_task_instance.save()
+        logger.info(f"Error generating XML file: {generator.error_message}")
+        return None
 
-    # validation_response = utils.validate_xml_file(
-    #     xml,
-    #     bro_username,
-    #     bro_password,
-    #     upload_task_instance.project_number,
-    # )
+    validation_response = utils.validate_xml_file(
+        xml,
+        bro_username,
+        bro_password,
+        upload_task_instance.project_number,
+    )
 
-    # # Clean up memory
-    # del generator
-    # del xml
+    # Clean up memory
+    del generator
+    del xml
 
     context = {
         "upload_task_instance_uuid": upload_task_instance_uuid,
@@ -57,16 +57,16 @@ def validate_xml_file_task(
         "bro_username": bro_username,
     }
 
-    # if validation_response["status"] != "VALIDE":
-    #     upload_task_instance.progress = 50.0
-    #     upload_task_instance.log = "XML is niet geldig"
-    #     upload_task_instance.status = "FAILED"
-    #     upload_task_instance.bro_errors = validation_response["errors"]
-    #     upload_task_instance.save()
-    #     logger.info(
-    #         f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
-    #     )
-    #     return None
+    if validation_response["status"] != "VALIDE":
+        upload_task_instance.progress = 50.0
+        upload_task_instance.log = "XML is niet geldig"
+        upload_task_instance.status = "FAILED"
+        upload_task_instance.bro_errors = validation_response["errors"]
+        upload_task_instance.save()
+        logger.info(
+            f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
+        )
+        return None
 
     upload_task_instance.progress = 50.0
     upload_task_instance.log = "XML is succesvol gevalideerd"
