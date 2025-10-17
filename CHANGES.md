@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.45 (unreleased)
+## 1.45 (2025-10-17)
 
 -   Temporarily do not send to validation endpoint for BRO test.
 -   Extend BRO-berichtenhulp
