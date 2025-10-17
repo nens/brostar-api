@@ -2,16 +2,13 @@
 
 ## 1.45 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Temporarily do not send to validation endpoint for BRO test.
+-   Extend BRO-berichtenhulp
 
 ## 1.44 (2025-10-14)
 
-
 -   Bugfix: change filters to repair redoc and swagger
-- Enhancement: improve berichten-hulp further
-
+-   Enhancement: improve berichten-hulp further
 
 ## 1.43 (2025-10-02)
 
