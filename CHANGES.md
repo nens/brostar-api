@@ -2,21 +2,15 @@
 
 ## 1.48 (unreleased)
 
-
-- Nothing changed yet.
-
+-   BRO-Import: stabilize import function
 
 ## 1.47 (2025-10-21)
 
-
 -   Temporarily continue delivery if 'dataleverancierschap' error
-
 
 ## 1.46 (2025-10-20)
 
-
 -   Re-enable validation task
-
 
 ## 1.45 (2025-10-17)
 

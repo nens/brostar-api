@@ -1,4 +1,5 @@
 import logging
+import time
 
 import requests
 from django.conf import settings
@@ -84,6 +85,8 @@ class BulkImporter:
                     logger.info(f"At {round(progress, 2)}% of import.")
                     self.import_task_instance.progress = round(progress, 2)
                     self.import_task_instance.save()
+
+                time.sleep(1)
 
             self.import_task_instance.status = "COMPLETED"
             self.import_task_instance.save()

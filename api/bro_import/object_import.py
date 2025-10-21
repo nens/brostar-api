@@ -6,9 +6,9 @@ from typing import IO, Any
 
 import polars as pl
 import requests
-import requests.adapters
 import xmltodict
 from django.conf import settings
+from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
 
 from api.models import Organisation
@@ -53,13 +53,12 @@ class ObjectImporter(ABC):
         )
         self.s.headers = {"Content-Type": "application/json"}
         self.s.auth = auth
-        retry = requests.adapters.Retry(
+        retry = Retry(
             total=6,
-            backoff_factor=0.5,
+            backoff_factor=1,
+            status_forcelist=[500, 502, 503, 504],
         )
-        adapter = requests.adapters.HTTPAdapter(
-            pool_connections=5, pool_maxsize=5, max_retries=retry
-        )
+        adapter = HTTPAdapter(pool_connections=5, pool_maxsize=5, max_retries=retry)
         self.s.mount("http://", adapter)
         self.s.mount("https://", adapter)
 
@@ -79,7 +78,7 @@ class ObjectImporter(ABC):
 
     def _download_xml(self, url: str) -> IO[bytes]:
         """Downloads the BRO XML file based on an url"""
-        r = requests.get(url=url)
+        r = self.s.get(url=url)
         r.raise_for_status()
 
         return r.content
