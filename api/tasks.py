@@ -69,7 +69,7 @@ def validate_xml_file_task(
             f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
         )
         return None
-    elif validation_response["errors"] == [
+    elif validation_response.get("errors") == [
         "U bent niet als dataleverancier van dit object geregistreerd."
     ]:
         upload_task_instance.bro_errors = validation_response["errors"]
