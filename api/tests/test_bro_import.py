@@ -80,17 +80,22 @@ def test_object_importer_create_download_url(gmn_object_importer):
 @pytest.mark.django_db
 def test_object_importer_download_xml(mocker, gmn_object_importer):
     expected_content = b"<xml>fake_data</xml>"
-    mock_get = mocker.patch("requests.get")
+
+    # Create mock session + response
+    mock_session = mocker.Mock()
     mock_response = mocker.Mock()
     mock_response.raise_for_status = mocker.Mock()
     mock_response.content = expected_content
-    mock_get.return_value = mock_response
+    mock_session.get.return_value = mock_response
 
-    # Test
+    # Inject the mock session into the importer
+    gmn_object_importer.s = mock_session
+
+    # Run test
     url = "https://example.com/data.xml"
     result = gmn_object_importer._download_xml(url)
 
-    # Assert
+    # Assertions
     assert result == expected_content
 
 

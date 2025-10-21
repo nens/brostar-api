@@ -823,13 +823,13 @@ class GLDObjectImporter(ObjectImporter):
 
     def _observation_summary(self) -> list[dict[str, Any]]:
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
-        r = requests.get(url=url)
+        r = self.s.get(url=url)
         r.raise_for_status()
         return r.json()
 
     def _procedure_information(self, observation_id: str):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}?startTVPTime=1900-01-01T00%3A00%3A00&endTVPTime=1900-01-01T00%3A00%3A00"
-        r = requests.get(url=url)
+        r = self.s.get(url=url)
         r.raise_for_status()
         return ET.fromstring(r.content)
 
