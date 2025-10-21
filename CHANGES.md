@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.49 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.48 (2025-10-21)
 
 -   BRO-Import: stabilize import function
