@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.47 (unreleased)
+## 1.47 (2025-10-21)
 
 
 -   Temporarily continue delivery if 'dataleverancierschap' error
