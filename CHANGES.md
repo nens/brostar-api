@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.49 (unreleased)
+## 1.49 (2025-10-21)
 
 
 -  Do not log errors on creation
