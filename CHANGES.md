@@ -3,7 +3,7 @@
 ## 1.47 (unreleased)
 
 
-- Nothing changed yet.
+-   Temporarily continue delivery if 'dataleverancierschap' error
 
 
 ## 1.46 (2025-10-20)

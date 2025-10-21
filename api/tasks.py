@@ -57,7 +57,9 @@ def validate_xml_file_task(
         "bro_username": bro_username,
     }
 
-    if validation_response["status"] != "VALIDE":
+    if validation_response["status"] != "VALIDE" and validation_response["errors"] != [
+        "U bent niet als dataleverancier van dit object geregistreerd."
+    ]:
         upload_task_instance.progress = 50.0
         upload_task_instance.log = "XML is niet geldig"
         upload_task_instance.status = "FAILED"
@@ -67,10 +69,14 @@ def validate_xml_file_task(
             f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
         )
         return None
+    elif validation_response["errors"] == [
+        "U bent niet als dataleverancier van dit object geregistreerd."
+    ]:
+        upload_task_instance.bro_errors = validation_response["errors"]
 
     upload_task_instance.progress = 50.0
     upload_task_instance.log = "XML is succesvol gevalideerd"
-    upload_task_instance.save(update_fields=["progress", "log"])
+    upload_task_instance.save(update_fields=["progress", "log", "bro_errors"])
     return context
 
 
