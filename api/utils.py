@@ -118,7 +118,7 @@ def create_gmw_event(
     try:
         gmw = GMW.objects.get(bro_id=bro_id, data_owner=data_owner)
     except GMW.DoesNotExist:
-        logger.error(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
+        logger.info(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
         return
 
     Event.objects.update_or_create(
@@ -143,7 +143,7 @@ def create_gmw_removal(
     try:
         gmw = GMW.objects.get(bro_id=bro_id, data_owner=data_owner)
     except GMW.DoesNotExist:
-        logger.error(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
+        logger.info(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
         return
 
     Event.objects.update_or_create(
@@ -200,7 +200,7 @@ def create_gld_addition(
     try:
         gld = GLD.objects.get(bro_id=bro_id, data_owner=data_owner)
     except GLD.DoesNotExist:
-        logger.error(f"GLD not found for bro_id={bro_id}, owner={data_owner}")
+        logger.info(f"GLD not found for bro_id={bro_id}, owner={data_owner}")
         return
 
     Observation.objects.update_or_create(
@@ -257,7 +257,7 @@ def create_gmn_measuringpoint(
     try:
         gmn = GMN.objects.get(bro_id=bro_id, data_owner=data_owner)
     except GMN.DoesNotExist:
-        logger.error(f"GMN not found for bro_id={bro_id}, owner={data_owner}")
+        logger.info(f"GMN not found for bro_id={bro_id}, owner={data_owner}")
         return
 
     last_measuring_point = (

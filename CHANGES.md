@@ -3,7 +3,7 @@
 ## 1.49 (unreleased)
 
 
-- Nothing changed yet.
+-  Do not log errors on creation
 
 
 ## 1.48 (2025-10-21)
