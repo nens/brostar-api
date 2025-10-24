@@ -188,7 +188,7 @@ def check_delivery_status_task(self, context):
 
         # Compute elapsed time based on exponential backoff
         # Celery retry_backoff = 5 means: 5s, 10s, 20s, 40s, ...
-        total_time = sum(5 * (2**i) for i in range(retry_count))
+        total_time = sum(5 * (2 ** (i - 1)) for i in range(retry_count))
         unit = "seconds"
 
         if total_time > 120:
