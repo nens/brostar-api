@@ -36,7 +36,7 @@ def validate_xml_file_task(
     if generator.status == "FAILED":
         upload_task_instance.status = "FAILED"
         upload_task_instance.log = generator.error_message
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log"])
         logger.info(f"Error generating XML file: {generator.error_message}")
         return None
 
@@ -64,7 +64,7 @@ def validate_xml_file_task(
         upload_task_instance.log = "XML is niet geldig"
         upload_task_instance.status = "FAILED"
         upload_task_instance.bro_errors = validation_response["errors"]
-        upload_task_instance.save()
+        upload_task_instance.save(["progress", "log", "status", "bro_errors"])
         logger.info(
             f"Errors tijdens het valideren van het XML bestand: {validation_response['errors']}"
         )
@@ -99,7 +99,7 @@ def deliver_xml_file_task(context):
     if upload["status"] != "OK":
         upload_task_instance.status = "FAILED"
         upload_task_instance.log = f"Error tijdens het maken van de upload URL: {upload.get('errors', 'Unknown error')}"
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log"])
         return None
 
     generator = XMLGenerator(
@@ -112,7 +112,7 @@ def deliver_xml_file_task(context):
     if generator.status == "FAILED":
         upload_task_instance.status = "FAILED"
         upload_task_instance.log = generator.error_message
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log"])
         logger.info(f"Error generating XML file: {generator.error_message}")
         return None
 
@@ -133,7 +133,7 @@ def deliver_xml_file_task(context):
         upload_task_instance.log = (
             "Error tijdens het toevoegen van het XML bestand aan de upload"
         )
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log"])
         return None
 
     delivery_url = utils.create_delivery(
@@ -145,7 +145,7 @@ def deliver_xml_file_task(context):
     upload_task_instance.bro_delivery_url = delivery_url
     upload_task_instance.progress = 75.0
     upload_task_instance.log = "XML aangeleverd."
-    upload_task_instance.save()
+    upload_task_instance.save(["progress", "log", "bro_delivery_url"])
     context["delivery_url"] = delivery_url
     return context
 
@@ -166,7 +166,7 @@ def check_delivery_status_task(self, context):
     if errors:
         upload_task_instance.status = "FAILED"
         upload_task_instance.log = f"Errors: {errors}"
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log"])
         return
 
     if (
@@ -178,7 +178,7 @@ def check_delivery_status_task(self, context):
         upload_task_instance.status = "COMPLETED"
         upload_task_instance.log = f"Upload geslaagd: {bro_id}"
         upload_task_instance.progress = 100.0
-        upload_task_instance.save()
+        upload_task_instance.save(["progress", "log", "bro_id", "status"])
         return context
 
     # If not completed and not errors, retry the task
@@ -196,14 +196,14 @@ def check_delivery_status_task(self, context):
             unit = "minutes"
 
         upload_task_instance.log = f"XML aangeleverd: na status controle ({retry_count} - {total_time} {unit}) nog geen uitslag."
-        upload_task_instance.save()
+        upload_task_instance.save(["log"])
 
         raise self.retry()
     except self.MaxRetriesExceededError:
         upload_task_instance.status = "UNFINISHED"
         upload_task_instance.log = "Na 1,5 uur is er nog geen resultaat bekend. Controleer het later handmatig."
         upload_task_instance.progress = 95.0
-        upload_task_instance.save()
+        upload_task_instance.save(["status", "log", "progress"])
 
 
 @shared_task(queue="default")
@@ -255,7 +255,7 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
     upload_task.status = "FAILED"
     upload_task.log = error_message
     upload_task.bro_errors = [convert_error_to_bro_error(error_message)]
-    upload_task.save()
+    upload_task.save(["status", "log", "bro_errors"])
 
     # Returning None or False will prevent the chain from continuing
     return None
@@ -279,7 +279,7 @@ def upload_task(
     task = api_models.UploadTask.objects.get(uuid=upload_task_instance_uuid)
     task.progress = "10"
     task.log = "Upload task started."
-    task.save()
+    task.save(["progress", "log"])
 
     # Add error handling to each task using .on_error()
     workflow = chain(
