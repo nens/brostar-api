@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.51 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.50 (2025-10-27)
 
 -   Bugfix: correct log waiting time
