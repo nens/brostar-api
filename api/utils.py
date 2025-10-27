@@ -158,7 +158,7 @@ def create_gmw_removal(
     )
 
     gmw.removed = "ja"
-    gmw.save()
+    gmw.save(update_fields=["removed"])
 
 
 def find_linked_gmns(gmn_bro_ids: list[str] | str) -> list[GMN]:
@@ -302,11 +302,11 @@ def create_gmn_measuringpoint(
         last_measuring_point.refresh_from_db()
         # Update the last tube to have the tube_end_date as well
         last_measuring_point.tube_end_date = sourcedocument_data.get("eventDate")
-        last_measuring_point.save()
+        last_measuring_point.save(update_fields=["tube_end_date"])
 
     elif last_measuring_point and event_type == "GMN_TubeReference":
         last_measuring_point.tube_end_date = sourcedocument_data.get("eventDate")
-        last_measuring_point.save()
+        last_measuring_point.save(update_fields=["tube_end_date"])
 
 
 def create_frd(
