@@ -2,9 +2,7 @@
 
 ## 1.51 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Add: template for insert GMN_MeasuringPointEndDate
 
 ## 1.50 (2025-10-27)
 
