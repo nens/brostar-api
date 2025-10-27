@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.51 (unreleased)
+## 1.51 (2025-10-27)
 
 -   Add: template for insert GMN_MeasuringPointEndDate
 
