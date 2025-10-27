@@ -2,15 +2,13 @@
 
 ## 1.50 (unreleased)
 
-
-- Nothing changed yet.
-
+-   Bugfix: correct log waiting time
+-   Move validation time to a max of 300 seconds as GMN_Start replace uses a long time at the BRO.
+-   Enhancement: Only save relevant fields for improved performance.
 
 ## 1.49 (2025-10-21)
 
-
--  Do not log errors on creation
-
+-   Do not log errors on creation
 
 ## 1.48 (2025-10-21)
 
