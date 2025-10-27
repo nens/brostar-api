@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.50 (unreleased)
+## 1.50 (2025-10-27)
 
 -   Bugfix: correct log waiting time
 -   Move validation time to a max of 300 seconds as GMN_Start replace uses a long time at the BRO.
