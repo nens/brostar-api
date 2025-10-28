@@ -19,6 +19,7 @@ Het aanmaken van nieuwe berichten gaat via het (+)-teken. Alle nieuwe registrati
 2. GMW: Constructie, Tussentijdse gebeurtenissen
 3. GAR: Aanmaken
 4. GLD: StartRegistratie, Aanvulling, Beeindigen
+5. FRD: StartRegistratie, Meetconfiguraties, Metingen, Beeindigen
 
 Voor meer informatie over elk van de documenten, ga naar het desbetreffende kopje.
 
@@ -29,6 +30,7 @@ De verschillende tabellen per bro-domein zijn er om vervang correcties door te v
 1. GMN: StartRegistraties
 2. GMW: Constructies, Tussentijdse gebeurtenissen
 3. GLD: StartRegistratie, Aanvulling
+4. Uploadtaak: alle leveringen die je hebt (proberen) te doen.
 
 Voor het beeindigen zijn vervang correcties niet direct van toepassing.
 
@@ -77,6 +79,8 @@ Let hierbij wel op: je dient alle metingen uit de reeks aan te leveren, niet all
 ### De Uploadtaak-tabel
 
 In de upload taak tabel vind je informatie over alle aanleveringen die zijn gedaan onder jou organisatie. Op deze manier krijg je een goed inzicht van hoeveel, hoe vaak en hoe succesvol jou leveringen lopen. Ook krijg je hier feedback op je levering mocht er toch iets niet helemaal correct zijn rondom je waardes.
+
+Mocht een levering niet helemaal voldoen aan de validatie regels, dan kan je wijzigingen doen aan dit verzoek. Op deze manier hoef je niet alles opnieuw in te voeren.
 
 ### GMW-Aanleveringen
 Om de grondwatermetingen aan te leveren, moeten eerst de meetnetten aangemaakt worden. Dat wordt eerst via 'GMW-Constructie' gedaan. Tussentijdse gebeurtenissen kunnen daarna aangegeven worden.
@@ -159,3 +163,23 @@ Om de tijdreeks te beeindigen, moet op deze knop gedrukt worden. Hierbij wordt a
 ### GAR
 
 De grondwaterkwaliteitsmetingen (GAR) kunnen worden ingeladen via deze knop. Deze knop is wederom te vinden door op de '+'-knop te drukken en daarna op 'GAR - kwaliteit'. Hier dient het formulier ingevuld te worden met als metadata projectnummer, kwaliteitsregime en de bronhouder. Daarna bij gegevens de bemonsteringsoperator, oftewel de partij die het monster neemt. Daarna de procedure en beoordelingsprocedure. Bij bestanden dient het veldwerk bestand en lab bestand geupload te worden.
+
+
+### FRD
+Het Formatieweerstandsdossier is een niet veel gebruikt domein (ten tijde van 28-10-2025). Een totaal register van zoutwachter metingen bied inzicht in de staat van de verzilting van onze kusten. Aangezien dit een domein is wat voor een relatief klein gedeelte van de bronhouders een rol speelt, is dit een ondergewaardeerd onderdeel van de BRO.
+
+BROSTAR maakt het eenvoudig om je zoutwachter gegevens op gebruiksvriendelijke manier aan te leveren.
+
+#### FRD-StartRegistratie
+Om een Formatieweerstandsdossier te openen moet in eerste instantie een StartRegistratie worden opgestuurd. Dit bepaald wat het kwaliteitsregime van het onderzoek is, en in welke filterbuis gemeten wordt.
+
+#### FRD-Meetconfiguratie
+Via de meetconfiguraties wordt aangegeven op welke manier elektroden worden ingezet om metingen te doen. Een configuratie krijgt een naam en groepeert vier elektroden, waarvan twee een meetpaar vormen en twee een stroompaar.
+
+De naam van een meetconfiguratie wordt in het 'FRD-Metingen' bericht gebruikt om een meting aan te koppelen.
+
+#### FRD-Metingen
+De daadwerkelijke geleidbaarheidsmetingen worden aangeleverd via het 'Metingen' bericht. Hierin wordt duidelijk wat de waarde en de hoogte is. Dit gaat om metingen die verricht zijn via zoutwachterkabels.
+
+#### FRD-Beeindigen
+Het afsluiten van een formatieweerstandsdossier kan met het FRD-Beeindigen bericht. Wanneer een buis is afgesloten, dan is het netjes om aan te geven dat je ook het formatieweerstandsdossier hebt afgerond.

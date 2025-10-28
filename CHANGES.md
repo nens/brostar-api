@@ -3,7 +3,8 @@
 ## 1.52 (unreleased)
 
 
-- Nothing changed yet.
+-   Docs: add FAQ section
+-   Docs: add FRD section
 
 
 ## 1.51 (2025-10-27)

@@ -52,6 +52,10 @@ De status van een levering wordt bijgehouden. Als een levering niet geslaagd is,
 ![Upload taak tabel](assets/frontend_upload_task_table.png)
 _Voorbeeld van de foutmeldingen bij een gefaalde taak. Op de achtergrond zijn succesvolle taken te zien._
 
+!!! tip
+    Weet je niet welke berichten je moet gebruiken om tot het gewenste eindresultaat te komen? De [BROSTAR-berichtenhulp](https://www.brostar.nl/berichten-hulp/) helpt je verder!
+
+
 !!! info
     De frontend is nog vol in ontwikkeling. Momenteel zijn de type berichten die mogelijk zijn vanuit de frontend beperkt. Als er vanuit meerdere gebruikers wensen tot uitbreiding zijn, worden deze gerealiseerd.
 
@@ -61,6 +65,28 @@ Net zoals de BRO zelf, heeft de BROSTAR een [productie](https://www.brostar.nl/)
 
 Met een licensie op de BROSTAR krijgt een organisatie een eigen omgeving op beide omgevingen. Daarmee is het mogelijk om eerst te testen en te ontwikkelen met dummy data via de demo omgeving.
 
-## Interesse?
+## Frequently Asked Questions [FAQ]
 
-Heb je interesse om een demo van de BROSTAR te krijgen of om tijdelijk op de staging omgeving te testen? Contact [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Interesse in de BROSTAR)
+### Ik begrijp de foutmelding die geschreven wordt niet, hoe lees ik een foutmelding vanuit de basisregistratie ondergrond?
+Het is altijd vervelend als je niet helemaal begrijpt wat er misgaat. Bij BROSTAR proberen we veel voorkomende fouten te vertalen naar een begrijpbaardere taal, maar er zijn simpelweg te veel mogelijkheden om alles af te vangen.
+
+In veel gevallen zal het er om gaan dat:
+
+- Een gegeven niet gebruikt mag worden.
+- Een bericht-type niet volstaat voor de gewenste wijziging (bijv. omdat er al een gebeurtenis is geregistreerd na dit onderhoud).
+- De machtigingen zijn niet goed geregeld.
+
+### Er wordt aangegeven dat de bronhouder uit mijn bericht niet overeenkomt met de basisregistratie, wat gaat er mis?
+Bij de foutmelding '' komt het project wat wordt gebruikt voor de levering niet overeen met de bronhouder van het registratie object. Als bronhouder van een registratie object heb je zeggenschap over wie er wel en niet wijzigingen mag doen aan jou objecten. Deze rechten worden verleend via projecten in het bronhoudersportaal. Een bronhouder machtigd je binnen een project, en jij kan dan dat projectnummer gebruiken voor je levering.
+
+De BRO controleert dan bij de levering onder het project of het token wat gebruikt is voor de levering (wat weer bewijst van welke organisatie jij bent) de juiste rechten heeft onder dit project.
+
+Is dit het geval? Mooi dan mag je leveren. Anders wordt de levering afgekeurd.
+
+De genoemde foutmelding treed dus op wanneer je een levering probeert voor een registratie vanuit bronhouder A onder een project van bronhouder B.
+
+
+
+## Interesse of vragen?
+
+Benieuwd naar wat BROSTAR voor jou organisatie kan betekenen? Neem contact met ons op via [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Interesse in de BROSTAR). Ook voor vragen of ondersteuning met zaken rondom de Basisregistratie Ondergrond (BRO) kan je met onze [servicedesk](mailto:servicedesk@nelen-schuurmans.nl?subject=Advies voor de BRO) contact opnemen.
