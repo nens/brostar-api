@@ -5,6 +5,7 @@
 
 -   Docs: add FAQ section
 -   Docs: add FRD section
+-   Enhancement: adjust API UploadTasks GARs to minimize load.
 
 
 ## 1.51 (2025-10-27)

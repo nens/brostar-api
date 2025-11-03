@@ -78,6 +78,27 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
             src_data["timeValuePairsCount"] = len(tvps)
             representation["sourcedocument_data"] = src_data
 
+        elif is_list_view and representation.get("registration_type") == "GAR":
+            src_data = representation.get("sourcedocument_data", {})
+            field_measurements = src_data["fieldResearch"].pop("fieldMeasurements")
+            src_data["fieldResearch"]["fieldMeasurementsCount"] = len(
+                field_measurements
+            )
+            representation["sourcedocument_data"] = src_data
+
+            for analysis in src_data.get("laboratoryAnalyses", []):
+                analysis_processes = analysis.pop("analysisProcesses", [])
+                for process in analysis_processes:
+                    analyses = process.pop("analyses", [])
+                    process["analysesCount"] = len(analyses)
+
+                analysis["analysisProcesses"] = analysis_processes
+
+            src_data["laboratoryAnalysesCount"] = len(
+                src_data.get("laboratoryAnalyses", [])
+            )
+            representation["sourcedocument_data"] = src_data
+
         return representation
 
 
