@@ -904,6 +904,12 @@ class GLDObjectImporter(ObjectImporter):
             observation_element = observation_tree.find(
                 ".//observation", namespaces=OBSERVATION_NAMESPACE
             )
+            if observation_element is None:
+                logger.info(
+                    f"No observation element found for observation ID {observation_id}"
+                )
+                continue
+
             procedure = self._format_procedure(observation_element)
             begin_position = date_or_none(observation.get("startDate", None))
             end_position = date_or_none(observation.get("endDate", None))
