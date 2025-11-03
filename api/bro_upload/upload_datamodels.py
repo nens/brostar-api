@@ -375,6 +375,21 @@ class TimeValuePair(CamelModel):
             return value.isoformat(sep="T", timespec="seconds")
         return value
 
+    @field_validator("value", "censoring_limitvalue", mode="before")
+    def parse_comma_decimal(cls, value):
+        """Convert strings like '1,32' or '-0,5' into floats."""
+        if isinstance(value, str):
+            value = value.strip()
+            if value == "" or value.lower() == "null":
+                return None
+            # Replace comma with dot if needed
+            value = value.replace(",", ".")
+            try:
+                return float(value)
+            except ValueError:
+                raise ValueError(f"Invalid numeric value: {value!r}")
+        return value
+
 
 class GLDAddition(CamelModel):
     date: str | None = None

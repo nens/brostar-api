@@ -5,7 +5,8 @@
 
 -   Docs: add FAQ section
 -   Docs: add FRD section
--   Enhancement: adjust API UploadTasks GARs to minimize load.
+-   Enhancement: adjust API UploadTasks GARs to minimize load
+-   Enhancement: make GLD-delivery more robust by dealing with multiple CSV styles
 
 
 ## 1.51 (2025-10-27)

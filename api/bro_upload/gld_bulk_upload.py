@@ -19,7 +19,7 @@ amsterdam_tz = pytz.timezone("Europe/Amsterdam")
 
 def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
     column_names = df.columns.copy()
-
+    logger.error(df.head())
     # Columns 0 to 5 should have the following names
     new_names = [
         "bro_id",
@@ -38,6 +38,7 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
 
     # Set the new column names
     df.columns = updated_names
+    logger.error(df.columns)
 
     df = df.with_columns(
         pl.col("statusQualityControl").str.to_lowercase().alias("statusQualityControl"),

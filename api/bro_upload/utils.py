@@ -1,7 +1,9 @@
+import csv
 import datetime
 import json
 import logging
 import zipfile
+from io import BytesIO
 from typing import Any, TypeVar
 
 import polars as pl
@@ -31,20 +33,54 @@ def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
     return {" - ".join(err["loc"]): err["msg"] for err in errors}
 
 
+def detect_delimiter_from_content(sample: str) -> str:
+    try:
+        dialect = csv.Sniffer().sniff(sample, delimiters=[",", ";", "\t"])
+        return dialect.delimiter
+    except csv.Error:
+        # Default fallback
+        return ","
+
+
 def read_csv(file: T | bytes) -> pl.DataFrame:
-    if isinstance(file, api_models.UploadFile):
+    if isinstance(file, bytes):
+        sample = file[:2048].decode("utf-8", errors="ignore")
+        delimiter = detect_delimiter_from_content(sample)
+        return pl.read_csv(
+            source=BytesIO(file),
+            has_header=True,
+            ignore_errors=False,
+            truncate_ragged_lines=True,
+            separator=delimiter,
+        )
+
+    # Handle FastAPI UploadFile or similar
+    if hasattr(file, "file") and hasattr(file.file, "path"):
+        with open(file.file.path, encoding="utf-8", errors="ignore") as f:
+            sample = f.read(2048)
+        delimiter = detect_delimiter_from_content(sample)
         return pl.read_csv(
             file.file.path,
             has_header=True,
             ignore_errors=False,
             truncate_ragged_lines=True,
+            separator=delimiter,
         )
-    return pl.read_csv(
-        source=file,
-        has_header=True,
-        ignore_errors=False,
-        truncate_ragged_lines=True,
-    )
+
+    # Handle normal path string
+    if isinstance(file, str):
+        with open(file, encoding="utf-8", errors="ignore") as f:
+            sample = f.read(2048)
+        delimiter = detect_delimiter_from_content(sample)
+        return pl.read_csv(
+            file,
+            has_header=True,
+            ignore_errors=False,
+            truncate_ragged_lines=True,
+            separator=delimiter,
+        )
+
+    raise TypeError("Unsupported file type passed to read_csv.")
 
 
 def read_excel(file: T | bytes) -> pl.DataFrame:

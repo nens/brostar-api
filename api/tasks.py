@@ -181,6 +181,11 @@ def check_delivery_status_task(self, context):
         upload_task_instance.log = f"Upload geslaagd: {bro_id}"
         upload_task_instance.progress = 100.0
         upload_task_instance.save(update_fields=["progress", "log", "bro_id", "status"])
+
+        organisation = upload_task_instance.data_owner
+        organisation.request_count += 1
+        organisation.save(update_fields=["request_count"])
+
         return context
 
     # If not completed and not errors, retry the task
