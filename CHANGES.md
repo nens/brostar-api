@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.52 (unreleased)
+## 1.52 (2025-11-03)
 
 
 -   Docs: add FAQ section
