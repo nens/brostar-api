@@ -62,12 +62,17 @@ def test_deliver_xml_file_task(
     assert mock_instance.save.called
 
 
-@mock.patch("api.tasks.api_models.UploadTask.objects.get")
 @mock.patch("api.tasks.utils.check_delivery_status")
-def test_check_delivery_status_task_delivered(mock_check_status, mock_get):
+@mock.patch("api.tasks.api_models.UploadTask.objects.get")
+def test_check_delivery_status_task_delivered(mock_get, mock_check_status):
+    # Arrange
     mock_instance = mock.Mock()
+    mock_organisation = mock.Mock()
+    mock_instance.data_owner = mock_organisation
+    mock_instance.data_owner.request_count = 5  # initial count
     mock_get.return_value = mock_instance
 
+    # Mock successful BRO delivery response
     mock_check_status.return_value = {
         "status": "DOORGELEVERD",
         "brondocuments": [
@@ -81,11 +86,26 @@ def test_check_delivery_status_task_delivered(mock_check_status, mock_get):
         "bro_username": "u",
         "bro_password": "p",
     }
-    check_delivery_status_task(context)
 
+    # Act
+    result = check_delivery_status_task(context)
+
+    # Assert
+    # Upload task instance updated correctly
     assert mock_instance.status == "COMPLETED"
     assert mock_instance.bro_id == "GMW00000083478"
-    assert mock_instance.save.called
+    assert mock_instance.progress == 100.0
+    assert "Upload geslaagd" in mock_instance.log
+    mock_instance.save.assert_any_call(
+        update_fields=["progress", "log", "bro_id", "status"]
+    )
+
+    # Organisation request counter incremented and saved
+    assert mock_organisation.request_count == 6
+    mock_organisation.save.assert_called_once_with(update_fields=["request_count"])
+
+    # Function returns the same context on success
+    assert result == context
 
 
 @mock.patch("api.tasks.api_models.UploadTask.objects.get")
