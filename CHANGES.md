@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.55 (unreleased)
+## 1.55 (2025-11-04)
 
 
 -   Bugfix: instead of fixing the View, it should have been the bulk task.
