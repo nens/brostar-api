@@ -3,7 +3,7 @@
 ## 1.54 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix: Also auto empty None on upload task creation for GLDAddition airPressureCompensation
 
 
 ## 1.53 (2025-11-04)
