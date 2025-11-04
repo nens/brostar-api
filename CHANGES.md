@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.54 (unreleased)
+## 1.54 (2025-11-04)
 
 
 -   Bugfix: Also auto empty None on upload task creation for GLDAddition airPressureCompensation
