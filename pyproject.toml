@@ -42,7 +42,7 @@ description = "Simplify data management for BRO"
 authors = []
 license = {file = "LICENSE.txt"}
 readme = "README.md"
-version = "1.54"
+version = "1.55.dev0"
 
 [project.optional-dependencies]
 test = ["pytest"] # pytest added by nens-meta
