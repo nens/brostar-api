@@ -305,7 +305,7 @@ def test_uploadtask_view_post_valid_gld_addition_data(
             "processReference": "NPR_ISO.TR23211v2009",
             "evaluationProcedure": "oordeelDeskundig",
             "measurementInstrumentType": "drukSensor",
-            "airPressureCompensationType": "knmimeting",
+            "airPressureCompensationType": "None",
             "resultTime": "2025-01-09T09:52:00+01:00",
             "timeValuePairs": [
                 {
@@ -348,6 +348,7 @@ def test_uploadtask_view_post_valid_gld_addition_data(
         response_data["sourcedocument_data"]["measurementInstrumentType"]
         == data["sourcedocument_data"]["measurementInstrumentType"]
     )
+    assert response_data["sourcedocument_data"]["airPressureCompensationType"] is None
     assert (
         response_data["sourcedocument_data"]["timeValuePairs"]
         == data["sourcedocument_data"]["timeValuePairs"]

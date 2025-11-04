@@ -411,10 +411,6 @@ class GLDAddition(CamelModel):
     @model_validator(mode="before")
     def generate_missing_ids(cls, data):
         if isinstance(data, dict):
-            # Handle the UUIDs
-            if data.get("air_pressure_compensation_type") in ["", "None"]:
-                data["air_pressure_compensation_type"] = None
-
             if not data.get("observation_id"):
                 data["observation_id"] = f"_{uuid.uuid4()}"
 
@@ -433,6 +429,13 @@ class GLDAddition(CamelModel):
                 data["validation_status"] = None
 
         return data
+
+    @model_validator(mode="after")
+    def correct_air_pressure_compensation_type(cls, model):
+        if model.air_pressure_compensation_type in ["", "None"]:
+            model.air_pressure_compensation_type = None
+
+        return model
 
 
 class GLDClosure(CamelModel):
