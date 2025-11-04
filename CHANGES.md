@@ -3,7 +3,7 @@
 ## 1.55 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix: instead of fixing the View, it should have been the bulk task.
 
 
 ## 1.54 (2025-11-04)

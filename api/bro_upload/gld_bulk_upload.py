@@ -274,7 +274,7 @@ def create_gld_sourcedocs_data(
         }
     )
 
-    if sourcedocument_data["airPressureCompensationType"]:
+    if sourcedocument_data["airPressureCompensationType"] not in ["None", "", None]:
         sourcedocument_data.update(
             {
                 "airPressureCompensationType": sourcedocument_data[
