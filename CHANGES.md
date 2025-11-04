@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.53 (unreleased)
+## 1.53 (2025-11-04)
 
 
 -   Enhancement: handle bro-error during a request to the REST-service
