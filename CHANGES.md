@@ -3,7 +3,8 @@
 ## 1.53 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement: handle bro-error during a request to the REST-service
+-   Bugfix: deal with empty strings or "None" in the GLDAddition model
 
 
 ## 1.52 (2025-11-03)

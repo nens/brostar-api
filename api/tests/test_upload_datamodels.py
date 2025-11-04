@@ -173,6 +173,7 @@ def test_gld_addition_auto_generate_ids():
         observation_type="reguliereMeting",
         evaluation_procedure="ProcedureA",
         measurement_instrument_type="InstrumentX",
+        air_pressure_compensation_type="None",
         process_reference="PR123",
         begin_position="2024-01-01T00:00:00",
         end_position="2024-01-02T00:00:00",
@@ -182,6 +183,7 @@ def test_gld_addition_auto_generate_ids():
     assert gld.observation_id.startswith("_")
     assert gld.observation_process_id.startswith("_")
     assert gld.measurement_timeseries_id.startswith("_")
+    assert gld.air_pressure_compensation_type is None
 
     # Validate that the auto-generated parts after _ are valid UUIDs
     UUID(gld.observation_id[1:])  # will raise if invalid
