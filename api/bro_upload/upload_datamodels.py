@@ -432,6 +432,9 @@ class GLDAddition(CamelModel):
 
     @model_validator(mode="after")
     def correct_air_pressure_compensation_type(cls, model):
+        if model.measurement_instrument_type not in ["druksensor", "stereoDruksensor"]:
+            model.air_pressure_compensation_type = None
+
         if model.air_pressure_compensation_type in ["", "None"]:
             model.air_pressure_compensation_type = None
 

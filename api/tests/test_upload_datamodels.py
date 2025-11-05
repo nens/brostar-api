@@ -190,6 +190,34 @@ def test_gld_addition_auto_generate_ids():
     UUID(gld.observation_process_id[1:])
     UUID(gld.measurement_timeseries_id[1:])
 
+    # Validate if air pressure is set to None
+    gld = GLDAddition(
+        investigator_kvk="12345678",
+        observation_type="reguliereMeting",
+        evaluation_procedure="ProcedureA",
+        measurement_instrument_type="InstrumentX",
+        air_pressure_compensation_type="monitoringsnetmeting",
+        process_reference="PR123",
+        begin_position="2024-01-01T00:00:00",
+        end_position="2024-01-02T00:00:00",
+        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
+    )
+    assert gld.air_pressure_compensation_type is None
+
+    # Validate if air pressure is kept correctly
+    gld = GLDAddition(
+        investigator_kvk="12345678",
+        observation_type="reguliereMeting",
+        evaluation_procedure="ProcedureA",
+        measurement_instrument_type="druksensor",
+        air_pressure_compensation_type="monitoringsnetmeting",
+        process_reference="PR123",
+        begin_position="2024-01-01T00:00:00",
+        end_position="2024-01-02T00:00:00",
+        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
+    )
+    assert gld.air_pressure_compensation_type == "monitoringsnetmeting"
+
 
 def test_gld_addition_validation_status_reguliere_meting():
     gld = GLDAddition(

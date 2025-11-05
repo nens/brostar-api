@@ -274,7 +274,10 @@ def create_gld_sourcedocs_data(
         }
     )
 
-    if sourcedocument_data["airPressureCompensationType"] not in ["None", "", None]:
+    if sourcedocument_data["measurementInstrumentType"] in [
+        "druksensor",
+        "stereoDruksensor",
+    ] and sourcedocument_data["airPressureCompensationType"] not in ["None", "", None]:
         sourcedocument_data.update(
             {
                 "airPressureCompensationType": sourcedocument_data[

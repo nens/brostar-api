@@ -3,7 +3,8 @@
 ## 1.56 (unreleased)
 
 
-- Nothing changed yet.
+-   Added additional guard rails for airpressurecompensation.
+    Any measurement equipment other then sensors, will always have None.
 
 
 ## 1.55 (2025-11-04)
