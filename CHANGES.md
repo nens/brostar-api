@@ -5,6 +5,7 @@
 
 -   Added additional guard rails for airpressurecompensation.
     Any measurement equipment other then sensors, will always have None.
+-   Enhancement: automatic data-owner management
 
 
 ## 1.55 (2025-11-04)

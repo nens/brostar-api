@@ -351,15 +351,39 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
-        if user_profile.organisation:
-            data_owner = user_profile.organisation
-            serializer.validated_data["data_owner"] = data_owner
+        if not user_profile.organisation:
+            return Response(
+                {"detail": "No organisation linked to this user."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Always enforce the organisation from the user
+        serializer.validated_data["data_owner"] = user_profile.organisation
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+    def update(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """Allow updates but always enforce the user's organisation as data_owner."""
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        if not user_profile.organisation:
+            return Response(
+                {"detail": "No organisation linked to this user."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.validated_data["data_owner"] = user_profile.organisation
+        self.perform_update(serializer)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def check_status(

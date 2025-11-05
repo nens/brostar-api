@@ -59,6 +59,7 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = api_models.UploadTask
         fields = "__all__"
+        read_only_fields = ["data_owner"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
