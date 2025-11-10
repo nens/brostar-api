@@ -44,7 +44,7 @@ class GARBulkUploadMetadata(CamelModel):
     quality_regime: str
     delivery_accountable_party: str | None = None
     quality_control_method: str | None = None
-    groundwater_monitoring_nets: list[str] | None = None
+    groundwater_monitoring_nets: list[str] = []
     sampling_operator: int | None = None
 
 
@@ -348,16 +348,16 @@ class LaboratoryAnalysis(CamelModel):
 class GAR(CamelModel):
     object_id_accountable_party: str
     quality_control_method: str
-    groundwater_monitoring_nets: list[str] | None = None
+    groundwater_monitoring_nets: list[str] = []
     gmw_bro_id: str
     tube_number: str | int
     field_research: FieldResearch
-    laboratory_analyses: list[LaboratoryAnalysis] | None = None
+    laboratory_analyses: list[LaboratoryAnalysis] = []
 
 
 class GLDStartregistration(CamelModel):
     object_id_accountable_party: str | None = None
-    groundwater_monitoring_nets: list[str] | None = None
+    groundwater_monitoring_nets: list[str] = []
     gmw_bro_id: str
     tube_number: str | int
 
@@ -447,7 +447,7 @@ class GLDClosure(CamelModel):
 
 class FRDStartRegistration(CamelModel):
     object_id_accountable_party: str | None = None
-    groundwater_monitoring_nets: list[str] | None = None
+    groundwater_monitoring_nets: list[str] = []
     gmw_bro_id: str
     tube_number: int
 

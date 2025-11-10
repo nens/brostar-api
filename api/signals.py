@@ -34,6 +34,16 @@ def create_user_profile(sender, instance: User, created, **kwargs):
 @receiver(pre_save, sender=UploadTask)
 def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     """Handle registration where it should be an insert."""
+    if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
+        for tube in instance.sourcedocument_data.get("monitoringTubes", []):
+            plain_tube_length = get_plain_tube_part_length(
+                instance.metadata.get("broId"),
+                tube.get("tubeNumber"),
+                tube.get("tubeTopPosition"),
+            )
+            if plain_tube_length is not None:
+                tube["plainTubePartLength"] = str(plain_tube_length)
+
     if (
         "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis"
         in instance.bro_errors
@@ -42,6 +52,40 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
         instance.metadata.update({"correctionReason": "eigenCorrectie"})
         instance.bro_errors = ""
         instance.status = "PENDING"
+
+
+def get_plain_tube_part_length(
+    bro_id: str, tube_number: int, tube_top_position: float
+) -> float | None:
+    """Fetch the plain tube part length for a given bro_id and tube_number."""
+    import requests
+
+    r = requests.get(
+        f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw/items?f=json&bro_id={bro_id}",
+        timeout=5,
+    )
+    if r.status_code < 300:
+        gm_gmw_pk = (
+            r.json().get("features", [])[0].get("properties", {}).get("gm_gmw_pk")
+        )
+        if gm_gmw_pk:
+            r = requests.get(
+                f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw_monitoringtube/items?f=json&gm_gmw_fk={gm_gmw_pk}&tube_number={tube_number}",
+                timeout=5,
+            )
+            if r.status_code < 300:
+                return round(
+                    float(tube_top_position)
+                    - float(
+                        r.json()
+                        .get("features", [])[0]
+                        .get("properties", {})
+                        .get("screen_top_position")
+                    ),
+                    3,
+                )
+
+    return None
 
 
 @receiver(post_save, sender=UploadTask)

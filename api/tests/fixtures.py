@@ -30,6 +30,7 @@ def user():
     return user
 
 
+@pytest.fixture
 def organisation_user(organisation):
     _invite_user = api_models.InviteUser.objects.create(
         email="test@example.com",

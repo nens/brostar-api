@@ -437,6 +437,50 @@ def test_post_save_uploadtask_triggers_create_objects_gmw_event(
         assert Event.objects.filter(gmw=gmw, event_name=event).exists()
 
 
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_pdok(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """
+    Test that saving an UploadTask with status COMPLETED calls create_objects.
+    We don’t mock, so we directly check the side effects on the database.
+    """
+    # 2. Create a completed UploadTask
+    for event in ["GMW_Shortening", "GMW_Lengthening"]:
+        task = UploadTask.objects.create(
+            data_owner=organisation,
+            bro_domain="GMW",
+            registration_type=event,
+            request_type="registration",
+            status="PROCESSING",
+            bro_id=gmw.bro_id,
+            metadata={
+                "qualityRegime": "IMBRO/A",
+                "requestReference": "BROSTAR_Request",
+                "deliveryAccountableParty": "50616641",
+                "broId": "GMW000000082831",
+            },
+            sourcedocument_data={
+                "eventDate": "2025-09-10",
+                "monitoringTubes": [
+                    {
+                        "tubeNumber": 1,
+                        "tubeTopPosition": "12.5",
+                        "plainTubePartLength": None,
+                    }
+                ],
+                "linkedGmns": ["GMN00000123456"],
+            },
+        )
+
+    task.refresh_from_db()
+    assert (
+        task.sourcedocument_data["monitoringTubes"][0]["plainTubePartLength"]
+        is not None
+    )
+
+
 GMN_EVENT_TYPES = [
     "GMN_MeasuringPoint",
     "GMN_TubeReference",

@@ -249,7 +249,7 @@ def test_uploadtask_view_post_valid_data2(api_client, user, userprofile, organis
                     "tubeTopDiameter": "",
                     "tubeTopPosition": "0.700",
                     "variableDiameter": "",
-                    "plainTubePartLength": "1.3",
+                    "plainTubePartLength": "1.69",
                     "tubeTopPositioningMethod": "waterpassing0tot2cm",
                 }
             ],

@@ -12,7 +12,7 @@ from api.tests import fixtures
 from gld.models import GLD, Observation
 from gmw.models import GMW, Event, MonitoringTube
 
-user = fixtures.user
+user = fixtures.organisation_user
 userprofile = fixtures.userprofile
 organisation = fixtures.organisation
 importtask = fixtures.importtask
@@ -225,7 +225,8 @@ def test_gmw_import(gmw_object_importer: object_import.GMWObjectImporter):
 @pytest.mark.django_db
 def test_create_import_task(api_client, user, organisation):
     api_client.force_authenticate(user=user)
-
+    print("Organisation UUID:", organisation.uuid)
+    print("Organisation:", user.userprofile.organisation)
     # Prepare POST data
     post_data = {
         "bro_domain": "GLD",

@@ -75,13 +75,13 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
             if "timeValuePairs" not in src_data.keys():
                 return representation
 
-            tvps = src_data.pop("timeValuePairs")
+            tvps = src_data.pop("timeValuePairs", [])
             src_data["timeValuePairsCount"] = len(tvps)
             representation["sourcedocument_data"] = src_data
 
         elif is_list_view and representation.get("registration_type") == "GAR":
             src_data = representation.get("sourcedocument_data", {})
-            field_measurements = src_data["fieldResearch"].pop("fieldMeasurements")
+            field_measurements = src_data["fieldResearch"].pop("fieldMeasurements", [])
             src_data["fieldResearch"]["fieldMeasurementsCount"] = len(
                 field_measurements
             )
