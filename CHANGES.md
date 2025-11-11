@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.56 (unreleased)
+## 1.56 (2025-11-11)
 
 
 -   Added additional guard rails for airpressurecompensation.
