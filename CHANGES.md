@@ -3,7 +3,7 @@
 ## 1.57 (unreleased)
 
 
-- Nothing changed yet.
+-   Make internal-id for GMN, GMW, GLD and FRD Char(100) instead of Char(50)
 
 
 ## 1.56 (2025-11-11)
