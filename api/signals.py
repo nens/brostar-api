@@ -34,6 +34,9 @@ def create_user_profile(sender, instance: User, created, **kwargs):
 @receiver(pre_save, sender=UploadTask)
 def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     """Handle registration where it should be an insert."""
+    if not isinstance(instance.bro_errors, str):
+        instance.bro_errors = str(instance.bro_errors)
+
     if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
         for tube in instance.sourcedocument_data.get("monitoringTubes", []):
             plain_tube_length = get_plain_tube_part_length(

@@ -583,3 +583,15 @@ def test_pre_save_uploadtask_triggers_insert(
     assert task.bro_errors == ""
     assert task.status == "PROCESSING"
     assert task.metadata.get("correctionReason") == "eigenCorrectie"
+
+    # test list input
+
+    task.request_type = "registration"
+    task.bro_errors = [
+        "Op 2025-01 gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis 2025-02 liggen."
+    ]
+    task.save()
+
+    assert task.request_type == "insert"
+    assert task.bro_errors == ""
+    assert task.status == "PROCESSING"

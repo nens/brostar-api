@@ -4,6 +4,7 @@
 
 
 -   Make internal-id for GMN, GMW, GLD and FRD Char(100) instead of Char(50)
+-   Enhancement: auto-correct to insert on failed registration if that is the reasoning.
 
 
 ## 1.56 (2025-11-11)

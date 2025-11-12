@@ -261,7 +261,7 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
     # Update the task status
     upload_task.status = "FAILED"
     upload_task.log = error_message
-    upload_task.bro_errors = [convert_error_to_bro_error(error_message)]
+    upload_task.bro_errors = str([convert_error_to_bro_error(error_message)])
     upload_task.save(update_fields=["status", "log", "bro_errors"])
 
     # Returning None or False will prevent the chain from continuing
