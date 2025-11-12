@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.57 (unreleased)
+## 1.57 (2025-11-12)
 
 
 -   Make internal-id for GMN, GMW, GLD and FRD Char(100) instead of Char(50)
