@@ -61,12 +61,12 @@ def create_gmw(
         position_tube_top = tube.get("tubeTopPosition")
         plain_tube_length = tube.get("plainTubePartLength")
         screen_top_position = (
-            position_tube_top - plain_tube_length
+            float(position_tube_top) - float(plain_tube_length)
             if (plain_tube_length is not None and position_tube_top is not None)
             else None
         )
         screen_bottom_position = (
-            screen_top_position - tube.get("screenLength")
+            float(screen_top_position) - float(tube.get("screenLength"))
             if (
                 screen_top_position is not None and tube.get("screenLength") is not None
             )
