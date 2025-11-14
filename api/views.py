@@ -473,7 +473,12 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     upload_task.status = "COMPLETED"
                     upload_task.log = f"Upload geslaagd: {upload_task.bro_id}"
                     upload_task.progress = 100.00
-                    upload_task.save()
+                    upload_task.save(
+                        update_fields=["bro_id", "status", "log", "progress"]
+                    )
+
+                    data_owner.request_count += 1
+                    data_owner.save(update_fields=["request_count"])
 
                     return Response(
                         {
@@ -662,10 +667,10 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             # Read files
             fieldwork_file = request.FILES.get("fieldwork_file", None)
             lab_file = request.FILES.get("lab_file", None)
-            if not (fieldwork_file and lab_file):
+            if not fieldwork_file:
                 return Response(
                     {
-                        "error": "You are trying to initiate a GAR bulk upload process, but did not provide a combination of a fieldwork and lab analysis file."
+                        "error": "You are trying to initiate a GAR bulk upload process, but did not provide a fieldwork file."
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
