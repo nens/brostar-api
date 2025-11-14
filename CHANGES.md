@@ -3,7 +3,8 @@
 ## 1.58 (unreleased)
 
 
-- Nothing changed yet.
+-   Added a function to update the request count of an organisation to match
+    its completed tasks.
 
 
 ## 1.57 (2025-11-12)
