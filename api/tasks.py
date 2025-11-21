@@ -167,8 +167,9 @@ def check_delivery_status_task(self, context):
 
     if errors:
         upload_task_instance.status = "FAILED"
-        upload_task_instance.log = f"Errors: {errors}"
-        upload_task_instance.save(update_fields=["status", "log"])
+        upload_task_instance.log = "Error after delivery"
+        upload_task_instance.bro_errors = f"{errors}"
+        upload_task_instance.save(update_fields=["status", "log", "bro_errors"])
         return
 
     if (
