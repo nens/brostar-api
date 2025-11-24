@@ -82,8 +82,8 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         elif is_list_view and representation.get("registration_type") == "GAR":
             src_data = representation.get("sourcedocument_data", {})
             field_measurements = src_data["fieldResearch"].pop("fieldMeasurements", [])
-            src_data["fieldResearch"]["fieldMeasurementsCount"] = len(
-                field_measurements
+            src_data["fieldResearch"]["fieldMeasurementsCount"] = (
+                len(field_measurements) if isinstance(field_measurements, list) else 0
             )
             representation["sourcedocument_data"] = src_data
 
@@ -91,7 +91,9 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
                 analysis_processes = analysis.pop("analysisProcesses", [])
                 for process in analysis_processes:
                     analyses = process.pop("analyses", [])
-                    process["analysesCount"] = len(analyses)
+                    process["analysesCount"] = (
+                        len(analyses) if isinstance(analyses, list) else 0
+                    )
 
                 analysis["analysisProcesses"] = analysis_processes
 
