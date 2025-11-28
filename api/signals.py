@@ -69,8 +69,9 @@ def get_plain_tube_part_length(
     )
     if r.status_code < 300:
         features = r.json().get("features", [])
+        logger.info(f"Fetched features for bro_id {bro_id}: {features}")
         if len(features) > 0:
-            gm_gmw_pk = features[0].get("properties", {}).get("pk")
+            gm_gmw_pk = features[0].get("properties", {}).get("gm_gmw_pk")
         else:
             gm_gmw_pk = None
 
