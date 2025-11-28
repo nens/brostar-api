@@ -96,7 +96,7 @@ def test_post_save_uploadtask_triggers_create_objects_gmw(organisation: Organisa
 
     assert monitoring_tube.tube_top_position == "0"
     assert monitoring_tube.plain_tube_part_length == "1"
-    assert monitoring_tube.screen_top_position == "-1"  # 0 - 1 = -1
+    assert monitoring_tube.screen_top_position == -1.0  # 0 - 1 = -1
     assert monitoring_tube.screen_bottom_position == "-2"  # 0 -1 - 1 = -2
 
 

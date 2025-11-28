@@ -2,19 +2,16 @@
 
 ## 1.59 (unreleased)
 
-
-- Nothing changed yet.
-
-
-## 1.58 (2025-11-28)
-
-
 -   Added a function to update the request count of an organisation to match
     its completed tasks.
 -   Check status view now also correctly updates the status
 -   Added Chloride to fieldwork options
 -   Bugfix: write errors to bro_errors instead of the log on check_status
 
+
+## 1.58 (2025-11-28)
+
+-   Test release
 
 ## 1.57 (2025-11-12)
 
