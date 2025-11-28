@@ -46,15 +46,20 @@ class GARBulkUploader:
         self.fieldwork_file: api_models.UploadFile = api_models.UploadFile.objects.get(
             uuid=fieldwork_upload_file_uuid
         )
-        self.lab_file: api_models.UploadFile = api_models.UploadFile.objects.get(
-            uuid=lab_upload_file_uuid
+        self.lab_file: api_models.UploadFile = (
+            api_models.UploadFile.objects.get(uuid=lab_upload_file_uuid)
+            if lab_upload_file_uuid
+            else None
         )
 
     def process(self) -> None:
         # Step 1: open the files and transform to a pd df
         try:
             fieldwork_df = csv_or_excel_to_df(self.fieldwork_file)
-            lab_df = csv_or_excel_to_df(self.lab_file)
+            if self.lab_file:
+                lab_df = csv_or_excel_to_df(self.lab_file)
+            else:
+                lab_df = pd.DataFrame()
 
             self.bulk_upload_instance.progress = 10.00
             self.bulk_upload_instance.save()
@@ -73,40 +78,47 @@ class GARBulkUploader:
                 "Filternummer": "filter_num",
             }
             fieldwork_df = rename_df_columns(fieldwork_df, fieldwork_df_rename_dict)
-            lab_df_rename_dict = {
-                "GMW BRO ID": "bro_id",
-                "Datum veldwerk": "date",
-                "Filternummer": "filter_num",
-            }
-            lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
-
-            # Merge the 2 dfs
-            merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
-
-            # Remove some useless columns
-            substrings_to_exclude = [
+            field_columns_exclude = [
                 "NITG",
                 "Putcode",
-                "Bijzonderheden",
                 "coördinaat",
-                "MeetpuntId",
-                "Projectcode lab",
-                "Monsternummer lab",
             ]
+            fieldwork_df = remove_df_columns(fieldwork_df, field_columns_exclude)
+            if not lab_df.empty:
+                has_lab = True
+                lab_df_rename_dict = {
+                    "GMW BRO ID": "bro_id",
+                    "Datum veldwerk": "date",
+                    "Filternummer": "filter_num",
+                }
+                lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
 
-            trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
+                # Merge the 2 dfs
+                merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
+                # Remove some useless columns
+                substrings_to_exclude = [
+                    "Bijzonderheden",
+                    "MeetpuntId",
+                    "Projectcode lab",
+                    "Monsternummer lab",
+                ]
+                trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
+            else:
+                has_lab = False
+                trimmed_df = fieldwork_df
 
             assert len(trimmed_df) > 0, (
                 "The combination of the lab and field files gave no resulting possible GARs"
             )
 
             self.bulk_upload_instance.progress = 20.00
-            self.bulk_upload_instance.save()
+            self.bulk_upload_instance.save(update_fields=["progress"])
 
         except Exception as e:
             self.bulk_upload_instance.log = f"Failed to transform the files: {e}"
+            self.bulk_upload_instance.progress = 20.00
             self.bulk_upload_instance.status = "FAILED"
-            self.bulk_upload_instance.save()
+            self.bulk_upload_instance.save(update_fields=["log", "progress", "status"])
             return
 
         # Step 3: Prepare data for uploadtask per row
@@ -120,10 +132,10 @@ class GARBulkUploader:
 
         progress_per_row = round((80 / len(trimmed_df)), 2)
 
-        for index, row in trimmed_df.iterrows():
+        for _, row in trimmed_df.iterrows():
             try:
                 uploadtask_sourcedocument_data: GAR = create_gar_sourcesdocs_data(
-                    row, self.bulk_upload_instance.metadata
+                    row, self.bulk_upload_instance.metadata, has_lab
                 )
 
                 uploadtask_sourcedocument_data_dict = (
@@ -194,7 +206,9 @@ def remove_df_columns(
     return df.loc[:, ~df.columns.str.contains(substring_pattern)]
 
 
-def create_gar_sourcesdocs_data(row: pd.Series, metadata: dict[str, any]) -> GAR:
+def create_gar_sourcesdocs_data(
+    row: pd.Series, metadata: dict[str, any], has_lab: bool
+) -> GAR:
     """Creates a GAR (the pydantic model), based on a row of the merged df of the GAR bulk upload input."""
     sourcedocs_data_dict = {
         "objectIdAccountableParty": f"{row['bro_id']}-{int(row['Meetronde'])}",
@@ -202,7 +216,7 @@ def create_gar_sourcesdocs_data(row: pd.Series, metadata: dict[str, any]) -> GAR
         "gmwBroId": row["bro_id"],
         "tubeNumber": row["filter_num"],
         "fieldResearch": create_gar_field_research(row, metadata),
-        "laboratoryAnalyses": create_gar_lab_analysis(row, metadata),
+        "laboratoryAnalyses": create_gar_lab_analysis(row, metadata) if has_lab else [],
     }
 
     if "groundwaterMonitoringNets" in metadata:

@@ -68,9 +68,13 @@ def get_plain_tube_part_length(
         timeout=5,
     )
     if r.status_code < 300:
-        gm_gmw_pk = (
-            r.json().get("features", [])[0].get("properties", {}).get("gm_gmw_pk")
-        )
+        features = r.json().get("features", [])
+        logger.info(f"Fetched features for bro_id {bro_id}: {features}")
+        if len(features) > 0:
+            gm_gmw_pk = features[0].get("properties", {}).get("gm_gmw_pk")
+        else:
+            gm_gmw_pk = None
+
         if gm_gmw_pk:
             r = requests.get(
                 f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw_monitoringtube/items?f=json&gm_gmw_fk={gm_gmw_pk}&tube_number={tube_number}",

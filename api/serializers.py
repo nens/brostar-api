@@ -82,8 +82,8 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         elif is_list_view and representation.get("registration_type") == "GAR":
             src_data = representation.get("sourcedocument_data", {})
             field_measurements = src_data["fieldResearch"].pop("fieldMeasurements", [])
-            src_data["fieldResearch"]["fieldMeasurementsCount"] = len(
-                field_measurements
+            src_data["fieldResearch"]["fieldMeasurementsCount"] = (
+                len(field_measurements) if isinstance(field_measurements, list) else 0
             )
             representation["sourcedocument_data"] = src_data
 
@@ -91,7 +91,9 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
                 analysis_processes = analysis.pop("analysisProcesses", [])
                 for process in analysis_processes:
                     analyses = process.pop("analyses", [])
-                    process["analysesCount"] = len(analyses)
+                    process["analysesCount"] = (
+                        len(analyses) if isinstance(analyses, list) else 0
+                    )
 
                 analysis["analysisProcesses"] = analysis_processes
 
@@ -146,16 +148,15 @@ class BulkUploadSerializer(UrlFieldMixin, serializers.ModelSerializer):
 
     def validate(self, attrs):
         fieldwork_file = attrs.get("fieldwork_file")
-        lab_file = attrs.get("lab_file")
         measurement_tvp_file = attrs.get("measurement_tvp_file")
         bulk_upload_type = attrs.get("bulk_upload_type")
         file = attrs.get("file")
 
         # Check if either both fieldwork_file and lab_file are present
         # or measurement_tvp_file is present
-        if bulk_upload_type == "GAR" and not (fieldwork_file and lab_file):
+        if bulk_upload_type == "GAR" and not fieldwork_file:
             raise serializers.ValidationError(
-                "Both 'fieldwork_file' and 'lab_file' must be provided, when a GAR bulk-upload is requested."
+                "'fieldwork_file' must be provided, when a GAR bulk-upload is requested."
             )
         elif bulk_upload_type == "GLD" and not (measurement_tvp_file or file):
             raise serializers.ValidationError(

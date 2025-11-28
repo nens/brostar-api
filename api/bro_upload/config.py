@@ -23,6 +23,10 @@ FIELD_PARAMETER_OPTIONS = {
         "parameter_id": 374,
         "unit": "mg/l",
     },
+    "Chloride (mg/l)": {
+        "parameter_id": 508,
+        "unit": "mg/l",
+    },
 }
 
 DAWACO_GAR_FIELD_DATA_MAPPING = {
