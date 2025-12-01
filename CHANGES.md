@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.59 (unreleased)
+## 1.59 (2025-12-01)
 
 -   Added a function to update the request count of an organisation to match
     its completed tasks.
