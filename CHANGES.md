@@ -7,6 +7,7 @@
 -   Check status view now also correctly updates the status
 -   Added Chloride to fieldwork options
 -   Bugfix: write errors to bro_errors instead of the log on check_status
+-   Bugfix: GAR-correctionrequest template
 
 
 ## 1.58 (2025-11-28)
