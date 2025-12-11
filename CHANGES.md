@@ -3,7 +3,8 @@
 ## 1.60 (unreleased)
 
 
-- Nothing changed yet.
+-   Testing: completed GMW-serializer tests
+-   Testing: completed GMW-filter tests
 
 
 ## 1.59 (2025-12-01)

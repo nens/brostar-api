@@ -1,4 +1,4 @@
-from typing import Any
+from uuid import UUID
 
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
@@ -18,7 +18,7 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = gmw_models.GMW
         fields = "__all__"
 
-    def get_linked_gmns(self, obj: gmw_models.GMW) -> list[gmn_models.GMN] | None:
+    def get_linked_gmns(self, obj: gmw_models.GMW) -> list[UUID]:
         try:
             linked_gmns = set(
                 measuringpoint.gmn.uuid
@@ -27,9 +27,8 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
                 )
             )
             return list(linked_gmns)
-
         except ObjectDoesNotExist:
-            return None
+            return []
 
     def get_nr_of_monitoring_tubes(self, obj: gmw_models.GMW) -> int:
         return obj.nr_of_tubes
@@ -70,7 +69,7 @@ class GMWOverviewSerializer(serializers.ModelSerializer):
             "events",
         ]
 
-    def get_linked_gmns(self, obj: gmw_models.GMW) -> list[gmn_models.GMN] | None:
+    def get_linked_gmns(self, obj: gmw_models.GMW) -> list[UUID]:
         try:
             linked_gmns = set(
                 measuringpoint.gmn.uuid
@@ -79,9 +78,8 @@ class GMWOverviewSerializer(serializers.ModelSerializer):
                 )
             )
             return list(linked_gmns)
-
         except ObjectDoesNotExist:
-            return None
+            return []
 
 
 class GMWIdsSerializer(serializers.ModelSerializer):
@@ -104,24 +102,13 @@ class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = gmw_models.MonitoringTube
         fields = "__all__"
 
-    def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-
     def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
-        try:
-            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
-        except ObjectDoesNotExist:
-            return None
+        return obj.gmw.well_code
 
     def get_gmw_bro_id(self, obj: gmw_models.MonitoringTube) -> str | None:
-        try:
-            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).bro_id
-        except ObjectDoesNotExist:
-            return None
+        return obj.gmw.bro_id
 
-    def get_linked_gmns(
-        self, obj: gmw_models.MonitoringTube
-    ) -> list[gmn_models.GMN] | None:
+    def get_linked_gmns(self, obj: gmw_models.MonitoringTube) -> list[UUID]:
         try:
             linked_gmns = set(
                 measuringpoint.gmn.uuid
@@ -130,9 +117,8 @@ class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
                 )
             )
             return list(linked_gmns)
-
         except ObjectDoesNotExist:
-            return None
+            return []
 
 
 class EventSerializer(UrlFieldMixin, serializers.ModelSerializer):
@@ -143,17 +129,8 @@ class EventSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = gmw_models.Event
         fields = "__all__"
 
-    def __init__(self: Any, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
+    def get_gmw_well_code(self, obj: gmw_models.Event) -> str | None:
+        return obj.gmw.well_code
 
-    def get_gmw_well_code(self, obj: gmw_models.MonitoringTube) -> str | None:
-        try:
-            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).well_code
-        except ObjectDoesNotExist:
-            return None
-
-    def get_gmw_bro_id(self, obj: gmw_models.MonitoringTube) -> str | None:
-        try:
-            return gmw_models.GMW.objects.get(uuid=obj.gmw.uuid).bro_id
-        except ObjectDoesNotExist:
-            return None
+    def get_gmw_bro_id(self, obj: gmw_models.Event) -> str | None:
+        return obj.gmw.bro_id
