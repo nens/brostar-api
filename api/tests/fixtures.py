@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import pytz
 from django.contrib.auth.models import User
@@ -63,10 +65,73 @@ def gmn(organisation):
 
 
 @pytest.fixture
+def measuringpoint(organisation, gmn, gmw):
+    return gmn_models.Measuringpoint.objects.create(
+        data_owner=organisation,
+        event_type="GMN_MeasuringPoint",
+        measuringpoint_code="MP123456",
+        gmn=gmn,
+        gmw_bro_id=gmw.bro_id,
+        tube_number="1",
+    )
+
+
+@pytest.fixture
 def gmw(organisation):
     return gmw_models.GMW.objects.create(
         data_owner=organisation,
         bro_id="GMW123456789",
+    )
+
+
+@pytest.fixture
+def tube(organisation, gmw):
+    return gmw_models.MonitoringTube.objects.create(
+        data_owner=organisation,
+        gmw=gmw,
+        tube_number="1",
+        tube_top_diameter="50",
+        sediment_sump_present="nee",
+        artesian_well_cap_present="ja",
+        tube_type="standaardbuis",
+        tube_status="gebruiksklaar",
+        tube_top_position="1.5",
+        tube_top_positioning_method="AHN4",
+        screen_top_position="-10.0",
+        screen_bottom_position="-11.0",
+        plain_tube_part_length="12.5",
+        glue="geen",
+        geo_ohm_cables=[],
+        sock_material="nylon",
+        tube_in_use="ja",
+        tube_packing_material="bentonietFiltergrind",
+        tube_material="pePvc",
+    )
+
+
+@pytest.fixture
+def event(organisation, gmw):
+    return gmw_models.Event.objects.create(
+        data_owner=organisation,
+        gmw=gmw,
+        event_name="buisIngekort",
+        event_date=datetime.date(2023, 1, 15),
+        metadata={
+            "broId": "GMW000000082117",
+            "qualityRegime": "IMBRO",
+            "deliveryAccountableParty": "27376655",
+        },
+        sourcedocument_data={
+            "monitoringTubes": [
+                {
+                    "tubeNumber": "1",
+                    "tubeTopPosition": "2.430",
+                    "plainTubePartLength": "16.000",
+                    "tubeTopPositioningMethod": "waterpassing0tot2cm",
+                }
+            ],
+            "wellHeadProtector": "kokerMetaal",
+        },
     )
 
 
