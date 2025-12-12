@@ -77,6 +77,19 @@ def measuringpoint(organisation, gmn, gmw):
 
 
 @pytest.fixture
+def intermediate_event(organisation, gmn):
+    return gmn_models.IntermediateEvent.objects.create(
+        data_owner=organisation,
+        gmn=gmn,
+        event_type="GMN_MeasuringPoint",
+        event_date=datetime.date(2024, 1, 1),
+        measuringpoint_code="MP123456",
+        gmw_bro_id="GMW123456789",
+        tube_number="1",
+    )
+
+
+@pytest.fixture
 def gmw(organisation):
     return gmw_models.GMW.objects.create(
         data_owner=organisation,

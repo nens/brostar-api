@@ -156,55 +156,36 @@ class TestEventFilter:
         """Test event_date greater than filter"""
         test_date = date.today() - timedelta(days=10)
         factory = RequestFactory()
+
         request = factory.get("/", {"event_date__gt": test_date.isoformat()})
-
         filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
-
         assert filterset.is_valid()
-        # Check that filter is applied
-        for evt in filterset.qs:
-            assert evt.event_date > test_date
+        assert filterset.qs.count() == 0
+
+        request = factory.get("/", {"event_date__lt": test_date.isoformat()})
+        filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
+        assert filterset.is_valid()
+        assert filterset.qs.count() > 0
 
     def test_event_date_gte_filter(self, event):
         """Test event_date greater than or equal filter"""
-        test_date = date.today() - timedelta(days=10)
+        test_date = date(2023, 1, 15)
         factory = RequestFactory()
+
         request = factory.get("/", {"event_date__gte": test_date.isoformat()})
-
         filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
-
         assert filterset.is_valid()
-        for evt in filterset.qs:
-            assert evt.event_date >= test_date
+        assert filterset.qs.count() > 0
 
-    def test_event_date_lt_filter(self, event):
-        """Test event_date less than filter"""
-        test_date = date.today() + timedelta(days=10)
-        factory = RequestFactory()
-        request = factory.get("/", {"event_date__lt": test_date.isoformat()})
-
-        filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
-
-        assert filterset.is_valid()
-        for evt in filterset.qs:
-            assert evt.event_date < test_date
-
-    def test_event_date_lte_filter(self, event):
-        """Test event_date less than or equal filter"""
-        test_date = date.today() + timedelta(days=10)
-        factory = RequestFactory()
         request = factory.get("/", {"event_date__lte": test_date.isoformat()})
-
         filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
-
         assert filterset.is_valid()
-        for evt in filterset.qs:
-            assert evt.event_date <= test_date
+        assert filterset.qs.count() > 0
 
     def test_event_date_range_filter(self, event):
         """Test combining date filters for a range"""
-        start_date = date.today() - timedelta(days=30)
-        end_date = date.today() + timedelta(days=30)
+        start_date = date(2023, 1, 15) - timedelta(days=30)
+        end_date = date(2023, 1, 15) + timedelta(days=30)
 
         factory = RequestFactory()
         request = factory.get(
@@ -218,8 +199,7 @@ class TestEventFilter:
         filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
 
         assert filterset.is_valid()
-        for evt in filterset.qs:
-            assert start_date <= evt.event_date <= end_date
+        assert event in filterset.qs
 
     def test_excludes_metadata_and_sourcedocument_data(self):
         """Test that metadata and sourcedocument_data are excluded"""
@@ -238,7 +218,6 @@ class TestEventFilter:
         )
 
         filterset = filters.EventFilter(request.GET, queryset=Event.objects.all())
-
         assert filterset.is_valid()
 
 
