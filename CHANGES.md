@@ -5,6 +5,8 @@
 
 -   Testing: completed GMW-serializer tests
 -   Testing: completed GMW-filter tests
+-   Testing: extent GMN-models tests
+-   Testing: extent GMN-serializers tests
 
 
 ## 1.59 (2025-12-01)
