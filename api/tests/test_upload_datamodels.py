@@ -218,41 +218,28 @@ def test_time_value_pair_val_str_to_float():
 
 
 def test_gld_addition_auto_generate_ids():
-    gld = GLDAddition(
-        investigator_kvk="12345678",
-        observation_type="reguliereMeting",
-        evaluation_procedure="ProcedureA",
-        measurement_instrument_type="InstrumentX",
-        air_pressure_compensation_type="None",
-        process_reference="PR123",
-        begin_position="2024-01-01T00:00:00",
-        end_position="2024-01-02T00:00:00",
-        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
-    )
-    # The fields should have been auto-populated with a UUID string
-    assert gld.observation_id.startswith("_")
-    assert gld.observation_process_id.startswith("_")
-    assert gld.measurement_timeseries_id.startswith("_")
-    assert gld.air_pressure_compensation_type is None
+    for invalid_air_pressure in ["None", ""]:
+        gld = GLDAddition(
+            investigator_kvk="12345678",
+            observation_type="reguliereMeting",
+            evaluation_procedure="ProcedureA",
+            measurement_instrument_type="InstrumentX",
+            air_pressure_compensation_type=invalid_air_pressure,
+            process_reference="PR123",
+            begin_position="2024-01-01T00:00:00",
+            end_position="2024-01-02T00:00:00",
+            time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
+        )
+        # The fields should have been auto-populated with a UUID string
+        assert gld.observation_id.startswith("_")
+        assert gld.observation_process_id.startswith("_")
+        assert gld.measurement_timeseries_id.startswith("_")
+        assert gld.air_pressure_compensation_type is None
 
-    # Validate that the auto-generated parts after _ are valid UUIDs
-    UUID(gld.observation_id[1:])  # will raise if invalid
-    UUID(gld.observation_process_id[1:])
-    UUID(gld.measurement_timeseries_id[1:])
-
-    # Validate if air pressure is set to None
-    gld = GLDAddition(
-        investigator_kvk="12345678",
-        observation_type="reguliereMeting",
-        evaluation_procedure="ProcedureA",
-        measurement_instrument_type="InstrumentX",
-        air_pressure_compensation_type="monitoringsnetmeting",
-        process_reference="PR123",
-        begin_position="2024-01-01T00:00:00",
-        end_position="2024-01-02T00:00:00",
-        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
-    )
-    assert gld.air_pressure_compensation_type is None
+        # Validate that the auto-generated parts after _ are valid UUIDs
+        UUID(gld.observation_id[1:])  # will raise if invalid
+        UUID(gld.observation_process_id[1:])
+        UUID(gld.measurement_timeseries_id[1:])
 
     # Validate if air pressure is kept correctly
     gld = GLDAddition(
