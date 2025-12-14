@@ -37,7 +37,7 @@ def detect_delimiter_from_content(sample: str) -> str:
     try:
         dialect = csv.Sniffer().sniff(sample, delimiters=[",", ";", "\t"])
         return dialect.delimiter
-    except csv.Error:
+    except (csv.Error, Exception):
         # Default fallback
         return ","
 

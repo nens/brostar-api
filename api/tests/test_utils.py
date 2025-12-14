@@ -13,6 +13,7 @@ from api.bro_upload.utils import (
     check_delivery_status,
     create_delivery,
     create_upload_url,
+    detect_delimiter_from_content,
     file_to_df,
     include_delivery_responsible_party,
     read_csv,
@@ -49,6 +50,12 @@ def test_simplify_validation_errors():
         "recursive_model - lng": "Field1 is required",
         "field2": "Field2 must be a string",
     }
+
+
+def test_detect_delimiter_from_content_error():
+    # Should raise an csv.Error and return komma as default
+    delimiter = detect_delimiter_from_content(12345)  # Invalid input type
+    assert delimiter == ","
 
 
 # Mocking external API responses for the functions involving requests
@@ -279,6 +286,24 @@ def test_read_csv_from_bytes():
     df = read_csv(b"name,age\nAlice,30\nBob,25")
     assert isinstance(df, pl.DataFrame)
     assert df.shape == (2, 2)
+
+
+@pytest.mark.django_db
+def test_read_csv_from_filepath():
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(mode="w+", suffix=".csv", delete=True) as tmp:
+        tmp.write("name,age\nAlice,30\nBob,25")
+        tmp.flush()
+        df = read_csv(tmp.name)
+        assert isinstance(df, pl.DataFrame)
+        assert df.shape == (2, 2)
+
+
+@pytest.mark.django_db
+def test_read_csv_invalid():
+    with pytest.raises(TypeError, match="Unsupported file type passed to read_csv."):
+        read_csv(12345)  # Invalid type
 
 
 @pytest.mark.django_db
