@@ -72,6 +72,7 @@ def create_gmw(
             )
             else None
         )
+        geo_ohm_cables = tube.get("geoOhmCables", [])
         MonitoringTube.objects.update_or_create(
             gmw=gmw,
             data_owner=gmw.data_owner,
@@ -82,7 +83,7 @@ def create_gmw(
                 "sediment_sump_present": tube.get("sedimentSumpPresent"),
                 "sediment_sump_length": tube.get("sedimentSumpLength"),
                 "number_of_geo_ohm_cables": tube.get("numberOfGeoOhmCables", 0),
-                "geo_ohm_cables": tube.get("geoOhmCables", []),
+                "geo_ohm_cables": geo_ohm_cables if geo_ohm_cables else [],
                 "tube_top_diameter": tube.get("tubeTopDiameter"),
                 "variable_diameter": tube.get("variableDiameter"),
                 "tube_status": tube.get("tubeStatus"),
