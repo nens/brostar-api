@@ -76,6 +76,7 @@ class Organisation(models.Model):
     kvk_number = models.CharField(max_length=8)
     bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
     bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
+    comments = models.TextField(blank=True, null=True)
     request_count = models.IntegerField(default=0)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
