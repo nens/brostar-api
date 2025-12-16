@@ -1,6 +1,5 @@
 from uuid import UUID
 
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
 from api.mixins import UrlFieldMixin
@@ -19,16 +18,13 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
         fields = "__all__"
 
     def get_linked_gmns(self, obj: gmw_models.GMW) -> list[UUID]:
-        try:
-            linked_gmns = set(
-                measuringpoint.gmn.uuid
-                for measuringpoint in gmn_models.Measuringpoint.objects.filter(
-                    gmw_bro_id=obj.bro_id
-                )
+        linked_gmns = set(
+            measuringpoint.gmn.uuid
+            for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                gmw_bro_id=obj.bro_id
             )
-            return list(linked_gmns)
-        except ObjectDoesNotExist:
-            return []
+        )
+        return list(linked_gmns)
 
     def get_nr_of_monitoring_tubes(self, obj: gmw_models.GMW) -> int:
         return obj.nr_of_tubes
@@ -70,16 +66,13 @@ class GMWOverviewSerializer(serializers.ModelSerializer):
         ]
 
     def get_linked_gmns(self, obj: gmw_models.GMW) -> list[UUID]:
-        try:
-            linked_gmns = set(
-                measuringpoint.gmn.uuid
-                for measuringpoint in gmn_models.Measuringpoint.objects.filter(
-                    gmw_bro_id=obj.bro_id
-                )
+        linked_gmns = set(
+            measuringpoint.gmn.uuid
+            for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                gmw_bro_id=obj.bro_id
             )
-            return list(linked_gmns)
-        except ObjectDoesNotExist:
-            return []
+        )
+        return list(linked_gmns)
 
 
 class GMWIdsSerializer(serializers.ModelSerializer):
@@ -109,16 +102,14 @@ class MonitoringTubeSerializer(UrlFieldMixin, serializers.ModelSerializer):
         return obj.gmw.bro_id
 
     def get_linked_gmns(self, obj: gmw_models.MonitoringTube) -> list[UUID]:
-        try:
-            linked_gmns = set(
-                measuringpoint.gmn.uuid
-                for measuringpoint in gmn_models.Measuringpoint.objects.filter(
-                    gmw_bro_id=obj.gmw.bro_id
-                )
+        linked_gmns = set(
+            measuringpoint.gmn.uuid
+            for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                gmw_bro_id=obj.gmw.bro_id,
+                tube_number=obj.tube_number,
             )
-            return list(linked_gmns)
-        except ObjectDoesNotExist:
-            return []
+        )
+        return list(linked_gmns)
 
 
 class EventSerializer(UrlFieldMixin, serializers.ModelSerializer):

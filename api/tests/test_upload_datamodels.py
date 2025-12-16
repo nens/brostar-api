@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, date, datetime
 from uuid import UUID
 
 import pytest
@@ -6,6 +6,9 @@ from pydantic import ValidationError
 
 # Assume your models are imported here, like:
 from api.bro_upload.upload_datamodels import (
+    Analysis,
+    AnalysisProcess,
+    FieldResearch,
     GLDAddition,
     GMWLengthening,
     GMWMaintainer,
@@ -16,6 +19,47 @@ from api.bro_upload.upload_datamodels import (
     UploadTask,
     UploadTaskMetadata,
 )
+
+
+def test_field_research_defaults():
+    research = FieldResearch(
+        sampling_standard="NEN5740",
+        sampling_date_time=datetime(2023, 10, 1, 12, 30, 30),
+    )
+    assert research.sample_aerated == "onbekend"
+    assert research.sampling_standard == "NEN5740"
+    # Corrected to ISO format string
+    assert research.sampling_date_time == "2023-10-01T12:30:30"
+    assert research.hose_reused == "onbekend"
+
+    utc_time = datetime(2023, 10, 1, 12, 30, 30, tzinfo=UTC)
+    research_utc = FieldResearch(
+        sampling_standard="NEN5740",
+        sampling_date_time=utc_time,
+    )
+    assert research_utc.sampling_date_time == "2023-10-01T12:30:30+00:00"
+
+
+def test_analysis_process_defaults():
+    process = AnalysisProcess(
+        analytical_technique="wateranalyse",
+        date=date(2023, 10, 2),
+        valuation_method="handmatig",
+        analyses=[
+            Analysis(
+                parameter=123,
+                unit="mg/L",
+                analysis_measurement_value=1.23,
+                limit_symbol=None,
+                reporting_limit=None,
+                quality_control_status="valid",
+            )
+        ],
+    )
+    assert process.analytical_technique == "wateranalyse"
+    assert process.date == "2023-10-02"
+    assert process.valuation_method == "handmatig"
+    assert len(process.analyses) == 1
 
 
 def test_upload_task_metadata_valid():
@@ -167,42 +211,35 @@ def test_time_value_pair_valid_string():
     assert pair.time == "2024-01-01T12:30:00"
 
 
+def test_time_value_pair_val_str_to_float():
+    pair = TimeValuePair(time="2024-01-01T12:30:00", value="7.5")
+    assert pair.time == "2024-01-01T12:30:00"
+    assert pair.value == 7.5
+
+
 def test_gld_addition_auto_generate_ids():
-    gld = GLDAddition(
-        investigator_kvk="12345678",
-        observation_type="reguliereMeting",
-        evaluation_procedure="ProcedureA",
-        measurement_instrument_type="InstrumentX",
-        air_pressure_compensation_type="None",
-        process_reference="PR123",
-        begin_position="2024-01-01T00:00:00",
-        end_position="2024-01-02T00:00:00",
-        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
-    )
-    # The fields should have been auto-populated with a UUID string
-    assert gld.observation_id.startswith("_")
-    assert gld.observation_process_id.startswith("_")
-    assert gld.measurement_timeseries_id.startswith("_")
-    assert gld.air_pressure_compensation_type is None
+    for invalid_air_pressure in ["None", ""]:
+        gld = GLDAddition(
+            investigator_kvk="12345678",
+            observation_type="reguliereMeting",
+            evaluation_procedure="ProcedureA",
+            measurement_instrument_type="InstrumentX",
+            air_pressure_compensation_type=invalid_air_pressure,
+            process_reference="PR123",
+            begin_position="2024-01-01T00:00:00",
+            end_position="2024-01-02T00:00:00",
+            time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
+        )
+        # The fields should have been auto-populated with a UUID string
+        assert gld.observation_id.startswith("_")
+        assert gld.observation_process_id.startswith("_")
+        assert gld.measurement_timeseries_id.startswith("_")
+        assert gld.air_pressure_compensation_type is None
 
-    # Validate that the auto-generated parts after _ are valid UUIDs
-    UUID(gld.observation_id[1:])  # will raise if invalid
-    UUID(gld.observation_process_id[1:])
-    UUID(gld.measurement_timeseries_id[1:])
-
-    # Validate if air pressure is set to None
-    gld = GLDAddition(
-        investigator_kvk="12345678",
-        observation_type="reguliereMeting",
-        evaluation_procedure="ProcedureA",
-        measurement_instrument_type="InstrumentX",
-        air_pressure_compensation_type="monitoringsnetmeting",
-        process_reference="PR123",
-        begin_position="2024-01-01T00:00:00",
-        end_position="2024-01-02T00:00:00",
-        time_value_pairs=[TimeValuePair(time="2024-01-01T12:00:00", value=10.0)],
-    )
-    assert gld.air_pressure_compensation_type is None
+        # Validate that the auto-generated parts after _ are valid UUIDs
+        UUID(gld.observation_id[1:])  # will raise if invalid
+        UUID(gld.observation_process_id[1:])
+        UUID(gld.measurement_timeseries_id[1:])
 
     # Validate if air pressure is kept correctly
     gld = GLDAddition(

@@ -295,26 +295,26 @@ class FieldMeasurement(CamelModel):
 class FieldResearch(CamelModel):
     sampling_date_time: str | datetime
     sampling_operator: str | None = None
-    sampling_standard: str
-    pump_type: str
+    sampling_standard: str = "onbekend"
+    pump_type: str = "onbekend"
     primary_colour: str | None = None
     secondary_colour: str | None = None
     colour_strength: str | None = None
-    abnormality_in_cooling: str
-    abnormality_in_device: str
-    polluted_by_engine: str
-    filter_aerated: str
-    ground_water_level_dropped_too_much: str
-    abnormal_filter: str
-    sample_aerated: str
-    hose_reused: str
-    temperature_difficult_to_measure: str
+    abnormality_in_cooling: str = "onbekend"
+    abnormality_in_device: str = "onbekend"
+    polluted_by_engine: str = "onbekend"
+    filter_aerated: str = "onbekend"
+    ground_water_level_dropped_too_much: str = "onbekend"
+    abnormal_filter: str = "onbekend"
+    sample_aerated: str = "onbekend"
+    hose_reused: str = "onbekend"
+    temperature_difficult_to_measure: str = "onbekend"
     field_measurements: list[FieldMeasurement] | None = None
 
     @field_validator("sampling_date_time", mode="before")
     def format_datetime(cls, value):
         if isinstance(value, datetime):
-            return value.isoformat()
+            return value.isoformat(sep="T", timespec="seconds")
         return value
 
 

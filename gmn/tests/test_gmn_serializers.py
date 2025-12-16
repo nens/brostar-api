@@ -15,6 +15,8 @@ from gmn.serializers import (
 # this setup is chosen because ruff removes the fixture imports in other methods
 organisation = fixtures.organisation
 gmn = fixtures.gmn
+measuringpoint = fixtures.measuringpoint
+intermediate_event = fixtures.intermediate_event
 gmw = fixtures.gmw
 
 
