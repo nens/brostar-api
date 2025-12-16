@@ -75,9 +75,9 @@ def create_gmw(
         geo_ohm_cables = tube.get("geoOhmCables", [])
         MonitoringTube.objects.update_or_create(
             gmw=gmw,
+            tube_number=tube.get("tubeNumber"),
             data_owner=gmw.data_owner,
             defaults={
-                "tube_number": tube.get("tubeNumber"),
                 "tube_type": tube.get("tubeType"),
                 "artesian_well_cap_present": tube.get("artesianWellCapPresent"),
                 "sediment_sump_present": tube.get("sedimentSumpPresent"),
