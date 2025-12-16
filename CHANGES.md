@@ -8,6 +8,7 @@
 -   Testing: extent GMN-models tests
 -   Testing: extent GMN-serializers tests
 -   Testing: completed api-utils tests
+-   Improve auto-creation of GMW on succesful upload (geo and tube)
 
 
 ## 1.59 (2025-12-01)
