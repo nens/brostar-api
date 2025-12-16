@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.60 (unreleased)
+## 1.60 (2025-12-16)
 
 
 -   Testing: completed GMW-serializer tests
