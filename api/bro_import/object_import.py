@@ -1,5 +1,6 @@
 import datetime
 import logging
+import time
 import xml.etree.ElementTree as ET
 from abc import ABC, abstractmethod
 from typing import IO, Any
@@ -11,7 +12,7 @@ from django.conf import settings
 from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
 
-from api.models import Organisation
+from api.models import ImportTask, Organisation
 from frd.models import FRD
 from gar.models import GAR
 from gld.models import GLD, Observation
@@ -20,6 +21,38 @@ from gmn.models import GMN, IntermediateEvent, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
 
 logger = logging.getLogger("general")
+
+
+def check_dates(
+    last_import_date: datetime.datetime,
+    last_correction_date: str | None,
+    last_addition_date: str | None,
+    registration_completion_time: str | None,
+) -> bool:
+    """Check if any of the date fields is more recent than the last_import_date"""
+    dates = [
+        datetime.datetime.fromisoformat(d)
+        for d in [
+            last_correction_date,
+            last_addition_date,
+            registration_completion_time,
+        ]
+        if d is not None
+    ]
+
+    if not dates:
+        return True  # No update dates available, default to importing
+
+    return max(dates) > last_import_date
+
+
+DOMAIN_MODEL_MAPPING = {
+    "GMN": GMN,
+    "GMW": GMW,
+    "GAR": GAR,
+    "GLD": GLD,
+    "FRD": FRD,
+}
 
 
 class ObjectImporter(ABC):
@@ -62,7 +95,64 @@ class ObjectImporter(ABC):
         self.s.mount("http://", adapter)
         self.s.mount("https://", adapter)
 
+    def should_import(self) -> bool:
+        """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
+        last_import_task = (
+            ImportTask.objects.filter(
+                data_owner=self.data_owner,
+                bro_domain=self.bro_domain,
+            )
+            .order_by("-created")
+            .first()
+        )
+        last_import_date = last_import_task.created if last_import_task else None
+        if last_import_date is None:
+            return True  # No previous import, so we should import
+
+        model = DOMAIN_MODEL_MAPPING.get(self.bro_domain)
+        if not model or not model.filter(bro_id=self.bro_id).exists():
+            return True  # Object not in database, so we should import
+
+        try:
+            r = self.s.get(
+                f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw/items?f=jsonfg&bro_id={self.bro_id}"
+            )
+            r.raise_for_status()
+
+            data = r.json().get("features", [])
+
+            if len(data) != 1:
+                return True  # If no data found, default to importing
+
+            properties = data[0].get("properties", {})
+            last_correction_date = properties.get(
+                "latest_correction_time", None
+            )  # ISO String or None e.g. 2025-11-10T15:33:26+01:00
+            last_addition_date = properties.get(
+                "latest_addition_time", None
+            )  # ISO String or None
+            registration_completion_time = properties.get(
+                "registration_completion_time", None
+            )  # ISO String or None
+
+            if check_dates(
+                last_import_date,
+                last_correction_date,
+                last_addition_date,
+                registration_completion_time,
+            ):
+                return True
+            return False
+
+        except Exception as e:
+            logger.error(f"Error checking PDOK for bro_id {self.bro_id}: {e}")
+            return True  # Default to importing if there's an error
+
     def run(self) -> None:
+        if not self.should_import():
+            logger.info(f"No import needed for {self.bro_domain} with ID {self.bro_id}")
+            return
+
         url = self._create_download_url()
         xml_data = self._download_xml(url)
         logger.info(f"Downloaded XML data for {self.bro_domain} with ID {self.bro_id}")
@@ -824,13 +914,33 @@ class GLDObjectImporter(ObjectImporter):
     def _observation_summary(self) -> list[dict[str, Any]]:
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
         r = self.s.get(url=url)
+
+        if r.status_code == 429:
+            wait_time = int(r.headers.get("Retry-After", 5))
+            logger.info(
+                f"Received 429 Too Many Requests. Retrying after {wait_time} seconds."
+            )
+            time.sleep(wait_time)
+            return self._observation_summary()
+
         r.raise_for_status()
+
         return r.json()
 
     def _procedure_information(self, observation_id: str):
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}?startTVPTime=1900-01-01T00%3A00%3A00&endTVPTime=1900-01-01T00%3A00%3A00"
         r = self.s.get(url=url)
+
+        if r.status_code == 429:
+            wait_time = int(r.headers.get("Retry-After", 5))
+            logger.info(
+                f"Received 429 Too Many Requests. Retrying after {wait_time} seconds."
+            )
+            time.sleep(wait_time)
+            return self._procedure_information(observation_id)
+
         r.raise_for_status()
+
         return ET.fromstring(r.content)
 
     def _format_procedure(self, observation: ET.Element) -> dict:

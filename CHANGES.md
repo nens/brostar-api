@@ -3,7 +3,8 @@
 ## 1.61 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement: check last BRO-import date to see if an import is required.
+-   Enhancement: deal with 429 HTTPErrors for GLD Observations.
 
 
 ## 1.60 (2025-12-16)
