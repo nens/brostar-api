@@ -1,9 +1,10 @@
 import logging
+import os
 import re
-import time
 from typing import TypeVar
 
 import pandas as pd
+import polars as pl
 
 from api import models as api_models
 from api.bro_upload import config
@@ -34,8 +35,8 @@ class GARBulkUploader:
     def __init__(
         self,
         bulk_upload_instance_uuid: str,
-        fieldwork_upload_file_uuid: str,
-        lab_upload_file_uuid: str,
+        fieldwork_upload_file_uuid: str | None = None,
+        lab_upload_file_uuid: str | None = None,
     ) -> None:
         self.bulk_upload_instance: api_models.BulkUpload = (
             api_models.BulkUpload.objects.get(uuid=bulk_upload_instance_uuid)
@@ -43,69 +44,76 @@ class GARBulkUploader:
         self.bulk_upload_instance.status = "PROCESSING"
         self.bulk_upload_instance.save()
 
-        self.fieldwork_file: api_models.UploadFile = api_models.UploadFile.objects.get(
-            uuid=fieldwork_upload_file_uuid
-        )
-        self.lab_file: api_models.UploadFile = (
-            api_models.UploadFile.objects.get(uuid=lab_upload_file_uuid)
-            if lab_upload_file_uuid
-            else None
-        )
+        if fieldwork_upload_file_uuid:
+            self.fieldwork_file: api_models.UploadFile = (
+                api_models.UploadFile.objects.get(uuid=fieldwork_upload_file_uuid)
+            )
+        else:
+            self.fieldwork_file = None
 
-    def process(self) -> None:
-        # Step 1: open the files and transform to a pd df
+        if lab_upload_file_uuid:
+            self.lab_file: api_models.UploadFile = api_models.UploadFile.objects.get(
+                uuid=lab_upload_file_uuid
+            )
+        else:
+            self.lab_file = None
+
+    def _initialize_dataframes(self) -> tuple[pd.DataFrame | None, pd.DataFrame | None]:
         try:
-            fieldwork_df = csv_or_excel_to_df(self.fieldwork_file)
-            if self.lab_file:
+            if self.fieldwork_file and self.fieldwork_file.file:
+                fieldwork_df = csv_or_excel_to_df(self.fieldwork_file)
+            else:
+                fieldwork_df = pd.DataFrame()
+            if self.lab_file and self.lab_file.file:
                 lab_df = csv_or_excel_to_df(self.lab_file)
             else:
                 lab_df = pd.DataFrame()
 
             self.bulk_upload_instance.progress = 10.00
             self.bulk_upload_instance.save()
+            return fieldwork_df, lab_df
         except Exception as e:
             self.bulk_upload_instance.log = f"Failed to open the files: {e}"
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save()
-            return
+            return None, None
 
-        # Step 2: transform the pandas files to a useable format
+    def _process_fieldwork_and_lab_dfs(
+        self, fieldwork_df: pd.DataFrame, lab_df: pd.DataFrame
+    ) -> pd.DataFrame:
         try:
             # Rename headers
+            required_fields = ["GMW BRO ID", "Datum bemonsterd", "Filternummer"]
+            has_lab = True
+            if all(field in fieldwork_df.columns for field in required_fields) and all(
+                field in lab_df.columns for field in required_fields
+            ):
+                merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
+            elif all(field in fieldwork_df.columns for field in required_fields):
+                merged_df = fieldwork_df
+                has_lab = False
+            else:
+                merged_df = lab_df
+
             fieldwork_df_rename_dict = {
                 "GMW BRO ID": "bro_id",
                 "Datum bemonsterd": "date",
                 "Filternummer": "filter_num",
             }
-            fieldwork_df = rename_df_columns(fieldwork_df, fieldwork_df_rename_dict)
+            merged_df = rename_df_columns(merged_df, fieldwork_df_rename_dict)
             field_columns_exclude = [
                 "NITG",
                 "Putcode",
                 "coördinaat",
+                "Bijzonderheden",
+                "MeetpuntId",
+                "Projectcode lab",
+                "Monsternummer lab",
             ]
-            fieldwork_df = remove_df_columns(fieldwork_df, field_columns_exclude)
-            if not lab_df.empty:
-                has_lab = True
-                lab_df_rename_dict = {
-                    "GMW BRO ID": "bro_id",
-                    "Datum veldwerk": "date",
-                    "Filternummer": "filter_num",
-                }
-                lab_df = rename_df_columns(lab_df, lab_df_rename_dict)
+            trimmed_df = remove_df_columns(merged_df, field_columns_exclude)
 
-                # Merge the 2 dfs
-                merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
-                # Remove some useless columns
-                substrings_to_exclude = [
-                    "Bijzonderheden",
-                    "MeetpuntId",
-                    "Projectcode lab",
-                    "Monsternummer lab",
-                ]
-                trimmed_df = remove_df_columns(merged_df, substrings_to_exclude)
-            else:
-                has_lab = False
-                trimmed_df = fieldwork_df
+            # Pandas DF: create new column meetronde, which should only have the year of datum bemonsterd, as a string
+            trimmed_df["Meetronde"] = trimmed_df["date"].dt.year.astype(str)
 
             assert len(trimmed_df) > 0, (
                 "The combination of the lab and field files gave no resulting possible GARs"
@@ -113,13 +121,29 @@ class GARBulkUploader:
 
             self.bulk_upload_instance.progress = 20.00
             self.bulk_upload_instance.save(update_fields=["progress"])
-
+            return trimmed_df, has_lab
         except Exception as e:
+            logger.info(f"Failed to process GAR files: {e}")
             self.bulk_upload_instance.log = f"Failed to transform the files: {e}"
             self.bulk_upload_instance.progress = 20.00
             self.bulk_upload_instance.status = "FAILED"
             self.bulk_upload_instance.save(update_fields=["log", "progress", "status"])
+            return None, None
+
+    def process(self) -> None:
+        # Step 1: open the files and transform to a pd df
+        fieldwork_df, lab_df = self._initialize_dataframes()
+        if fieldwork_df is None and lab_df is None:
             return
+
+        logger.info("Initialized the dataframes.")
+
+        # Step 2: transform the pandas files to a useable format
+        trimmed_df, has_lab = self._process_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
+        if trimmed_df is None:
+            return
+
+        logger.info(f"Processed the dataframes. Has lab: {has_lab}")
 
         # Step 3: Prepare data for uploadtask per row
         uploadtask_metadata = {
@@ -133,6 +157,7 @@ class GARBulkUploader:
         progress_per_row = round((80 / len(trimmed_df)), 2)
 
         for _, row in trimmed_df.iterrows():
+            logger.info(f"Processing GAR row: {row}")
             try:
                 uploadtask_sourcedocument_data: GAR = create_gar_sourcesdocs_data(
                     row, self.bulk_upload_instance.metadata, has_lab
@@ -153,26 +178,28 @@ class GARBulkUploader:
                 )
 
                 self.bulk_upload_instance.progress += progress_per_row
-                self.bulk_upload_instance.save()
+                self.bulk_upload_instance.save(update_fields=["progress"])
             except Exception as e:
                 logger.info(f"Failed to upload GAR ({row.bro_id}) in bulk upload: {e}")
                 self.bulk_upload_instance.progress += progress_per_row
-                self.bulk_upload_instance.save()
-                # Skipping this row as it failed.
-                continue
-            finally:
-                # Give your BRO some rest mate
-                time.sleep(10)
+                self.bulk_upload_instance.save(update_fields=["progress"])
 
         self.bulk_upload_instance.progress = 100.00
         self.bulk_upload_instance.status = "FINISHED"
-        self.bulk_upload_instance.save()
+        self.bulk_upload_instance.save(update_fields=["progress", "status"])
 
 
 def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
-    filetype = file_instance.file.name.split(".")[-1].lower()
+    # Get the file extension more robustly
+    _, ext = os.path.splitext(file_instance.file.name)
+    filetype = ext.lstrip(".").lower().strip()
 
+    logger.info(f"Reading file {file_instance.file.name} of type '{filetype}'")
+
+    # Ensure file pointer is at the beginning
+    if hasattr(file_instance.file, "seek"):
+        file_instance.file.seek(0)
     if filetype == "csv":
         df = pd.read_csv(file_instance.file)
     elif filetype in ["xls", "xlsx"]:
@@ -181,6 +208,8 @@ def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
         raise ValueError(
             "Unsupported file type. Only CSV and Excel files are supported."
         )
+    logger.info(f"For fileinstance {file_instance}, imported the following:")
+    logger.info(df.head())
     return df
 
 
@@ -195,7 +224,10 @@ def merge_fieldwork_and_lab_dfs(
 
     This filters out the location/date combinations that are only present in 1 file."""
     return pd.merge(
-        fieldwork_df, lab_df, on=["bro_id", "date", "filter_num"], how="inner"
+        fieldwork_df,
+        lab_df,
+        on=["GMW BRO ID", "Datum bemonsterd", "Filternummer"],
+        how="inner",
     )
 
 
@@ -211,7 +243,7 @@ def create_gar_sourcesdocs_data(
 ) -> GAR:
     """Creates a GAR (the pydantic model), based on a row of the merged df of the GAR bulk upload input."""
     sourcedocs_data_dict = {
-        "objectIdAccountableParty": f"{row['bro_id']}-{int(row['Meetronde'])}",
+        "objectIdAccountableParty": f"{row['bro_id']}-{int(row['filter_num']):03d}-{int(row['Meetronde'])}",
         "qualityControlMethod": metadata["qualityControlMethod"],
         "gmwBroId": row["bro_id"],
         "tubeNumber": row["filter_num"],
@@ -225,8 +257,54 @@ def create_gar_sourcesdocs_data(
         ]
 
     sourcedocs_data = GAR(**sourcedocs_data_dict)
-
     return sourcedocs_data
+
+
+def validate_time_format(time_str: str) -> bool:
+    """Validate and normalize time string in HH:MM or H:MM format."""
+    # Check basic format
+    if not re.match(r"^\d{1,2}:\d{2}$", time_str):
+        raise ValueError(f"Invalid time format: '{time_str}'. Expected HH:MM or H:MM")
+
+    # Parse and validate actual time values
+    try:
+        hours, minutes = map(int, time_str.split(":"))
+
+        # Validate ranges
+        if not (0 <= hours <= 23):
+            raise ValueError(f"Hours must be 0-23, got {hours}")
+        if not (0 <= minutes <= 59):
+            raise ValueError(f"Minutes must be 0-59, got {minutes}")
+
+        # Normalize to HH:MM format
+        return f"{hours:02d}:{minutes:02d}"
+
+    except ValueError as e:
+        raise ValueError(f"Invalid time: '{time_str}'. {str(e)}")
+
+
+REQUIRED_COLUMNS = [
+    "GMW BRO ID",
+    "Filternummer",
+    "Datum bemonsterd",
+    "Tijdstip bemonsterd",
+]
+
+FIELD_RESEARCH_ITEMS = [
+    "Pomptype",
+    "Grondwaterstand > 50 cm verlaagd",
+    "Filter belucht/ drooggevallen",
+    "Slang hergebruikt",
+    "Monster belucht",
+    "Contaminatie door verbrandingsmotor",
+    "Afwijking in meetapparatuur",
+    "Hoofdkleur",
+    "Bijkleur",
+    "Kleursterkte",
+    "Temperatuur moeilijk te bepalen",
+    "Afwijkend gekoeld",
+    "Inline filter afwijkend",
+]
 
 
 def create_gar_field_research(
@@ -234,9 +312,34 @@ def create_gar_field_research(
 ) -> FieldResearch:
     """Creates the FieldResearch pydantic model based on a row of the merged df of the GAR bulk upload input."""
     samplingdate = row["date"].strftime("%Y-%m-%d")
+    sampling_time = row.get("Tijd bemonsterd", "12:00")
+    # Check if time is in HH:MM format
+    try:
+        sampling_time = validate_time_format(sampling_time)
+    except ValueError as e:
+        print(f"Error: {e}")
+        sampling_time = "12:00"  # Or handle the error appropriately
+
+    # Ensure all required field research items are present
+    # If any field has an empty string, set it to "onbekend"
+    row.update(
+        {
+            item: "onbekend"
+            for item in FIELD_RESEARCH_ITEMS
+            if item not in row or row[item] == ""
+        }
+    )
+
+    # potential measurement columns are everything except the required columns and field research items
+    # Get columns to exclude
+    columns_to_exclude = REQUIRED_COLUMNS + FIELD_RESEARCH_ITEMS
+
+    # Only drop columns that actually exist in the row
+    existing_columns_to_drop = [col for col in columns_to_exclude if col in row.index]
+    measurement_row = row.drop(labels=existing_columns_to_drop)
 
     field_research_dict = {
-        "samplingDateTime": f"{samplingdate}T00:00:00+00:00",
+        "samplingDateTime": f"{samplingdate}T{sampling_time}:00+00:00",
         "samplingOperator": metadata["samplingOperator"],
         "samplingStandard": metadata["samplingStandard"],
         "pumpType": row["Pomptype"][0].lower()
@@ -253,7 +356,7 @@ def create_gar_field_research(
         "sampleAerated": row["Monster belucht"],
         "hoseReused": row["Slang hergebruikt"].strip(),
         "temperatureDifficultToMeasure": row["Temperatuur moeilijk te bepalen"],
-        "fieldMeasurements": create_gar_field_measurements(row),
+        "fieldMeasurements": create_gar_field_measurements(measurement_row),
     }
 
     field_research = FieldResearch(**field_research_dict)
@@ -266,17 +369,22 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
     If the options for other organisations differ, this should be redesigned"""
     field_measurement_list = []
 
-    for parameter, details in config.FIELD_PARAMETER_OPTIONS.items():
-        if parameter in row and row[parameter] != "niet bepaald":
+    curdir = os.path.dirname(os.path.abspath(__file__))
+    df = pl.read_csv(os.path.join(curdir, "20260107_GARVarList.csv"), separator=";")
+
+    for column in row:
+        if column in df["aquocode"].to_list() and row[column] != "niet bepaald":
+            parameter_details = df.filter(pl.col("aquocode") == column).to_dicts()[0]
+            parameter = column
             parameter_dict = {
-                "parameter": details["parameter_id"],
-                "unit": details["unit"],
+                "parameter": parameter_details["ID"],
+                "unit": parameter_details["eenheid"],
                 "fieldMeasurementValue": row[parameter],
                 "qualityControlStatus": "onbeslist",
             }
 
-        field_measurement = FieldMeasurement(**parameter_dict)
-        field_measurement_list.append(field_measurement)
+            field_measurement = FieldMeasurement(**parameter_dict)
+            field_measurement_list.append(field_measurement)
 
     return field_measurement_list
 

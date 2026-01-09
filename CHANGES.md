@@ -6,6 +6,8 @@
 -   Enhancement: check last BRO-import date to see if an import is required.
 -   Enhancement: deal with 429 HTTPErrors for GLD Observations.
 -   Enhancement: add kvk and count arguments to cleanup task
+-   Enhancement: allow for easier addition of additional elements to GAR fieldwork,
+                 by using aquocodes as headers and storing all other parameters in a CSV.
 
 
 ## 1.60 (2025-12-16)

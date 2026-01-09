@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from django.contrib.auth import logout
@@ -29,6 +30,8 @@ from api.bro_upload.upload_datamodels import (
 from api.choices import registration_type_datamodel_mapping
 from api.utils import drop_empty_strings
 from brostar_api import __version__
+
+logger = logging.getLogger("general")
 
 
 class LogoutView(views.APIView):
@@ -583,25 +586,31 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         bulk_upload_instance = serializer.instance
 
         # the files are saved, so that the uuid of those instances can be passed to the task
-        fieldwork_upload_file_instance = models.UploadFile(
-            bulk_upload=bulk_upload_instance,
-            data_owner=data_owner,
-            file=fieldwork_file,
-        )
-        fieldwork_upload_file_instance.save()
+        if fieldwork_file is not None:
+            fieldwork_upload_file_instance = models.UploadFile.objects.create(
+                bulk_upload=bulk_upload_instance,
+                data_owner=data_owner,
+                file=fieldwork_file,
+            )
+            fieldwork_uuid = fieldwork_upload_file_instance.uuid
+        else:
+            fieldwork_uuid = None
 
-        lab_upload_file_instance = models.UploadFile(
-            bulk_upload=bulk_upload_instance,
-            data_owner=data_owner,
-            file=lab_file,
-        )
-        lab_upload_file_instance.save()
+        if lab_file is not None:
+            lab_upload_file_instance = models.UploadFile.objects.create(
+                bulk_upload=bulk_upload_instance,
+                data_owner=data_owner,
+                file=lab_file,
+            )
+            lab_uuid = lab_upload_file_instance.uuid
+        else:
+            lab_uuid = None
 
         # Start celery task
         tasks.gar_bulk_upload_task.delay(
             bulk_upload_instance.uuid,
-            fieldwork_upload_file_instance.uuid,
-            lab_upload_file_instance.uuid,
+            fieldwork_uuid,
+            lab_uuid,
         )
         return serializer
 
@@ -674,7 +683,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
             self._create_gar(serializer, data_owner, fieldwork_file, lab_file)
 
         elif serializer.validated_data["bulk_upload_type"] == "GLD":

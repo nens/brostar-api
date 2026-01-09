@@ -347,7 +347,7 @@ class LaboratoryAnalysis(CamelModel):
 
 class GAR(CamelModel):
     object_id_accountable_party: str
-    quality_control_method: str
+    quality_control_method: str = "onbekend"  # Beoordelingsprocedure
     groundwater_monitoring_nets: list[str] = []
     gmw_bro_id: str
     tube_number: str | int

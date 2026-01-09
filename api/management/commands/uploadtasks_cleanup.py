@@ -49,12 +49,12 @@ class Command(BaseCommand):
             recent_ids = (
                 UploadTask.objects.filter(data_owner=org)
                 .order_by("-created")
-                .values_list("id", flat=True)[:count]
+                .values_list("uuid", flat=True)[:count]
             )
 
             # Now select tasks older than 30 days and NOT in the recent 1000
             cutoff_date = timezone.now() - timezone.timedelta(days=30)
-            uploadtasks = uploadtasks.exclude(id__in=Subquery(recent_ids)).filter(
+            uploadtasks = uploadtasks.exclude(uuid__in=Subquery(recent_ids)).filter(
                 created__lt=cutoff_date
             )
 
