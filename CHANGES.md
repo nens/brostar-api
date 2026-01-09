@@ -5,6 +5,7 @@
 
 -   Enhancement: check last BRO-import date to see if an import is required.
 -   Enhancement: deal with 429 HTTPErrors for GLD Observations.
+-   Enhancement: add kvk and count arguments to cleanup task
 
 
 ## 1.60 (2025-12-16)
