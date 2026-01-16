@@ -101,27 +101,40 @@ class ObjectImporter(ABC):
             ImportTask.objects.filter(
                 data_owner=self.data_owner,
                 bro_domain=self.bro_domain,
+                created__lt=datetime.datetime.now() - datetime.timedelta(days=1),
             )
             .order_by("-created")
             .first()
         )
+        logger.info(
+            f"Last import task for {self.bro_domain} and ID {self.bro_id}: {last_import_task}"
+        )
         last_import_date = last_import_task.created if last_import_task else None
         if last_import_date is None:
+            logger.info(
+                f"No previous import found for {self.bro_domain} and ID {self.bro_id} - Should import"
+            )
             return True  # No previous import, so we should import
 
         model = DOMAIN_MODEL_MAPPING.get(self.bro_domain)
-        if not model or not model.filter(bro_id=self.bro_id).exists():
+        if not model or not model.objects.filter(bro_id=self.bro_id).exists():
+            logger.info(
+                f"No existing object found in DB for {self.bro_domain} and ID {self.bro_id} - Should import"
+            )
             return True  # Object not in database, so we should import
 
         try:
             r = self.s.get(
-                f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw/items?f=jsonfg&bro_id={self.bro_id}"
+                f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_{self.bro_domain.lower()}/items?f=jsonfg&bro_id={self.bro_id}"
             )
             r.raise_for_status()
 
             data = r.json().get("features", [])
 
             if len(data) != 1:
+                logger.info(
+                    f"No data found in PDOK for {self.bro_domain} and ID {self.bro_id} - Should import"
+                )
                 return True  # If no data found, default to importing
 
             properties = data[0].get("properties", {})
@@ -141,6 +154,9 @@ class ObjectImporter(ABC):
                 last_addition_date,
                 registration_completion_time,
             ):
+                logger.info(
+                    f"Data is more recent in PDOK for {self.bro_domain} and ID {self.bro_id} - Should import - dates: {last_correction_date}, {last_addition_date}, {registration_completion_time}"
+                )
                 return True
             return False
 

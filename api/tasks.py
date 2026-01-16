@@ -312,6 +312,9 @@ def gar_bulk_upload_task(
 ) -> None:
     """Celery task that handles the bulk upload for GAR data after a POST on the bulkupload endpoint."""
     try:
+        logger.info(
+            f"Starting bulk upload from task with {bulk_upload_instance_uuid}, {fieldwork_upload_file_uuid} and {lab_upload_file_uuid}"
+        )
         uploader = GARBulkUploader(
             bulk_upload_instance_uuid,
             fieldwork_upload_file_uuid,

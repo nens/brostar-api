@@ -29,6 +29,7 @@ FIELD_PARAMETER_OPTIONS = {
     },
 }
 
+
 DAWACO_GAR_FIELD_DATA_MAPPING = {
     "T": {
         "parameter_id": 1522,
