@@ -313,6 +313,7 @@ def create_gar_field_research(
     """Creates the FieldResearch pydantic model based on a row of the merged df of the GAR bulk upload input."""
     samplingdate = row["date"].strftime("%Y-%m-%d")
     sampling_time = row.get("Tijd bemonsterd", "12:00")
+
     # Check if time is in HH:MM format
     try:
         sampling_time = validate_time_format(sampling_time)
@@ -320,47 +321,49 @@ def create_gar_field_research(
         print(f"Error: {e}")
         sampling_time = "12:00"  # Or handle the error appropriately
 
-    # Ensure all required field research items are present
-    # If any field has an empty string, set it to "onbekend"
-    row.update(
-        {
-            item: "onbekend"
-            for item in FIELD_RESEARCH_ITEMS
-            if item not in row or row[item] == ""
-        }
-    )
-
-    # potential measurement columns are everything except the required columns and field research items
-    # Get columns to exclude
+    # Get columns to exclude for measurements
     columns_to_exclude = REQUIRED_COLUMNS + FIELD_RESEARCH_ITEMS
-
-    # Only drop columns that actually exist in the row
     existing_columns_to_drop = [col for col in columns_to_exclude if col in row.index]
     measurement_row = row.drop(labels=existing_columns_to_drop)
 
+    # Start with required fields
     field_research_dict = {
         "samplingDateTime": f"{samplingdate}T{sampling_time}:00+00:00",
-        "samplingOperator": metadata["samplingOperator"],
-        "samplingStandard": metadata["samplingStandard"],
-        "pumpType": row["Pomptype"][0].lower()
-        + row["Pomptype"][1:],  # fixes upper cases
-        "primaryColour": row["Hoofdkleur"],
-        "secondaryColour": row["Bijkleur"],
-        "colourStrength": row["Kleursterkte"],
-        "abnormalityInCooling": row["Afwijkend gekoeld"],
-        "abnormalityInDevice": row["Afwijking in meetapparatuur"],
-        "pollutedByEngine": row["Contaminatie door verbrandingsmotor"],
-        "filterAerated": row["Filter belucht/ drooggevallen"],
-        "groundWaterLevelDroppedTooMuch": row["Grondwaterstand > 50 cm verlaagd"],
-        "abnormalFilter": row["Inline filter afwijkend"],
-        "sampleAerated": row["Monster belucht"],
-        "hoseReused": row["Slang hergebruikt"].strip(),
-        "temperatureDifficultToMeasure": row["Temperatuur moeilijk te bepalen"],
         "fieldMeasurements": create_gar_field_measurements(measurement_row),
     }
 
-    field_research = FieldResearch(**field_research_dict)
+    # Add optional fields only if present in row
+    optional_fields = {
+        "samplingOperator": metadata.get("samplingOperator"),
+        "samplingStandard": metadata.get("samplingStandard"),
+        "pumpType": row.get("Pomptype"),
+        "primaryColour": row.get("Hoofdkleur"),
+        "secondaryColour": row.get("Bijkleur"),
+        "colourStrength": row.get("Kleursterkte"),
+        "abnormalityInCooling": row.get("Afwijkend gekoeld"),
+        "abnormalityInDevice": row.get("Afwijking in meetapparatuur"),
+        "pollutedByEngine": row.get("Contaminatie door verbrandingsmotor"),
+        "filterAerated": row.get("Filter belucht/ drooggevallen"),
+        "groundWaterLevelDroppedTooMuch": row.get("Grondwaterstand > 50 cm verlaagd"),
+        "abnormalFilter": row.get("Inline filter afwijkend"),
+        "sampleAerated": row.get("Monster belucht"),
+        "hoseReused": row.get("Slang hergebruikt"),
+        "temperatureDifficultToMeasure": row.get("Temperatuur moeilijk te bepalen"),
+    }
 
+    # Only add fields that have non-None values
+    for key, value in optional_fields.items():
+        if value is not None and value != "":
+            # Special handling for pumpType to fix casing
+            if key == "pumpType" and isinstance(value, str) and len(value) > 0:
+                value = value[0].lower() + value[1:]
+            # Special handling for hoseReused to strip whitespace
+            elif key == "hoseReused" and isinstance(value, str):
+                value = value.strip()
+
+            field_research_dict[key] = value
+
+    field_research = FieldResearch(**field_research_dict)
     return field_research
 
 
@@ -370,21 +373,42 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
     field_measurement_list = []
 
     curdir = os.path.dirname(os.path.abspath(__file__))
-    df = pl.read_csv(os.path.join(curdir, "20260107_GARVarList.csv"), separator=";")
+    logger.info(f"column names: {row.index.tolist()}")
+    if "Zuurstof (mg/L)" in row:
+        logger.info("Using old GAR parameter format.")
+        # Old format from Provincie Noord-Brabant
+        for parameter, details in config.FIELD_PARAMETER_OPTIONS.items():
+            logger.info(f"Checking column: {parameter}")
+            if parameter in row and pd.notna(row[parameter]):
+                parameter_dict = {
+                    "parameter": details["parameter_id"],
+                    "unit": details["unit"],
+                    "fieldMeasurementValue": row[parameter],
+                    "qualityControlStatus": "onbeslist",
+                }
 
-    for column in row:
-        if column in df["aquocode"].to_list() and row[column] != "niet bepaald":
-            parameter_details = df.filter(pl.col("aquocode") == column).to_dicts()[0]
-            parameter = column
-            parameter_dict = {
-                "parameter": parameter_details["ID"],
-                "unit": parameter_details["eenheid"],
-                "fieldMeasurementValue": row[parameter],
-                "qualityControlStatus": "onbeslist",
-            }
+                field_measurement = FieldMeasurement(**parameter_dict)
+                field_measurement_list.append(field_measurement)
 
-            field_measurement = FieldMeasurement(**parameter_dict)
-            field_measurement_list.append(field_measurement)
+    else:
+        logger.info("Using new GAR parameter format.")
+        df = pl.read_csv(os.path.join(curdir, "20260107_GARVarList.csv"), separator=";")
+        for column in row.index.tolist():
+            logger.info(f"Checking column: {column}")
+            if column in df["aquocode"].to_list() and row[column] != "niet bepaald":
+                parameter_details = df.filter(pl.col("aquocode") == column).to_dicts()[
+                    0
+                ]
+                parameter = column
+                parameter_dict = {
+                    "parameter": parameter_details["ID"],
+                    "unit": parameter_details["eenheid"],
+                    "fieldMeasurementValue": row[parameter],
+                    "qualityControlStatus": "onbeslist",
+                }
+
+                field_measurement = FieldMeasurement(**parameter_dict)
+                field_measurement_list.append(field_measurement)
 
     return field_measurement_list
 

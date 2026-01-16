@@ -676,10 +676,10 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             # Read files
             fieldwork_file = request.FILES.get("fieldwork_file", None)
             lab_file = request.FILES.get("lab_file", None)
-            if not fieldwork_file:
+            if not (fieldwork_file or lab_file):
                 return Response(
                     {
-                        "error": "You are trying to initiate a GAR bulk upload process, but did not provide a fieldwork file."
+                        "error": "You are trying to initiate a GAR bulk upload process, but did not provide a fieldwork file or lab file."
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )

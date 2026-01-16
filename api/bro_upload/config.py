@@ -1,3 +1,35 @@
+FIELD_PARAMETER_OPTIONS = {
+    "pH": {
+        "parameter_id": 1398,
+        "unit": "1",
+    },
+    "Zuurstof (mg/l)": {
+        "parameter_id": 1701,
+        "unit": "mg/l",
+    },
+    "Geleidbaarheid (mS/m)": {
+        "parameter_id": 3548,
+        "unit": "mS/m",
+    },
+    "Temperatuur (°C)": {
+        "parameter_id": 1522,
+        "unit": "Cel",
+    },
+    "Troebelheid (NTU)": {
+        "parameter_id": 2031,
+        "unit": "[NTU]",
+    },
+    "Alkaliniteit (HCO3 - mg/l)": {
+        "parameter_id": 374,
+        "unit": "mg/l",
+    },
+    "Chloride (mg/l)": {
+        "parameter_id": 508,
+        "unit": "mg/l",
+    },
+}
+
+
 DAWACO_GAR_FIELD_DATA_MAPPING = {
     "T": {
         "parameter_id": 1522,

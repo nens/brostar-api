@@ -1,13 +1,19 @@
 import io
 import json
+import os
 from unittest.mock import Mock, patch
 
 import pandas as pd
+import polars as pl
 import pytest
 from openpyxl import Workbook
 from rest_framework.test import APIClient
 
-from api.bro_upload.gar_bulk_upload import csv_or_excel_to_df
+from api.bro_upload.gar_bulk_upload import (
+    create_gar_field_measurements,
+    csv_or_excel_to_df,
+)
+from api.bro_upload.upload_datamodels import FieldMeasurement
 from api.tests import fixtures
 
 user = fixtures.user
@@ -347,3 +353,277 @@ class TestCsvOrExcelToDf:
         assert len(df) == 3
         assert pd.isna(df.iloc[1]["col2"])
         assert pd.isna(df.iloc[2]["col1"])
+
+
+class TestCreateGarFieldMeasurements:
+    """Tests for create_gar_field_measurements function"""
+
+    @pytest.fixture
+    def mock_csv_data(self):
+        """Mock CSV data for GAR parameters"""
+        return pl.DataFrame(
+            {
+                "ID": [3, 4, 5, 6],
+                "aquocode": ["1112T4ClC2a", "111TClC2a", "1122T4ClC2a", "112TClC2a"],
+                "CASnummer": ["630-20-6", "71-55-6", "79-34-5", "79-00-5"],
+                "omschrijving": [
+                    "1,1,1,2-tetrachloorethaan",
+                    "1,1,1-trichloorethaan",
+                    "1,1,2,2-tetrachloorethaan",
+                    "1,1,2-trichloorethaan",
+                ],
+                "eenheid": ["ug/l", "ug/l", "ug/l", "ug/l"],
+                "hoedanigheid": ["NVT", "NVT", "NVT", "NVT"],
+            }
+        )
+
+    # Tests for old format (Provincie Noord-Brabant)
+
+    def test_old_format_single_parameter(self):
+        """Test old format with a single field parameter"""
+        row = pd.Series(
+            {"Zuurstof (mg/L)": 8.5, "pH": 7.2, "other_column": "some_value"}
+        )
+
+        result = create_gar_field_measurements(row)
+
+        # Zuurstof is written wrong
+        assert len(result) == 1
+        assert all(isinstance(fm, FieldMeasurement) for fm in result)
+
+        # Check pH measurement
+        ph_measurement = next(fm for fm in result if fm.parameter == 1398)
+        assert ph_measurement.unit == "1"
+        assert ph_measurement.field_measurement_value == 7.2
+        assert ph_measurement.quality_control_status == "onbeslist"
+
+    def test_old_format_all_parameters(self):
+        """Test old format with all available field parameters"""
+        row = pd.Series(
+            {
+                "Zuurstof (mg/L)": 8.5,
+                "pH": 7.2,
+                "Zuurstof (mg/l)": 8.3,
+                "Geleidbaarheid (mS/m)": 50.0,
+                "Temperatuur (°C)": 15.5,
+                "Troebelheid (NTU)": 2.5,
+                "Alkaliniteit (HCO3 - mg/l)": 120.0,
+                "Chloride (mg/l)": 25.0,
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        # Should have 6 measurements (all except the trigger column)
+        assert len(result) == 7
+
+        # Verify specific measurements
+        oxygen_measurement = next(fm for fm in result if fm.parameter == 1701)
+        assert oxygen_measurement.field_measurement_value == 8.3
+        assert oxygen_measurement.unit == "mg/l"
+
+    def test_old_format_with_na_values(self):
+        """Test old format with NaN values (should be skipped)"""
+        row = pd.Series(
+            {
+                "Zuurstof (mg/L)": 8.5,
+                "pH": 7.2,
+                "Geleidbaarheid (mS/m)": pd.NA,
+                "Temperatuur (°C)": None,
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        # Only pH should be included (Zuurstof (mg/L) is trigger column)
+        assert len(result) == 1
+        assert result[0].parameter == 1398
+
+    def test_old_format_empty_row(self):
+        """Test old format with no valid parameters"""
+        row = pd.Series({"Zuurstof (mg/L)": 8.5, "other_column": "value"})
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 0
+
+    # Tests for new format (GAR)
+
+    @patch("polars.read_csv")
+    def test_new_format_single_parameter(self, mock_read_csv, mock_csv_data):
+        """Test new format with a single aquocode parameter"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series({"1112T4ClC2a": "5.2", "other_column": "value"})
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 1
+        assert result[0].parameter == 3
+        assert result[0].unit == "ug/l"
+        assert result[0].field_measurement_value == 5.2
+        assert result[0].quality_control_status == "onbeslist"
+
+    @patch("polars.read_csv")
+    def test_new_format_multiple_parameters(self, mock_read_csv, mock_csv_data):
+        """Test new format with multiple aquocode parameters"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series(
+            {
+                "1112T4ClC2a": "5.2",
+                "111TClC2a": "3.1",
+                "1122T4ClC2a": "1.5",
+                "other_column": "value",
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 3
+        parameter_ids = [fm.parameter for fm in result]
+        assert set(parameter_ids) == {3, 4, 5}
+
+    @patch("polars.read_csv")
+    def test_new_format_niet_bepaald_skipped(self, mock_read_csv, mock_csv_data):
+        """Test that 'niet bepaald' values are skipped"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series(
+            {
+                "1112T4ClC2a": "5.2",
+                "111TClC2a": "niet bepaald",
+                "1122T4ClC2a": "1.5",
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 2
+        parameter_ids = [fm.parameter for fm in result]
+        assert 4 not in parameter_ids  # 111TClC2a should be skipped
+
+    @patch("polars.read_csv")
+    def test_new_format_unknown_aquocode_skipped(self, mock_read_csv, mock_csv_data):
+        """Test that unknown aquocodes are skipped"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series(
+            {"1112T4ClC2a": "5.2", "UNKNOWN_CODE": "10.0", "other_column": "value"}
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 1
+        assert result[0].parameter == 3
+
+    @patch("polars.read_csv")
+    def test_new_format_empty_row(self, mock_read_csv, mock_csv_data):
+        """Test new format with no valid aquocodes"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series({"other_column": "value", "another_column": "another_value"})
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 0
+
+    @patch("polars.read_csv")
+    def test_new_format_csv_path(self, mock_read_csv, mock_csv_data):
+        """Test that CSV is read from correct path"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series({"other_column": "value"})
+
+        create_gar_field_measurements(row)
+
+        # Verify read_csv was called
+        mock_read_csv.assert_called_once()
+        call_args = mock_read_csv.call_args
+
+        # Check that path ends with the expected filename
+        assert "20260107_GARVarList.csv" in call_args[0][0]
+        assert call_args[1]["separator"] == ";"
+
+    # Edge cases and format detection
+
+    def test_format_detection_old_format(self):
+        """Test that old format is correctly detected"""
+        row = pd.Series({"Zuurstof (mg/L)": 8.5, "pH": 7.2})
+
+        # Should use old format logic
+        result = create_gar_field_measurements(row)
+        assert len(result) == 1  # Only pH
+
+    @patch("polars.read_csv")
+    def test_format_detection_new_format(self, mock_read_csv, mock_csv_data):
+        """Test that new format is correctly detected"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series({"1112T4ClC2a": "5.2", "other": "value"})
+
+        # Should use new format logic
+        result = create_gar_field_measurements(row)
+        assert len(result) == 1
+
+    def test_empty_series(self):
+        """Test with completely empty series"""
+        row = pd.Series(dtype=object)
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 0
+        assert isinstance(result, list)
+
+    @patch("polars.read_csv")
+    def test_mixed_data_types(self, mock_read_csv, mock_csv_data):
+        """Test handling of different data types in values"""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series(
+            {
+                "1112T4ClC2a": 5.2,  # numeric
+                "111TClC2a": "3.1",  # string
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 2
+        # Both should be accepted regardless of type
+        assert all(fm.field_measurement_value in [5.2, 3.1] for fm in result)
+
+    def test_quality_control_status_always_onbeslist(self):
+        """Test that qualityControlStatus is always 'onbeslist'"""
+        row = pd.Series({"Zuurstof (mg/L)": 8.5, "pH": 7.2, "Temperatuur (°C)": 15.5})
+
+        result = create_gar_field_measurements(row)
+
+        for measurement in result:
+            assert measurement.quality_control_status == "onbeslist"
+
+
+# Integration-style tests
+
+
+class TestCreateGarFieldMeasurementsIntegration:
+    """Integration tests with actual CSV file (if available)"""
+
+    @pytest.mark.skipif(
+        not os.path.exists(
+            os.path.join(
+                os.path.dirname(__file__), "bro_upload", "20260107_GARVarList.csv"
+            )
+        ),
+        reason="CSV file not available",
+    )
+    def test_with_real_csv_file(self):
+        """Test with actual CSV file if present"""
+        row = pd.Series({"1112T4ClC2a": "5.2", "other_column": "value"})
+
+        result = create_gar_field_measurements(row)
+
+        # Basic validation
+        assert isinstance(result, list)
+        if len(result) > 0:
+            assert all(isinstance(fm, FieldMeasurement) for fm in result)
