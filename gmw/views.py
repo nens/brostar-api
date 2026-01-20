@@ -1,10 +1,53 @@
+import logging
+
+from django.http import HttpResponse, JsonResponse
+from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
 from api import mixins
+from api.bro_upload.upload_datamodels import GMWConstruction
 
 from . import filters, serializers
 from . import models as gmw_models
+from .xml_reader.xml_model import GMWXML
+
+logger = logging.getLogger(__name__)
+
+
+class GMWAPIView(View):
+    """
+    API view that queries external API and returns JSON or XML
+    based on Accept header or format parameter
+    """
+
+    def get(self, request, gmw_id):
+        # Determine response format
+        accept_header = request.headers.get("Accept", "")
+        format_param = request.headers.get("Format", "").lower()
+        # Check if XML is requested
+        is_xml = "xml" in accept_header or format_param == "xml"
+
+        # Query external API
+        try:
+            data = GMWXML(gmw_id, bro_url="https://publiek.broservices.nl/")
+        except Exception as e:
+            error_data = {"error": str(e), "gmw_id": gmw_id}
+            if is_xml:
+                return HttpResponse(
+                    f"<error>{str(e)}</error>",
+                    content_type="application/xml",
+                    status=500,
+                )
+            return JsonResponse(error_data, status=500)
+
+        # Return appropriate format
+        if is_xml:
+            response = HttpResponse(data.xml_content, content_type="application/xml")
+            return response
+
+        gmw_model = GMWConstruction(**data.gmw_construction)
+        return JsonResponse(gmw_model.model_dump())
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):

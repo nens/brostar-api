@@ -59,8 +59,6 @@ class BulkImporter:
 
     def run(self) -> None:
         try:
-            self._flush_existing_data()
-
             url = self._create_bro_ids_import_url()
             bro_ids = self._fetch_bro_ids(url)
 
@@ -70,7 +68,6 @@ class BulkImporter:
             logger.info(f"Starting import with {total_bro_ids} BRO-IDs.")
             for bro_id in bro_ids:
                 counter += 1
-
                 try:
                     data_importer = self.object_importer_class(bro_id, self.data_owner)
                     data_importer.run()
