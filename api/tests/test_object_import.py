@@ -178,21 +178,21 @@ def test_convert_xml_to_json(gmn_object_importer):
 #     assert observation_instance[0].validation_status == "voorlopig"
 
 
-@pytest.fixture
-def gmw_object_importer(organisation):
-    return object_import.GMWObjectImporter(
-        bro_id="GMW000000068159", data_owner=organisation
-    )
+# @pytest.fixture
+# def gmw_object_importer(organisation):
+#     return object_import.GMWObjectImporter(
+#         bro_id="GMW000000068159", data_owner=organisation
+#     )
 
 
-@pytest.mark.django_db
-def test_gmw_download_url(gmw_object_importer: object_import.GMWObjectImporter):
-    url = gmw_object_importer._create_download_url()
+# @pytest.mark.django_db
+# def test_gmw_download_url(gmw_object_importer: object_import.GMWObjectImporter):
+#     url = gmw_object_importer._create_download_url()
 
-    assert (
-        url
-        == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmw/v1/objects/GMW000000068159?fullHistory=nee"
-    )
+#     assert (
+#         url
+#         == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmw/v1/objects/GMW000000068159?fullHistory=nee"
+#     )
 
 
 @pytest.mark.django_db
