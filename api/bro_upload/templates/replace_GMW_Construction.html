@@ -53,9 +53,9 @@
         <ns2:horizontalPositioningMethod codeSpace="urn:bro:gmw:HorizontalPositioningMethod">{{ sourcedocs_data.horizontalPositioningMethod }}</ns2:horizontalPositioningMethod>
       </ns:deliveredLocation>
       <ns:deliveredVerticalPosition>
-        <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</ns2:localVerticalReferencePoint>
+        <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">NAP</ns2:localVerticalReferencePoint>
         <ns2:offset uom="m">{{ sourcedocs_data.offset }}</ns2:offset>
-        <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</ns2:verticalDatum>
+        <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">NAP</ns2:verticalDatum>
         {% if sourcedocs_data.groundLevelPosition %}
         <ns2:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns2:groundLevelPosition>
         {% else %}
