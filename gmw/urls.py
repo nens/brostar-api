@@ -5,7 +5,7 @@ from . import views
 app_name = "gmw"
 
 urlpatterns = [
-    path("<str:gmw_id>/", views.GMWAPIView.as_view(), name="gmw-direct"),
+    path("get/<str:gmw_id>/", views.GMWAPIView.as_view(), name="gmw-direct"),
     path("gmws/", views.GMWListView.as_view(), name="gmw-list"),
     path("ids/", views.GMWIdsList.as_view(), name="gmw-ids"),
     path("overview/", views.GMWOverviewList.as_view(), name="gmw-overview"),
