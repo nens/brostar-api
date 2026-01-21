@@ -9,6 +9,7 @@
 -   Enhancement: allow for easier addition of additional elements to GAR fieldwork,
                  by using aquocodes as headers and storing all other parameters in a CSV.
 -   Feature: api/gmw/<str:gmw_id>/ endpoint with JSON for GMWConstruction and XML option
+-   Database: added renewal_date to Organisation to add a reminder when the token has been deprecated
 
 
 ## 1.60 (2025-12-16)
