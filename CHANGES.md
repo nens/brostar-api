@@ -10,6 +10,7 @@
                  by using aquocodes as headers and storing all other parameters in a CSV.
 -   Feature: api/gmw/get/<str:gmw_id>/ endpoint with JSON for GMWConstruction and XML option
 -   Database: added renewal_date to Organisation to add a reminder when the token has been deprecated
+-   Bugfix: auto MeasuringPoint creation after uploadtask
 
 
 ## 1.60 (2025-12-16)

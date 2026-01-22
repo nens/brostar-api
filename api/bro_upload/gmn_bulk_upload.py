@@ -166,7 +166,9 @@ class GMNBulkUploader:
                 measuring_point_code=row["measuringPointCode"],
                 gmw_bro_id=row["gmwBroId"],
                 tube_number=row["tubeNumber"],
-                event_date=row["eventDate"],
+                event_date=row[
+                    "eventDate"
+                ],  # Should accept multiple formats and convert this to YYYY-MM-DD
             )
             upload_tasks.append(upload_task)
             self.bulk_upload_instance.progress += progress / 2

@@ -264,7 +264,7 @@ def create_gmn_measuringpoint(
     last_measuring_point = (
         Measuringpoint.objects.filter(
             gmn=gmn,
-            measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+            measuringpoint_code=sourcedocument_data.get("measuringPointCode"),
             data_owner=data_owner,
             tube_start_date__lt=sourcedocument_data.get("eventDate"),
         )
@@ -275,7 +275,7 @@ def create_gmn_measuringpoint(
     Measuringpoint.objects.update_or_create(
         gmn=gmn,
         data_owner=data_owner,
-        measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+        measuringpoint_code=sourcedocument_data.get("measuringPointCode"),
         gmw_bro_id=sourcedocument_data.get("gmwBroId"),
         tube_number=sourcedocument_data.get("tubeNumber"),
         event_type=event_type,
@@ -291,10 +291,10 @@ def create_gmn_measuringpoint(
         # Set all measuring points that started before this end date to have this end date
         Measuringpoint.objects.filter(
             gmn=gmn,
-            measuringpoint_code=sourcedocument_data.get("measuringpointCode"),
+            measuringpoint_code=sourcedocument_data.get("measuringPointCode"),
             data_owner=data_owner,
             tube_start_date__lt=datetime.datetime.strptime(
-                sourcedocument_data.get("eventDate"), "%Y-%m-%d"
+                sourcedocument_data.get("eventDate", "1900-01-01"), "%Y-%m-%d"
             ),
         ).update(
             measuringpoint_end_date=sourcedocument_data.get("eventDate"),
