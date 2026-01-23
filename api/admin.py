@@ -48,6 +48,14 @@ class OrganisationAdmin(admin.ModelAdmin):
     )
 
 
+class BroDomainAdmin(admin.ModelAdmin):
+    model = api_models.BroDomain
+    list_display = (
+        "name",
+        "bro_domain",
+    )
+
+
 class ContractAdmin(admin.ModelAdmin):
     model = api_models.Contract
     list_display = (
@@ -123,6 +131,8 @@ class BulkUploadAdmin(admin.ModelAdmin):
 
 admin.site.register(api_models.UserProfile)
 admin.site.register(api_models.InviteUser, InviteUserAdmin)
+admin.site.register(api_models.BroDomain, BroDomainAdmin)
+admin.site.register(api_models.Contract, ContractAdmin)
 admin.site.register(api_models.Organisation, OrganisationAdmin)
 admin.site.register(api_models.ImportTask)
 admin.site.register(api_models.UploadTask, UploadTaskAdmin)

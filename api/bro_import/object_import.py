@@ -446,7 +446,9 @@ class GMWObjectImporter(ObjectImporter):
         )
         internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", None))
         self.gmw_obj = GMW.objects.update_or_create(
-            internal_id=internal_id,
+            internal_id=internal_id[:100]
+            if internal_id
+            else None,  # Only accepts 100 chars
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
