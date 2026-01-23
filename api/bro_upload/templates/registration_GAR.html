@@ -28,9 +28,11 @@
             </monitoringPoint>
             <fieldResearch>
                 <garcom:samplingDateTime>{{ sourcedocs_data.fieldResearch.samplingDateTime }}</garcom:samplingDateTime>
+                {% if sourcedocs_data.fieldResearch.samplingOperator %}
                 <garcom:samplingOperator>
                     <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}</brocom:chamberOfCommerceNumber>
                 </garcom:samplingOperator>
+                {% endif %}
                 <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{ sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
                 <garcom:samplingDevice>
                     <garcom:pumpType codeSpace="urn:bro:gar:PumpType">{{ sourcedocs_data.fieldResearch.pumpType }}</garcom:pumpType>

@@ -12,6 +12,7 @@
 -   Feature: added bro_domains to organisations, this will later be used to configure the front-end
 -   Database: added renewal_date to Organisation to add a reminder when the token has been deprecated
 -   Bugfix: auto MeasuringPoint creation after uploadtask
+-   Bugfix: do not include sourcedocs_data.fieldResearch.samplingOperator in template if there is no value
 
 
 ## 1.60 (2025-12-16)
