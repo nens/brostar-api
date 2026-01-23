@@ -83,7 +83,7 @@ class BulkImporter:
                     self.import_task_instance.progress = round(progress, 2)
                     self.import_task_instance.save()
 
-                time.sleep(1)
+                time.sleep(3)
 
             self.import_task_instance.status = "COMPLETED"
             self.import_task_instance.save()

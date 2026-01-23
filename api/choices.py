@@ -43,6 +43,9 @@ BRO_DOMAIN_CHOICES = [
     ("GLD", "GLD"),
     ("FRD", "FRD"),
     ("GAR", "GAR"),
+    ("CPT", "CPT"),
+    ("BHR-GT", "BHR-GT"),
+    ("GUF", "GUF"),
 ]
 
 BULK_UPLOAD_TYPES = [

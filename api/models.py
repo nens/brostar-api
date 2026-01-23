@@ -73,17 +73,46 @@ class PersonalAPIKey(AbstractAPIKey):
 class Organisation(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
+
+    # Delivery specefics
     kvk_number = models.CharField(max_length=8)
     bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
     bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
     renewal_date = models.DateField(blank=True, null=True)
-    comments = models.TextField(blank=True, null=True)
     request_count = models.IntegerField(default=0)
+
+    # Settings
+    bro_domains = models.ManyToManyField("BroDomain", blank=True)
+
+    # General
+    comments = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return self.name
+
+
+class BroDomain(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    bro_domain = models.CharField(
+        max_length=8,
+        choices=choices.BRO_DOMAIN_CHOICES,
+        unique=True,
+        null=False,
+        blank=False,
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.bro_domain} - {self.name}"
+
+    class Meta:
+        # This will have a many2many within organisation and be used to determine which domains an organisation has access to
+        verbose_name = "BRO Domain"
+        verbose_name_plural = "BRO Domains"
 
 
 class Contract(models.Model):
@@ -167,7 +196,7 @@ class ImportTask(models.Model):
         Organisation, on_delete=models.CASCADE, null=True, blank=True
     )
     bro_domain = models.CharField(
-        max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
+        max_length=8, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
     kvk_number = models.CharField(max_length=8, blank=True, null=True)
     status = models.CharField(
@@ -191,7 +220,7 @@ class UploadTask(models.Model):
         Organisation, on_delete=models.SET_NULL, null=True, blank=True
     )
     bro_domain = models.CharField(
-        max_length=3, choices=choices.BRO_DOMAIN_CHOICES, default=None
+        max_length=8, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
     project_number = models.CharField(max_length=20, blank=False)
     registration_type = models.CharField(
