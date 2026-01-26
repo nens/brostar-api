@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.61 (unreleased)
+## 1.61 (2026-01-26)
 
 
 -   Enhancement: check last BRO-import date to see if an import is required
