@@ -1,5 +1,11 @@
 # Changelog for BROStar API
 
+## 1.62 (unreleased)
+
+
+- Nothing changed yet.
+
+
 ## 1.61 (2026-01-26)
 
 
