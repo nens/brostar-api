@@ -1,0 +1,98 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XML Overview</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style.css' %}" />
+  </head>
+
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <div class="card">
+
+            <!-- Card Header -->
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h3>XML Overzicht</h3>
+              <a
+                href="{% url 'miscellaneous:xml_download' download_filename %}"
+                class="btn btn-register"
+              >
+                Download ZIP
+              </a>
+            </div>
+
+            <div class="card-body">
+
+              <!-- Back Button -->
+              <div class="mb-3">
+                <a href="{% url 'miscellaneous:xml_index' %}" class="btn btn-outline-secondary">
+                  ← Terug
+                </a>
+              </div>
+
+              <!-- KVK Update Form -->
+              <div class="mb-4 p-3 border rounded bg-light">
+                <h5>KVK toepassen op alle XML bestanden</h5>
+                <form 
+                  method="post" 
+                  action="{% url 'miscellaneous:xml_process' %}"
+                  enctype="multipart/form-data"
+                >
+                    <div class="col-md-4">
+                      <label for="kvk_input" class="form-label">KVK nummer</label>
+                      <input type="text" id="kvk_input" name="kvk"
+                             class="form-control" placeholder="Voer KVK nummer in" required>
+                    </div>
+
+                    <div class="col-md-3 d-flex align-items-end">
+                      <button class="btn btn-primary w-100">Toepassen op alle XMLs</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <!-- List of XML Files -->
+              <div class="mb-4 p-3 border rounded bg-light">
+                <h5>Individuele XML bestanden</h5>
+                <ul class="list-group">
+                  {% for xml in xmls %}
+                    {% comment %}
+                      Extract filename from full path.
+                      If xml is already a filename, this still works.
+                    {% endcomment %}
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                      <!-- Clickable filename -->
+                      <a href="{% url 'miscellaneous:xml_edit' xml %}">
+                        {{xml}}
+                      </a>
+
+                    </li>
+                  {% empty %}
+                    <li class="list-group-item">Geen XML bestanden gevonden.</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/xml_main.js' %}"></script>
+  </body>
+</html>

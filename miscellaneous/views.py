@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 import tempfile
 
 import pandas as pd
@@ -8,8 +9,10 @@ from django.contrib import messages
 from django.http import FileResponse
 from django.shortcuts import redirect, render
 from werkzeug.utils import secure_filename
+from django.core.handlers.wsgi import WSGIRequest
 
 from miscellaneous.utils.retrieve_gmw_duplicates import run as process_shapefile
+from miscellaneous.utils.xml_handler import XMLHandler
 
 # Setup logging
 logging.basicConfig(
@@ -19,10 +22,14 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 ALLOWED_EXTENSIONS = {"zip", "shp", "shx", "dbf", "prj"}  # Shapefile components and zip
+ALLOWED_EXTENSIONS_XML = {"zip", "xml"}
 
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def allowed_file_xml(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS_XML
 
 
 def duplicates_index(request):
@@ -199,6 +206,155 @@ def duplicates_download(request, filename):
     file = f"{csv_dir}/{filename}"
     return FileResponse(open(file, "rb"), as_attachment=True, filename=filename)
 
+### XML dump views
+def xml_index(request):
+    """Main page view with upload form"""
+    return render(request, "miscellaneous/xml_index.html")
+
+def xml_process(request: WSGIRequest):  # noqa: C901
+    """Process uploaded xml file(s)"""
+
+    if request.method != "POST":
+        return redirect("miscellaneous:xml_index")
+    
+    zip_file = request.FILES.get("zip_file")
+    xml_file = request.FILES.get("xml_file")
+
+    # If files were uploaded individually
+    if xml_file:
+        if not (allowed_file_xml(xml_file.name) and allowed_file_xml(xml_file.name)):
+            messages.error(request, "Bestandstype niet toegestaan")
+            return redirect("miscellaneous:xml_index")
+        filenames = [process_xml(xml_file)]
+    elif zip_file:
+        if not zip_file.name.endswith(".zip"):
+            messages.error(request, "Upload een .zip bestand")
+            return redirect("miscellaneous:xml_index")
+        filenames = process_zip_xml(zip_file)
+    else:
+        messages.error(
+            request,
+            "Upload een xml of een zip-bestand",
+        )
+        return redirect("miscellaneous:xml_index")
+
+    if filenames == []:
+        messages.error(request, "Geen data in de xml")
+        return redirect("miscellaneous:xml_index")
+    
+    kvk_number = request.POST.get("kvk_number")
+    project_number = request.POST.get("project_number")
+    if not project_number:
+        messages.error(request, "Project number is required")
+        return redirect("miscellaneous:xml_index")
+        
+    for filename in filenames:
+        xml_handler = XMLHandler(
+            path_to_xml=settings.XML_DIR / f"{filename}",
+            kvk_number=kvk_number,
+            project_number=project_number,
+        )
+        xml_handler.xml_to_bro()
+
+    
+    ## determine org: request.post.get("kvk_number")
+    ## xml_get_kvk()
+    ## proj: request.post.get("project")
+
+    ## We willen een overzicht knop en een opstuur knop
+    
+
+    # csv_dir = settings.CSV_DIR
+    # df: pd.DataFrame = pd.read_csv(f"{csv_dir}/{filename}")
+
+    # csv_html = prepare_html(df)
+
+    # if csv_html is None:
+    #     messages.error(request, "Error processing files")
+    #     return redirect("miscellaneous:xml_index")
+    
+    return render(
+        request,
+        "miscellaneous/xml_overview.html",
+        {
+            "xmls": filename, # list of xml paths
+            "download_filename": filename, # zip of edited xml files
+        },
+    )
+
+def xml_edit(request):
+    return render(
+        request,
+        "miscellaneous/result.html",
+        {},
+    )
+
+def _get_kvk_from_xml():
+    pass
+
+def _get_bro_domain_from_xml():
+    pass
+
+
+
+def xml_download(request):
+    return render(
+        request,
+        "miscellaneous/result.html",
+        {},
+    )
+
+def store_xml():
+    pass
+
+
+def process_xml(xml_file):
+    xml_dir = Path(settings.XML_DIR)
+    xml_dir.mkdir(exist_ok=True) 
+    xml_filepath = xml_dir / f"{secure_filename(xml_file.name)}"
+
+    with open(xml_filepath, "wb+") as destination:
+        for chunk in xml_file.chunks():
+            destination.write(chunk)
+
+    logger.info("Processing xml")
+    return xml_file.name
+    
+    # def xml_dump_request(request, files) -> None:
+    # import requests
+    # requests.post()
+    # open files, zit in de request
+
+    # determine xml or zip
+
+
+    # determine org based on user and project number
+
+
+    # deliver xml to BRO
+
+
+    # create uploadtask
+
+    # return ["test", "test1"]
+
+
+def process_zip_xml(zip_file):
+    """Processes a ZIP file and returns the output CSV filename"""
+    # Save zip
+    tmp_dir = tempfile.mkdtemp()
+    zip_filepath = os.path.join(tmp_dir, secure_filename(zip_file.name))
+
+    with open(zip_filepath, "wb+") as destination:
+        for chunk in zip_file.chunks():
+            destination.write(chunk)
+
+    logger.info("Processing xml file [ZIP]")
+    
+    xml_names = []
+    # for xml in tmp_dir:
+
+    return xml_names
 
 ### Berichten hulp views
 ## General

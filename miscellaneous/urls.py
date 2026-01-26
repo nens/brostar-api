@@ -12,6 +12,12 @@ urlpatterns = [
         views.duplicates_download,
         name="duplicaat_download_file",
     ),
+
+    path("xml/", views.xml_index, name="xml_index"),
+    path("xml/process/", views.xml_process, name="xml_process"),
+    path("xml/edit/<str:filename>/", views.xml_edit, name="xml_edit"),
+    path("xml/download/<str:filename>/", views.xml_download, name="xml_download"),
+
     path("berichten-hulp/uitleg/", views.berichten_uitleg, name="berichten_uitleg"),
     path("berichten-hulp/", views.berichten_index, name="berichten_index"),
     path("berichten-hulp/gmw/", views.berichten_gmw, name="berichten_gmw"),

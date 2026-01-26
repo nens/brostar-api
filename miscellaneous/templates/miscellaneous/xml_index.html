@@ -1,0 +1,173 @@
+{% load static %}
+<!-- This line is required to load static files in Django templates -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link href='https://fonts.googleapis.com/css?family=Matangi' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XML-dump</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'miscellaneous/css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="card">
+            <div class="card-header">
+              <h3>Nelen & Schuurmans: XML dump</h3>
+            </div>
+            <div class="card-body">
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-danger">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+
+              <form
+                action="{% url 'miscellaneous:xml_process' %}"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="mb-4">
+                  <h5>Upload opties</h5>
+                  <ul class="nav nav-tabs" id="uploadTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link active"
+                        id="zip-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#zip-pane"
+                        type="button"
+                        role="tab"
+                      >
+                        ZIP bestand
+                      </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                      <button
+                        class="nav-link"
+                        id="files-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#files-pane"
+                        type="button"
+                        role="tab"
+                      >
+                        Individueel XML bestand
+                      </button>
+                    </li>
+                  </ul>
+
+                  <div
+                    class="tab-content p-3 border border-top-0 rounded-bottom mb-2"
+                    id="uploadTabContent"
+                  >
+                    <!-- Zip File Upload -->
+                    <div
+                      class="tab-pane fade show active"
+                      id="zip-pane"
+                      role="tabpanel"
+                    >
+                      <div class="mb-3">
+                        <label for="zip_file" class="form-label"
+                          >Gezipte XMLs</label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="zip_file"
+                          name="zip_file"
+                          accept=".zip"
+                        />
+                        <div class="form-text">
+                          Upload een ZIP met daarin enkel xml bestanden.
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Individual File Upload -->
+                    <div class="tab-pane fade" id="files-pane" role="tabpanel">
+                      <div class="mb-3">
+                        <label for="xml_file" class="form-label"
+                          >XML bestand </label
+                        >
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="xml_file"
+                          name="xml_file"
+                          accept=".xml"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="d-grid gap-2 mb-2">
+                    <button type="edit" class="btn btn-primary">XMLs aanpassen</button>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <h5>BRO Instellingen</h5>
+                  
+                  <div class="row">
+                    <!-- KVK Nummer -->
+                    <div class="col-md-6">
+                      <label for="kvk_number" class="form-label">KVK Nummer</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="kvk_number"
+                        name="kvk_number"
+                        required
+                        placeholder="Voer KVK nummer in"
+                      />
+                      <!-- <div class="form-text">Voer een KVK nummer in.</div> -->
+                    </div>
+
+                    <!-- Projectnummer -->
+                    <div class="col-md-6">
+                      <label for="project_number" class="form-label">Projectnummer</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="project_number"
+                        name="project_number"
+                        required
+                        placeholder="Voer projectnummer in"
+                      />
+                      <!-- <div class="form-text">Voer een projectnummer in.</div> -->
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <h5>XMLs versturen</h5>
+                </div>
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary">XML → BRO</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <img
+      src="{% static 'miscellaneous/images/logo.png' %}"
+      alt="Logo"
+      id="bottom-logo"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'miscellaneous/js/xml_main.js' %}"></script>
+  </body>
+</html>

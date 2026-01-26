@@ -89,8 +89,9 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
       - NENS_AUTH_RESOURCE_SERVER_ID
+      - DJANGO_AUTORELOAD_MODE=poll
     build: .
-    command: "uv run gunicorn --bind=0.0.0.0:8000 --workers=3 --timeout=180 --preload --max-requests=10000 brostar_api.wsgi"
+    command: "uv run python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
