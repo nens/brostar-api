@@ -1,0 +1,361 @@
+<registrationRequest
+    xmlns="http://www.broservices.nl/xsd/isbhr-gt/2.1"
+    xmlns:bhrgtcom="http://www.broservices.nl/xsd/bhrgtcommon/2.1"
+    xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:swe="http://www.opengis.net/swe/2.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.broservices.nl/xsd/isbhr-gt/2.1 https://schema.broservices.nl/xsd/isbhr-gt/2.1/isbhr-gt-messages.xsd"
+>
+    <!--  Disclaimer: dit voorbeeldbericht valideert tegen de validatieservice van de acceptatie omgeving van het bronhouderportaal, maar de gegevens zijn fictief en waarschijnlijk niet correct. -->
+    <!--  Inhoud:
+         * Boormonsteranalyse:
+           + Bepaling korrelgrootteverdeling.
+           + Bepaling watergehalte.
+           + Bepaling consistentiegrenzen.
+         * Einddatum rapportage.
+     -->
+    <brocom:requestReference>verzoek_2</brocom:requestReference>
+    <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
+    <brocom:broId>BHR000000342114</brocom:broId>
+    <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+    <sourceDocument>
+        <BHR_GT_EndReport_V1 gml:id="id_0001">
+            <!-- Optional: -->
+            <!-- boreholeSampleDescription>...</boreholeSampleDescription -->
+            <!-- Optional: -->
+            <boreholeSampleAnalysis>
+                <bhrgtcom:analysisReportDate>2018-10-23</bhrgtcom:analysisReportDate>
+                <bhrgtcom:analysisProcedure codeSpace="urn:bro:bhrgt:AnalysisProcedure"
+                    >NPR2021</bhrgtcom:analysisProcedure
+                >
+                <!-- Optional: -->
+                <bhrgtcom:analysisOperator>
+                    <!-- You have a CHOICE of the next 2 items at this level -->
+                    <brocom:chamberOfCommerceNumber
+                        >09098104</brocom:chamberOfCommerceNumber
+                    >
+                    <!--
+                    <brocom:europeanCompanyRegistrationNumber>DER2507_R2</brocom:europeanCompanyRegistrationNumber>
+                     -->
+                </bhrgtcom:analysisOperator>
+                <!-- 1 or more repetitions: -->
+                <bhrgtcom:investigatedInterval>
+                    <bhrgtcom:beginDepth uom="m">2.15</bhrgtcom:beginDepth>
+                    <bhrgtcom:endDepth uom="m">2.45</bhrgtcom:endDepth>
+                    <bhrgtcom:sampleQuality codeSpace="urn:bro:bhrgt:SampleQuality"
+                        >QM2</bhrgtcom:sampleQuality
+                    >
+                    <bhrgtcom:analysisType codeSpace="urn:bro:bhrgt:AnalysisType"
+                        >consistentieKorrelverdeling</bhrgtcom:analysisType
+                    >
+                    <bhrgtcom:waterContentDetermined
+                        >ja</bhrgtcom:waterContentDetermined
+                    >
+                    <bhrgtcom:organicMatterContentDetermined
+                        >nee</bhrgtcom:organicMatterContentDetermined
+                    >
+                    <bhrgtcom:carbonateContentDetermined
+                        >nee</bhrgtcom:carbonateContentDetermined
+                    >
+                    <bhrgtcom:volumetricMassDensityDetermined
+                        >nee</bhrgtcom:volumetricMassDensityDetermined
+                    >
+                    <bhrgtcom:volumetricMassDensitySolidsDetermined
+                        >nee</bhrgtcom:volumetricMassDensitySolidsDetermined
+                    >
+                    <bhrgtcom:described>nee</bhrgtcom:described>
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:investigatedMaterial>...</bhrgtcom:investigatedMaterial -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:settlementCharacteristicsDetermination>...</bhrgtcom:settlementCharacteristicsDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:maximumUndrainedShearStrengthDetermination>...</bhrgtcom:maximumUndrainedShearStrengthDetermination -->
+                    <!-- Optional: -->
+                    <bhrgtcom:particleSizeDistributionDetermination>
+                        <bhrgtcom:determinationProcedure
+                            codeSpace="urn:bro:bhrgt:DeterminationProcedure"
+                            >ISO17892d4v2016</bhrgtcom:determinationProcedure
+                        >
+                        <bhrgtcom:determinationMethod
+                            codeSpace="urn:bro:bhrgt:DeterminationMethod"
+                            >droogZeven</bhrgtcom:determinationMethod
+                        >
+                        <bhrgtcom:fractionDistribution
+                            codeSpace="urn:bro:bhrgt:FractionDistribution"
+                            >basisUitgebreid</bhrgtcom:fractionDistribution
+                        >
+                        <!-- Optional: -->
+                        <!-- bhrgtcom:dispersionMethod codeSpace="urn:bro:bhrgt:DispersionMethod">roeren</bhrgtcom:dispersionMethod  -->
+                        <!-- 1 or more repetitions: -->
+                        <bhrgtcom:removedMaterial
+                            codeSpace="urn:bro:bhrgt:RemovedMaterial"
+                            >geen</bhrgtcom:removedMaterial
+                        >
+                        <!-- bhrgtcom:removedMaterial codeSpace="urn:bro:bhrgt:RemovedMaterial">antropogeenStenigBestanddeel</bhrgtcom:removedMaterial  -->
+                        <!-- Optional: -->
+                        <!-- bhrgtcom:equivalentMassDeterminationMethod codeSpace="urn:bro:bhrgt:EquivalentMassDeterminationMethod">massaBepaald</bhrgtcom:equivalentMassDeterminationMethod  -->
+                        <!-- Optional: -->
+                        <!-- bhrgtcom:equivalentMass uom="g/cm3">1.1234</bhrgtcom:equivalentMass -->
+                        <!-- 0 to 2 repetitions: -->
+                        <!-- bhrgtcom:performanceIrregularity codeSpace="urn:bro:bhrgt:PerformanceIrregularity">materiaalVerloren</bhrgtcom:performanceIrregularity  -->
+                        <!-- 0 to 2 repetitions: -->
+                        <!-- bhrgtcom:materialIrregularity codeSpace="urn:bro:bhrgt:MaterialIrregularity">desintegratie</bhrgtcom:materialIrregularity  -->
+                        <!-- Optional: -->
+                        <!-- bhrgtcom:usedOpticalModel codeSpace="urn:bro:bhrgt:UsedOpticalModel">Fraunhofer</bhrgtcom:usedOpticalModel -->
+                        <bhrgtcom:basicParticleSizeDistribution>
+                            <bhrgtcom:fractionSmaller63um uom="%"
+                                >2.5</bhrgtcom:fractionSmaller63um
+                            >
+                            <bhrgtcom:fractionLarger63um uom="%"
+                                >97.5</bhrgtcom:fractionLarger63um
+                            >
+                            <!-- Optional: -->
+                            <!-- bhrgtcom:standardDistributionFractionSmaller63um>...</bhrgtcom:standardDistributionFractionSmaller63um -->
+                            <!-- Optional: -->
+                            <!-- bhrgtcom:detailedDistributionFractionSmaller63um>...</bhrgtcom:detailedDistributionFractionSmaller63um -->
+                            <!-- Optional: -->
+                            <!-- bhrgtcom:standardDistributionFractionLarger63um>...</bhrgtcom:standardDistributionFractionLarger63um -->
+                            <!-- Optional: -->
+                            <bhrgtcom:detailedDistributionFractionLarger63um>
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction63to90um uom="%">3</bhrgtcom:fraction63to90um -->
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction63to75um uom="%"
+                                    >1</bhrgtcom:fraction63to75um
+                                >
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction75to90um uom="%"
+                                    >2</bhrgtcom:fraction75to90um
+                                >
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction90to125um uom="%" xsi:nil="true" / -->
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction90to106um uom="%"
+                                    >2</bhrgtcom:fraction90to106um
+                                >
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction106to125um xsi:nil="true" uom="%" />
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction125to180um xsi:nil="true" uom="%"/ -->
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction125to150um xsi:nil="true" uom="%" />
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction150to180um uom="%"
+                                    >3</bhrgtcom:fraction150to180um
+                                >
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction180to250um uom="%">9</bhrgtcom:fraction180to250um -->
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction180to212um uom="%"
+                                    >5</bhrgtcom:fraction180to212um
+                                >
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction212to250um uom="%"
+                                    >4</bhrgtcom:fraction212to250um
+                                >
+                                <bhrgtcom:fraction250to355um uom="%"
+                                    >9</bhrgtcom:fraction250to355um
+                                >
+                                <bhrgtcom:fraction355to500um uom="%"
+                                    >8</bhrgtcom:fraction355to500um
+                                >
+                                <bhrgtcom:fraction500to710um uom="%"
+                                    >8</bhrgtcom:fraction500to710um
+                                >
+                                <bhrgtcom:fraction710to1000um uom="%"
+                                    >7</bhrgtcom:fraction710to1000um
+                                >
+                                <bhrgtcom:fraction1000to1400um uom="%"
+                                    >7</bhrgtcom:fraction1000to1400um
+                                >
+                                <bhrgtcom:fraction1400umto2mm uom="%"
+                                    >6</bhrgtcom:fraction1400umto2mm
+                                >
+                                <bhrgtcom:fraction2to4mm uom="%"
+                                    >5</bhrgtcom:fraction2to4mm
+                                >
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction4to8mm uom="%"
+                                    >8</bhrgtcom:fraction4to8mm
+                                >
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction4to5_6mm uom="%">3</bhrgtcom:fraction4to5_6mm -->
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction5_6to8mm uom="%">5</bhrgtcom:fraction5_6to8mm -->
+                                <!-- Optional: -->
+                                <bhrgtcom:fraction8to16mm uom="%"
+                                    >12</bhrgtcom:fraction8to16mm
+                                >
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction8to11_2mm uom="%">6</bhrgtcom:fraction8to11_2mm -->
+                                <!-- Optional: -->
+                                <!-- bhrgtcom:fraction11_2to16mm uom="%">6</bhrgtcom:fraction11_2to16mm -->
+                                <bhrgtcom:fraction16to31_5mm uom="%"
+                                    >3</bhrgtcom:fraction16to31_5mm
+                                >
+                                <bhrgtcom:fraction31_5to63mm uom="%"
+                                    >4</bhrgtcom:fraction31_5to63mm
+                                >
+                                <bhrgtcom:fractionLarger63mm uom="%"
+                                    >3</bhrgtcom:fractionLarger63mm
+                                >
+                            </bhrgtcom:detailedDistributionFractionLarger63um>
+                        </bhrgtcom:basicParticleSizeDistribution>
+                    </bhrgtcom:particleSizeDistributionDetermination>
+                    <!-- Optional, but mandatory if AnalysisType=zetting: -->
+                    <bhrgtcom:waterContentDetermination>
+                        <!--  vaste waarde  -->
+                        <bhrgtcom:determinationProcedure
+                            codeSpace="urn:bro:bhrgt:DeterminationProcedure"
+                            >ISO17892d1v2014</bhrgtcom:determinationProcedure
+                        >
+                        <bhrgtcom:determinationMethod
+                            codeSpace="urn:bro:bhrgt:DeterminationMethod"
+                            >berekenenWatergehalte</bhrgtcom:determinationMethod
+                        >
+                        <!--  optional, mandatory if DeterminationMethod=drogenOven -->
+                        <!-- bhrgtcom:sampleMoistness codeSpace="urn:bro:bhrgt:SampleMoistness">veldvochtig</bhrgtcom:sampleMoistness -->
+                        <!-- 1 or more repetitions: -->
+                        <bhrgtcom:removedMaterial
+                            codeSpace="urn:bro:bhrgt:RemovedMaterial"
+                            >grind</bhrgtcom:removedMaterial
+                        >
+                        <bhrgtcom:removedMaterial
+                            codeSpace="urn:bro:bhrgt:RemovedMaterial"
+                            >plantenrestenNietHoutig</bhrgtcom:removedMaterial
+                        >
+                        <!-- 1 or 2 repetitions: -->
+                        <bhrgtcom:determinationResult>
+                            <bhrgtcom:waterContent uom="%">58</bhrgtcom:waterContent>
+                            <bhrgtcom:dryingTemperature
+                                codeSpace="urn:bro:bhrgt:DryingTemperature"
+                                >70graden</bhrgtcom:dryingTemperature
+                            >
+                            <bhrgtcom:dryingPeriod
+                                codeSpace="urn:bro:bhrgt:DryingPeriod"
+                                >16tot24uur</bhrgtcom:dryingPeriod
+                            >
+                            <bhrgtcom:saltCorrectionMethod
+                                codeSpace="urn:bro:bhrgt:SaltCorrectionMethod"
+                                >nietToegepast</bhrgtcom:saltCorrectionMethod
+                            >
+                        </bhrgtcom:determinationResult>
+                        <bhrgtcom:determinationResult>
+                            <bhrgtcom:waterContent uom="%">31</bhrgtcom:waterContent>
+                            <bhrgtcom:dryingTemperature
+                                codeSpace="urn:bro:bhrgt:DryingTemperature"
+                                >110graden</bhrgtcom:dryingTemperature
+                            >
+                            <bhrgtcom:dryingPeriod
+                                codeSpace="urn:bro:bhrgt:DryingPeriod"
+                                >stabieleMassa</bhrgtcom:dryingPeriod
+                            >
+                            <bhrgtcom:saltCorrectionMethod
+                                codeSpace="urn:bro:bhrgt:SaltCorrectionMethod"
+                                >nietToegepast</bhrgtcom:saltCorrectionMethod
+                            >
+                        </bhrgtcom:determinationResult>
+                        <!-- 0 to 2 repetitions: -->
+                        <bhrgtcom:performanceIrregularity
+                            codeSpace="urn:bro:bhrgt:PerformanceIrregularity"
+                            >gatOpgevuld</bhrgtcom:performanceIrregularity
+                        >
+                        <bhrgtcom:performanceIrregularity
+                            codeSpace="urn:bro:bhrgt:PerformanceIrregularity"
+                            >onvoldoendeVerzadigd</bhrgtcom:performanceIrregularity
+                        >
+                    </bhrgtcom:waterContentDetermination>
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:organicMatterContentDetermination>...</bhrgtcom:organicMatterContentDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:carbonateContentDetermination>...</bhrgtcom:carbonateContentDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:volumetricMassDensityDetermination>...</bhrgtcom:volumetricMassDensityDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:volumetricMassDensitySolidsDetermination>...</bhrgtcom:volumetricMassDensitySolidsDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:shearStressChangeDuringLoadingDetermination>...</bhrgtcom:shearStressChangeDuringLoadingDetermination -->
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:shearStressChangeDuringHorizontalDeformationDetermination>...</bhrgtcom:shearStressChangeDuringHorizontalDeformationDetermination -->
+                    <!-- Optional: -->
+                    <bhrgtcom:consistencyLimitsDetermination>
+                        <bhrgtcom:ConsistencyLimitsDetermination gml:id="id_0002">
+                            <!--  vaste waarde  -->
+                            <bhrgtcom:determinationProcedure
+                                codeSpace="urn:bro:bhrgt:DeterminationProcedure"
+                                >ISO17892d12v2018</bhrgtcom:determinationProcedure
+                            >
+                            <bhrgtcom:determinationMethod
+                                codeSpace="urn:bro:bhrgt:DeterminationMethod"
+                                >casagrandeKleistaaf</bhrgtcom:determinationMethod
+                            >
+                            <!-- Optional: -->
+                            <bhrgtcom:fractionLarger500um uom="%"
+                                >12.1</bhrgtcom:fractionLarger500um
+                            >
+                            <bhrgtcom:usedMedium codeSpace="urn:bro:bhrgt:UsedMedium"
+                                >leidingwater</bhrgtcom:usedMedium
+                            >
+                            <!-- Optional, mandatory if DeterminationMethod=valconusKleistaaf: -->
+                            <!-- bhrgtcom:conusType codeSpace="urn:bro:bhrgt:ConusType">engelseConus60graden</bhrgtcom:conusType -->
+                            <!-- 0 to 2 repetitions: -->
+                            <bhrgtcom:performanceIrregularity
+                                codeSpace="urn:bro:bhrgt:PerformanceIrregularity"
+                                >nazakkenConus</bhrgtcom:performanceIrregularity
+                            >
+                            <bhrgtcom:liquidLimit uom="%">123.1</bhrgtcom:liquidLimit>
+                            <bhrgtcom:plasticLimit uom="%"
+                                >123.45</bhrgtcom:plasticLimit
+                            >
+                            <bhrgtcom:plasticityIndex uom="%"
+                                >799.99</bhrgtcom:plasticityIndex
+                            >
+                            <!-- 0 to 10 repetitions: -->
+                            <bhrgtcom:plasticityAtSpecificWaterContent>
+                                <bhrgtcom:waterContent uom="%"
+                                    >70</bhrgtcom:waterContent
+                                >
+                                <!-- Optional, manadatory if DeterminationMethod=valconusKleistaaf -->
+                                <!-- bhrgtcom:penetrationDepth uom="mm">22.3</bhrgtcom:penetrationDepth -->
+                                <!-- Optional, mandatory if DeterminationMethod=casagrandeKleistaaf -->
+                                <bhrgtcom:numberOfFalls>20</bhrgtcom:numberOfFalls>
+                            </bhrgtcom:plasticityAtSpecificWaterContent>
+                            <bhrgtcom:plasticityAtSpecificWaterContent>
+                                <bhrgtcom:waterContent uom="%"
+                                    >75</bhrgtcom:waterContent
+                                >
+                                <bhrgtcom:numberOfFalls>24</bhrgtcom:numberOfFalls>
+                            </bhrgtcom:plasticityAtSpecificWaterContent>
+                            <bhrgtcom:plasticityAtSpecificWaterContent>
+                                <bhrgtcom:waterContent uom="%"
+                                    >80</bhrgtcom:waterContent
+                                >
+                                <bhrgtcom:numberOfFalls>25</bhrgtcom:numberOfFalls>
+                            </bhrgtcom:plasticityAtSpecificWaterContent>
+                            <bhrgtcom:plasticityAtSpecificWaterContent>
+                                <bhrgtcom:waterContent uom="%"
+                                    >85</bhrgtcom:waterContent
+                                >
+                                <bhrgtcom:numberOfFalls>29</bhrgtcom:numberOfFalls>
+                            </bhrgtcom:plasticityAtSpecificWaterContent>
+                        </bhrgtcom:ConsistencyLimitsDetermination>
+                    </bhrgtcom:consistencyLimitsDetermination>
+                    <!-- Optional: -->
+                    <!-- bhrgtcom:saturatedPermeabilityDetermination>...</bhrgtcom:saturatedPermeabilityDetermination -->
+                </bhrgtcom:investigatedInterval>
+            </boreholeSampleAnalysis>
+            <researchReportDate>
+                <!-- You have a CHOICE of the next 4 items at this level -->
+                <!--
+                <brocom:date>2021-03-03</brocom:date>
+                <brocom:yearMonth>2021-03</brocom:yearMonth>
+                <brocom:year>2021</brocom:year>
+                <brocom:voidReason>onbekend</brocom:voidReason>
+                 -->
+                <brocom:date>2021-03-03</brocom:date>
+            </researchReportDate>
+        </BHR_GT_EndReport_V1>
+    </sourceDocument>
+</registrationRequest>

@@ -1,0 +1,252 @@
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/iscpt/1.1"
+  xmlns:cptcom="http://www.broservices.nl/xsd/cptcommon/1.1"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:sam="http://www.opengis.net/sampling/2.0"
+  xmlns:xlin="http://www.w3.org/1999/xlink"
+  xmlns:om="http://www.opengis.net/om/2.0"
+  xmlns:swe="http://www.opengis.net/swe/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/iscpt/1.1 https://schema.broservices.nl/xsd/iscpt/1.1/iscpt-messages.xsd"
+>
+  <!--  Disclaimer: dit voorbeeldbericht valideert tegen versie 2.0 van de validatieservice van de demo-omgeving van het bronhouderportaal, maar de gegevens zijn fictief en waarschijnlijk vaktechnisch/inhoudelijk niet correct. -->
+  <brocom:requestReference>IMBRO - cpt om in odz te nemen</brocom:requestReference>
+  <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
+  <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+  <sourceDocument>
+    <CPT>
+      <objectIdAccountableParty>projectX, sondering3</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:cpt:DeliveryContext"
+        >publiekeTaak</deliveryContext
+      >
+      <surveyPurpose codeSpace="urn:bro:cpt:SurveyPurpose"
+        >infrastructuurLand</surveyPurpose
+      >
+      <researchReportDate>
+        <brocom:date>2017-09-02</brocom:date>
+      </researchReportDate>
+      <cptStandard codeSpace="urn:bro:cpt:CPTStandard">NEN5140</cptStandard>
+      <additionalInvestigationPerformed>ja</additionalInvestigationPerformed>
+      <researchOperator>01049637</researchOperator>
+      <deliveredLocation>
+        <cptcom:location gml:id="id_0001" srsName="urn:ogc:def:crs:EPSG::4326">
+          <gml:pos>54.120259 4.394531</gml:pos>
+        </cptcom:location>
+        <cptcom:horizontalPositioningDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </cptcom:horizontalPositioningDate>
+        <cptcom:horizontalPositioningMethod
+          codeSpace="urn:bro:cpt:HorizontalPositioningMethod"
+          >DGPS50tot200cm</cptcom:horizontalPositioningMethod
+        >
+        <cptcom:horizontalPositioningOperator
+          >01049637</cptcom:horizontalPositioningOperator
+        >
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <cptcom:localVerticalReferencePoint
+          codeSpace="urn:bro:cpt:LocalVerticalReferencePoint"
+          >waterbodem</cptcom:localVerticalReferencePoint
+        >
+        <cptcom:offset uom="m">2.010</cptcom:offset>
+        <cptcom:waterDepth uom="m">0.00</cptcom:waterDepth>
+        <cptcom:verticalDatum codeSpace="urn:bro:cpt:VerticalDatum"
+          >MSL</cptcom:verticalDatum
+        >
+        <cptcom:verticalPositioningDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </cptcom:verticalPositioningDate>
+        <cptcom:verticalPositioningMethod
+          codeSpace="urn:bro:cpt:VerticalPositioningMethod"
+          >AHN2</cptcom:verticalPositioningMethod
+        >
+        <cptcom:verticalPositioningOperator
+          >01049637</cptcom:verticalPositioningOperator
+        >
+      </deliveredVerticalPosition>
+      <additionalInvestigation>
+        <cptcom:investigationDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </cptcom:investigationDate>
+        <cptcom:conditions>Stortregen</cptcom:conditions>
+        <cptcom:surfaceDescription>opgehoogd terrein</cptcom:surfaceDescription>
+        <cptcom:groundwaterLevel uom="m">0.20</cptcom:groundwaterLevel>
+        <cptcom:removedLayer>
+          <cptcom:sequenceNumber>1</cptcom:sequenceNumber>
+          <cptcom:upperBoundary uom="m">0.00</cptcom:upperBoundary>
+          <cptcom:lowerBoundary uom="m">0.30</cptcom:lowerBoundary>
+          <cptcom:description>zand matig fijn zwak siltig</cptcom:description>
+        </cptcom:removedLayer>
+      </additionalInvestigation>
+      <conePenetrometerSurvey gml:id="id_0002">
+        <sam:sampledFeature xsi:nil="true" />
+        <cptcom:dissipationTestPerformed>ja</cptcom:dissipationTestPerformed>
+        <cptcom:finalProcessingDate>
+          <brocom:date>2015-08-29</brocom:date>
+        </cptcom:finalProcessingDate>
+        <cptcom:cptMethod codeSpace="urn:bro:cpt:CPTMethod"
+          >elektrischContinu</cptcom:cptMethod
+        >
+        <cptcom:qualityClass codeSpace="urn:bro:cpt:QualityClass"
+          >klasse1</cptcom:qualityClass
+        >
+        <cptcom:stopCriterion codeSpace="urn:bro:cpt:StopCriterion"
+          >einddiepte</cptcom:stopCriterion
+        >
+        <cptcom:sensorAzimuth uom="deg">111</cptcom:sensorAzimuth>
+        <cptcom:trajectory>
+          <cptcom:predrilledDepth uom="m">0.30</cptcom:predrilledDepth>
+          <cptcom:finalDepth uom="m">0.350</cptcom:finalDepth>
+        </cptcom:trajectory>
+        <cptcom:conePenetrometer>
+          <cptcom:description
+            >sondeerapparaat X; N ton; geen verankering</cptcom:description
+          >
+          <cptcom:conePenetrometerType>type X</cptcom:conePenetrometerType>
+          <cptcom:coneSurfaceArea uom="mm2">1500</cptcom:coneSurfaceArea>
+          <cptcom:coneDiameter uom="mm">35</cptcom:coneDiameter>
+          <cptcom:coneSurfaceQuotient uom="1">0.58</cptcom:coneSurfaceQuotient>
+          <cptcom:coneToFrictionSleeveDistance uom="mm"
+            >138</cptcom:coneToFrictionSleeveDistance
+          >
+          <cptcom:frictionSleeveSurfaceArea uom="mm2"
+            >19956</cptcom:frictionSleeveSurfaceArea
+          >
+          <cptcom:frictionSleeveSurfaceQuotient uom="1"
+            >1.0</cptcom:frictionSleeveSurfaceQuotient
+          >
+          <cptcom:zeroLoadMeasurement>
+            <cptcom:coneResistanceBefore uom="MPa">-0.091</cptcom:coneResistanceBefore>
+            <cptcom:coneResistanceAfter uom="MPa">-0.097</cptcom:coneResistanceAfter>
+            <cptcom:electricalConductivityBefore uom="S/m"
+              >1.000</cptcom:electricalConductivityBefore
+            >
+            <cptcom:electricalConductivityAfter uom="S/m"
+              >1.100</cptcom:electricalConductivityAfter
+            >
+            <cptcom:inclinationEWBefore uom="deg">1</cptcom:inclinationEWBefore>
+            <cptcom:inclinationEWAfter uom="deg">0</cptcom:inclinationEWAfter>
+            <cptcom:inclinationNSBefore uom="deg">1</cptcom:inclinationNSBefore>
+            <cptcom:inclinationNSAfter uom="deg">1</cptcom:inclinationNSAfter>
+            <cptcom:inclinationResultantBefore uom="deg"
+              >2</cptcom:inclinationResultantBefore
+            >
+            <cptcom:inclinationResultantAfter uom="deg"
+              >2</cptcom:inclinationResultantAfter
+            >
+            <cptcom:localFrictionBefore uom="MPa">0.004</cptcom:localFrictionBefore>
+            <cptcom:localFrictionAfter uom="MPa">0.006</cptcom:localFrictionAfter>
+            <cptcom:porePressureU1Before uom="MPa">-0.010</cptcom:porePressureU1Before>
+            <cptcom:porePressureU1After uom="MPa">-0.001</cptcom:porePressureU1After>
+            <cptcom:porePressureU2Before uom="MPa">-0.001</cptcom:porePressureU2Before>
+            <cptcom:porePressureU2After uom="MPa">-0.018</cptcom:porePressureU2After>
+            <cptcom:porePressureU3Before uom="MPa">-0.008</cptcom:porePressureU3Before>
+            <cptcom:porePressureU3After uom="MPa">-0.002</cptcom:porePressureU3After>
+          </cptcom:zeroLoadMeasurement>
+        </cptcom:conePenetrometer>
+        <cptcom:conePenetrationTest gml:id="id_0003">
+          <om:phenomenonTime>
+            <gml:TimeInstant gml:id="id_0004" frame="#ISO-8601">
+              <gml:timePosition frame="#ISO-8601"
+                >2015-08-23T10:03:59+02:00</gml:timePosition
+              >
+            </gml:TimeInstant>
+          </om:phenomenonTime>
+          <om:resultTime xlin:href="#id_0004" />
+          <om:procedure xsi:nil="true" />
+          <om:observedProperty xsi:nil="true" />
+          <om:featureOfInterest xsi:nil="true" />
+          <cptcom:cptResult id="id_0005">
+            <swe:elementCount>
+              <swe:Count>
+                <swe:value>1</swe:value>
+              </swe:Count>
+            </swe:elementCount>
+            <swe:elementType
+              name="ConePenetrationTestResultRecord"
+              xlin:href="https://schema.broservices.nl/xsd/cptcommon/1.1/cpttestresult_record.xml"
+            />
+            <swe:encoding>
+              <swe:TextEncoding
+                blockSeparator=";"
+                decimalSeparator="."
+                tokenSeparator=","
+              />
+            </swe:encoding>
+            <cptcom:values
+              >0.300,0.300,111.9,3.467,3.467,3.467,7,7,7,0,3.610,-1,0,0,-1,0,1,4,0.042,0.885,20.2,0.001,0.002,0.004,0.9</cptcom:values
+            >
+          </cptcom:cptResult>
+        </cptcom:conePenetrationTest>
+        <cptcom:dissipationTest gml:id="id_0006">
+          <om:phenomenonTime>
+            <gml:TimeInstant gml:id="id_0007" frame="#ISO-8601">
+              <gml:timePosition frame="#ISO-8601"
+                >2015-08-23T10:06:41+02:00</gml:timePosition
+              >
+            </gml:TimeInstant>
+          </om:phenomenonTime>
+          <om:resultTime xlin:href="#id_0007" />
+          <om:procedure xsi:nil="true" />
+          <om:observedProperty xsi:nil="true" />
+          <om:featureOfInterest xsi:nil="true" />
+          <cptcom:disResult id="id_0009">
+            <swe:elementCount>
+              <swe:Count>
+                <swe:value>1</swe:value>
+              </swe:Count>
+            </swe:elementCount>
+            <swe:elementType
+              name="DissipationTestResultRecord"
+              xlin:href="https://schema.broservices.nl/xsd/cptcommon/1.1/dissipationtestresult_record.xml"
+            />
+            <swe:encoding>
+              <swe:TextEncoding
+                blockSeparator=";"
+                decimalSeparator="."
+                tokenSeparator=","
+              />
+            </swe:encoding>
+            <cptcom:values>11.9,43.599,0.111,0.116,0.141</cptcom:values>
+          </cptcom:disResult>
+          <cptcom:penetrationLength uom="m">0.350</cptcom:penetrationLength>
+        </cptcom:dissipationTest>
+        <cptcom:procedure>
+          <cptcom:interruptionProcessingPerformed
+            >nee</cptcom:interruptionProcessingPerformed
+          >
+          <cptcom:expertCorrectionPerformed>ja</cptcom:expertCorrectionPerformed>
+          <cptcom:signalProcessingPerformed>nee</cptcom:signalProcessingPerformed>
+        </cptcom:procedure>
+        <cptcom:parameters>
+          <cptcom:penetrationLength>ja</cptcom:penetrationLength>
+          <cptcom:depth>ja</cptcom:depth>
+          <cptcom:elapsedTime>ja</cptcom:elapsedTime>
+          <cptcom:coneResistance>ja</cptcom:coneResistance>
+          <cptcom:correctedConeResistance>ja</cptcom:correctedConeResistance>
+          <cptcom:netConeResistance>ja</cptcom:netConeResistance>
+          <cptcom:magneticFieldStrengthX>ja</cptcom:magneticFieldStrengthX>
+          <cptcom:magneticFieldStrengthY>ja</cptcom:magneticFieldStrengthY>
+          <cptcom:magneticFieldStrengthZ>ja</cptcom:magneticFieldStrengthZ>
+          <cptcom:magneticFieldStrengthTotal>ja</cptcom:magneticFieldStrengthTotal>
+          <cptcom:electricalConductivity>ja</cptcom:electricalConductivity>
+          <cptcom:inclinationEW>ja</cptcom:inclinationEW>
+          <cptcom:inclinationNS>ja</cptcom:inclinationNS>
+          <cptcom:inclinationX>ja</cptcom:inclinationX>
+          <cptcom:inclinationY>ja</cptcom:inclinationY>
+          <cptcom:inclinationResultant>ja</cptcom:inclinationResultant>
+          <cptcom:magneticInclination>ja</cptcom:magneticInclination>
+          <cptcom:magneticDeclination>ja</cptcom:magneticDeclination>
+          <cptcom:localFriction>ja</cptcom:localFriction>
+          <cptcom:poreRatio>ja</cptcom:poreRatio>
+          <cptcom:temperature>ja</cptcom:temperature>
+          <cptcom:porePressureU1>ja</cptcom:porePressureU1>
+          <cptcom:porePressureU2>ja</cptcom:porePressureU2>
+          <cptcom:porePressureU3>ja</cptcom:porePressureU3>
+          <cptcom:frictionRatio>ja</cptcom:frictionRatio>
+        </cptcom:parameters>
+      </conePenetrometerSurvey>
+    </CPT>
+  </sourceDocument>
+</registrationRequest>

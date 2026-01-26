@@ -524,3 +524,7 @@ class UploadTask(BaseModel):
     request_type: RequestTypeOptions
     sourcedocument_data: Any
     metadata: UploadTaskMetadata
+
+
+### CPT
+class CPT(BaseModel): ...
