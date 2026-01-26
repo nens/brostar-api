@@ -1,5 +1,6 @@
 import logging
 import zipfile
+from datetime import datetime
 from typing import TypeVar
 
 import polars as pl
@@ -10,6 +11,58 @@ logger = logging.getLogger("general")
 
 
 T = TypeVar("T", bound="api_models.UploadFile")
+
+
+def convert_eventdate_column(df: pl.DataFrame) -> pl.DataFrame:
+    """
+    Convert the eventDate column (5th column) from Excel integer format to YYYY-MM-DD date format.
+
+    Args:
+        df: Polars DataFrame with eventDate column
+
+    Returns:
+        DataFrame with eventDate converted to proper date type (YYYY-MM-DD)
+    """
+    EXCEL_EPOCH = datetime(1899, 12, 30)
+
+    # Check if eventDate exists and needs conversion
+    if "eventDate" not in df.columns:
+        raise ValueError("Column 'eventDate' not found in DataFrame")
+
+    # Check if it's already a date/datetime type
+    if df["eventDate"].dtype in [pl.Date, pl.Datetime]:
+        # Already converted, just ensure it's Date type for YYYY-MM-DD format
+        return df.with_columns(pl.col("eventDate").cast(pl.Date))
+
+    # Check if it's numeric (Excel integer/float format)
+    if df["eventDate"].dtype in [pl.Int64, pl.Int32, pl.Float64, pl.Float32]:
+        # Convert from Excel integer to date
+        df = df.with_columns(
+            (pl.lit(EXCEL_EPOCH) + pl.duration(days=pl.col("eventDate").cast(pl.Int64)))
+            .cast(pl.Date)  # Cast to Date for YYYY-MM-DD format
+            .alias("eventDate")
+        )
+        df = df.with_columns(
+            pl.col("eventDate")
+            .dt.to_string("%Y-%m-%d")
+            .alias("eventDate")  # Convert to string format YYYY-MM-DD
+        )
+        return df
+
+    # If it's string type, try to parse it
+    if df["eventDate"].dtype == pl.String:
+        df = df.with_columns(
+            pl.col("eventDate").str.to_date().alias("eventDate")
+        )  # Determine format based on content
+        df = df.with_columns(
+            pl.col("eventDate")
+            .dt.to_string("%Y-%m-%d")
+            .alias("eventDate")  # Convert to string format YYYY-MM-DD
+        )
+        return df
+
+    # If we get here, unsupported type
+    raise ValueError(f"Unsupported dtype for eventDate: {df['eventDate'].dtype}")
 
 
 def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
@@ -32,6 +85,10 @@ def _convert_and_check_df(df: pl.DataFrame) -> pl.DataFrame:
 
     # Set the new column names
     df.columns = updated_names
+
+    # Convert eventDate column
+    df = convert_eventdate_column(df)
+
     return df
 
 
@@ -160,15 +217,16 @@ class GMNBulkUploader:
 
         upload_tasks = []
 
+        # Convert
+
         for row in monitoringnet_adjustments_df.iter_rows(named=True):
+            event_date = check_date_string(row["eventDate"])
             upload_task = self.deliver_one_uploadtask(
                 event_type=row["eventType"],
                 measuring_point_code=row["measuringPointCode"],
                 gmw_bro_id=row["gmwBroId"],
                 tube_number=row["tubeNumber"],
-                event_date=row[
-                    "eventDate"
-                ],  # Should accept multiple formats and convert this to YYYY-MM-DD
+                event_date=event_date,  # Should accept multiple formats and convert this to YYYY-MM-DD
             )
             upload_tasks.append(upload_task)
             self.bulk_upload_instance.progress += progress / 2
@@ -200,7 +258,7 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
             csv_files = [f for f in z.namelist() if f.lower().endswith(".csv")]
             xls_files = [f for f in z.namelist() if f.lower().endswith(".xls")]
             xlsx_files = [f for f in z.namelist() if f.lower().endswith(".xlsx")]
-            excel_files = xlsx_files.extend(xls_files)
+            excel_files = xlsx_files + xls_files
             if not csv_files or not excel_files:
                 raise ValueError("No CSV or Excel files found in the zip archive.")
 
@@ -220,11 +278,9 @@ def file_to_df(file_instance: T) -> pl.DataFrame:
             for excel in excel_files:
                 with z.open(excel) as file:
                     dfs.append(
-                        pl.read_csv(
+                        pl.read_excel(
                             file,
                             has_header=True,
-                            ignore_errors=False,
-                            truncate_ragged_lines=True,
                         )
                     )
 
