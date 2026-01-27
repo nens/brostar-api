@@ -1,6 +1,6 @@
 import uuid
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -145,11 +145,13 @@ class MonitoringTube(CamelModel):
     tube_material: str
     glue: str
     screen_length: float
-    screen_protection: str | None = None
     sock_material: str
     plain_tube_part_length: float
     sediment_sump_length: float | None = None
     geo_ohm_cables: list[GeoOhmCable] | None = None
+
+    # Newly added in GMW1.1
+    screen_protection: str | None = None
 
 
 class GMWConstruction(CamelModel):
@@ -165,7 +167,7 @@ class GMWConstruction(CamelModel):
     maintenance_responsible_party: str | None = None
     well_head_protector: str
     well_construction_date: str
-    delivered_location: str
+    delivered_location: str  # X -7000 to 289000 and Y 289000 629000
     horizontal_positioning_method: str
     local_vertical_reference_point: str = "NAP"
     offset: float = 0.000
@@ -174,6 +176,11 @@ class GMWConstruction(CamelModel):
     ground_level_positioning_method: str
     monitoring_tubes: list["MonitoringTube"]
     date_to_be_corrected: str | None = None
+
+    # Newly added in GMW1.1
+    geometric_data_publicly_available: str | None = None
+    is_abroad: str | None = None
+    survey: list[str] | None = None
 
 
 # noqa: N815 - Using mixedCase to match API requirements
@@ -198,13 +205,17 @@ class GMWGroundLevelMeasuring(GMWEvent):
     ground_level_positioning_method: str
 
 
-class GMWInsertion(GMWEvent):
+class GMWInsertionTube(CamelModel):
     tube_number: int
     tube_top_position: float
     tube_top_positioning_method: str
     inserted_part_length: float
     inserted_part_diameter: int
     inserted_part_material: str
+
+
+class GMWInsertion(GMWEvent):
+    monitoring_tubes = list[GMWInsertionTube]
 
 
 class MonitoringTubeLengthening(CamelModel):
@@ -283,6 +294,11 @@ class GMWTubeStatus(GMWEvent):
 
 class GMWWellHeadProtector(GMWEvent):
     well_head_protector: str
+
+
+class GMWAdditionalSurvey(GMWEvent):
+    bro_id: str
+    survey_type: Literal["BHR", "CPT"]
 
 
 class FieldMeasurement(CamelModel):
