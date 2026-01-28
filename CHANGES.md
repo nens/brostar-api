@@ -1,11 +1,19 @@
 # Changelog for BROStar API
 
-## 1.61 (unreleased)
+## 1.62 (unreleased)
 
 
--   Enhancement: check last BRO-import date to see if an import is required.
--   Enhancement: deal with 429 HTTPErrors for GLD Observations.
+- Nothing changed yet.
+
+
+## 1.61 (2026-01-26)
+
+
+-   Enhancement: check last BRO-import date to see if an import is required
+-   Enhancement: deal with 429 HTTPErrors for GLD Observations
 -   Enhancement: add kvk and count arguments to cleanup task
+-   Enhancement: accept multiple date values for GMN-Bulk import
+-   Enhancement: add rate-limiter for GLD-Observations
 -   Enhancement: allow for easier addition of additional elements to GAR fieldwork,
                  by using aquocodes as headers and storing all other parameters in a CSV.
 -   Feature: api/gmw/get/<str:gmw_id>/ endpoint with JSON for GMWConstruction and XML option

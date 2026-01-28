@@ -1024,6 +1024,7 @@ class GLDObjectImporter(ObjectImporter):
             observation_summary = [observation_summary]
 
         for observation in observation_summary:
+            time.sleep(0.5)  # To prevent hitting rate limits
             observation_id = observation.get("observationId", None)
             if not observation_id:
                 continue
