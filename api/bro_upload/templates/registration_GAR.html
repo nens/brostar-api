@@ -32,6 +32,8 @@
                 <garcom:samplingOperator>
                     <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.fieldResearch.samplingOperator }}</brocom:chamberOfCommerceNumber>
                 </garcom:samplingOperator>
+                {% else %}
+                <garcom:samplingOperator xsi:nil="true"/>
                 {% endif %}
                 <garcom:samplingStandard codeSpace="urn:bro:gar:SamplingStandard">{{ sourcedocs_data.fieldResearch.samplingStandard }}</garcom:samplingStandard>
                 <garcom:samplingDevice>
@@ -72,18 +74,36 @@
                 <garcom:responsibleLaboratory>
                     <brocom:chamberOfCommerceNumber>{{ lab_analysis.responsibleLaboratoryKvk }}</brocom:chamberOfCommerceNumber>
                 </garcom:responsibleLaboratory>
+                {% else %}
+                <garcom:responsibleLaboratory xsi:nil="true"/>
                 {% endif %}
                 {% for process in lab_analysis.analysisProcesses %}
                 <garcom:analysisProcess>
+                    {% if process.date %}
                     <garcom:analysisDate>
                         <brocom:date>{{ process.date }}</brocom:date>
                     </garcom:analysisDate>
+                    {% else %}
+                    <garcom:analysisDate xsi:nil="true"/>
+                    {% endif %}
+                    {% if process.analyticalTechnique %}
                     <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{ process.analyticalTechnique }}</garcom:analyticalTechnique>
+                    {% else %}
+                    <garcom:analyticalTechnique xsi:nil="true"/>
+                    {% endif %}
+                    {% if process.valuationMethod %}
                     <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}</garcom:valuationMethod>
+                    {% else %}
+                    <garcom:valuationMethod xsi:nil="true"/>
+                    {% endif %}
                     {% for analysis in process.analyses %}
                     <garcom:analysis>
                         <garcom:parameter>{{ analysis.parameter }}</garcom:parameter>
+                        {% if analysis.analysisMeasurementValue %}
                         <garcom:analysisMeasurementValue uom="{{ analysis.unit }}">{{ analysis.analysisMeasurementValue }}</garcom:analysisMeasurementValue>
+                        {% elif not analysis.analysisMeasurementValue and analysis.limitSymbol %}
+                        <garcom:analysisMeasurementValue xsi:nil="true"/>
+                        {% endif %}
                         {% if analysis.limitSymbol %}
                         <garcom:limitSymbol codeSpace="urn:bro:gar:LimitSymbol">{{ analysis.limitSymbol }}</garcom:limitSymbol>
                         {% endif %}

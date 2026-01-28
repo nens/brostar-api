@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <correctionRequest
   xmlns="http://www.broservices.nl/xsd/iscpt/1.1"
   xmlns:cptcom="http://www.broservices.nl/xsd/cptcommon/1.1"
@@ -10,155 +11,192 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.broservices.nl/xsd/iscpt/1.1 https://schema.broservices.nl/xsd/iscpt/1.1/iscpt-messages.xsd"
 >
-  <!--  Disclaimer: dit voorbeeldbericht valideert tegen versie 2.0 van de validatieservice van de demo-omgeving van het bronhouderportaal, maar de gegevens zijn fictief en waarschijnlijk vaktechnisch/inhoudelijk niet correct. -->
-  <!-- correcties:
-	  - researchReportDate gewijzigd van 2017-09-02 in 2015-09-02.
-	  - disResult van dissipationTest uitgebreid van 1 naar 2 meetpunten.
-	 -->
-  <brocom:requestReference>IMBRO - cpt om in odz te nemen</brocom:requestReference>
-  <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
-  <brocom:broId>CPT000000032491</brocom:broId>
-  <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
-  <correctionReason codeSpace="urn:bro:cpt:CorrectionReason"
-    >gegevensAdministratief</correctionReason
-  >
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:cpt:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
   <sourceDocument>
     <CPT>
-      <objectIdAccountableParty>projectX, sondering3</objectIdAccountableParty>
-      <deliveryContext codeSpace="urn:bro:cpt:DeliveryContext"
-        >publiekeTaak</deliveryContext
-      >
-      <surveyPurpose codeSpace="urn:bro:cpt:SurveyPurpose"
-        >infrastructuurLand</surveyPurpose
-      >
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:cpt:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</deliveryContext>
+      <surveyPurpose codeSpace="urn:bro:cpt:SurveyPurpose">{{ sourcedocs_data.surveyPurpose }}</surveyPurpose>
       <researchReportDate>
-        <brocom:date>2015-09-02</brocom:date>
+        {% if sourcedocs_data.researchReportDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.researchReportDate }}</brocom:date>
+        {% elif sourcedocs_data.researchReportDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.researchReportDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.researchReportDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.researchReportDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
       </researchReportDate>
-      <cptStandard codeSpace="urn:bro:cpt:CPTStandard">NEN5140</cptStandard>
-      <additionalInvestigationPerformed>ja</additionalInvestigationPerformed>
-      <researchOperator>01049637</researchOperator>
+      <cptStandard codeSpace="urn:bro:cpt:CPTStandard">{{ sourcedocs_data.cptStandard }}</cptStandard>
+      <additionalInvestigationPerformed>{{ sourcedocs_data.additionalInvestigationPerformed }}</additionalInvestigationPerformed>
+      {% if sourcedocs_data.researchOperator %}
+      <researchOperator>{{ sourcedocs_data.researchOperator }}</researchOperator>
+      {% endif %}
       <deliveredLocation>
         <cptcom:location gml:id="id_0001" srsName="urn:ogc:def:crs:EPSG::4326">
-          <gml:pos>54.120259 4.394531</gml:pos>
+          <gml:pos>{{ sourcedocs_data.deliveredLocation }}</gml:pos>
         </cptcom:location>
         <cptcom:horizontalPositioningDate>
-          <brocom:date>2015-08-23</brocom:date>
+          {% if sourcedocs_data.horizontalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.horizontalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.horizontalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.horizontalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.horizontalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.horizontalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
         </cptcom:horizontalPositioningDate>
-        <cptcom:horizontalPositioningMethod
-          codeSpace="urn:bro:cpt:HorizontalPositioningMethod"
-          >DGPS50tot200cm</cptcom:horizontalPositioningMethod
-        >
-        <cptcom:horizontalPositioningOperator
-          >01049637</cptcom:horizontalPositioningOperator
-        >
+        <cptcom:horizontalPositioningMethod codeSpace="urn:bro:cpt:HorizontalPositioningMethod">{{ sourcedocs_data.horizontalPositioningMethod }}</cptcom:horizontalPositioningMethod>
+        {% if sourcedocs_data.horizontalPositioningOperator %}
+        <cptcom:horizontalPositioningOperator>{{ sourcedocs_data.horizontalPositioningOperator }}</cptcom:horizontalPositioningOperator>
+        {% endif %}
       </deliveredLocation>
       <deliveredVerticalPosition>
-        <cptcom:localVerticalReferencePoint
-          codeSpace="urn:bro:cpt:LocalVerticalReferencePoint"
-          >waterbodem</cptcom:localVerticalReferencePoint
-        >
-        <cptcom:offset uom="m">2.010</cptcom:offset>
-        <cptcom:waterDepth uom="m">0.00</cptcom:waterDepth>
-        <cptcom:verticalDatum codeSpace="urn:bro:cpt:VerticalDatum"
-          >MSL</cptcom:verticalDatum
-        >
+        <cptcom:localVerticalReferencePoint codeSpace="urn:bro:cpt:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</cptcom:localVerticalReferencePoint>
+        <cptcom:offset uom="m">{{ sourcedocs_data.offset }}</cptcom:offset>
+        {% if sourcedocs_data.waterDepth is not none %}
+        <cptcom:waterDepth uom="m">{{ sourcedocs_data.waterDepth }}</cptcom:waterDepth>
+        {% endif %}
+        <cptcom:verticalDatum codeSpace="urn:bro:cpt:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</cptcom:verticalDatum>
         <cptcom:verticalPositioningDate>
-          <brocom:date>2015-08-23</brocom:date>
+          {% if sourcedocs_data.verticalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.verticalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.verticalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.verticalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.verticalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.verticalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
         </cptcom:verticalPositioningDate>
-        <cptcom:verticalPositioningMethod
-          codeSpace="urn:bro:cpt:VerticalPositioningMethod"
-          >AHN2</cptcom:verticalPositioningMethod
-        >
-        <cptcom:verticalPositioningOperator
-          >01049637</cptcom:verticalPositioningOperator
-        >
+        <cptcom:verticalPositioningMethod codeSpace="urn:bro:cpt:VerticalPositioningMethod">{{ sourcedocs_data.verticalPositioningMethod }}</cptcom:verticalPositioningMethod>
+        {% if sourcedocs_data.verticalPositioningOperator %}
+        <cptcom:verticalPositioningOperator>{{ sourcedocs_data.verticalPositioningOperator }}</cptcom:verticalPositioningOperator>
+        {% endif %}
       </deliveredVerticalPosition>
+      {% if sourcedocs_data.additionalInvestigation %}
       <additionalInvestigation>
         <cptcom:investigationDate>
-          <brocom:date>2015-08-23</brocom:date>
+        {% if sourcedocs_data.additionalInvestigation.investigationDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.additionalInvestigation.investigationDate }}</brocom:date>
+          {% elif sourcedocs_data.additionalInvestigation.investigationDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.additionalInvestigation.investigationDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.additionalInvestigation.investigationDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.additionalInvestigation.investigationDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
         </cptcom:investigationDate>
-        <cptcom:conditions>Stortregen</cptcom:conditions>
-        <cptcom:surfaceDescription>opgehoogd terrein</cptcom:surfaceDescription>
-        <cptcom:groundwaterLevel uom="m">0.20</cptcom:groundwaterLevel>
+        {% if sourcedocs_data.additionalInvestigation.conditions %}
+        <cptcom:conditions>{{ sourcedocs_data.additionalInvestigation.conditions }}</cptcom:conditions>
+        {% endif %}
+        {% if sourcedocs_data.additionalInvestigation.surfaceDescription %}
+        <cptcom:surfaceDescription>{{ sourcedocs_data.additionalInvestigation.surfaceDescription }}</cptcom:surfaceDescription>
+        {% endif %}
+        {% if sourcedocs_data.additionalInvestigation.groundwaterLevel is not none %}
+        <cptcom:groundwaterLevel uom="m">{{ sourcedocs_data.additionalInvestigation.groundwaterLevel }}</cptcom:groundwaterLevel>
+        {% endif %}
+        {% for layer in sourcedocs_data.additionalInvestigation.removedLayers %}
         <cptcom:removedLayer>
-          <cptcom:sequenceNumber>1</cptcom:sequenceNumber>
-          <cptcom:upperBoundary uom="m">0.00</cptcom:upperBoundary>
-          <cptcom:lowerBoundary uom="m">0.30</cptcom:lowerBoundary>
-          <cptcom:description>zand matig fijn zwak siltig</cptcom:description>
+          <cptcom:sequenceNumber>{{ layer.sequenceNumber }}</cptcom:sequenceNumber>
+          <cptcom:upperBoundary uom="m">{{ layer.upperBoundary }}</cptcom:upperBoundary>
+          <cptcom:lowerBoundary uom="m">{{ layer.lowerBoundary }}</cptcom:lowerBoundary>
+          <cptcom:description>{{ layer.description }}</cptcom:description>
         </cptcom:removedLayer>
+        {% endfor %}
       </additionalInvestigation>
+      {% endif %}
       <conePenetrometerSurvey gml:id="id_0002">
         <sam:sampledFeature xsi:nil="true" />
-        <cptcom:dissipationTestPerformed>ja</cptcom:dissipationTestPerformed>
+        <cptcom:dissipationTestPerformed>{{ sourcedocs_data.conePenetrometerSurvey.dissipationTestPerformed }}</cptcom:dissipationTestPerformed>
         <cptcom:finalProcessingDate>
-          <brocom:date>2015-08-29</brocom:date>
+          {% if sourcedocs_data.conePenetrometerSurvey.finalProcessingDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.conePenetrometerSurvey.finalProcessingDate }}</brocom:date>
+          {% elif sourcedocs_data.conePenetrometerSurvey.finalProcessingDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.conePenetrometerSurvey.finalProcessingDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.conePenetrometerSurvey.finalProcessingDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.conePenetrometerSurvey.finalProcessingDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
         </cptcom:finalProcessingDate>
-        <cptcom:cptMethod codeSpace="urn:bro:cpt:CPTMethod"
-          >elektrischContinu</cptcom:cptMethod
-        >
-        <cptcom:qualityClass codeSpace="urn:bro:cpt:QualityClass"
-          >klasse1</cptcom:qualityClass
-        >
-        <cptcom:stopCriterion codeSpace="urn:bro:cpt:StopCriterion"
-          >einddiepte</cptcom:stopCriterion
-        >
-        <cptcom:sensorAzimuth uom="deg">111</cptcom:sensorAzimuth>
+        <cptcom:cptMethod codeSpace="urn:bro:cpt:CPTMethod">{{ sourcedocs_data.conePenetrometerSurvey.cptMethod }}</cptcom:cptMethod>
+        <cptcom:qualityClass codeSpace="urn:bro:cpt:QualityClass">{{ sourcedocs_data.conePenetrometerSurvey.qualityClass }}</cptcom:qualityClass>
+        <cptcom:stopCriterion codeSpace="urn:bro:cpt:StopCriterion">{{ sourcedocs_data.conePenetrometerSurvey.stopCriterion }}</cptcom:stopCriterion>
+        {% if sourcedocs_data.conePenetrometerSurvey.sensorAzimuth is not none %}
+        <cptcom:sensorAzimuth uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.sensorAzimuth }}</cptcom:sensorAzimuth>
+        {% endif %}
         <cptcom:trajectory>
-          <cptcom:predrilledDepth uom="m">0.30</cptcom:predrilledDepth>
-          <cptcom:finalDepth uom="m">0.350</cptcom:finalDepth>
+          <cptcom:predrilledDepth uom="m">{{ sourcedocs_data.conePenetrometerSurvey.trajectory.predrilledDepth }}</cptcom:predrilledDepth>
+          <cptcom:finalDepth uom="m">{{ sourcedocs_data.conePenetrometerSurvey.trajectory.finalDepth }}</cptcom:finalDepth>
         </cptcom:trajectory>
         <cptcom:conePenetrometer>
-          <cptcom:description
-            >sondeerapparaat X; N ton; geen verankering</cptcom:description
-          >
-          <cptcom:conePenetrometerType>type X</cptcom:conePenetrometerType>
-          <cptcom:coneSurfaceArea uom="mm2">1500</cptcom:coneSurfaceArea>
-          <cptcom:coneDiameter uom="mm">35</cptcom:coneDiameter>
-          <cptcom:coneSurfaceQuotient uom="1">0.58</cptcom:coneSurfaceQuotient>
-          <cptcom:coneToFrictionSleeveDistance uom="mm"
-            >138</cptcom:coneToFrictionSleeveDistance
-          >
-          <cptcom:frictionSleeveSurfaceArea uom="mm2"
-            >19956</cptcom:frictionSleeveSurfaceArea
-          >
-          <cptcom:frictionSleeveSurfaceQuotient uom="1"
-            >1.0</cptcom:frictionSleeveSurfaceQuotient
-          >
+          <cptcom:description>{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.description }}</cptcom:description>
+          <cptcom:conePenetrometerType>{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.conePenetrometerType }}</cptcom:conePenetrometerType>
+          <cptcom:coneSurfaceArea uom="mm2">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.coneSurfaceArea }}</cptcom:coneSurfaceArea>
+          <cptcom:coneDiameter uom="mm">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.coneDiameter }}</cptcom:coneDiameter>
+          <cptcom:coneSurfaceQuotient uom="1">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.coneSurfaceQuotient }}</cptcom:coneSurfaceQuotient>
+          <cptcom:coneToFrictionSleeveDistance uom="mm">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.coneToFrictionSleeveDistance }}</cptcom:coneToFrictionSleeveDistance>
+          <cptcom:frictionSleeveSurfaceArea uom="mm2">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.frictionSleeveSurfaceArea }}</cptcom:frictionSleeveSurfaceArea>
+          <cptcom:frictionSleeveSurfaceQuotient uom="1">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.frictionSleeveSurfaceQuotient }}</cptcom:frictionSleeveSurfaceQuotient>
           <cptcom:zeroLoadMeasurement>
-            <cptcom:coneResistanceBefore uom="MPa">-0.091</cptcom:coneResistanceBefore>
-            <cptcom:coneResistanceAfter uom="MPa">-0.097</cptcom:coneResistanceAfter>
-            <cptcom:electricalConductivityBefore uom="S/m"
-              >1.000</cptcom:electricalConductivityBefore
-            >
-            <cptcom:electricalConductivityAfter uom="S/m"
-              >1.100</cptcom:electricalConductivityAfter
-            >
-            <cptcom:inclinationEWBefore uom="deg">1</cptcom:inclinationEWBefore>
-            <cptcom:inclinationEWAfter uom="deg">0</cptcom:inclinationEWAfter>
-            <cptcom:inclinationNSBefore uom="deg">1</cptcom:inclinationNSBefore>
-            <cptcom:inclinationNSAfter uom="deg">1</cptcom:inclinationNSAfter>
-            <cptcom:inclinationResultantBefore uom="deg"
-              >2</cptcom:inclinationResultantBefore
-            >
-            <cptcom:inclinationResultantAfter uom="deg"
-              >2</cptcom:inclinationResultantAfter
-            >
-            <cptcom:localFrictionBefore uom="MPa">0.004</cptcom:localFrictionBefore>
-            <cptcom:localFrictionAfter uom="MPa">0.006</cptcom:localFrictionAfter>
-            <cptcom:porePressureU1Before uom="MPa">-0.010</cptcom:porePressureU1Before>
-            <cptcom:porePressureU1After uom="MPa">-0.001</cptcom:porePressureU1After>
-            <cptcom:porePressureU2Before uom="MPa">-0.001</cptcom:porePressureU2Before>
-            <cptcom:porePressureU2After uom="MPa">-0.018</cptcom:porePressureU2After>
-            <cptcom:porePressureU3Before uom="MPa">-0.008</cptcom:porePressureU3Before>
-            <cptcom:porePressureU3After uom="MPa">-0.002</cptcom:porePressureU3After>
+            <cptcom:coneResistanceBefore uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.coneResistanceBefore }}</cptcom:coneResistanceBefore>
+            <cptcom:coneResistanceAfter uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.coneResistanceAfter }}</cptcom:coneResistanceAfter>
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityBefore is not none %}
+            <cptcom:electricalConductivityBefore uom="S/m">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityBefore }}</cptcom:electricalConductivityBefore>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityAfter is not none %}
+            <cptcom:electricalConductivityAfter uom="S/m">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityAfter }}</cptcom:electricalConductivityAfter>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwBefore is not none %}
+            <cptcom:inclinationEWBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwBefore }}</cptcom:inclinationEWBefore>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwAfter is not none %}
+            <cptcom:inclinationEWAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwAfter }}</cptcom:inclinationEWAfter>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsBefore is not none %}
+            <cptcom:inclinationNSBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsBefore }}</cptcom:inclinationNSBefore>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsAfter is not none %}
+            <cptcom:inclinationNSAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsAfter }}</cptcom:inclinationNSAfter>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantBefore is not none %}
+            <cptcom:inclinationResultantBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantBefore }}</cptcom:inclinationResultantBefore>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantAfter is not none %}
+            <cptcom:inclinationResultantAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantAfter }}</cptcom:inclinationResultantAfter>
+            {% endif %}
+            <cptcom:localFrictionBefore uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.localFrictionBefore }}</cptcom:localFrictionBefore>
+            <cptcom:localFrictionAfter uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.localFrictionAfter }}</cptcom:localFrictionAfter>
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1Before is not none %}
+            <cptcom:porePressureU1Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1Before }}</cptcom:porePressureU1Before>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1After is not none %}
+            <cptcom:porePressureU1After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1After }}</cptcom:porePressureU1After>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2Before is not none %}
+            <cptcom:porePressureU2Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2Before }}</cptcom:porePressureU2Before>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2After is not none %}
+            <cptcom:porePressureU2After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2After }}</cptcom:porePressureU2After>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3Before is not none %}
+            <cptcom:porePressureU3Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3Before }}</cptcom:porePressureU3Before>
+            {% endif %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3After is not none %}
+            <cptcom:porePressureU3After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3After }}</cptcom:porePressureU3After>
+            {% endif %}
           </cptcom:zeroLoadMeasurement>
         </cptcom:conePenetrometer>
         <cptcom:conePenetrationTest gml:id="id_0003">
           <om:phenomenonTime>
             <gml:TimeInstant gml:id="id_0004" frame="#ISO-8601">
-              <gml:timePosition frame="#ISO-8601"
-                >2015-08-23T10:03:59+02:00</gml:timePosition
-              >
+              <gml:timePosition frame="#ISO-8601">{{ sourcedocs_data.conePenetrometerSurvey.phenomenonTime }}</gml:timePosition>
             </gml:TimeInstant>
           </om:phenomenonTime>
           <om:resultTime xlin:href="#id_0004" />
@@ -168,7 +206,7 @@
           <cptcom:cptResult id="id_0005">
             <swe:elementCount>
               <swe:Count>
-                <swe:value>1</swe:value>
+                <swe:value>{{ sourcedocs_data.conePenetrometerSurvey.conePenetrationTestResult.elementCount }}</swe:value>
               </swe:Count>
             </swe:elementCount>
             <swe:elementType
@@ -182,17 +220,14 @@
                 tokenSeparator=","
               />
             </swe:encoding>
-            <cptcom:values
-              >0.300,0.300,111.9,3.467,3.467,3.467,7,7,7,0,3.610,-1,0,0,-1,0,1,4,0.042,0.885,20.2,0.001,0.002,0.004,0.9</cptcom:values
-            >
+            <cptcom:values>{{ sourcedocs_data.conePenetrometerSurvey.conePenetrationTestResult.values }}</cptcom:values>
           </cptcom:cptResult>
         </cptcom:conePenetrationTest>
+        {% for dissipationTest in sourcedocs_data.conePenetrometerSurvey.dissipationTests %}
         <cptcom:dissipationTest gml:id="id_0006">
           <om:phenomenonTime>
             <gml:TimeInstant gml:id="id_0007" frame="#ISO-8601">
-              <gml:timePosition frame="#ISO-8601"
-                >2015-08-23T10:06:41+02:00</gml:timePosition
-              >
+              <gml:timePosition frame="#ISO-8601">{{ dissipationTest.phenomenonTime }}</gml:timePosition>
             </gml:TimeInstant>
           </om:phenomenonTime>
           <om:resultTime xlin:href="#id_0007" />
@@ -202,7 +237,7 @@
           <cptcom:disResult id="id_0009">
             <swe:elementCount>
               <swe:Count>
-                <swe:value>2</swe:value>
+                <swe:value>{{ dissipationTest.dissipationTestResult.elementCount }}</swe:value>
               </swe:Count>
             </swe:elementCount>
             <swe:elementType
@@ -216,46 +251,42 @@
                 tokenSeparator=","
               />
             </swe:encoding>
-            <cptcom:values
-              >11.9, 43.599, 0.111, 0.116, 0.141; 16.1, 45.791, 0.123, 0.119,
-              0.234</cptcom:values
-            >
+            <cptcom:values>{{ dissipationTest.dissipationTestResult.values }}</cptcom:values>
           </cptcom:disResult>
-          <cptcom:penetrationLength uom="m">0.350</cptcom:penetrationLength>
+          <cptcom:penetrationLength uom="m">{{ dissipationTest.dissipationTestResult.penetrationLength }}</cptcom:penetrationLength>
         </cptcom:dissipationTest>
+        {% endfor %}
         <cptcom:procedure>
-          <cptcom:interruptionProcessingPerformed
-            >nee</cptcom:interruptionProcessingPerformed
-          >
-          <cptcom:expertCorrectionPerformed>ja</cptcom:expertCorrectionPerformed>
-          <cptcom:signalProcessingPerformed>nee</cptcom:signalProcessingPerformed>
+          <cptcom:interruptionProcessingPerformed>{{ sourcedocs_data.conePenetrometerSurvey.procedure.interruptionProcessingPerformed }}</cptcom:interruptionProcessingPerformed>
+          <cptcom:expertCorrectionPerformed>{{ sourcedocs_data.conePenetrometerSurvey.procedure.expertCorrectionPerformed }}</cptcom:expertCorrectionPerformed>
+          <cptcom:signalProcessingPerformed>{{ sourcedocs_data.conePenetrometerSurvey.procedure.signalProcessingPerformed }}</cptcom:signalProcessingPerformed>
         </cptcom:procedure>
         <cptcom:parameters>
-          <cptcom:penetrationLength>ja</cptcom:penetrationLength>
-          <cptcom:depth>ja</cptcom:depth>
-          <cptcom:elapsedTime>ja</cptcom:elapsedTime>
-          <cptcom:coneResistance>ja</cptcom:coneResistance>
-          <cptcom:correctedConeResistance>ja</cptcom:correctedConeResistance>
-          <cptcom:netConeResistance>ja</cptcom:netConeResistance>
-          <cptcom:magneticFieldStrengthX>ja</cptcom:magneticFieldStrengthX>
-          <cptcom:magneticFieldStrengthY>ja</cptcom:magneticFieldStrengthY>
-          <cptcom:magneticFieldStrengthZ>ja</cptcom:magneticFieldStrengthZ>
-          <cptcom:magneticFieldStrengthTotal>ja</cptcom:magneticFieldStrengthTotal>
-          <cptcom:electricalConductivity>ja</cptcom:electricalConductivity>
-          <cptcom:inclinationEW>ja</cptcom:inclinationEW>
-          <cptcom:inclinationNS>ja</cptcom:inclinationNS>
-          <cptcom:inclinationX>ja</cptcom:inclinationX>
-          <cptcom:inclinationY>ja</cptcom:inclinationY>
-          <cptcom:inclinationResultant>ja</cptcom:inclinationResultant>
-          <cptcom:magneticInclination>ja</cptcom:magneticInclination>
-          <cptcom:magneticDeclination>ja</cptcom:magneticDeclination>
-          <cptcom:localFriction>ja</cptcom:localFriction>
-          <cptcom:poreRatio>ja</cptcom:poreRatio>
-          <cptcom:temperature>ja</cptcom:temperature>
-          <cptcom:porePressureU1>ja</cptcom:porePressureU1>
-          <cptcom:porePressureU2>ja</cptcom:porePressureU2>
-          <cptcom:porePressureU3>ja</cptcom:porePressureU3>
-          <cptcom:frictionRatio>ja</cptcom:frictionRatio>
+          <cptcom:penetrationLength>{{ sourcedocs_data.conePenetrometerSurvey.parameters.penetrationLength }}</cptcom:penetrationLength>
+          <cptcom:depth>{{ sourcedocs_data.conePenetrometerSurvey.parameters.depth }}</cptcom:depth>
+          <cptcom:elapsedTime>{{ sourcedocs_data.conePenetrometerSurvey.parameters.elapsedTime }}</cptcom:elapsedTime>
+          <cptcom:coneResistance>{{ sourcedocs_data.conePenetrometerSurvey.parameters.coneResistance }}</cptcom:coneResistance>
+          <cptcom:correctedConeResistance>{{ sourcedocs_data.conePenetrometerSurvey.parameters.correctedConeResistance }}</cptcom:correctedConeResistance>
+          <cptcom:netConeResistance>{{ sourcedocs_data.conePenetrometerSurvey.parameters.netConeResistance }}</cptcom:netConeResistance>
+          <cptcom:magneticFieldStrengthX>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticFieldStrengthX }}</cptcom:magneticFieldStrengthX>
+          <cptcom:magneticFieldStrengthY>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticFieldStrengthY }}</cptcom:magneticFieldStrengthY>
+          <cptcom:magneticFieldStrengthZ>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticFieldStrengthZ }}</cptcom:magneticFieldStrengthZ>
+          <cptcom:magneticFieldStrengthTotal>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticFieldStrengthTotal }}</cptcom:magneticFieldStrengthTotal>
+          <cptcom:electricalConductivity>{{ sourcedocs_data.conePenetrometerSurvey.parameters.electricalConductivity }}</cptcom:electricalConductivity>
+          <cptcom:inclinationEW>{{ sourcedocs_data.conePenetrometerSurvey.parameters.inclinationEw }}</cptcom:inclinationEW>
+          <cptcom:inclinationNS>{{ sourcedocs_data.conePenetrometerSurvey.parameters.inclinationNs }}</cptcom:inclinationNS>
+          <cptcom:inclinationX>{{ sourcedocs_data.conePenetrometerSurvey.parameters.inclinationX }}</cptcom:inclinationX>
+          <cptcom:inclinationY>{{ sourcedocs_data.conePenetrometerSurvey.parameters.inclinationY }}</cptcom:inclinationY>
+          <cptcom:inclinationResultant>{{ sourcedocs_data.conePenetrometerSurvey.parameters.inclinationResultant }}</cptcom:inclinationResultant>
+          <cptcom:magneticInclination>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticInclination }}</cptcom:magneticInclination>
+          <cptcom:magneticDeclination>{{ sourcedocs_data.conePenetrometerSurvey.parameters.magneticDeclination }}</cptcom:magneticDeclination>
+          <cptcom:localFriction>{{ sourcedocs_data.conePenetrometerSurvey.parameters.localFriction }}</cptcom:localFriction>
+          <cptcom:poreRatio>{{ sourcedocs_data.conePenetrometerSurvey.parameters.poreRatio }}</cptcom:poreRatio>
+          <cptcom:temperature>{{ sourcedocs_data.conePenetrometerSurvey.parameters.temperature }}</cptcom:temperature>
+          <cptcom:porePressureU1>{{ sourcedocs_data.conePenetrometerSurvey.parameters.porePressureU1 }}</cptcom:porePressureU1>
+          <cptcom:porePressureU2>{{ sourcedocs_data.conePenetrometerSurvey.parameters.porePressureU2 }}</cptcom:porePressureU2>
+          <cptcom:porePressureU3>{{ sourcedocs_data.conePenetrometerSurvey.parameters.porePressureU3 }}</cptcom:porePressureU3>
+          <cptcom:frictionRatio>{{ sourcedocs_data.conePenetrometerSurvey.parameters.frictionRatio }}</cptcom:frictionRatio>
         </cptcom:parameters>
       </conePenetrometerSurvey>
     </CPT>
