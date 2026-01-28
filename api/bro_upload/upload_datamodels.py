@@ -215,7 +215,7 @@ class GMWInsertionTube(CamelModel):
 
 
 class GMWInsertion(GMWEvent):
-    monitoring_tubes = list[GMWInsertionTube]
+    monitoring_tubes: list[GMWInsertionTube]
 
 
 class MonitoringTubeLengthening(CamelModel):
