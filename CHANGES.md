@@ -3,7 +3,10 @@
 ## 1.62 (unreleased)
 
 
-- Nothing changed yet.
+-   Feature: add CPT uploadmodels and as a uploadtask
+-   Feature: add base BHR
+-   Feature: add base GUF and GPD
+-   Bugfix: improve GAR-registration and correction to correctly handle none values
 
 
 ## 1.61 (2026-01-26)
