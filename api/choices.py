@@ -44,8 +44,9 @@ BRO_DOMAIN_CHOICES = [
     ("FRD", "FRD"),
     ("GAR", "GAR"),
     ("CPT", "CPT"),
-    ("BHR-GT", "BHR-GT"),
+    ("BHR", "BHR"),
     ("GUF", "GUF"),
+    ("GPD", "GPD"),
 ]
 
 BULK_UPLOAD_TYPES = [
@@ -86,6 +87,14 @@ REGISTRATION_TYPE_OPTIONS = [
     ("FRD_EMM_InstrumentConfiguration", "FRD_EMM_InstrumentConfiguration"),
     ("FRD_EMM_Measurement", "FRD_EMM_Measurement"),
     ("FRD_Closure", "FRD_Closure"),
+    # NEW
+    ("CPT", "CPT"),
+    ("BHR-P", "BHR-P"),
+    ("BHR-G", "BHR-G"),
+    ("BHR-GT", "BHR-GT"),
+    ("SFR", "SFR"),
+    ("GUF", "GUF"),
+    ("GPD", "GPD"),
 ]
 
 
