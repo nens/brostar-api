@@ -1,0 +1,145 @@
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <gufcom:GUF_StartRegistration gml:id="id_0001">
+      <gufcom:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</gufcom:objectIdAccountableParty>
+      <gufcom:deliveryContext codeSpace="urn:bro:guf:DeliveryContext"
+        >{{ sourcedocs_data.deliveryContext }}</gufcom:deliveryContext
+      >
+      <gufcom:lifespan>
+        <gufcom:startTime>
+          {% if sourcedocs_data.startTime|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.startTime }}</brocom:date>
+          {% elif sourcedocs_data.startTime|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.startTime }}</brocom:yearMonth>
+          {% elif sourcedocs_data.startTime|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.startTime }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </gufcom:startTime>
+      </gufcom:lifespan>
+      <gufcom:licence>
+        <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
+          <gufcom:identificationLicence>{{ sourcedocs_data.identificationLicence }}</gufcom:identificationLicence>
+          <gufcom:legalType codeSpace="urn:bro:guf:LegalType"
+            >{{ sourcedocs_data.legalType }}</gufcom:legalType
+          >
+          <gufcom:usageTypeFacility>
+            <gufcom:primaryUsageType codeSpace="urn:bro:guf:UsageType"
+              >{{ sourcedocs_data.primaryUsageType }}</gufcom:primaryUsageType
+            >
+            {% for secondary_usage_type in sourcedocs_data.secondaryUsageTypes %}
+            <gufcom:secondaryUsageType codeSpace="urn:bro:guf:UsageType">
+              {{ secondary_usage_type }}
+            </gufcom:secondaryUsageType>
+            {% endfor %}
+            <gufcom:humanConsumption>{{ sourcedocs_data.humanConsumption }}</gufcom:humanConsumption>
+          </gufcom:usageTypeFacility>
+          {% for licensed_quantity in sourcedocs_data.licensedQuantities %}
+          <gufcom:licensedQuantity>
+            <gufcom:licensedInOut codeSpace="urn:bro:guf:LicensedInOut"
+              >{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut
+            >
+            {% if licensed_quantity.maximumTimeframe == 'hour' %}
+            <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour>
+            {% elif licensed_quantity.maximumTimeframe == 'day' %}
+            <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay>
+            {% elif licensed_quantity.maximumTimeframe == 'month' %}
+            <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth>
+            {% elif licensed_quantity.maximumTimeframe == 'quarter' %}
+            <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter>
+            {% elif licensed_quantity.maximumTimeframe == 'year' %}
+            <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear>
+            {% endif %}
+          </gufcom:licensedQuantity>
+          {% endfor %}
+          {% for installation in sourcedocs_data.designInstallations %}
+          <gufcom:designInstallation>
+            <gufcom:DesignInstallation gml:id="{{ installation.gmlId }}">
+              <gufcom:designInstallationId>{{ installation.designInstallationId }}</gufcom:designInstallationId>
+              <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationType"
+                >onttrekking</gufcom:installationFunction
+              >
+              <gufcom:geometry>
+                <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="{{ installation.geometry.gmlId }}">
+                  <gml:pos>{{ installation.geometry.pos }}</gml:pos>
+                </gml:Point>
+              </gufcom:geometry>
+              <!--  0 to 2 repetitions:
+                            <gufcom:licensedQuantity>...</gufcom:licensedQuantity>
+                             -->
+              <!--  Optional: only allowed if installationFunction is openBodemenergiesysteem or geslotenBodemenergiesysteem.
+                            <gufcom:energyCharacteristics>...</gufcom:energyCharacteristics>
+                             -->
+              <!--  Optional: not allowed in GUF_StartRegistration
+                            <gufcom:lifespan>...</gufcom:lifespan>
+                             -->
+              <!--  0 or more repetitions:
+                            <gufcom:designLoop>...</gufcom:designLoop>
+                             -->
+              <!--  0 or more repetitions:
+                            <gufcom:designSurfaceInfiltration>...</gufcom:designSurfaceInfiltration>
+                             -->
+              <!--  0 or more repetitions:  -->
+              {% for well in installation.designWells %}
+              <gufcom:designWell>
+                <gufcom:DesignWell gml:id="{{ well.gmlId }}">
+                  <gufcom:designWellId>{{ well.designWellId }}</gufcom:designWellId>
+                  {% for wellFunction in well.wellFunctions %}
+                  <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction"
+                    >{{ wellFunction }}</gufcom:wellFunction
+                  >
+                  {% endfor %}
+                  <gufcom:height uom="m">{{ well.height }}</gufcom:height>
+                  <gufcom:geometry>
+                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="{{ well.geometry.gmlId }}">
+                      <gml:pos>{{ well.geometry.pos }}</gml:pos>
+                    </gml:Point>
+                  </gufcom:geometry>
+                  <!--  Optional: mandatory if primaryUsageType is openbareDrinkwatervoorziening.  -->
+                  <gufcom:geometryPubliclyAvailable
+                    >nee</gufcom:geometryPubliclyAvailable
+                  >
+                  <!--  Optional: optional if primaryUsageType is bemaling.  -->
+                  <gufcom:maximumWellDepth uom="m">{{ well.maximumWellDepth }}</gufcom:maximumWellDepth>
+                  <!--  Optional
+									<gufcom:maximumWellDepthPubliclyAvailable></gufcom:maximumWellDepthPubliclyAvailable>
+									 -->
+                  <!--  Optional: optional if legalType is melding or if primaryUsageType is bemaling.  -->
+                  <gufcom:maximumWellCapacity uom="m3/h">{{ well.maximumWellCapacity }}</gufcom:maximumWellCapacity>
+                  {% if well.installationFunction == 'openBodemenergiesysteem' and well.wellFunctions|length == 2 %}
+                  <gufcom:relativeTemperature codeSpace="">{{ well.relativeTemperature }}</gufcom:relativeTemperature>
+                  {% endif %}
+                  <!--  Optional: optional if legalType is melding or if primaryUsageType is bemaling.  -->
+                  <gufcom:designScreen>
+                    <gufcom:screenType codeSpace="urn:bro:guf:ScreenType"
+                      >{{ well.designScreen.screenType }}</gufcom:screenType
+                    >
+                    <gufcom:designScreenTop uom="m">{{ well.designScreen.designScreenTop }}</gufcom:designScreenTop>
+                    <!-- optional: mandatory if screenType is verticaal.  -->
+                    <gufcom:designScreenBottom uom="m">{{ well.designScreen.designScreenBottom }}</gufcom:designScreenBottom>
+                  </gufcom:designScreen>
+                  <!--  Optional
+									<gufcom:designScreenPubliclyAvailable></gufcom:designScreenPubliclyAvailable>
+									 -->
+                </gufcom:DesignWell>
+              </gufcom:designWell>
+              {% endfor %}
+            </gufcom:DesignInstallation>
+          </gufcom:designInstallation>
+          {% endfor %}
+        </gufcom:LicenceGroundwaterUsage>
+      </gufcom:licence>
+    </gufcom:GUF_StartRegistration>
+  </sourceDocument>
+</registrationRequest>

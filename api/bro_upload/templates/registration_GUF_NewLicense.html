@@ -1,0 +1,106 @@
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <gufcom:GUF_NewLicence gml:id="{{ sourcedocs_data.licenceGmlId }}">
+      <gufcom:identificationLicence>{{ sourcedocs_data.identificationLicence }}</gufcom:identificationLicence>
+      <gufcom:legalType codeSpace="urn:bro:guf:LegalType">
+        {{ sourcedocs_data.legalType }}
+      </gufcom:legalType>
+      <gufcom:usageTypeFacility>
+        <gufcom:primaryUsageType codeSpace="urn:bro:guf:UsageType">
+          {{ sourcedocs_data.primaryUsageType }}
+        </gufcom:primaryUsageType>
+        {% for secondary_usage_type in sourcedocs_data.secondaryUsageTypes %}
+        <gufcom:secondaryUsageType codeSpace="urn:bro:guf:UsageType">
+          {{ secondary_usage_type }}
+        </gufcom:secondaryUsageType>
+        {% endfor %}
+        <gufcom:humanConsumption>{{ sourcedocs_data.humanConsumption }}</gufcom:humanConsumption>
+      </gufcom:usageTypeFacility>
+      {% for licensed_quantity in sourcedocs_data.licensedQuantities %}
+      <gufcom:licensedQuantity>
+        <gufcom:licensedInOut codeSpace="urn:bro:guf:LicensedInOut"
+          >{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut
+        >
+        {% if licensed_quantity.maximumTimeframe == 'hour' %}
+        <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour>
+        {% elif licensed_quantity.maximumTimeframe == 'day' %}
+        <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay>
+        {% elif licensed_quantity.maximumTimeframe == 'month' %}
+        <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth>
+        {% elif licensed_quantity.maximumTimeframe == 'quarter' %}
+        <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter>
+        {% elif licensed_quantity.maximumTimeframe == 'year' %}
+        <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear>
+        {% endif %}
+      </gufcom:licensedQuantity>
+      {% endfor %}
+      <gufcom:startTime>
+          {% if sourcedocs_data.startTime|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.startTime }}</brocom:date>
+          {% elif sourcedocs_data.startTime|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.startTime }}</brocom:yearMonth>
+          {% elif sourcedocs_data.startTime|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.startTime }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+      </gufcom:startTime>
+      {% for installation in sourcedocs_data.designInstallations %}
+      <gufcom:designInstallation>
+        <gufcom:DesignInstallation gml:id="{{ installation.gmlId }}">
+          <gufcom:designInstallationId>{{ installation.designInstallationId }}</gufcom:designInstallationId>
+          <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationType">
+            {{ installation.installationFunction }}
+          </gufcom:installationFunction>
+          <gufcom:geometry>
+            <gml:Point srsName="{{ installation.srsName }}" gml:id="{{ installation.geometryGmlId }}">
+              <gml:pos>{{ installation.position }}</gml:pos>
+            </gml:Point>
+          </gufcom:geometry>
+          {% for well in installation.designWells %}
+          <gufcom:designWell>
+            <gufcom:DesignWell gml:id="{{ well.gmlId }}">
+              <gufcom:designWellId>{{ well.designWellId }}</gufcom:designWellId>
+              {% for function in well.wellFunctions %}
+              <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction">
+                {{ function }}
+              </gufcom:wellFunction>
+              {% endfor %}
+              <gufcom:height uom="m">{{ well.height }}</gufcom:height>
+              <gufcom:geometry>
+                <gml:Point srsName="{{ well.srsName }}" gml:id="{{ well.geometryGmlId }}">
+                  <gml:pos>{{ well.position }}</gml:pos>
+                </gml:Point>
+              </gufcom:geometry>
+              <gufcom:geometryPubliclyAvailable>
+                {{ well.geometryPubliclyAvailable }}
+              </gufcom:geometryPubliclyAvailable>
+              <gufcom:maximumWellDepth uom="m">{{ well.maximumWellDepth }}</gufcom:maximumWellDepth>
+              <gufcom:maximumWellCapacity uom="m3/h">{{ well.maximumWellCapacity }}</gufcom:maximumWellCapacity>
+              <gufcom:designScreen>
+                <gufcom:screenType codeSpace="urn:bro:guf:ScreenType">
+                  {{ well.screen.screenType }}
+                </gufcom:screenType>
+                <gufcom:designScreenTop uom="m">{{ well.screen.top }}</gufcom:designScreenTop>
+                <gufcom:designScreenBottom uom="m">{{ well.screen.bottom }}</gufcom:designScreenBottom>
+              </gufcom:designScreen>
+            </gufcom:DesignWell>
+          </gufcom:designWell>
+          {% endfor %}
+        </gufcom:DesignInstallation>
+      </gufcom:designInstallation>
+      {% endfor %}
+    </gufcom:GUF_NewLicence>
+  </sourceDocument>
+</registrationRequest>

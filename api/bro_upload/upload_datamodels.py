@@ -1,8 +1,8 @@
 import uuid
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .type_helpers import (
     BroDomainOptions,
@@ -675,3 +675,173 @@ class CPT(CamelModel):
     vertical_positioning_operator: str | None = None
     additional_investigation: AdditionalInvestigation | None = None
     cone_penetrometer_survey: ConePenetrometerSurvey
+
+
+### Add BHR and GUF models below
+
+
+class BHRP(CamelModel):
+    object_id_accountable_party: str
+
+
+class BHRG(CamelModel):
+    object_id_accountable_party: str
+
+
+class BHRGT(CamelModel):
+    object_id_accountable_party: str
+
+
+class SFR(CamelModel):
+    object_id_accountable_party: str
+
+
+class Geometry(CamelModel):
+    """Geometry point information"""
+
+    gml_id: str = ""
+    pos: str = Field(
+        ...,
+        description="Position coordinates as space-separated string (e.g., '147600.000 432900.000')",
+    )
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class DesignScreen(CamelModel):
+    """Design screen information for a well"""
+
+    screen_type: str
+    design_screen_top: float  # meters
+    design_screen_bottom: float  # meters (mandatory if screenType is verticaal)
+
+
+class DesignWell(CamelModel):
+    """Design well within an installation"""
+
+    gml_id: str = ""
+    design_well_id: str
+    well_functions: list[str] = Field(min_length=1)
+    height: float  # meters
+    geometry: Geometry
+    geometry_publicly_available: Literal["ja", "nee"] = "nee"
+    maximum_well_depth: float | None = None  # meters
+    maximum_well_capacity: float | None = None  # m3/h
+    relative_temperature: str | None = None
+    design_screen: DesignScreen | None = None
+    installation_function: str | None = None
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class DesignInstallation(CamelModel):
+    """Design installation containing wells"""
+
+    gml_id: str = ""
+    design_installation_id: str
+    installation_function: str = "onttrekking"
+    geometry: Geometry
+    design_wells: list[DesignWell] = []
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class LicensedQuantity(CamelModel):
+    """Licensed quantity information"""
+
+    licensed_in_out: str
+    maximum_timeframe: Literal["hour", "day", "month", "quarter", "year"] | None = None
+    maximum_value: float | None = None  # m3
+
+
+class GUFStartRegistration(CamelModel):
+    """Source document data for GUF_StartRegistration"""
+
+    object_id_accountable_party: str
+    delivery_context: str
+    start_time: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    licence_gml_id: str = ""
+    identification_licence: str
+    legal_type: str
+    primary_usage_type: str
+    secondary_usage_types: list[str] = []
+    human_consumption: Literal["ja", "nee"]
+    licensed_quantities: list[LicensedQuantity] = []
+    design_installations: list[DesignInstallation] = []
+
+    @field_validator("licence_gml_id", mode="before")
+    @classmethod
+    def generate_licence_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class GUFNewLicence(CamelModel):
+    """Source document data for GUF_NewLicence"""
+
+    licence_gml_id: str = ""
+    identification_licence: str
+    legal_type: str
+    primary_usage_type: str
+    secondary_usage_types: list[str] = []
+    human_consumption: Literal["ja", "nee"]
+    licensed_in_out: str
+    maximum_timeframe: Literal["hour", "day", "month", "quarter", "year"] | None = None
+    maximum_value: float | None = None  # m3
+    start_date: str = Field(..., description="Format: YYYY-MM-DD")
+    design_installations: list[DesignInstallation] = []
+
+    @field_validator("licence_gml_id", mode="before")
+    @classmethod
+    def generate_licence_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class GUFExpandedRealisedInstallation(CamelModel):
+    object_id_accountable_party: str | None = None
+    event_date: str
+
+
+class GUFGeometryRealisedSurfaceInfiltration(CamelModel):
+    object_id_accountable_party: str | None = None
+    event_date: str
+
+
+class GUFWellFunction(CamelModel):
+    object_id_accountable_party: str | None = None
+    event_date: str
+
+
+class GUFHeight(CamelModel):
+    object_id_accountable_party: str | None = None
+    event_date: str
+
+
+class GUFClosure(CamelModel):
+    end_date_monitoring: str
+
+
+class GPD(CamelModel):
+    object_id_accountable_party: str | None = None
+    bro_id: str | None = None
