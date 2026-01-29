@@ -3,7 +3,7 @@
 ## 1.63 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix: improve gmn-measuringpoints eventdate handling
 
 
 ## 1.62 (2026-01-29)
