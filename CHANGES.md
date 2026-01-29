@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.62 (unreleased)
+## 1.62 (2026-01-29)
 
 
 -   Feature: add CPT uploadmodels and as a uploadtask
