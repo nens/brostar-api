@@ -1,0 +1,33 @@
+<!-- THIS IS THE COPIED VERSION FROM JAN-WILLEM, NEEDS TO BE ADJUSTED -->
+<!-- TO-DO: CHRIS -->
+<ns:registrationRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference
+    >GMW_SubsequentAdditionSurveys GMW000002533569</ns1:requestReference
+  >
+  <ns1:deliveryAccountableParty>52766179</ns1:deliveryAccountableParty>
+  <ns1:broId>GMW000002533569</ns1:broId>
+  <ns1:qualityRegime>IMBRO</ns1:qualityRegime>
+  <!-- For replaceRequest, add here: 'correctionReason' - check from replace_GMW_Shift.html -->
+  <ns:sourceDocument>
+    <ns:GMW_SubsequentAdditionSurveys>
+      <ns:eventDate>
+        <ns1:date>2018-08-19</ns1:date>
+      </ns:eventDate>
+      <!-- 1 or more repetitions: -->
+      <ns:IsRelatedTo>
+        <!-- You have a CHOICE of the next 2 items at this level -->
+        <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_01">
+          <ns2:broId>BHR000000344572</ns2:broId>
+        </ns2:BoreholeResearch>
+        <!-- ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_01">
+                     <ns2:broId>CPT000035666528</ns2:broId>
+                  </ns2:GeotechnicalCPTSurvey -->
+      </ns:IsRelatedTo>
+    </ns:GMW_SubsequentAdditionSurveys>
+  </ns:sourceDocument>
+</ns:registrationRequest>
