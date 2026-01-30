@@ -345,8 +345,8 @@ class Analysis(CamelModel):
 
 class AnalysisProcess(CamelModel):
     date: str | date
-    analytical_technique: str
-    valuation_method: str
+    analytical_technique: str | None = None
+    valuation_method: str | None = None
     analyses: list[Analysis]
 
     @field_validator("date", mode="before")
@@ -540,3 +540,154 @@ class UploadTask(BaseModel):
     request_type: RequestTypeOptions
     sourcedocument_data: Any
     metadata: UploadTaskMetadata
+
+
+### CPT
+class RemovedLayer(CamelModel):
+    sequence_number: int
+    upper_boundary: float
+    lower_boundary: float
+    description: str
+
+
+class AdditionalInvestigation(CamelModel):
+    investigation_date: str
+    conditions: str | None = None
+    surface_description: str | None = None
+    groundwater_level: float | None = None
+    removed_layers: list[RemovedLayer] = []
+
+
+class ZeroLoadMeasurement(CamelModel):
+    cone_resistance_before: float
+    cone_resistance_after: float
+    electrical_conductivity_before: float | None = None
+    electrical_conductivity_after: float | None = None
+    inclination_ew_before: float | None = None
+    inclination_ew_after: float | None = None
+    inclination_ns_before: float | None = None
+    inclination_ns_after: float | None = None
+    inclination_resultant_before: float | None = None
+    inclination_resultant_after: float | None = None
+    local_friction_before: float
+    local_friction_after: float
+    pore_pressure_u1_before: float | None = None
+    pore_pressure_u1_after: float | None = None
+    pore_pressure_u2_before: float | None = None
+    pore_pressure_u2_after: float | None = None
+    pore_pressure_u3_before: float | None = None
+    pore_pressure_u3_after: float | None = None
+
+
+class ConePenetrometer(CamelModel):
+    description: str = "onbekend"
+    cone_penetrometer_type: str
+    cone_surface_area: float
+    cone_diameter: float
+    cone_surface_quotient: float
+    cone_to_friction_sleeve_distance: float
+    friction_sleeve_surface_area: float
+    friction_sleeve_surface_quotient: float
+    zero_load_measurement: ZeroLoadMeasurement
+
+
+class Trajectory(CamelModel):
+    predrilled_depth: float
+    final_depth: float
+
+
+class Parameters(CamelModel):
+    penetration_length: str
+    depth: str
+    elapsed_time: str | None = None
+    cone_resistance: str
+    corrected_cone_resistance: str | None = None
+    net_cone_resistance: str | None = None
+    magnetic_field_strength_x: str | None = None
+    magnetic_field_strength_y: str | None = None
+    magnetic_field_strength_z: str | None = None
+    magnetic_field_strength_total: str | None = None
+    electrical_conductivity: str | None = None
+    inclination_ew: str | None = None
+    inclination_ns: str | None = None
+    inclination_x: str | None = None
+    inclination_y: str | None = None
+    inclination_resultant: str | None = None
+    magnetic_inclination: str | None = None
+    magnetic_declination: str | None = None
+    local_friction: str
+    pore_ratio: str | None = None
+    temperature: str | None = None
+    pore_pressure_u1: str | None = None
+    pore_pressure_u2: str | None = None
+    pore_pressure_u3: str | None = None
+    friction_ratio: str | None = None
+
+
+class Procedure(CamelModel):
+    interruption_processing_performed: str
+    expert_correction_performed: str
+    signal_processing_performed: str
+
+
+class ConePenetrationTestResult(CamelModel):
+    """Represents the parsed CPT test result values"""
+
+    values: str  # Comma-separated values as string
+    element_count: int
+
+
+class DissipationTestResult(CamelModel):
+    """Represents the parsed dissipation test result values"""
+
+    values: str  # Comma-separated values as string
+    element_count: int
+
+
+class DissipationTest(CamelModel):
+    result_time: str | None = None
+    procedure: str | None = None
+    observed_property: str | None = None
+    feature_of_interest: str | None = None
+    phenomenon_time: str  # ISO-8601 datetime
+    penetration_length: float
+    dissipation_test_result: list[DissipationTestResult] = []
+
+
+class ConePenetrometerSurvey(CamelModel):
+    dissipation_test_performed: str
+    final_processing_date: str
+    cpt_method: str
+    quality_class: str
+    stop_criterion: str
+    sensor_azimuth: float | None = None
+    trajectory: Trajectory
+    cone_penetrometer: ConePenetrometer
+    cone_penetration_test_result: ConePenetrationTestResult
+    dissipation_tests: list[DissipationTest] = []
+    procedure: Procedure
+    parameters: Parameters
+    phenomenon_time: str  # ISO-8601 datetime
+
+
+class CPT(CamelModel):
+    object_id_accountable_party: str
+    delivery_context: str
+    survey_purpose: str
+    research_report_date: str
+    cpt_standard: str
+    additional_investigation_performed: str
+    research_operator: str | None = None
+    delivered_location: str  # Location coordinates as string
+    horizontal_positioning_date: str
+    horizontal_positioning_method: str
+    horizontal_positioning_operator: str | None = None
+    local_vertical_reference_point: str
+    offset: float
+    water_depth: float | None = None
+    vertical_datum: str
+    vertical_positioning_date: str
+    vertical_positioning_method: str
+    vertical_positioning_operator: str | None = None
+    additional_investigation: AdditionalInvestigation | None = None
+    cone_penetrometer_survey: ConePenetrometerSurvey
