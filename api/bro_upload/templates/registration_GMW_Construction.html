@@ -85,6 +85,7 @@
         <ns:screen>
           <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
           <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
+          <!-- Optional: Add optional for screenProtection -->
         </ns:screen>
         <ns:plainTubePart>
           <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
@@ -109,6 +110,8 @@
         {% endfor %}
       </ns:monitoringTube>
       {% endfor %}
+      <!-- Optional: Add optional for geometricDataPubliclyAvailable  -->
+      <!-- Optional: Add optional for isAbroad  -->
     </ns:GMW_Construction>
   </ns:sourceDocument>
 </ns:registrationRequest>
