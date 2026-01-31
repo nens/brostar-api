@@ -33,7 +33,9 @@ from api.bro_upload.upload_datamodels import (
     GMWShortening,
     GMWTubeStatus,
     GMWWellHeadProtector,
+    GUFAddRealisedInstallation,
     GUFClosure,
+    GUFClosureRealisedPart,
     GUFExpandedRealisedInstallation,
     GUFGeometryRealisedSurfaceInfiltration,
     GUFHeight,
@@ -116,6 +118,8 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GUF_WellFunction", "GUF_WellFunction"),
     ("GUF_Height", "GUF_Height"),
     ("GUF_Closure", "GUF_Closure"),
+    ("GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
+    ("GUF_ClosureRealisedPart", "GUF_ClosureRealisedPart"),
     ("GPD", "GPD"),
 ]
 
@@ -163,6 +167,8 @@ registration_type_datamodel_mapping = {
     "GUF_WellFunction": GUFWellFunction,
     "GUF_Height": GUFHeight,
     "GUF_Closure": GUFClosure,
+    "GUF_AddRealisedInstallation": GUFAddRealisedInstallation,
+    "GUF_ClosureRealisedPart": GUFClosureRealisedPart,
     "GPD": GPD,
 }
 

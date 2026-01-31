@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registrationRequest
-  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
-  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
   xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
   xmlns:gml="http://www.opengis.net/gml/3.2"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
 >
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
+  >
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <brocom:correctionReason>{{ metadata.correctionReason }}</brocom:correctionReason>
   <sourceDocument>
     <gufcom:GUF_StartRegistration gml:id="id_0001">
-      <gufcom:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</gufcom:objectIdAccountableParty>
+      <gufcom:objectIdAccountableParty
+        >{{ sourcedocs_data.objectIdAccountableParty }}</gufcom:objectIdAccountableParty
+      >
       <gufcom:deliveryContext codeSpace="urn:bro:guf:DeliveryContext"
         >{{ sourcedocs_data.deliveryContext }}</gufcom:deliveryContext
       >
@@ -31,7 +37,9 @@
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
-          <gufcom:identificationLicence>{{ sourcedocs_data.identificationLicence }}</gufcom:identificationLicence>
+          <gufcom:identificationLicence
+            >{{ sourcedocs_data.identificationLicence }}</gufcom:identificationLicence
+          >
           <gufcom:legalType codeSpace="urn:bro:guf:LegalType"
             >{{ sourcedocs_data.legalType }}</gufcom:legalType
           >
@@ -44,7 +52,9 @@
               {{ secondary_usage_type }}
             </gufcom:secondaryUsageType>
             {% endfor %}
-            <gufcom:humanConsumption>{{ sourcedocs_data.humanConsumption }}</gufcom:humanConsumption>
+            <gufcom:humanConsumption
+              >{{ sourcedocs_data.humanConsumption }}</gufcom:humanConsumption
+            >
           </gufcom:usageTypeFacility>
           {% for licensed_quantity in sourcedocs_data.licensedQuantities %}
           <gufcom:licensedQuantity>
@@ -52,27 +62,41 @@
               >{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut
             >
             {% if licensed_quantity.maximumTimeframe == 'hour' %}
-            <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour>
+            <gufcom:maximumPerHour uom="m3"
+              >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour
+            >
             {% elif licensed_quantity.maximumTimeframe == 'day' %}
-            <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay>
+            <gufcom:maximumPerDay uom="m3"
+              >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay
+            >
             {% elif licensed_quantity.maximumTimeframe == 'month' %}
-            <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth>
+            <gufcom:maximumPerMonth uom="m3"
+              >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth
+            >
             {% elif licensed_quantity.maximumTimeframe == 'quarter' %}
-            <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter>
+            <gufcom:maximumPerQuarter uom="m3"
+              >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter
+            >
             {% elif licensed_quantity.maximumTimeframe == 'year' %}
-            <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear>
+            <gufcom:maximumPerYear uom="m3"
+              >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear
+            >
             {% endif %}
           </gufcom:licensedQuantity>
-          {% endfor %}
-          {% for installation in sourcedocs_data.designInstallations %}
+          {% endfor %} {% for installation in sourcedocs_data.designInstallations %}
           <gufcom:designInstallation>
             <gufcom:DesignInstallation gml:id="{{ installation.gmlId }}">
-              <gufcom:designInstallationId>{{ installation.designInstallationId }}</gufcom:designInstallationId>
+              <gufcom:designInstallationId
+                >{{ installation.designInstallationId }}</gufcom:designInstallationId
+              >
               <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationType"
                 >{{ installation.installationFunction }}</gufcom:installationFunction
               >
               <gufcom:geometry>
-                <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ installation.gmlId }}">
+                <gml:Point
+                  srsName="urn:ogc:def:crs:EPSG::28992"
+                  gml:id="geom{{ installation.gmlId }}"
+                >
                   <gml:pos>{{ installation.pos }}</gml:pos>
                 </gml:Point>
               </gufcom:geometry>
@@ -82,49 +106,79 @@
                   >{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut
                 >
                 {% if licensed_quantity.maximumTimeframe == 'hour' %}
-                <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour>
+                <gufcom:maximumPerHour uom="m3"
+                  >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerHour
+                >
                 {% elif licensed_quantity.maximumTimeframe == 'day' %}
-                <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay>
+                <gufcom:maximumPerDay uom="m3"
+                  >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerDay
+                >
                 {% elif licensed_quantity.maximumTimeframe == 'month' %}
-                <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth>
+                <gufcom:maximumPerMonth uom="m3"
+                  >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerMonth
+                >
                 {% elif licensed_quantity.maximumTimeframe == 'quarter' %}
-                <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter>
+                <gufcom:maximumPerQuarter uom="m3"
+                  >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerQuarter
+                >
                 {% elif licensed_quantity.maximumTimeframe == 'year' %}
-                <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear>
+                <gufcom:maximumPerYear uom="m3"
+                  >{{ licensed_quantity.maximumValue }}</gufcom:maximumPerYear
+                >
                 {% endif %}
               </gufcom:licensedQuantity>
-              {% endfor %}
-              {% if installation.installationFunction in ["openBodemenergiesysteem", "geslotenBodemenergiesysteem"] %}
-              {% if installation.energyCharacteristics %}
-              <gufcom:energyCharacteristics>{{ installation.energyCharacteristics }}</gufcom:energyCharacteristics>
-              {% endif %}
-              {% endif %}
-              {% for design_loop in installation.designLoops %}
+              {% endfor %} {% if installation.installationFunction in
+              ["openBodemenergiesysteem", "geslotenBodemenergiesysteem"] %} {% if
+              installation.energyCharacteristics %}
+              <gufcom:energyCharacteristics
+                >{{ installation.energyCharacteristics }}</gufcom:energyCharacteristics
+              >
+              {% endif %} {% endif %} {% for design_loop in installation.designLoops %}
               <gufcom:designLoop>
                 <gufcom:DesignLoop gml:id="{{ design_loop.gmlId }}">
-                  <gufcom:designLoopId>{{ design_loop.designLoopId }}</gufcom:designLoopId>
-                  <gufcom:depthLoopTop uom="m">{{ design_loop.depthLoopTop }}</gufcom:depthLoopTop>
-                  <gufcom:depthLoopBottom uom="m">{{ design_loop.depthLoopBottom }}</gufcom:depthLoopBottom>
+                  <gufcom:designLoopId
+                    >{{ design_loop.designLoopId }}</gufcom:designLoopId
+                  >
+                  <gufcom:depthLoopTop uom="m"
+                    >{{ design_loop.depthLoopTop }}</gufcom:depthLoopTop
+                  >
+                  <gufcom:depthLoopBottom uom="m"
+                    >{{ design_loop.depthLoopBottom }}</gufcom:depthLoopBottom
+                  >
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
-                    <gml:LineString srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
+                    <gml:LineString
+                      srsName="urn:ogc:def:crs:EPSG::28992"
+                      gml:id="geom{{ design_loop.gmlId }}"
+                    >
                       <gml:posList>{{ design_loop.pos }}</gml:posList>
                     </gml:LineString>
                     {% else %}
-                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
+                    <gml:Point
+                      srsName="urn:ogc:def:crs:EPSG::28992"
+                      gml:id="geom{{ design_loop.gmlId }}"
+                    >
                       <gml:pos>{{ design_loop.pos }}</gml:pos>
                     </gml:Point>
                     {% endif %}
                   </gufcom:geometry>
                 </gufcom:DesignLoop>
               </gufcom:designLoop>
-              {% endfor %}
-              {% for surface_infiltration in installation.designSurfaceInfiltrations %}
+              {% endfor %} {% for surface_infiltration in
+              installation.designSurfaceInfiltrations %}
               <gufcom:designSurfaceInfiltration>
-                <gufcom:DesignSurfaceInfiltration gml:id="{{ surface_infiltration.gmlId }}">
-                  <gufcom:designSurfaceInfiltrationId>{{ surface_infiltration.designSurfaceInfiltrationId }}</gufcom:designSurfaceInfiltrationId>
+                <gufcom:DesignSurfaceInfiltration
+                  gml:id="{{ surface_infiltration.gmlId }}"
+                >
+                  <gufcom:designSurfaceInfiltrationId
+                    >{{ surface_infiltration.designSurfaceInfiltrationId
+                    }}</gufcom:designSurfaceInfiltrationId
+                  >
                   <gufcom:geometry>
-                    <gml:Polygon srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ surface_infiltration.gmlId }}">
+                    <gml:Polygon
+                      srsName="urn:ogc:def:crs:EPSG::28992"
+                      gml:id="geom{{ surface_infiltration.gmlId }}"
+                    >
                       <gml:exterior>
                         <gml:LinearRing>
                           <gml:posList>{{ surface_infiltration.pos }}</gml:posList>
@@ -147,27 +201,38 @@
                   {% endfor %}
                   <gufcom:height uom="m">{{ well.height }}</gufcom:height>
                   <gufcom:geometry>
-                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ well.gmlId }}">
+                    <gml:Point
+                      srsName="urn:ogc:def:crs:EPSG::28992"
+                      gml:id="geom{{ well.gmlId }}"
+                    >
                       <gml:pos>{{ well.pos }}</gml:pos>
                     </gml:Point>
                   </gufcom:geometry>
                   {% if well.geometryPubliclyAvailable %}
                   <gufcom:geometryPubliclyAvailable
-                    >{{ well.geometryPubliclyAvailable }}</gufcom:geometryPubliclyAvailable
+                    >{{ well.geometryPubliclyAvailable
+                    }}</gufcom:geometryPubliclyAvailable
                   >
                   {% endif %}
                   <!--  Optional: optional if primaryUsageType is bemaling.  -->
                   {% if well.maximumWellDepth %}
-                  <gufcom:maximumWellDepth uom="m">{{ well.maximumWellDepth }}</gufcom:maximumWellDepth>
-                  {% endif %}
-                  {% if well.maximumWellDepthPubliclyAvailable %}
-                  <gufcom:maximumWellDepthPubliclyAvailable>{{ well.maximumWellDepthPubliclyAvailable }}</gufcom:maximumWellDepthPubliclyAvailable>
-                  {% endif %}
-                  {% if well.maximumWellCapacity %}
-                  <gufcom:maximumWellCapacity uom="m3/h">{{ well.maximumWellCapacity }}</gufcom:maximumWellCapacity>
-                  {% endif %}
-                  {% if well.installationFunction == 'openBodemenergiesysteem' and well.wellFunctions|length == 2 %}
-                  <gufcom:relativeTemperature codeSpace="">{{ well.relativeTemperature }}</gufcom:relativeTemperature>
+                  <gufcom:maximumWellDepth uom="m"
+                    >{{ well.maximumWellDepth }}</gufcom:maximumWellDepth
+                  >
+                  {% endif %} {% if well.maximumWellDepthPubliclyAvailable %}
+                  <gufcom:maximumWellDepthPubliclyAvailable
+                    >{{ well.maximumWellDepthPubliclyAvailable
+                    }}</gufcom:maximumWellDepthPubliclyAvailable
+                  >
+                  {% endif %} {% if well.maximumWellCapacity %}
+                  <gufcom:maximumWellCapacity uom="m3/h"
+                    >{{ well.maximumWellCapacity }}</gufcom:maximumWellCapacity
+                  >
+                  {% endif %} {% if well.installationFunction ==
+                  'openBodemenergiesysteem' and well.wellFunctions|length == 2 %}
+                  <gufcom:relativeTemperature codeSpace=""
+                    >{{ well.relativeTemperature }}</gufcom:relativeTemperature
+                  >
                   {% endif %}
                   <!--  Optional: optional if legalType is melding or if primaryUsageType is bemaling.  -->
                   {% if well.designScreen %}
@@ -175,15 +240,22 @@
                     <gufcom:screenType codeSpace="urn:bro:guf:ScreenType"
                       >{{ well.designScreen.screenType }}</gufcom:screenType
                     >
-                    <gufcom:designScreenTop uom="m">{{ well.designScreen.designScreenTop }}</gufcom:designScreenTop>
+                    <gufcom:designScreenTop uom="m"
+                      >{{ well.designScreen.designScreenTop }}</gufcom:designScreenTop
+                    >
                     {% if well.designScreen.screenType == 'verticaal' %}
-                    <gufcom:designScreenBottom uom="m">{{ well.designScreen.designScreenBottom }}</gufcom:designScreenBottom>
+                    <gufcom:designScreenBottom uom="m"
+                      >{{ well.designScreen.designScreenBottom
+                      }}</gufcom:designScreenBottom
+                    >
                     {% endif %}
                   </gufcom:designScreen>
                   {% if well.designScreen.publiclyAvailable %}
-                  <gufcom:designScreenPubliclyAvailable>{{ well.designScreen.publiclyAvailable }}</gufcom:designScreenPubliclyAvailable>
-                  {% endif %}
-                  {% endif %}
+                  <gufcom:designScreenPubliclyAvailable
+                    >{{ well.designScreen.publiclyAvailable
+                    }}</gufcom:designScreenPubliclyAvailable
+                  >
+                  {% endif %} {% endif %}
                 </gufcom:DesignWell>
               </gufcom:designWell>
               {% endfor %}
@@ -194,4 +266,4 @@
       </gufcom:licence>
     </gufcom:GUF_StartRegistration>
   </sourceDocument>
-</registrationRequest>
+</replaceRequest>

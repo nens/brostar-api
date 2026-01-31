@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registrationRequest
-  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
-  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
   xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:gml="http://www.opengis.net/gml/3.2"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+  xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
 >
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty
@@ -13,8 +11,14 @@
   >
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason"
+    >{{ metadata.CorrectionReason }}</correctionReason
+  >
   <sourceDocument>
-    <gufcom:GUF_AddRealisedInstallation gml:id="id_0001">
+    <gufcom:GUF_ExpandRealisedInstallation
+      gml:id="id_0001"
+      xmlns:gml="http://www.opengis.net/gml/3.2"
+    >
       <gufcom:realisedInstallationId
         >{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId
       >
@@ -122,15 +126,6 @@
             >{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable
           >
           {% endif %}
-          <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.
-					<gufcom:relativeTemperature codeSpace="">...</gufcom:relativeTemperature>
-					 -->
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation
-					<gufcom:validity>...</gufcom:validity>
-					 -->
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation
-					<gufcom:lifespan>...</gufcom:lifespan>
-					 -->
           <!--  0 or more repetitions:  -->
           {% for realised_screen in realised_well.realisedScreens %}
           <gufcom:realisedScreen>
@@ -181,6 +176,7 @@
           {% endfor %}
         </gufcom:RealisedWell>
       </gufcom:realisedWell>
-    </gufcom:GUF_AddRealisedInstallation>
+      {% endfor %}
+    </gufcom:GUF_ExpandRealisedInstallation>
   </sourceDocument>
-</registrationRequest>
+</replaceRequest>

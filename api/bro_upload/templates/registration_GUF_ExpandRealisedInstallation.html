@@ -37,12 +37,64 @@
         <brocom:voidReason>onbekend</brocom:voidReason>
         {% endif %}
       </gufcom:startValidity>
-      <!--  0 or more repetitions:
-			<gufcom:realisedLoop>...</gufcom:realisedLoop>
-			 -->
-      <!--  0 or more repetitions:
-			<gufcom:realisedSurfaceInfiltration>...</gufcom:realisedSurfaceInfiltration>
-			 -->
+      {% for realised_loop in sourcedocs_data.realisedLoops %}
+      <gufcom:realisedLoop>
+        <gufcom:RealisedLoop gml:id="{{ realised_loop.gmlId }}">
+          <gufcom:realisedLoopId
+            >{{ realised_loop.realisedLoopId }}</gufcom:realisedLoopId
+          >
+          <gufcom:depthLoopTop uom="m"
+            >{{ realised_loop.depthLoopTop }}</gufcom:depthLoopTop
+          >
+          <gufcom:depthLoopBottom uom="m"
+            >{{ realised_loop.depthLoopBottom }}</gufcom:depthLoopBottom
+          >
+          <gufcom:geometry>
+            <gufcom:PointOrCurve>
+              {% if realised_loop.pos %}
+              <gml:Point
+                srsName="urn:ogc:def:crs:EPSG::28992"
+                gml:id="geom{{ realised_loop.gmlId }}"
+              >
+                <gml:pos>{{ realised_loop.pos }}</gml:pos>
+              </gml:Point>
+              {% else %}
+              <gml:Curve
+                srsName="urn:ogc:def:crs:EPSG::28992"
+                gml:id="geom{{ realised_loop.gmlId }}"
+              >
+                <gml:segments>{{ realised_loop.segments }}</gml:segments>
+              </gml:Curve>
+              {% endif %}
+            </gufcom:PointOrCurve>
+          </gufcom:geometry>
+        </gufcom:RealisedLoop>
+      </gufcom:realisedLoop>
+      {% endfor %} {% for realised_surface_infiltration in
+      sourcedocs_data.realisedSurfaceInfiltrations %}
+      <gufcom:realisedSurfaceInfiltration>
+        <gufcom:RealisedSurfaceInfiltration
+          gml:id="{{ realised_surface_infiltration.gmlId }}"
+        >
+          <gufcom:realisedSurfaceInfiltrationId
+            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId
+            }}</gufcom:realisedSurfaceInfiltrationId
+          >
+          <gufcom:geometry>
+            <gml:Polygon
+              srsName="urn:ogc:def:crs:EPSG::28992"
+              gml:id="geom{{ realised_surface_infiltration.gmlId }}"
+            >
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>{{ realised_surface_infiltration.pos }}</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </gufcom:geometry>
+        </gufcom:RealisedSurfaceInfiltration>
+      </gufcom:realisedSurfaceInfiltration>
+      {% endfor %}
       <!--  0 or more repetitions:  -->
       {% for realised_well in sourcedocs_data.realisedWells %}
       <gufcom:realisedWell>
@@ -57,13 +109,18 @@
           <gufcom:height uom="m">{{ realised_well.height }}</gufcom:height>
           <gufcom:wellDepth uom="m">{{ realised_well.wellDepth }}</gufcom:wellDepth>
           <gufcom:geometry>
-            <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_well.gmlId }}">
+            <gml:Point
+              srsName="urn:ogc:def:crs:EPSG::28992"
+              gml:id="geom{{ realised_well.gmlId }}"
+            >
               <gml:pos>{{ realised_well.pos }}</gml:pos>
             </gml:Point>
           </gufcom:geometry>
           <!--  Optional: mandatory if primaryUsageType is openbareDrinkwatervoorziening.  -->
           {% if realised_well.publiclyAvailable %}
-          <gufcom:geometryPubliclyAvailable>{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable>
+          <gufcom:geometryPubliclyAvailable
+            >{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable
+          >
           {% endif %}
           <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.
 					<gufcom:relativeTemperature codeSpace="">...</gufcom:relativeTemperature>
@@ -87,29 +144,35 @@
               <gufcom:topScreenDepth uom="m"
                 >{{ realised_screen.topScreenDepth }}</gufcom:topScreenDepth
               >
-              <gufcom:length uom="m"
-                >{{ realised_screen.length }}</gufcom:length
-              >
+              <gufcom:length uom="m">{{ realised_screen.length }}</gufcom:length>
               <gufcom:geometry>
                 <gufcom:PointOrCurve>
-                    {% if realised_screen.pos %}
-                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_screen.gmlId }}">
-                        <gml:pos>{{ realised_screen.pos }}</gml:pos>
-                    </gml:Point>
-                    {% else %}
-                    <gml:Curve srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_screen.gmlId }}">
-                        <gml:segments>{{ realised_screen.segments }}</gml:segments>
-                    </gml:Curve>
-                    {% endif %}
+                  {% if realised_screen.pos %}
+                  <gml:Point
+                    srsName="urn:ogc:def:crs:EPSG::28992"
+                    gml:id="geom{{ realised_screen.gmlId }}"
+                  >
+                    <gml:pos>{{ realised_screen.pos }}</gml:pos>
+                  </gml:Point>
+                  {% else %}
+                  <gml:Curve
+                    srsName="urn:ogc:def:crs:EPSG::28992"
+                    gml:id="geom{{ realised_screen.gmlId }}"
+                  >
+                    <gml:segments>{{ realised_screen.segments }}</gml:segments>
+                  </gml:Curve>
+                  {% endif %}
                 </gufcom:PointOrCurve>
               </gufcom:geometry>
               {% if realised_screen.publiclyAvailable %}
-              <gufcom:geometryPubliclyAvailable>{{ realised_screen.publiclyAvailable }}</gufcom:geometryPubliclyAvailable>
+              <gufcom:geometryPubliclyAvailable
+                >{{ realised_screen.publiclyAvailable
+                }}</gufcom:geometryPubliclyAvailable
+              >
               {% endif %}
             </gufcom:RealisedScreen>
           </gufcom:realisedScreen>
-          {% endfor %}
-          {% for soil_research in realised_well.soilResearches %}
+          {% endfor %} {% for soil_research in realised_well.soilResearches %}
           <gufcom:soilResearch>
             <gufcom:SoilResearch gml:id="{{ soil_research.gmlId }}">
               <gufcom:broId>{{ soil_research.broId }}</gufcom:broId>

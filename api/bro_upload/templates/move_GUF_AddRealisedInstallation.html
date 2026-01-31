@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registrationRequest
-  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
-  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
-  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:gml="http://www.opengis.net/gml/3.2"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
->
-  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-  <brocom:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
-  >
-  <brocom:broId>{{ metadata.broId }}</brocom:broId>
-  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-  <sourceDocument>
-    <gufcom:GUF_AddRealisedInstallation gml:id="id_0001">
+<moveRequest xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
+             xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+             xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+             xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0">
+    <requestReference>{{ metadata.requestReference }}</requestReference>
+    <deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</deliveryAccountableParty>
+    <broId>{{ metadata.broId }}</broId>
+    <qualityRegime>{{ metadata.qualityRegime }}</qualityRegime>
+    <correctionReason>{{ correction_reason }}</correctionReason>
+    <sourceDocument>
+        <gufcom:GUF_AddRealisedInstallation gml:id="id_0001" xmlns:gml="http://www.opengis.net/gml/3.2">
       <gufcom:realisedInstallationId
         >{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId
       >
@@ -40,29 +35,17 @@
       {% for realised_loop in sourcedocs_data.realisedLoops %}
       <gufcom:realisedLoop>
         <gufcom:RealisedLoop gml:id="{{ realised_loop.gmlId }}">
-          <gufcom:realisedLoopId
-            >{{ realised_loop.realisedLoopId }}</gufcom:realisedLoopId
-          >
-          <gufcom:depthLoopTop uom="m"
-            >{{ realised_loop.depthLoopTop }}</gufcom:depthLoopTop
-          >
-          <gufcom:depthLoopBottom uom="m"
-            >{{ realised_loop.depthLoopBottom }}</gufcom:depthLoopBottom
-          >
+          <gufcom:realisedLoopId>{{ realised_loop.realisedLoopId }}</gufcom:realisedLoopId>
+          <gufcom:depthLoopTop uom="m">{{ realised_loop.depthLoopTop }}</gufcom:depthLoopTop>
+          <gufcom:depthLoopBottom uom="m">{{ realised_loop.depthLoopBottom }}</gufcom:depthLoopBottom>
           <gufcom:geometry>
             <gufcom:PointOrCurve>
               {% if realised_loop.pos %}
-              <gml:Point
-                srsName="urn:ogc:def:crs:EPSG::28992"
-                gml:id="geom{{ realised_loop.gmlId }}"
-              >
+              <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_loop.gmlId }}">
                 <gml:pos>{{ realised_loop.pos }}</gml:pos>
               </gml:Point>
               {% else %}
-              <gml:Curve
-                srsName="urn:ogc:def:crs:EPSG::28992"
-                gml:id="geom{{ realised_loop.gmlId }}"
-              >
+              <gml:Curve srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_loop.gmlId }}">
                 <gml:segments>{{ realised_loop.segments }}</gml:segments>
               </gml:Curve>
               {% endif %}
@@ -70,28 +53,20 @@
           </gufcom:geometry>
         </gufcom:RealisedLoop>
       </gufcom:realisedLoop>
-      {% endfor %} {% for realised_surface_infiltration in
-      sourcedocs_data.realisedSurfaceInfiltrations %}
+      {% endfor %}
+      {% for realised_surface_infiltration in sourcedocs_data.realisedSurfaceInfiltrations %}
       <gufcom:realisedSurfaceInfiltration>
-        <gufcom:RealisedSurfaceInfiltration
-          gml:id="{{ realised_surface_infiltration.gmlId }}"
-        >
-          <gufcom:realisedSurfaceInfiltrationId
-            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId
-            }}</gufcom:realisedSurfaceInfiltrationId
-          >
+        <gufcom:RealisedSurfaceInfiltration gml:id="{{ realised_surface_infiltration.gmlId }}">
+          <gufcom:realisedSurfaceInfiltrationId>{{ realised_surface_infiltration.realisedSurfaceInfiltrationId }}</gufcom:realisedSurfaceInfiltrationId>
           <gufcom:geometry>
-            <gml:Polygon
-              srsName="urn:ogc:def:crs:EPSG::28992"
-              gml:id="geom{{ realised_surface_infiltration.gmlId }}"
-            >
+            <gml:Polygon srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_surface_infiltration.gmlId }}">
               <gml:exterior>
                 <gml:LinearRing>
                   <gml:posList>{{ realised_surface_infiltration.pos }}</gml:posList>
                 </gml:LinearRing>
               </gml:exterior>
             </gml:Polygon>
-          </gufcom:geometry>
+          </gml:geometry>
         </gufcom:RealisedSurfaceInfiltration>
       </gufcom:realisedSurfaceInfiltration>
       {% endfor %}
@@ -109,28 +84,14 @@
           <gufcom:height uom="m">{{ realised_well.height }}</gufcom:height>
           <gufcom:wellDepth uom="m">{{ realised_well.wellDepth }}</gufcom:wellDepth>
           <gufcom:geometry>
-            <gml:Point
-              srsName="urn:ogc:def:crs:EPSG::28992"
-              gml:id="geom{{ realised_well.gmlId }}"
-            >
+            <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_well.gmlId }}">
               <gml:pos>{{ realised_well.pos }}</gml:pos>
             </gml:Point>
           </gufcom:geometry>
           <!--  Optional: mandatory if primaryUsageType is openbareDrinkwatervoorziening.  -->
           {% if realised_well.publiclyAvailable %}
-          <gufcom:geometryPubliclyAvailable
-            >{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable
-          >
+          <gufcom:geometryPubliclyAvailable>{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable>
           {% endif %}
-          <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.
-					<gufcom:relativeTemperature codeSpace="">...</gufcom:relativeTemperature>
-					 -->
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation
-					<gufcom:validity>...</gufcom:validity>
-					 -->
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation
-					<gufcom:lifespan>...</gufcom:lifespan>
-					 -->
           <!--  0 or more repetitions:  -->
           {% for realised_screen in realised_well.realisedScreens %}
           <gufcom:realisedScreen>
@@ -144,35 +105,29 @@
               <gufcom:topScreenDepth uom="m"
                 >{{ realised_screen.topScreenDepth }}</gufcom:topScreenDepth
               >
-              <gufcom:length uom="m">{{ realised_screen.length }}</gufcom:length>
+              <gufcom:length uom="m"
+                >{{ realised_screen.length }}</gufcom:length
+              >
               <gufcom:geometry>
                 <gufcom:PointOrCurve>
-                  {% if realised_screen.pos %}
-                  <gml:Point
-                    srsName="urn:ogc:def:crs:EPSG::28992"
-                    gml:id="geom{{ realised_screen.gmlId }}"
-                  >
-                    <gml:pos>{{ realised_screen.pos }}</gml:pos>
-                  </gml:Point>
-                  {% else %}
-                  <gml:Curve
-                    srsName="urn:ogc:def:crs:EPSG::28992"
-                    gml:id="geom{{ realised_screen.gmlId }}"
-                  >
-                    <gml:segments>{{ realised_screen.segments }}</gml:segments>
-                  </gml:Curve>
-                  {% endif %}
+                    {% if realised_screen.pos %}
+                    <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_screen.gmlId }}">
+                        <gml:pos>{{ realised_screen.pos }}</gml:pos>
+                    </gml:Point>
+                    {% else %}
+                    <gml:Curve srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ realised_screen.gmlId }}">
+                        <gml:segments>{{ realised_screen.segments }}</gml:segments>
+                    </gml:Curve>
+                    {% endif %}
                 </gufcom:PointOrCurve>
               </gufcom:geometry>
               {% if realised_screen.publiclyAvailable %}
-              <gufcom:geometryPubliclyAvailable
-                >{{ realised_screen.publiclyAvailable
-                }}</gufcom:geometryPubliclyAvailable
-              >
+              <gufcom:geometryPubliclyAvailable>{{ realised_screen.publiclyAvailable }}</gufcom:geometryPubliclyAvailable>
               {% endif %}
             </gufcom:RealisedScreen>
           </gufcom:realisedScreen>
-          {% endfor %} {% for soil_research in realised_well.soilResearches %}
+          {% endfor %}
+          {% for soil_research in realised_well.soilResearches %}
           <gufcom:soilResearch>
             <gufcom:SoilResearch gml:id="{{ soil_research.gmlId }}">
               <gufcom:broId>{{ soil_research.broId }}</gufcom:broId>
@@ -181,6 +136,10 @@
           {% endfor %}
         </gufcom:RealisedWell>
       </gufcom:realisedWell>
+      {% endfor %}
     </gufcom:GUF_AddRealisedInstallation>
-  </sourceDocument>
-</registrationRequest>
+    </sourceDocument>
+  <dateToBeCorrected>
+    <brocom:date>{{ sourcedocs_data.dateToBeCorrected }}</brocom:date>
+  </dateToBeCorrected>
+</moveRequest>
