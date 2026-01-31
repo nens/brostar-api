@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <registrationRequest
   xmlns="http://www.broservices.nl/xsd/isguf/1.0"
   xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
@@ -68,7 +69,7 @@
             <gufcom:DesignInstallation gml:id="{{ installation.gmlId }}">
               <gufcom:designInstallationId>{{ installation.designInstallationId }}</gufcom:designInstallationId>
               <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationType"
-                >onttrekking</gufcom:installationFunction
+                >{{ installation.installationFunction }}</gufcom:installationFunction
               >
               <gufcom:geometry>
                 <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="{{ installation.geometry.gmlId }}">
@@ -78,12 +79,9 @@
               <!--  0 to 2 repetitions:
                             <gufcom:licensedQuantity>...</gufcom:licensedQuantity>
                              -->
-              <!--  Optional: only allowed if installationFunction is openBodemenergiesysteem or geslotenBodemenergiesysteem.
-                            <gufcom:energyCharacteristics>...</gufcom:energyCharacteristics>
-                             -->
-              <!--  Optional: not allowed in GUF_StartRegistration
-                            <gufcom:lifespan>...</gufcom:lifespan>
-                             -->
+              {% if installation.installationFunction in ["openBodemenergiesysteem", "geslotenBodemenergiesysteem"] %}
+              <gufcom:energyCharacteristics>{{ installation.energyCharacteristics }}</gufcom:energyCharacteristics>
+              {% endif %}
               <!--  0 or more repetitions:
                             <gufcom:designLoop>...</gufcom:designLoop>
                              -->
@@ -129,9 +127,9 @@
                     <!-- optional: mandatory if screenType is verticaal.  -->
                     <gufcom:designScreenBottom uom="m">{{ well.designScreen.designScreenBottom }}</gufcom:designScreenBottom>
                   </gufcom:designScreen>
-                  <!--  Optional
-									<gufcom:designScreenPubliclyAvailable></gufcom:designScreenPubliclyAvailable>
-									 -->
+                  {% if well.designScreen.publiclyAvailable %}
+									<gufcom:designScreenPubliclyAvailable>{{ well.designScreen.publiclyAvailable }}</gufcom:designScreenPubliclyAvailable>
+                  {% endif %}
                 </gufcom:DesignWell>
               </gufcom:designWell>
               {% endfor %}

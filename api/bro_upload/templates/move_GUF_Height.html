@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<registrationRequest
+<moveRequest
   xmlns="http://www.broservices.nl/xsd/isguf/1.0"
   xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
   xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
@@ -12,6 +12,7 @@
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.CorrectionReason }}</correctionReason>
   <sourceDocument>
     <gufcom:GUF_Height gml:id="id_0001">
       <gufcom:realisedWellId>{{ sourcedocs_data.realisedWellId }}</gufcom:realisedWellId>
@@ -42,4 +43,7 @@
       {% endif %}
     </gufcom:GUF_Height>
   </sourceDocument>
-</registrationRequest>
+  <dateToBeCorrected>
+    <brocom:date>{{ sourcedocs_data.dateToBeCorrected }}</brocom:date>
+  </dateToBeCorrected>
+</moveRequest>

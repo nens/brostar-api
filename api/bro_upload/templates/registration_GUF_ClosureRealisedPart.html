@@ -13,7 +13,14 @@
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <sourceDocument>
-    <gufcom:GUF_Closure gml:id="id_0001">
+    <gufcom:GUF_ClosureRealisedPart gml:id="id_0001">
+      <gufcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId>
+      <!--  Optional: only needed if not all parts of the installation are closed and the installationFunction has changed.
+			<gufcom:installationFunction codeSpace="?">?</gufcom:installationFunction>
+			 -->
+      <!--  Optional: only needed if not all parts of the installation are closed and the geometry has changed.
+			<gufcom:geometry>...</gufcom:geometry>
+			 -->
       <gufcom:endTime>
           {% if sourcedocs_data.endTime|length == 10 %}
           <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
@@ -25,6 +32,13 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
       </gufcom:endTime>
-    </gufcom:GUF_Closure>
+      {% for realised_well in sourcedocs_data.realisedWells %}
+      <gufcom:realisedWell>
+        <gufcom:RealisedWellClosurePart gml:id="{{ realised_well.gmlId }}">
+          <gufcom:realisedWellId>{{ realised_well.realisedWellId }}</gufcom:realisedWellId>
+        </gufcom:RealisedWellClosurePart>
+      </gufcom:realisedWell>
+	  {% endfor %}
+    </gufcom:GUF_ClosureRealisedPart>
   </sourceDocument>
 </registrationRequest>
