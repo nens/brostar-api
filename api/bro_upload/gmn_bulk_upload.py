@@ -220,7 +220,11 @@ class GMNBulkUploader:
         # Convert
 
         for row in monitoringnet_adjustments_df.iter_rows(named=True):
-            event_date = check_date_string(row["eventDate"])
+            event_date = (
+                check_date_string(row["eventDate"])
+                if isinstance(row["eventDate"], str)
+                else row["eventDate"].isoformat()
+            )
             upload_task = self.deliver_one_uploadtask(
                 event_type=row["eventType"],
                 measuring_point_code=row["measuringPointCode"],

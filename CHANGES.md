@@ -1,6 +1,12 @@
 # Changelog for BROStar API
 
-## 1.62 (unreleased)
+## 1.63 (unreleased)
+
+
+-   Bugfix: improve gmn-measuringpoints eventdate handling
+
+
+## 1.62 (2026-01-29)
 
 
 -   Feature: add CPT uploadmodels and as a uploadtask
