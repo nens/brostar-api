@@ -6,6 +6,12 @@
 -   Bugfix: improve gmn-measuringpoints eventdate handling
 -   Bugfix: improve GMN-Close delete template
 
+## To-Do:
+-   Add fields to GMWConstruction: Survey, ScreenProtection, IsAbroad, GeometriePublic
+-   Add GMW_SubsequentSurvey (registration, replace, move, insert, delete)
+-   Add to api/upload_models.py (Change GMWConstruction, Add SubsequentSurvey)
+-   Make correctionReason variable in all templates ({{ metadata.correctionReason }})
+
 
 ## 1.62 (2026-01-29)
 

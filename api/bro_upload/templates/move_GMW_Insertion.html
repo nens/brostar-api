@@ -23,13 +23,17 @@
         <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
       </ns:eventDate>
-      <ns:tubeNumber>{{ sourcedocs_data.tubeNumber }}</ns:tubeNumber>
-      <ns:tubeTopPosition uom="m">{{ sourcedocs_data.tubeTopPosition }}</ns:tubeTopPosition>
-      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ sourcedocs_data.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-      <ns:insertedPartLength uom="m">{{ sourcedocs_data.insertedPartLength }}</ns:insertedPartLength>
-      <ns:insertedPartDiameter uom="mm">{{ sourcedocs_data.insertedPartDiameter }}</ns:insertedPartDiameter>
-      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ sourcedocs_data.insertedPartMaterial }}
-      </ns:insertedPartMaterial>
+      {% for monitoringtube in sourcedocs_data.monitoringTubes %}
+      <ns:monitoringTube>
+        <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+        <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+        <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+        <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
+        <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
+        <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}
+        </ns:insertedPartMaterial>
+      </ns:monitoringTube>
+      {% endfor %}
     </ns:GMW_Insertion>
   </ns:sourceDocument>
   <ns:dateToBeCorrected>
