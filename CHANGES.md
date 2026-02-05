@@ -4,6 +4,7 @@
 
 
 -   Bugfix: improve gmn-measuringpoints eventdate handling
+-   Bugfix: improve GMN-Close delete template
 
 
 ## 1.62 (2026-01-29)
