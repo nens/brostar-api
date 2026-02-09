@@ -7,26 +7,33 @@
   xmlns:gml="http://www.opengis.net/gml/3.2"
 >
   <ns1:requestReference
-    >GMW_SubsequentAdditionSurveys GMW000002533569</ns1:requestReference
+    >metadata.requestReference</ns1:requestReference
   >
-  <ns1:deliveryAccountableParty>52766179</ns1:deliveryAccountableParty>
-  <ns1:broId>GMW000002533569</ns1:broId>
+  <ns1:deliveryAccountableParty>metadata.deliveryAccountableParty</ns1:deliveryAccountableParty>
+  <ns1:broId>metadata.broId</ns1:broId>
   <ns1:qualityRegime>IMBRO</ns1:qualityRegime>
   <!-- For replaceRequest, add here: 'correctionReason' - check from replace_GMW_Shift.html -->
   <ns:sourceDocument>
     <ns:GMW_SubsequentAdditionSurveys>
       <ns:eventDate>
-        <ns1:date>2018-08-19</ns1:date>
+        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
       </ns:eventDate>
       <!-- 1 or more repetitions: -->
       <ns:IsRelatedTo>
+        {% with prefix=sourcedocs_data.broId|upper|slice:":3" %}
+        {% if prefix == "BHR" %}
         <!-- You have a CHOICE of the next 2 items at this level -->
         <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_01">
-          <ns2:broId>BHR000000344572</ns2:broId>
+          <ns2:broId>sourcedocs_data.broId</ns2:broId>
         </ns2:BoreholeResearch>
-        <!-- ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_01">
-                     <ns2:broId>CPT000035666528</ns2:broId>
-                  </ns2:GeotechnicalCPTSurvey -->
+        {% elif prefix == "CPT" %}
+        <ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_01">
+                     <ns2:broId>sourcedocs_data.broId</ns2:broId>
+                  </ns2:GeotechnicalCPTSurvey
+        {% else %}
+        <!-- Invalid related BRO id prefix, expected BHR or CPT -->
+        {% endif %}
+        {% endwith %}
       </ns:IsRelatedTo>
     </ns:GMW_SubsequentAdditionSurveys>
   </ns:sourceDocument>
