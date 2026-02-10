@@ -4,6 +4,7 @@
 
 
 -   Bugfix: improve gmn-measuringpoints eventdate handling
+-   Bugfix: improve GMN-Close delete template
 
 ## To-Do:
 -   Add fields to GMWConstruction: Survey, ScreenProtection, IsAbroad, GeometriePublic
