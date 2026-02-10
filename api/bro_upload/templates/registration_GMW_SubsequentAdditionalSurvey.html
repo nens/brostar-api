@@ -6,35 +6,31 @@
   xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
   xmlns:gml="http://www.opengis.net/gml/3.2"
 >
-  <ns1:requestReference
-    >metadata.requestReference</ns1:requestReference
-  >
-  <ns1:deliveryAccountableParty>metadata.deliveryAccountableParty</ns1:deliveryAccountableParty>
-  <ns1:broId>metadata.broId</ns1:broId>
-  <ns1:qualityRegime>IMBRO</ns1:qualityRegime>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
   <!-- For replaceRequest, add here: 'correctionReason' - check from replace_GMW_Shift.html -->
   <ns:sourceDocument>
-    <ns:GMW_SubsequentAdditionSurveys>
-      <ns:eventDate>
-        <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
-      </ns:eventDate>
-      <!-- 1 or more repetitions: -->
-      <ns:IsRelatedTo>
-        {% with prefix=sourcedocs_data.broId|upper|slice:":3" %}
-        {% if prefix == "BHR" %}
-        <!-- You have a CHOICE of the next 2 items at this level -->
-        <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_01">
-          <ns2:broId>sourcedocs_data.broId</ns2:broId>
-        </ns2:BoreholeResearch>
-        {% elif prefix == "CPT" %}
-        <ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_01">
-                     <ns2:broId>sourcedocs_data.broId</ns2:broId>
-                  </ns2:GeotechnicalCPTSurvey
-        {% else %}
-        <!-- Invalid related BRO id prefix, expected BHR or CPT -->
-        {% endif %}
-        {% endwith %}
-      </ns:IsRelatedTo>
-    </ns:GMW_SubsequentAdditionSurveys>
+  <ns:GMW_SubsequentAdditionSurveys>
+    <ns:eventDate>
+      <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+    </ns:eventDate>
+    {% for survey in sourcedocs_data.relatedSurveys %}
+    <ns:IsRelatedTo>
+      {% with prefix=survey.broId|slice:":3" %}
+      {% if prefix == "BHR" %}
+      <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_{{ forloop.counter|stringformat:'02d' }}">
+        <ns2:broId>{{ survey.broId }}</ns2:broId>
+      </ns2:BoreholeResearch>
+      {% elif prefix == "CPT" %}
+      <ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_{{ forloop.counter|stringformat:'02d'  }}">
+        <ns2:broId>{{ survey.broId }}</ns2:broId>
+      </ns2:GeotechnicalCPTSurvey>
+      {% endif %}
+      {% endwith %}
+    </ns:IsRelatedTo>
+    {% endfor %}
+  </ns:GMW_SubsequentAdditionSurveys>
   </ns:sourceDocument>
 </ns:registrationRequest>

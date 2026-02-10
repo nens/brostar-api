@@ -296,9 +296,12 @@ class GMWWellHeadProtector(GMWEvent):
     well_head_protector: str
 
 
-class GMWAdditionalSurvey(GMWEvent):
+class RelatedSurvey(CamelModel):
     bro_id: str
-    survey_type: Literal["BHR", "CPT"]
+    
+
+class GMWAdditionalSurvey(GMWEvent):
+    related_surveys: list[RelatedSurvey]
 
 
 class FieldMeasurement(CamelModel):
