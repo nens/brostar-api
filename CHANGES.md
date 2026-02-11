@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.63 (unreleased)
+## 1.63 (2026-02-11)
 
 
 -   Bugfix: improve gmn-measuringpoints eventdate handling
