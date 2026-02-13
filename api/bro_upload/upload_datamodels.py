@@ -1,6 +1,6 @@
 import uuid
 from datetime import date, datetime
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import BaseModel, field_validator, model_validator
 
@@ -298,7 +298,7 @@ class GMWWellHeadProtector(GMWEvent):
 
 class RelatedSurvey(CamelModel):
     bro_id: str
-    
+
 
 class GMWAdditionalSurvey(GMWEvent):
     related_surveys: list[RelatedSurvey]

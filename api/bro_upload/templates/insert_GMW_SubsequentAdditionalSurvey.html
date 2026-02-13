@@ -1,4 +1,5 @@
-<ns:registrationRequest
+
+<ns:insertRequest
   xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
   xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
   xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
@@ -8,6 +9,7 @@
   <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
   <ns1:broId>{{ metadata.broId }}</ns1:broId>
   <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">{{ metadata.correctionReason }}</ns:correctionReason>
   <ns:sourceDocument>
   <ns:GMW_SubsequentAdditionSurveys>
     <ns:eventDate>
@@ -30,4 +32,4 @@
     {% endfor %}
   </ns:GMW_SubsequentAdditionSurveys>
   </ns:sourceDocument>
-</ns:registrationRequest>
+</ns:insertRequest>
