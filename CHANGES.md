@@ -3,7 +3,8 @@
 ## 1.64 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [GMW]: Add icontains filtering for nit_gcode, well_code, bro_id and well_construction_date
+-   Enhancemenet [UploadTasks]: Add icontains filtering for request_reference (metadata) and bro_id
 
 
 ## 1.63 (2026-02-11)
