@@ -18,6 +18,9 @@ class GmwFilter(DateTimeFilterMixin, FilterSet):
     nitg_code__icontains = filters.CharFilter(
         field_name="nitg_code", lookup_expr="icontains"
     )
+    well_construction_date__icontains = filters.CharFilter(
+        field_name="well_construction_date", lookup_expr="icontains"
+    )
 
     class Meta:
         model = GMW
