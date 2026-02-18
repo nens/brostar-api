@@ -1,10 +1,19 @@
 # Changelog for BROStar API
 
-## 1.63 (unreleased)
+## 1.64 (unreleased)
+
+
+-   Enhancement [GMW]: Add icontains filtering for nit_gcode, well_code, bro_id and well_construction_date
+-   Enhancemenet [UploadTasks]: Add icontains filtering for request_reference (metadata) and bro_id
+
+
+## 1.63 (2026-02-11)
 
 
 -   Bugfix: improve gmn-measuringpoints eventdate handling
 -   Bugfix: improve GMN-Close delete template
+-   Bugfix: GAR-template
+-   Bugfix: GMW-creation
 
 ## To-Do:
 -   Add fields to GMWConstruction: Survey, ScreenProtection, IsAbroad, GeometriePublic
