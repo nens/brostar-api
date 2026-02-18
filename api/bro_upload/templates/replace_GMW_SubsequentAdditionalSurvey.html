@@ -1,0 +1,34 @@
+<ns:replaceRequest
+  xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+  xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+>
+  <ns1:requestReference>{{ metadata.requestReference }}</ns1:requestReference>
+  <ns1:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</ns1:deliveryAccountableParty>
+  <ns1:broId>{{ metadata.broId }}</ns1:broId>
+  <ns1:qualityRegime>{{ metadata.qualityRegime }}</ns1:qualityRegime>
+  <ns:correctionReason codeSpace="urn:bro:gmw:CorrectionReason">{{ metadata.correctionReason }}</ns:correctionReason>
+  <ns:sourceDocument>
+  <ns:GMW_SubsequentAdditionSurveys>
+    <ns:eventDate>
+      <ns1:date>{{ sourcedocs_data.eventDate }}</ns1:date>
+    </ns:eventDate>
+    {% for survey in sourcedocs_data.relatedSurveys %}
+    <ns:IsRelatedTo>
+      {% with prefix=survey.broId|slice:":3" %}
+      {% if prefix == "BHR" %}
+      <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_{{ forloop.counter|stringformat:'02d' }}">
+        <ns2:broId>{{ survey.broId }}</ns2:broId>
+      </ns2:BoreholeResearch>
+      {% elif prefix == "CPT" %}
+      <ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_{{ forloop.counter|stringformat:'02d'  }}">
+        <ns2:broId>{{ survey.broId }}</ns2:broId>
+      </ns2:GeotechnicalCPTSurvey>
+      {% endif %}
+      {% endwith %}
+    </ns:IsRelatedTo>
+    {% endfor %}
+  </ns:GMW_SubsequentAdditionSurveys>
+  </ns:sourceDocument>
+</ns:replaceRequest>
