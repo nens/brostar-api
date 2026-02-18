@@ -87,6 +87,10 @@
         <ns:screen>
           <ns:screenLength uom="m">{{ monitoringtube.screenLength }}</ns:screenLength>
           <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
+          <!-- Optional for GMW 1.1 for screenProtection -->
+          {% if monitoringtube.screenProtection %}
+          <ns:screenProtection codeSpace="urn:bro:gmw:screenProtection">{{ monitoringtube.screenProtection }}</ns:screenProtection>
+          {% endif %}
         </ns:screen>
         <ns:plainTubePart>
           <ns2:plainTubePartLength uom="m">{{ monitoringtube.plainTubePartLength }}</ns2:plainTubePartLength>
@@ -111,6 +115,32 @@
         {% endfor %}
       </ns:monitoringTube>
       {% endfor %}
+      <!-- Optional for GMW 1.1 for geometricDataPubliclyAvailable  -->
+      {% if sourcedocs_data.geometricDataPubliclyAvailable %}
+      <ns:geometricDataPubliclyAvailable codeSpace="urn:bro:gmw:geometricDataPubliclyAvailable">{{ sourcedocs_data.geometricDataPubliclyAvailable }}</ns:geometricDataPubliclyAvailable>
+      {% endif %}
+      <!-- Optional for GMW 1.1 for isAbroad  -->
+      {% if sourcedocs_data.isAbroad %}
+      <ns:isAbroad codespace="urn:bro:isAbroad">{{ sourcedocs_data.isAbroad }}</ns:isAbroad>
+      {% endif %}
+      <!-- Optional for GMW 1.1 for surveys  -->
+      {% if sourcedocs_data.surveys %}
+      {% for survey in sourcedocs_data.relatedSurveys %}
+      <ns:IsRelatedTo>
+        {% with prefix=survey.broId|slice:":3" %}
+        {% if prefix == "BHR" %}
+        <ns2:BoreholeResearch gml:id="BoreholeResearch_ID_{{ forloop.counter|stringformat:'02d' }}">
+          <ns2:broId>{{ survey.broId }}</ns2:broId>
+        </ns2:BoreholeResearch>
+        {% elif prefix == "CPT" %}
+        <ns2:GeotechnicalCPTSurvey gml:id="GeotechnicalCPTSurvey_ID_{{ forloop.counter|stringformat:'02d'  }}">
+          <ns2:broId>{{ survey.broId }}</ns2:broId>
+        </ns2:GeotechnicalCPTSurvey>
+        {% endif %}
+        {% endwith %}
+      </ns:IsRelatedTo>
+      {% endfor %}
+      {% endif %}
     </ns:GMW_Construction>
   </ns:sourceDocument>
   <ns:dateToBeCorrected>
