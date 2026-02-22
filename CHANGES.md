@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.64 (unreleased)
+## 1.64 (2026-02-22)
 
 
 -   Enhancement [GMW]: Add icontains filtering for nit_gcode, well_code, bro_id and well_construction_date
