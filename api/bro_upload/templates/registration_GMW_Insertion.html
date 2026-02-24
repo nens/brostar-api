@@ -24,13 +24,13 @@
       </ns:eventDate>
       {% for monitoringtube in sourcedocs_data.monitoringTubes %}
       <ns:monitoringTube>
+        <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
+        <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
+        <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}
+        </ns:insertedPartMaterial>
         <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
         <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
         <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-        <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
-        <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
-        <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}
-        </ns:insertedPartMaterial>
       </ns:monitoringTube>
       {% endfor %}
     </ns:GMW_Insertion>
