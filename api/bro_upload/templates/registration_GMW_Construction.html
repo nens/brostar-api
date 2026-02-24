@@ -87,7 +87,7 @@
           <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">{{ monitoringtube.sockMaterial }}</ns:sockMaterial>
           <!-- Optional for GMW 1.1 for screenProtection -->
           {% if monitoringtube.screenProtection %}
-          <ns:screenProtection codeSpace="urn:bro:gmw:screenProtection">{{ monitoringtube.screenProtection }}</ns:screenProtection>
+          <ns:screenProtection codeSpace="urn:bro:gmw:ScreenProtection">{{ monitoringtube.screenProtection }}</ns:screenProtection>
           {% endif %}
         </ns:screen>
         <ns:plainTubePart>
@@ -115,11 +115,11 @@
       {% endfor %}
       <!-- Optional for GMW 1.1 for geometricDataPubliclyAvailable  -->
       {% if sourcedocs_data.geometricDataPubliclyAvailable %}
-      <ns:geometricDataPubliclyAvailable codeSpace="urn:bro:gmw:geometricDataPubliclyAvailable">{{ sourcedocs_data.geometricDataPubliclyAvailable }}</ns:geometricDataPubliclyAvailable>
+      <ns:geometricDataPubliclyAvailable>{{ sourcedocs_data.geometricDataPubliclyAvailable }}</ns:geometricDataPubliclyAvailable>
       {% endif %}
       <!-- Optional for GMW 1.1 for isAbroad  -->
       {% if sourcedocs_data.isAbroad %}
-      <ns:isAbroad codespace="urn:bro:isAbroad">{{ sourcedocs_data.isAbroad }}</ns:isAbroad>
+      <ns:isAbroad>{{ sourcedocs_data.isAbroad }}</ns:isAbroad>
       {% endif %}
       <!-- Optional for GMW 1.1 for surveys  -->
       {% if sourcedocs_data.surveys %}

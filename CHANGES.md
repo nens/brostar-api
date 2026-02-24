@@ -3,7 +3,7 @@
 ## 1.65 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [GMW]: Correct GMWConstruction Templates (v1.1)
 
 
 ## 1.64 (2026-02-22)
