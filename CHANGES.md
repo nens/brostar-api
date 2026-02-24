@@ -4,6 +4,9 @@
 
 
 -   Bugfix [GMW]: Correct GMWConstruction Templates (v1.1)
+-   Bugfix [GMW]: Correct GMWInsertion Templates (v1.1)
+-   Bugfix [General]: Correct correctionReason Templates
+-   Bugfix [Signals]: Do not retrieve plain tube part for staging
 
 
 ## 1.64 (2026-02-22)
