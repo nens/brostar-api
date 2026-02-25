@@ -60,7 +60,7 @@ class GMW(models.Model):
         verbose_name_plural = "GMW's"
 
     @property
-    def nr_of_tubes(self) -> int:
+    def nr_of_monitoring_tubes(self) -> int:
         return self.tubes.count()
 
     @property

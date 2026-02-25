@@ -1,9 +1,11 @@
 import logging
 
+from django.core.cache import cache
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
+from rest_framework.response import Response
 
 from api import mixins
 from api.bro_upload.upload_datamodels import GMWConstruction
@@ -13,6 +15,38 @@ from . import models as gmw_models
 from .xml_reader.xml_model import GMWXML
 
 logger = logging.getLogger(__name__)
+
+
+class GMWGeoJSONView(generics.ListAPIView):
+    """Endpoint to serve all GMW data as GeoJSON FeatureCollection"""
+
+    queryset = gmw_models.GMW.objects.select_related("data_owner").prefetch_related(
+        "tubes"
+    )
+    serializer_class = serializers.GMWGeoJSONSerializer
+
+    def list(self, request, *args, **kwargs):
+        # Check cache first (optional but recommended for large datasets)
+        cache_key = "gmw_geojson_all"
+        cached_data = cache.get(cache_key)
+
+        if cached_data:
+            return Response(cached_data)
+
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        # Wrap in GeoJSON FeatureCollection
+        geojson = {
+            "type": "FeatureCollection",
+            "count": len(serializer.data),
+            "features": serializer.data,
+        }
+
+        # Cache for 1 hour
+        cache.set(cache_key, geojson, 60 * 60)
+
+        return Response(geojson)
 
 
 class GMWAPIView(View):

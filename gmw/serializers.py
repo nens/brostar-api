@@ -8,6 +8,88 @@ from gmn import models as gmn_models
 from . import models as gmw_models
 
 
+class MonitoringTubeOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmw_models.MonitoringTube
+        fields = ["uuid", "tube_number", "tube_status"]
+
+
+class EventsOverviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gmw_models.Event
+        fields = ["uuid", "event_name", "event_date"]
+
+
+class GMWGeoJSONSerializer(serializers.ModelSerializer):
+    """GeoJSON serializer for GMW model"""
+
+    linked_gmns = serializers.SerializerMethodField()
+    nr_of_monitoring_tubes = serializers.SerializerMethodField()
+    tubes = MonitoringTubeOverviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = gmw_models.GMW
+        fields = [
+            "uuid",
+            "bro_id",
+            "linked_gmns",
+            "standardized_location",
+            "nitg_code",
+            "well_construction_date",
+            "nr_of_monitoring_tubes",
+            "quality_regime",
+            "removed",
+            "tubes",
+        ]
+
+    def get_linked_gmns(self, obj):
+        linked_gmns = set(
+            measuringpoint.gmn.uuid
+            for measuringpoint in gmn_models.Measuringpoint.objects.filter(
+                gmw_bro_id=obj.bro_id
+            )
+        )
+        return [str(uuid) for uuid in linked_gmns]
+
+    def get_nr_of_monitoring_tubes(self, obj):
+        return obj.nr_of_monitoring_tubes
+
+    @staticmethod
+    def parse_coordinates(location_string: str | None) -> tuple[float, float] | None:
+        """Parse 'latitude longitude' string to (lon, lat) tuple for GeoJSON"""
+        if not location_string:
+            return None
+        try:
+            parts = location_string.strip().split()
+            if len(parts) == 2:
+                lat, lon = float(parts[0]), float(parts[1])
+                return (lon, lat)  # GeoJSON uses [longitude, latitude] order
+        except (ValueError, AttributeError):
+            return None
+        return None
+
+    def to_representation(self, instance):
+        """Convert to GeoJSON Feature format"""
+        data = super().to_representation(instance)
+
+        # Parse coordinates
+        location_string = data.pop("standardized_location", None)
+        coordinates = self.parse_coordinates(location_string)
+
+        # Build GeoJSON Feature
+        feature = {
+            "type": "Feature",
+            "id": str(data["uuid"]),  # GeoJSON id field
+            "geometry": {
+                "type": "Point",
+                "coordinates": coordinates if coordinates else None,
+            },
+            "properties": data,
+        }
+
+        return feature
+
+
 class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
     linked_gmns = serializers.SerializerMethodField()
     nr_of_monitoring_tubes = serializers.SerializerMethodField()
@@ -27,22 +109,10 @@ class GMWSerializer(UrlFieldMixin, serializers.ModelSerializer):
         return list(linked_gmns)
 
     def get_nr_of_monitoring_tubes(self, obj: gmw_models.GMW) -> int:
-        return obj.nr_of_tubes
+        return obj.nr_of_monitoring_tubes
 
     def get_nr_of_intermediate_events(self, obj: gmw_models.GMW) -> int:
         return obj.nr_of_intermediate_events
-
-
-class MonitoringTubeOverviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = gmw_models.MonitoringTube
-        fields = ["uuid", "tube_number", "tube_status"]
-
-
-class EventsOverviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = gmw_models.Event
-        fields = ["uuid", "event_name", "event_date"]
 
 
 class GMWOverviewSerializer(serializers.ModelSerializer):
