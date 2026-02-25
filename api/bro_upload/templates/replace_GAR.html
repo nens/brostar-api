@@ -11,7 +11,8 @@
     <brocom:broId>{{ metadata.broId }}</brocom:broId>
     <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
     <correctionReason codeSpace="urn:bro:gar:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
-    <GAR gml:id="id_0001">
+    <sourceDocument>
+        <GAR gml:id="id_0001">
             <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
             <qualityControlMethod codeSpace="urn:bro:gar:QualityControlMethod">{{ sourcedocs_data.qualityControlMethod }}</qualityControlMethod>
             {% for net in sourcedocs_data.groundwaterMonitoringNets %}

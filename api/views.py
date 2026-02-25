@@ -498,7 +498,19 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                         status=status.HTTP_304_NOT_MODIFIED,
                     )
 
-    @action(detail=True, methods=["get"])
+    @swagger_auto_schema(
+        method="get",
+        operation_description="Returns the generated XML file for this upload task.",
+        responses={
+            200: openapi.Response(
+                description="Raw XML content",
+                schema=openapi.Schema(type=openapi.TYPE_STRING),
+                examples={"application/xml": "<root><example/></root>"},
+            )
+        },
+        produces=["application/xml"],
+    )
+    @action(detail=True, methods=["get"], url_path="read_xml")
     def read_xml(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
         """Endpoint to show the generated XML file of this upload task, which is generated on the fly."""
         upload_task = models.UploadTask.objects.get(uuid=uuid)

@@ -22,7 +22,9 @@ class GMW(models.Model):
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=50, null=True)
-    well_construction_date = models.CharField(max_length=100, null=True)
+    well_construction_date = models.CharField(
+        max_length=100, null=True
+    )  # Should we convert this to date, for easier filtering?
     delivery_context = models.CharField(max_length=100, null=True)
     construction_standard = models.CharField(max_length=100, null=True)
     initial_function = models.CharField(max_length=100, null=True)

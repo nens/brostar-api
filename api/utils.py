@@ -19,7 +19,14 @@ def create_gmw(
     bro_id: str, metadata: dict, sourcedocument_data: dict, data_owner: str
 ) -> None:
     delivered_location = sourcedocument_data.get("deliveredLocation", "0 0").split(" ")
-    rd_x, rd_y = map(float, delivered_location)
+    if delivered_location == "" or len(delivered_location) != 2:
+        logger.info(
+            f"Invalid deliveredLocation format for bro_id={bro_id}, owner={data_owner}. Expected 'x y', got: {sourcedocument_data.get('deliveredLocation')}"
+        )
+        rd_x, rd_y = 0.0, 0.0
+    else:
+        rd_x, rd_y = map(float, delivered_location)
+
     lon, lat = transformer.transform(rd_x, rd_y)
     standardized_location = f"{lat} {lon}"
     gmw = GMW.objects.update_or_create(
@@ -121,6 +128,12 @@ def create_gmw_event(
     except GMW.DoesNotExist:
         logger.info(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
         return
+    except GMW.MultipleObjectsReturned:
+        gmw = (
+            GMW.objects.filter(bro_id=bro_id, data_owner=data_owner)
+            .order_by("created_at")
+            .first()
+        )
 
     Event.objects.update_or_create(
         gmw=gmw,
@@ -146,6 +159,12 @@ def create_gmw_removal(
     except GMW.DoesNotExist:
         logger.info(f"GMW not found for bro_id={bro_id}, owner={data_owner}")
         return
+    except GMW.MultipleObjectsReturned:
+        gmw = (
+            GMW.objects.filter(bro_id=bro_id, data_owner=data_owner)
+            .order_by("created_at")
+            .first()
+        )
 
     Event.objects.update_or_create(
         gmw=gmw,

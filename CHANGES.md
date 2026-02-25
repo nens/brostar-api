@@ -1,9 +1,35 @@
 # Changelog for BROStar API
 
-## 1.63 (unreleased)
+## 1.65 (unreleased)
+
+
+-   Bugfix [GMW]: Correct GMWConstruction Templates (v1.1)
+-   Bugfix [GMW]: Correct GMWInsertion Templates (v1.1)
+-   Feat [GMW]: Add GMWRemoval deletion template
+-   Bugfix [General]: Correct correctionReason Templates
+-   Bugfix [Signals]: Do not retrieve plain tube part for staging
+
+
+## 1.64 (2026-02-22)
+
+
+-   Enhancement [GMW]: Add icontains filtering for nit_gcode, well_code, bro_id and well_construction_date
+-   Enhancemenet [UploadTasks]: Add icontains filtering for request_reference (metadata) and bro_id
+
+
+## 1.63 (2026-02-11)
 
 
 -   Bugfix: improve gmn-measuringpoints eventdate handling
+-   Bugfix: improve GMN-Close delete template
+-   Bugfix: GAR-template
+-   Bugfix: GMW-creation
+
+## To-Do:
+-   Add fields to GMWConstruction: Survey, ScreenProtection, IsAbroad, GeometriePublic
+-   Add GMW_SubsequentSurvey (registration, replace, move, insert, delete)
+-   Add to api/upload_models.py (Change GMWConstruction, Add SubsequentSurvey)
+-   Make correctionReason variable in all templates ({{ metadata.correctionReason }})
 
 
 ## 1.62 (2026-01-29)

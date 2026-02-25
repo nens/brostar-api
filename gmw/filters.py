@@ -1,4 +1,3 @@
-from django.db.models import JSONField
 from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
@@ -9,15 +8,23 @@ from .models import GMW, Event, MonitoringTube
 
 
 class GmwFilter(DateTimeFilterMixin, FilterSet):
+    bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
+    internal_id__icontains = filters.CharFilter(
+        field_name="internal_id", lookup_expr="icontains"
+    )
+    well_code__icontains = filters.CharFilter(
+        field_name="well_code", lookup_expr="icontains"
+    )
+    nitg_code__icontains = filters.CharFilter(
+        field_name="nitg_code", lookup_expr="icontains"
+    )
+    well_construction_date__icontains = filters.CharFilter(
+        field_name="well_construction_date", lookup_expr="icontains"
+    )
+
     class Meta:
         model = GMW
         fields = "__all__"
-        filter_overrides = {
-            JSONField: {
-                "filter_class": filters.CharFilter,
-                "extra": {"lookup_expr": "icontains"},
-            }
-        }
 
 
 class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):

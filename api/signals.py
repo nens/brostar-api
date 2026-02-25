@@ -1,4 +1,5 @@
 import logging
+import os
 
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
@@ -37,6 +38,8 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     if not isinstance(instance.bro_errors, str):
         instance.bro_errors = str(instance.bro_errors)
 
+    is_staging = "staging" in os.getenv("NENS_AUTH_RESOURCE_SERVER_ID", "")
+
     if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
         for tube in instance.sourcedocument_data.get("monitoringTubes", []):
             plain_tube_length = get_plain_tube_part_length(
@@ -44,7 +47,7 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
                 tube.get("tubeNumber"),
                 tube.get("tubeTopPosition"),
             )
-            if plain_tube_length is not None:
+            if plain_tube_length is not None and not is_staging:
                 tube["plainTubePartLength"] = str(plain_tube_length)
 
     if (
