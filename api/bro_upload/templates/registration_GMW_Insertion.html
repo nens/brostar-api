@@ -23,12 +23,12 @@
         {% endif %}
       </ns:eventDate>
       {% if sourcedocs_data.monitoringTubes|length == 1 %}
-      <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
-      <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
-      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
-      <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
-      <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
-      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}
+      <ns:tubeNumber>{{ sourcedocs_data.monitoringTubes[0].tubeNumber }}</ns:tubeNumber>
+      <ns:tubeTopPosition uom="m">{{ sourcedocs_data.monitoringTubes[0].tubeTopPosition }}</ns:tubeTopPosition>
+      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ sourcedocs_data.monitoringTubes[0].tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+      <ns:insertedPartDiameter uom="mm">{{ sourcedocs_data.monitoringTubes[0].insertedPartDiameter }}</ns:insertedPartDiameter>
+      <ns:insertedPartLength uom="m">{{ sourcedocs_data.monitoringTubes[0].insertedPartLength }}</ns:insertedPartLength>
+      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ sourcedocs_data.monitoringTubes[0].insertedPartMaterial }}
       </ns:insertedPartMaterial>
       {% else %}
       {% for monitoringtube in sourcedocs_data.monitoringTubes %}
