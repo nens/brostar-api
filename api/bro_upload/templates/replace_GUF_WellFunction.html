@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
+  >
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason"
+    >{{ metadata.correctionReason }}</correctionReason
+  >
+  <sourceDocument>
+    <guf:GUF_WellFunction>
+      <gufcom:realisedWellId
+        >{{ sourcedocs_data.realisedWellId }}</gufcom:realisedWellId
+      >
+      {% for wellFunction in well.wellFunctions %}
+      <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction"
+        >{{ wellFunction }}</gufcom:wellFunction
+      >
+      {% endfor %}
+      <gufcom:relativeTemperature
+        >{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature
+      >
+      <gufcom:startValidity>{{ sourcedocs_data.startValidity }}</gufcom:startValidity>
+      {% if sourcedocs_data.realisedInstallationFunction %}
+      <gufcom:realisedInstallationFunction>
+        <gufcom:realisedInstallationId
+          >{{ sourcedocs_data.realisedInstallationFunction.realised_installation_id
+          }}</gufcom:realisedInstallationId
+        >
+        <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction"
+          >{{ sourcedocs_data.realisedInstallationFunction.installation_function
+          }}</gufcom:installationFunction
+        >
+      </gufcom:realisedInstallationFunction>
+      {% endif %}
+    </guf:GUF_WellFunction>
+  </sourceDocument>
+</replaceRequest>

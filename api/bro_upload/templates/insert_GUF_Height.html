@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<insertRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.CorrectionReason }}</correctionReason>
+  <sourceDocument>
+    <gufcom:GUF_Height gml:id="id_0001">
+      <gufcom:realisedWellId>{{ sourcedocs_data.realisedWellId }}</gufcom:realisedWellId>
+      {% for well_function in sourcedocs_data.wellFunctions %}
+      <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction">{{ well_function }}</gufcom:wellFunction>
+      {% endfor %}
+      {% if sourcedocs_data.relativeTemperature %}
+      <gufcom:relativeTemperature>{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature>
+      {% endif %}
+      <gufcom:startValidity>
+        {% if sourcedocs_data.startValidity|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.startValidity }}</brocom:date>
+        {% elif sourcedocs_data.startValidity|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.startValidity }}</brocom:yearMonth>
+        {% elif sourcedocs_data.startValidity|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.startValidity }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </gufcom:startValidity>
+      {% if sourcedocs_data.realisedInstallation %}
+      <gufcom:realisedInstallation>
+        <gufcom:RealisedInstallationHeightPart gml:id="id_{{ sourcedocs_data.realisedInstallation.gmlId }}">
+          <gufcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallation.realisedInstallationId }}</gufcom:realisedInstallationId>
+          <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction">{{ sourcedocs_data.realisedInstallation.installationFunction }}</gufcom:installationFunction>
+        </gufcom:RealisedInstallationHeightPart>
+      </gufcom:realisedInstallation>
+      {% endif %}
+    </gufcom:GUF_Height>
+  </sourceDocument>
+</insertRequest>

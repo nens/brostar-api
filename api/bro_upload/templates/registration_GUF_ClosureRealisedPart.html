@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <gufcom:GUF_ClosureRealisedPart gml:id="id_0001">
+      <gufcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId>
+      <!--  Optional: only needed if not all parts of the installation are closed and the installationFunction has changed.
+			<gufcom:installationFunction codeSpace="?">?</gufcom:installationFunction>
+			 -->
+      <!--  Optional: only needed if not all parts of the installation are closed and the geometry has changed.
+			<gufcom:geometry>...</gufcom:geometry>
+			 -->
+      <gufcom:endTime>
+          {% if sourcedocs_data.endTime|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
+          {% elif sourcedocs_data.endTime|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
+          {% elif sourcedocs_data.endTime|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+      </gufcom:endTime>
+      {% for realised_well in sourcedocs_data.realisedWells %}
+      <gufcom:realisedWell>
+        <gufcom:RealisedWellClosurePart gml:id="{{ realised_well.gmlId }}">
+          <gufcom:realisedWellId>{{ realised_well.realisedWellId }}</gufcom:realisedWellId>
+        </gufcom:RealisedWellClosurePart>
+      </gufcom:realisedWell>
+	  {% endfor %}
+    </gufcom:GUF_ClosureRealisedPart>
+  </sourceDocument>
+</registrationRequest>

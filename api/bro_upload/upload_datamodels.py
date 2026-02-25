@@ -1,8 +1,8 @@
 import uuid
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Literal
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from .type_helpers import (
     BroDomainOptions,
@@ -194,8 +194,8 @@ class GMWElectrodeStatus(GMWEvent):
 
 
 class GMWGroundLevel(GMWEvent):
-    well_stability: str = "stabielNAP"
-    ground_level_stable: str = "nee"
+    well_stability: Literal["stabielNAP"] = "stabielNAP"
+    ground_level_stable: Literal["nee"] = "nee"
     ground_level_position: float
     ground_level_positioning_method: str
 
@@ -247,13 +247,38 @@ class MonitoringTubePositions(CamelModel):
     tube_top_position: float
     tube_top_positioning_method: str
 
+    @field_validator("tube_top_positioning_method")
+    def validate_tube_top_positioning_method(cls, value):
+        if value == "afgeleidSbl":
+            raise ValueError(
+                "tubeTopPositioningMethod mag niet de waarde 'afgeleidSbl' hebben"
+            )
+        return value
+
 
 class GMWPositions(GMWEvent):
-    well_stability: str = "nee"
-    ground_level_stable: str = "instabiel"
+    well_stability: Literal["nee"] = "nee"
+    ground_level_stable: Literal["instabiel"] = "instabiel"
     ground_level_position: float
     ground_level_positioning_method: str
     monitoring_tubes: list[MonitoringTubePositions]
+
+    ## Add more validation, ground_level_positioning_method cannot be 'geen'
+    @field_validator("ground_level_positioning_method")
+    def validate_ground_level_positioning_method(cls, value):
+        if value == "geen":
+            raise ValueError(
+                "groundLevelPositioningMethod mag niet de waarde 'geen' hebben"
+            )
+        return value
+
+    ## And the tube numbers within monitoring_tubes should be unique
+    @field_validator("monitoring_tubes")
+    def validate_unique_tube_numbers(cls, value):
+        tube_numbers = [tube.tube_number for tube in value]
+        if len(tube_numbers) != len(set(tube_numbers)):
+            raise ValueError("De buizen moeten unieke nummers hebben")
+        return value
 
 
 class GMWPositionsMeasuring(GMWEvent):
@@ -694,3 +719,363 @@ class CPT(CamelModel):
     vertical_positioning_operator: str | None = None
     additional_investigation: AdditionalInvestigation | None = None
     cone_penetrometer_survey: ConePenetrometerSurvey
+
+
+### Add BHR and GUF models below
+
+
+class BHRP(CamelModel):
+    object_id_accountable_party: str
+
+
+class BHRG(CamelModel):
+    object_id_accountable_party: str
+
+
+class BHRGT(CamelModel):
+    object_id_accountable_party: str
+
+
+class SFR(CamelModel):
+    object_id_accountable_party: str
+
+
+class DesignLoop(CamelModel):
+    """Design loop information for installations"""
+
+    gml_id: str = ""
+    design_loop_id: str
+    depth_loop_top: float  # meters
+    depth_loop_bottom: float  # meters
+    pos: str  # Position coordinates for Point or LineString geometry
+    geometry_type: Literal["Point", "LineString"] = "Point"  # Type of geometry
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class DesignSurfaceInfiltration(CamelModel):
+    """Design surface infiltration information for installations"""
+
+    gml_id: str = ""
+    design_surface_infiltration_id: str
+    pos: str  # Position coordinates for Polygon geometry
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class DesignScreen(CamelModel):
+    """Design screen information for a well"""
+
+    screen_type: str
+    design_screen_top: float  # meters
+    design_screen_bottom: float  # meters (mandatory if screenType is verticaal)
+    publicly_available: Literal["ja", "nee"] = "nee"
+
+
+class DesignWell(CamelModel):
+    """Design well within an installation"""
+
+    gml_id: str = ""
+    design_well_id: str
+    well_functions: list[str] = Field(min_length=1)
+    height: float  # meters
+    pos: str  # Position coordinates
+    geometry_publicly_available: Literal["ja", "nee"] | None = "nee"
+    maximum_well_depth: float | None = None  # meters
+    maximum_well_depth_publicly_available: Literal["ja", "nee"] | None = None
+    maximum_well_capacity: float | None = None  # m3/h
+    relative_temperature: str | None = None
+    design_screen: DesignScreen | None = None
+    installation_function: str | None = None
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class DesignInstallation(CamelModel):
+    """Design installation containing wells"""
+
+    gml_id: str = ""
+    design_installation_id: str
+    installation_function: str = "onttrekking"
+    pos: str  # Position coordinates
+    licensed_quantities: list["LicensedQuantity"] = []
+    energy_characteristics: str | None = None  # For energy systems
+    design_loops: list[DesignLoop] = []
+    design_surface_infiltrations: list[DesignSurfaceInfiltration] = []
+    design_wells: list[DesignWell] = []
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class LicensedQuantity(CamelModel):
+    """Licensed quantity information"""
+
+    licensed_in_out: str
+    maximum_timeframe: Literal["hour", "day", "month", "quarter", "year"] | None = None
+    maximum_value: float | None = None  # m3
+
+
+class GUFStartRegistration(CamelModel):
+    """Source document data for GUF_StartRegistration"""
+
+    object_id_accountable_party: str
+    delivery_context: str
+    start_time: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    licence_gml_id: str = ""
+    identification_licence: str
+    legal_type: str
+    primary_usage_type: str
+    secondary_usage_types: list[str] = []
+    human_consumption: Literal["ja", "nee"]
+    licensed_quantities: list[LicensedQuantity] = []
+    design_installations: list[DesignInstallation] = []
+
+    @field_validator("licence_gml_id", mode="before")
+    @classmethod
+    def generate_licence_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class GUFNewLicence(CamelModel):
+    """Source document data for GUF_NewLicence"""
+
+    licence_gml_id: str = ""
+    identification_licence: str
+    legal_type: str
+    primary_usage_type: str
+    secondary_usage_types: list[str] = []
+    human_consumption: Literal["ja", "nee"]
+    licensed_quantities: list[LicensedQuantity] = []
+    start_time: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    design_installations: list[DesignInstallation] = []
+
+    @field_validator("licence_gml_id", mode="before")
+    @classmethod
+    def generate_licence_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class RealisedLoop(CamelModel):
+    """Realised loop information for installations"""
+
+    gml_id: str = ""
+    realised_loop_id: str
+    depth_loop_top: float  # meters
+    depth_loop_bottom: float  # meters
+    pos: str | None = None  # Position coordinates for Point geometry
+    segments: str | None = None  # For Curve geometry
+    geometry_type: Literal["Point", "Curve"] = "Point"
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class RealisedSurfaceInfiltration(CamelModel):
+    """Realised surface infiltration information for installations"""
+
+    gml_id: str = ""
+    realised_surface_infiltration_id: str
+    pos: str  # Position coordinates for Polygon geometry
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def generate_gml_id(cls, v):
+        if not v:
+            return f"_{uuid.uuid4()}"
+        return v
+
+
+class RealisedInstallationHeightPart(CamelModel):
+    """Height part of realised installation"""
+
+    gml_id: str = ""
+    realised_installation_id: str
+    installation_function: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v else f"_{uuid.uuid4()}"
+
+
+class GUFHeight(CamelModel):
+    """Source document data for GUF_Height"""
+
+    realised_well_id: str
+    well_functions: list[str]
+    relative_temperature: str | None = None
+    start_validity: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    realised_installation: RealisedInstallationHeightPart | None = None
+
+
+class RealisedScreen(CamelModel):
+    """Realised screen information for wells"""
+
+    gml_id: str = ""
+    realised_screen_id: str
+    screen_type: str
+    top_screen_depth: float  # meters
+    length: float  # meters
+    pos: str | None = None  # For Point geometry
+    segments: str | None = None  # For Curve geometry
+    geometry_type: Literal["Point", "Curve"] = "Point"
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v else f"_{uuid.uuid4()}"
+
+
+class RealisedWell(CamelModel):
+    """Realised well information"""
+
+    gml_id: str = ""
+    realised_well_id: str
+    well_functions: list[str] = Field(min_length=1, max_length=2)  # 1 or 2 repetitions
+    height: float  # meters
+    well_depth: float  # meters
+    pos: str
+    publicly_available: Literal["ja", "nee"] | None = None
+    relative_temperature: str | None = None  # For energy systems
+    validity: str | None = None  # Not allowed in ExpandRealisedInstallation
+    lifespan: str | None = None  # Not allowed in ExpandRealisedInstallation
+    realised_screens: list[RealisedScreen] = []
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v else f"_{uuid.uuid4()}"
+
+
+class GUFAddRealisedInstallation(CamelModel):
+    """Source document data for GUF_AddRealisedInstallation"""
+
+    realised_installation_id: str
+    installation_function: str
+    pos: str  # Position coordinates
+    start_validity: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    realised_loops: list[RealisedLoop] = []
+    realised_surface_infiltrations: list[RealisedSurfaceInfiltration] = []
+    realised_wells: list[RealisedWell] = []
+
+
+class GUFExpandedRealisedInstallation(CamelModel):
+    """Source document data for GUF_ExpandRealisedInstallation"""
+
+    realised_installation_id: str
+    installation_function: str
+    pos: str  # Position coordinates
+    start_validity: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    realised_loops: list[RealisedLoop] = []
+    realised_surface_infiltrations: list[RealisedSurfaceInfiltration] = []
+    realised_wells: list[RealisedWell] = []
+
+
+class GUFGeometryRealisedSurfaceInfiltration(CamelModel):
+    """Source document data for GUF_GeometryRealisedSurfaceInfiltration"""
+
+    realised_surface_infiltration_id: str
+    pos: str  # Position coordinates for Polygon geometry
+    event_date: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+
+
+class RealisedInstallationFunction(CamelModel):
+    realised_installation_id: str
+    installation_function: str
+
+
+class GUFWellFunction(CamelModel):
+    """Source document data for GUF_WellFunction"""
+
+    realised_well_id: str
+    well_functions: list[str] = Field(min_length=1, max_length=2)
+    relative_temperature: str | None = None
+    event_date: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    realised_installation_function: RealisedInstallationFunction | None = None
+
+
+class GUFClosure(CamelModel):
+    end_time: str
+
+
+class RealisedWellClosurePart(CamelModel):
+    """Part of realised well for closure operations"""
+
+    gml_id: str = ""
+    realised_well_id: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v else f"_{uuid.uuid4()}"
+
+
+class GUFClosureRealisedPart(CamelModel):
+    """Source document data for GUF_ClosureRealisedPart"""
+
+    realised_installation_id: str
+    installation_function: str | None = (
+        None  # Optional: only if not all parts closed and function changed
+    )
+    pos: str | None = (
+        None  # Optional: only if not all parts closed and geometry changed
+    )
+    end_time: str = Field(
+        ...,
+        description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
+    )
+    realised_wells: list[RealisedWellClosurePart] = []
+
+
+class GPD(CamelModel):
+    object_id_accountable_party: str | None = None
+    bro_id: str | None = None

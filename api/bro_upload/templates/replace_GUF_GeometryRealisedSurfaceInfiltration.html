@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
+  >
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason"
+    >{{ metadata.CorrectionReason }}</correctionReason
+  >
+  <sourceDocument>
+    <gufcom:GUF_GeometryRealisedSurfaceInfiltration
+      gml:id="id_0001"
+      xmlns:gml="http://www.opengis.net/gml/3.2"
+    >
+      <gufcom:realisedSurfaceInfiltrationId
+        >{{ sourcedocs_data.realisedSurfaceInfiltrationId
+        }}</gufcom:realisedSurfaceInfiltrationId
+      >
+      <gufcom:geometry>
+        <gml:Polygon srsName="urn:ogc:def:crs:EPSG::28992" gml:id="id_0002">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>{{ sourcedocs_data.pos }}</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </gufcom:geometry>
+      <gufcom:eventDate>
+        {% if sourcedocs_data.eventDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+        {% elif sourcedocs_data.eventDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.eventDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </gufcom:eventDate>
+    </gufcom:GUF_GeometryRealisedSurfaceInfiltration>
+  </sourceDocument>
+</replaceRequest>

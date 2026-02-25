@@ -8,6 +8,7 @@
 -   Feat [GMW]: Add GMWRemoval deletion template
 -   Bugfix [General]: Correct correctionReason Templates
 -   Bugfix [Signals]: Do not retrieve plain tube part for staging
+-   Feat [GUF]: Initial templates and data models setup
 
 
 ## 1.64 (2026-02-22)

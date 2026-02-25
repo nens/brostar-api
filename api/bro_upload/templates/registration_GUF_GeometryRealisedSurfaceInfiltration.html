@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty
+    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
+  >
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <gufcom:GUF_GeometryRealisedSurfaceInfiltration gml:id="id_0001">
+      <gufcom:realisedSurfaceInfiltrationId
+        >{{ sourcedocs_data.realisedSurfaceInfiltrationId
+        }}</gufcom:realisedSurfaceInfiltrationId
+      >
+      <gufcom:geometry>
+        <gml:Polygon srsName="urn:ogc:def:crs:EPSG::28992" gml:id="id_0002">
+          <gml:exterior>
+            <gml:LinearRing>
+              <gml:posList>{{ sourcedocs_data.pos }}</gml:posList>
+            </gml:LinearRing>
+          </gml:exterior>
+        </gml:Polygon>
+      </gufcom:geometry>
+      <gufcom:eventDate>
+        {% if sourcedocs_data.eventDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.eventDate }}</brocom:date>
+        {% elif sourcedocs_data.eventDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.eventDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.eventDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.eventDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </gufcom:eventDate>
+    </gufcom:GUF_GeometryRealisedSurfaceInfiltration>
+  </sourceDocument>
+</registrationRequest>

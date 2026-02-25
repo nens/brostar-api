@@ -1,5 +1,11 @@
 from api.bro_upload.upload_datamodels import (
+    BHRG,
+    BHRGT,
+    BHRP,
+    CPT,
     GAR,
+    GPD,
+    SFR,
     FRDEmmInstrumentConfiguration,
     FRDEmmMeasurement,
     FRDGemMeasurement,
@@ -27,6 +33,15 @@ from api.bro_upload.upload_datamodels import (
     GMWShortening,
     GMWTubeStatus,
     GMWWellHeadProtector,
+    GUFAddRealisedInstallation,
+    GUFClosure,
+    GUFClosureRealisedPart,
+    GUFExpandedRealisedInstallation,
+    GUFGeometryRealisedSurfaceInfiltration,
+    GUFHeight,
+    GUFNewLicence,
+    GUFStartRegistration,
+    GUFWellFunction,
 )
 
 STATUS_CHOICES = [
@@ -93,7 +108,18 @@ REGISTRATION_TYPE_OPTIONS = [
     ("BHR-G", "BHR-G"),
     ("BHR-GT", "BHR-GT"),
     ("SFR", "SFR"),
-    ("GUF", "GUF"),
+    ("GUF_StartRegistration", "GUF_StartRegistration"),
+    ("GUF_NewLicense", "GUF_NewLicense"),
+    ("GUF_ExpandedRealisedInstallation", "GUF_ExpandedRealisedInstallation"),
+    (
+        "GUF_GeometryRealisedSurfaceInfiltration",
+        "GUF_GeometryRealisedSurfaceInfiltration",
+    ),
+    ("GUF_WellFunction", "GUF_WellFunction"),
+    ("GUF_Height", "GUF_Height"),
+    ("GUF_Closure", "GUF_Closure"),
+    ("GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
+    ("GUF_ClosureRealisedPart", "GUF_ClosureRealisedPart"),
     ("GPD", "GPD"),
 ]
 
@@ -129,6 +155,21 @@ registration_type_datamodel_mapping = {
     "FRD_EMM_InstrumentConfiguration": FRDEmmInstrumentConfiguration,
     "FRD_EMM_Measurement": FRDEmmMeasurement,
     "FRD_Closure": None,
+    "CPT": CPT,
+    "BHR-P": BHRP,
+    "BHR-G": BHRG,
+    "BHR-GT": BHRGT,
+    "SFR": SFR,
+    "GUF_StartRegistration": GUFStartRegistration,
+    "GUF_NewLicence": GUFNewLicence,
+    "GUF_ExpandedRealisedInstallation": GUFExpandedRealisedInstallation,
+    "GUF_GeometryRealisedSurfaceInfiltration": GUFGeometryRealisedSurfaceInfiltration,
+    "GUF_WellFunction": GUFWellFunction,
+    "GUF_Height": GUFHeight,
+    "GUF_Closure": GUFClosure,
+    "GUF_AddRealisedInstallation": GUFAddRealisedInstallation,
+    "GUF_ClosureRealisedPart": GUFClosureRealisedPart,
+    "GPD": GPD,
 }
 
 
