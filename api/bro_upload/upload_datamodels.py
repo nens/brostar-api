@@ -187,8 +187,8 @@ class GMWElectrodeStatus(GMWEvent):
 
 
 class GMWGroundLevel(GMWEvent):
-    well_stability: str = "stabielNAP"
-    ground_level_stable: str = "nee"
+    well_stability: Literal["stabielNAP"] = "stabielNAP"
+    ground_level_stable: Literal["nee"] = "nee"
     ground_level_position: float
     ground_level_positioning_method: str
 
@@ -236,13 +236,38 @@ class MonitoringTubePositions(CamelModel):
     tube_top_position: float
     tube_top_positioning_method: str
 
+    @field_validator("tube_top_positioning_method")
+    def validate_tube_top_positioning_method(cls, value):
+        if value == "afgeleidSbl":
+            raise ValueError(
+                "tubeTopPositioningMethod mag niet de waarde 'afgeleidSbl' hebben"
+            )
+        return value
+
 
 class GMWPositions(GMWEvent):
-    well_stability: str = "nee"
-    ground_level_stable: str = "instabiel"
+    well_stability: Literal["nee"] = "nee"
+    ground_level_stable: Literal["instabiel"] = "instabiel"
     ground_level_position: float
     ground_level_positioning_method: str
     monitoring_tubes: list[MonitoringTubePositions]
+
+    ## Add more validation, ground_level_positioning_method cannot be 'geen'
+    @field_validator("ground_level_positioning_method")
+    def validate_ground_level_positioning_method(cls, value):
+        if value == "geen":
+            raise ValueError(
+                "groundLevelPositioningMethod mag niet de waarde 'geen' hebben"
+            )
+        return value
+
+    ## And the tube numbers within monitoring_tubes should be unique
+    @field_validator("monitoring_tubes")
+    def validate_unique_tube_numbers(cls, value):
+        tube_numbers = [tube.tube_number for tube in value]
+        if len(tube_numbers) != len(set(tube_numbers)):
+            raise ValueError("De buizen moeten unieke nummers hebben")
+        return value
 
 
 class GMWPositionsMeasuring(GMWEvent):

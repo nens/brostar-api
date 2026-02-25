@@ -23,10 +23,8 @@
         <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
       </ns:eventDate>
-      {% if sourcedocs_data.groundLevelStable == "nee" %}
-      <ns:wellStability codeSpace="urn:bro:gmw:WellStability">{{ sourcedocs_data.wellStability }}</ns:wellStability>
-      {% endif %}
-      <ns:groundLevelStable>{{ sourcedocs_data.groundLevelStable }}</ns:groundLevelStable>
+      <ns:wellStability codeSpace="urn:bro:gmw:WellStability">stabielNAP</ns:wellStability>
+      <ns:groundLevelStable>nee</ns:groundLevelStable>
       <ns:groundLevelPosition uom="m">{{ sourcedocs_data.groundLevelPosition }}</ns:groundLevelPosition>
       <ns:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">{{ sourcedocs_data.groundLevelPositioningMethod }}</ns:groundLevelPositioningMethod>
     </ns:GMW_GroundLevel>
