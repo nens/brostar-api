@@ -64,6 +64,16 @@ class Measuringpoint(models.Model):
     gmn = models.ForeignKey(
         GMN, on_delete=models.CASCADE, related_name="measuring_points"
     )
+
+    # Added to speed up queries
+    monitoring_tube = models.ForeignKey(
+        "gmw.MonitoringTube",
+        on_delete=models.CASCADE,
+        related_name="measuring_points",
+        null=True,
+        blank=True,
+    )
+
     event_type = models.CharField(choices=GMN_EVENT_TYPES, max_length=50, null=True)
     measuringpoint_code = models.CharField(max_length=50, null=False, blank=False)
     measuringpoint_start_date = models.DateField(null=True)

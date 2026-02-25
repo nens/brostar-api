@@ -24,7 +24,9 @@ class GMWGeoJSONSerializer(serializers.ModelSerializer):
     """GeoJSON serializer for GMW model"""
 
     linked_gmns = serializers.SerializerMethodField()
-    nr_of_monitoring_tubes = serializers.SerializerMethodField()
+    nr_of_monitoring_tubes = serializers.IntegerField(
+        source="tube_count", read_only=True
+    )  # Map to annotated field
     tubes = MonitoringTubeOverviewSerializer(many=True, read_only=True)
 
     class Meta:
@@ -43,16 +45,12 @@ class GMWGeoJSONSerializer(serializers.ModelSerializer):
         ]
 
     def get_linked_gmns(self, obj):
-        linked_gmns = set(
-            measuringpoint.gmn.uuid
-            for measuringpoint in gmn_models.Measuringpoint.objects.filter(
-                gmw_bro_id=obj.bro_id
-            )
-        )
+        """Get all GMNs linked through any tube in this GMW"""
+        linked_gmns = set()
+        for tube in obj.tubes.all():  # Uses prefetch cache
+            for mp in tube.measuring_points.all():  # Uses prefetch cache
+                linked_gmns.add(mp.gmn.uuid)
         return [str(uuid) for uuid in linked_gmns]
-
-    def get_nr_of_monitoring_tubes(self, obj):
-        return obj.nr_of_monitoring_tubes
 
     @staticmethod
     def parse_coordinates(location_string: str | None) -> tuple[float, float] | None:

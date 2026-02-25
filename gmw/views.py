@@ -1,6 +1,7 @@
 import logging
 
 from django.core.cache import cache
+from django.db.models import Count, Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 
 from api import mixins
 from api.bro_upload.upload_datamodels import GMWConstruction
+from gmn import models as gmn_models  # ADDED: Import GMN models
 
 from . import filters, serializers
 from . import models as gmw_models
@@ -20,19 +22,36 @@ logger = logging.getLogger(__name__)
 class GMWGeoJSONView(generics.ListAPIView):
     """Endpoint to serve all GMW data as GeoJSON FeatureCollection"""
 
-    queryset = gmw_models.GMW.objects.select_related("data_owner").prefetch_related(
-        "tubes"
-    )
+    # REMOVED: Don't set queryset at class level, use get_queryset() instead
     serializer_class = serializers.GMWGeoJSONSerializer
+    pagination_class = None  # CRITICAL: Disable pagination to return all data
+
+    def get_queryset(self):
+        return (
+            gmw_models.GMW.objects.select_related("data_owner")
+            .annotate(tubes_count=Count("tubes"))
+            .prefetch_related(
+                "tubes",  # Fetch tubes
+                Prefetch(
+                    "tubes__measuring_points",  # Then fetch measuring_points through tubes
+                    queryset=gmn_models.Measuringpoint.objects.select_related("gmn"),
+                ),
+            )
+        )
 
     def list(self, request, *args, **kwargs):
-        # Check cache first (optional but recommended for large datasets)
+        """Override list to wrap in GeoJSON FeatureCollection and cache result"""
+
+        # Check cache first
         cache_key = "gmw_geojson_all"
         cached_data = cache.get(cache_key)
 
         if cached_data:
+            logger.info("Returning cached GeoJSON data")
             return Response(cached_data)
 
+        # Fetch and serialize data
+        logger.info("Generating fresh GeoJSON data (cache miss)")
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
@@ -45,6 +64,7 @@ class GMWGeoJSONView(generics.ListAPIView):
 
         # Cache for 1 hour
         cache.set(cache_key, geojson, 60 * 60)
+        logger.info(f"Cached {geojson['count']} GMW features")
 
         return Response(geojson)
 
