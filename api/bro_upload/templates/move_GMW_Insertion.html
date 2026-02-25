@@ -23,6 +23,15 @@
         <ns1:voidReason>onbekend</ns1:voidReason>
         {% endif %}
       </ns:eventDate>
+      {% if sourcedocs_data.monitoringTubes|length == 1 %}
+      <ns:tubeNumber>{{ monitoringtube.tubeNumber }}</ns:tubeNumber>
+      <ns:tubeTopPosition uom="m">{{ monitoringtube.tubeTopPosition }}</ns:tubeTopPosition>
+      <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
+      <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
+      <ns:insertedPartLength uom="m">{{ monitoringtube.insertedPartLength }}</ns:insertedPartLength>
+      <ns:insertedPartMaterial codeSpace="urn:bro:gmw:TubeMaterial">{{ monitoringtube.insertedPartMaterial }}
+      </ns:insertedPartMaterial>
+      {% else %}
       {% for monitoringtube in sourcedocs_data.monitoringTubes %}
       <ns:monitoringTube>
         <ns:insertedPartDiameter uom="mm">{{ monitoringtube.insertedPartDiameter }}</ns:insertedPartDiameter>
@@ -34,6 +43,7 @@
         <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">{{ monitoringtube.tubeTopPositioningMethod }}</ns:tubeTopPositioningMethod>
       </ns:monitoringTube>
       {% endfor %}
+      {% endif %}
     </ns:GMW_Insertion>
   </ns:sourceDocument>
   <ns:dateToBeCorrected>
