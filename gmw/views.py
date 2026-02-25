@@ -1,7 +1,7 @@
 import logging
 
 from django.core.cache import cache
-from django.db.models import Count, Prefetch
+from django.db.models import Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
@@ -27,9 +27,11 @@ class GMWGeoJSONView(generics.ListAPIView):
     pagination_class = None  # CRITICAL: Disable pagination to return all data
 
     def get_queryset(self):
+        user_org = self.request.user.userprofile.organisation
+
         return (
             gmw_models.GMW.objects.select_related("data_owner")
-            .annotate(tubes_count=Count("tubes"))
+            .filter(data_owner=user_org)  # Filter by user's organization
             .prefetch_related(
                 "tubes",  # Fetch tubes
                 Prefetch(

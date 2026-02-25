@@ -24,9 +24,7 @@ class GMWGeoJSONSerializer(serializers.ModelSerializer):
     """GeoJSON serializer for GMW model"""
 
     linked_gmns = serializers.SerializerMethodField()
-    nr_of_monitoring_tubes = serializers.IntegerField(
-        source="tube_count", read_only=True
-    )  # Map to annotated field
+    nr_of_monitoring_tubes = serializers.SerializerMethodField()
     tubes = MonitoringTubeOverviewSerializer(many=True, read_only=True)
 
     class Meta:
@@ -43,6 +41,10 @@ class GMWGeoJSONSerializer(serializers.ModelSerializer):
             "removed",
             "tubes",
         ]
+
+    def get_nr_of_monitoring_tubes(self, obj):
+        """Use prefetched tubes to count - no extra query"""
+        return len(obj.tubes.all())
 
     def get_linked_gmns(self, obj):
         """Get all GMNs linked through any tube in this GMW"""
