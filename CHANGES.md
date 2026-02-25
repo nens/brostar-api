@@ -10,6 +10,8 @@
 -   Bugfix [Signals]: Do not retrieve plain tube part for staging
 -   Feat [GUF]: Initial templates and data models setup
 -   Feat [GMW-View]: Add GeoJSON view with caching, for increased map loading speed
+-   Bugfix [GMW]: Improve Construction and ElectrodeStatus Templates
+-   Bugfix [GMW]: Fix ElectrodeStatus datamodel
 
 
 ## 1.64 (2026-02-22)

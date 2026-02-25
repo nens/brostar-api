@@ -30,6 +30,9 @@ T = TypeVar("T", bound="api_models.UploadFile")
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
     """Transforms the verbose pydantic errors to a readable format"""
+    for err in errors:
+        err["loc"] = [str(loc) for loc in err["loc"]]
+
     return {" - ".join(err["loc"]): err["msg"] for err in errors}
 
 

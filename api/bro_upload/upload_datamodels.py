@@ -188,9 +188,16 @@ class GMWEvent(CamelModel):
     event_date: str
 
 
+class ElectrodeStatusElectrode(CamelModel):
+    cable_number: int
+    electrode_number: int
+    tube_number: int
+    electrode_status: str
+
+
 # noqa: N815 - Using mixedCase to match API requirements
 class GMWElectrodeStatus(GMWEvent):
-    electrodes: list[Electrode]
+    electrodes: list[ElectrodeStatusElectrode]
 
 
 class GMWGroundLevel(GMWEvent):
@@ -289,6 +296,10 @@ class GMWPositionsMeasuring(GMWEvent):
 
 class GMWRemoval(GMWEvent):
     pass
+
+
+class GMWSubsequentAdditionalSurvey(GMWEvent):
+    related_surveys: list[str]
 
 
 class GMWShift(GMWEvent):

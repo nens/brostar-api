@@ -26,10 +26,10 @@
       <ns:numberOfElectrodesChanged>{{ sourcedocs_data.electrodes | length }}</ns:numberOfElectrodesChanged>
       {% for electrode in sourcedocs_data.electrodes %}
       <ns:electrode>
-        <ns:electrodeNumber>{{ monitoringtube.electrodeNumber }}</ns:electrodeNumber>
-        <ns:electrodePackingMaterial codeSpace="urn:bro:gmw:ElectrodePackingMaterial">{{ monitoringtube.electrodePackingMaterial }}</ns:electrodePackingMaterial>
-        <ns:electrodePosition>{{ monitoringtube.electrodePosition }}</ns:electrodePosition>
-        <ns:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ monitoringtube.electrodeStatus }}</ns:electrodeStatus>
+        <ns:cableNumber>{{ electrode.cableNumber }}</ns:cableNumber>
+        <ns:electrodeNumber>{{ electrode.electrodeNumber }}</ns:electrodeNumber>
+        <ns:tubeNumber>{{ electrode.tubeNumber }}</ns:tubeNumber>
+        <ns:electrodeStatus codeSpace="urn:bro:gmw:ElectrodeStatus">{{ electrode.electrodeStatus }}</ns:electrodeStatus>
       </ns:electrode>
       {% endfor %}
     </ns:GMW_ElectrodeStatus>
