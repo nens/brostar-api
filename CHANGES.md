@@ -5,6 +5,7 @@
 
 -   Bugfix [GMW]: Correct GMWConstruction Templates (v1.1)
 -   Bugfix [GMW]: Correct GMWInsertion Templates (v1.1)
+-   Feat [GMW]: Add GMWRemoval deletion template
 -   Bugfix [General]: Correct correctionReason Templates
 -   Bugfix [Signals]: Do not retrieve plain tube part for staging
 
