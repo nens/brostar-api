@@ -1,4 +1,5 @@
 import logging
+import time
 
 from django.core.cache import cache
 from django.db.models import Prefetch
@@ -42,18 +43,22 @@ class GMWGeoJSONView(generics.ListAPIView):
         )
 
     def list(self, request, *args, **kwargs):
-        """Override list to wrap in GeoJSON FeatureCollection and cache result"""
-
         # Check cache first
-        cache_key = "gmw_geojson_all"
+        cache_key = f"gmw_geojson_{request.user.userprofile.organisation.uuid}"
         cached_data = cache.get(cache_key)
 
         if cached_data:
-            logger.info("Returning cached GeoJSON data")
+            logger.info(
+                f"✅ CACHE HIT - Returning cached data for org {request.user.userprofile.organisation.uuid}"
+            )
             return Response(cached_data)
 
-        # Fetch and serialize data
-        logger.info("Generating fresh GeoJSON data (cache miss)")
+        # Cache miss - generate fresh data
+        logger.info(
+            f"❌ CACHE MISS - Generating fresh data for org {request.user.userprofile.organisation.uuid}"
+        )
+        start_time = time.time()
+
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
@@ -64,9 +69,14 @@ class GMWGeoJSONView(generics.ListAPIView):
             "features": serializer.data,
         }
 
+        generation_time = time.time() - start_time
+        logger.info(f"Generated {geojson['count']} features in {generation_time:.2f}s")
+
         # Cache for 1 hour
         cache.set(cache_key, geojson, 60 * 60)
-        logger.info(f"Cached {geojson['count']} GMW features")
+        logger.info(
+            f"✅ Cached data for org {request.user.userprofile.organisation.uuid}"
+        )
 
         return Response(geojson)
 
