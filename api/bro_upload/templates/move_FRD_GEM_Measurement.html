@@ -7,7 +7,6 @@
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
-  <dateToBeCorrected>{{ metadata.dateToBeCorrected }}</dateToBeCorrected>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <correctionReason codeSpace="urn:bro:frd:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
   <sourceDocument>
@@ -55,4 +54,5 @@
       </relatedGeoElectricMeasurement>
     </FRD_GEM_Measurement>
   </sourceDocument>
+  <dateToBeCorrected>{{ sourcedocs_data.dateToBeCorrected }}</dateToBeCorrected>
 </moveRequest>
