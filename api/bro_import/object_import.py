@@ -982,6 +982,7 @@ class GLDObjectImporter(ObjectImporter):
                     }
                 )
             else:
+                # This write measurementInstrumentType, evaluationProcedure and airPressureCompensationType to the procedure dict
                 value = named_value.find(".//om:value", OBSERVATION_NAMESPACE).text
                 procedure.update({name: value})
 
