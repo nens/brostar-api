@@ -12,6 +12,7 @@
 -   Feat [GMW-View]: Add GeoJSON view with caching, for increased map loading speed
 -   Bugfix [GMW]: Improve Construction and ElectrodeStatus Templates
 -   Bugfix [GMW]: Fix ElectrodeStatus datamodel
+-   Bugfix [UploadTask]: Instead of 5 min retry, use backoff correctly
 
 
 ## 1.64 (2026-02-22)

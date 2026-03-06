@@ -152,7 +152,12 @@ def deliver_xml_file_task(context):
     return context
 
 
-@shared_task(bind=True, queue="upload", max_retries=10, retry_backoff=5)
+@shared_task(
+    bind=True,
+    retry_backoff=5,  # Factor in seconds (first retry: 5s, second: 10s, third: 20s, etc.)
+    retry_jitter=False,  # Set False to disable randomization (use exact values: 5s, 10s, 20s)
+    retry_kwargs={"max_retries": 10},
+)
 def check_delivery_status_task(self, context):
     if context is None:
         return None
@@ -184,8 +189,9 @@ def check_delivery_status_task(self, context):
         upload_task_instance.save(update_fields=["progress", "log", "bro_id", "status"])
 
         organisation = upload_task_instance.data_owner
-        organisation.request_count += 1
-        organisation.save(update_fields=["request_count"])
+        if organisation is not None:
+            organisation.request_count += 1
+            organisation.save(update_fields=["request_count"])
 
         return context
 
@@ -195,7 +201,7 @@ def check_delivery_status_task(self, context):
         retry_count = self.request.retries + 1
 
         # Compute elapsed time based on exponential backoff
-        # Celery retry_backoff = 5 means: 5s, 10s, 20s, 40s, ...
+        # Celery retry_backoff = 5 means: 5s, 10s, 20s, 40s, ... up till 1.5 hours (10 retries)
         total_time = sum(5 * (2 ** (i - 1)) for i in range(retry_count))
         unit = "seconds"
 
