@@ -152,8 +152,15 @@ def deliver_xml_file_task(context):
     return context
 
 
+class DeliveryNotReadyError(Exception):
+    """Raised when delivery status check should be retried"""
+
+    pass
+
+
 @shared_task(
     bind=True,
+    autoretry_for=(DeliveryNotReadyError,),
     retry_backoff=5,  # Factor in seconds (first retry: 5s, second: 10s, third: 20s, etc.)
     retry_jitter=False,  # Set False to disable randomization (use exact values: 5s, 10s, 20s)
     retry_kwargs={"max_retries": 10},
@@ -195,29 +202,28 @@ def check_delivery_status_task(self, context):
 
         return context
 
-    # If not completed and not errors, retry the task
-    try:
-        # Current retry attempt (starting from 1)
-        retry_count = self.request.retries + 1
+    # If not completed and not errors, raise exception to trigger auto-retry
+    retry_count = self.request.retries + 1
+    total_time = sum(5 * (2 ** (i - 1)) for i in range(retry_count))
+    unit = "seconds"
 
-        # Compute elapsed time based on exponential backoff
-        # Celery retry_backoff = 5 means: 5s, 10s, 20s, 40s, ... up till 1.5 hours (10 retries)
-        total_time = sum(5 * (2 ** (i - 1)) for i in range(retry_count))
-        unit = "seconds"
+    if total_time > 120:
+        total_time = round(total_time / 60, 1)
+        unit = "minutes"
 
-        if total_time > 120:
-            total_time = round(total_time / 60, 1)
-            unit = "minutes"
+    upload_task_instance.log = f"XML aangeleverd: na status controle ({retry_count} - {total_time} {unit}) nog geen uitslag."
+    upload_task_instance.save(update_fields=["log"])
 
-        upload_task_instance.log = f"XML aangeleverd: na status controle ({retry_count} - {total_time} {unit}) nog geen uitslag."
-        upload_task_instance.save(update_fields=["log"])
-
-        raise self.retry()
-    except self.MaxRetriesExceededError:
+    # This will be called automatically when max_retries is exceeded
+    if self.request.retries >= self.max_retries:
         upload_task_instance.status = "UNFINISHED"
         upload_task_instance.log = "Na 1,5 uur is er nog geen resultaat bekend. Controleer het later handmatig."
         upload_task_instance.progress = 95.0
         upload_task_instance.save(update_fields=["status", "log", "progress"])
+        return  # Don't raise, task ends here
+
+    # Raise custom exception to trigger Celery's automatic retry with backoff
+    raise DeliveryNotReadyError(f"Delivery not ready after {retry_count} attempts")
 
 
 @shared_task(queue="default")
