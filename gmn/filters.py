@@ -1,4 +1,5 @@
 from django_filters import DateFilter, FilterSet
+from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
 
@@ -6,6 +7,7 @@ from .models import GMN, IntermediateEvent, Measuringpoint
 
 
 class GmnFilter(DateTimeFilterMixin, FilterSet):
+    bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
     start_date_monitoring__gt = DateFilter(
         field_name="start_date_monitoring", lookup_expr="gt"
     )

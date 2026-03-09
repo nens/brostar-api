@@ -16,12 +16,16 @@ class DateTimeStringFilter(filters.Filter):
         try:
             # Ensure the value is in the correct format
             datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ")
-            return qs.filter(**{self.field_name: value})
+            field_name = (
+                self.field_name if self.field_name else "error: field name not set"
+            )
+            return qs.filter(**{field_name: value})
         except ValueError:
             return qs.none()
 
 
 class GldFilter(DateTimeFilterMixin, FilterSet):
+    bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
     research_first_date__gt = DateFilter(
         field_name="research_first_date", lookup_expr="gt"
     )

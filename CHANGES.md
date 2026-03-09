@@ -14,6 +14,7 @@
 -   Bugfix [GMW]: Fix ElectrodeStatus datamodel
 -   Bugfix [GMW]: Fix move-templates of events
 -   Bugfix [UploadTask]: Instead of 5 min retry, use backoff correctly
+-   Enhancement [API]: Add BRO-ID icontain filters to all domains
 
 
 ## 1.64 (2026-02-22)

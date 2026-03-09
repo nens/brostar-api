@@ -1,3 +1,5 @@
+from typing import Any
+
 from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
@@ -43,12 +45,12 @@ class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
         model = MonitoringTube
         exclude = ["geo_ohm_cables"]
 
-    def filter_by_gmn_bro_id(self, queryset, name, value) -> any:
+    def filter_by_gmn_bro_id(self, queryset, name, value) -> Any:
         measuringpoints = Measuringpoint.objects.filter(gmn__bro_id=value)
         gmw_ids = measuringpoints.values_list("gmw_bro_id", flat=True)
         return queryset.filter(gmw__bro_id__in=gmw_ids)
 
-    def filter_by_gmw_bro_id(self, queryset, name, value) -> any:
+    def filter_by_gmw_bro_id(self, queryset, name, value) -> Any:
         return queryset.filter(gmw__bro_id=value)
 
 
@@ -63,5 +65,5 @@ class EventFilter(DateTimeFilterMixin, FilterSet):
         model = Event
         exclude = ["metadata", "sourcedocument_data"]
 
-    def filter_by_gmw_bro_id(self, queryset, name, value) -> any:
+    def filter_by_gmw_bro_id(self, queryset, name, value) -> Any:
         return queryset.filter(gmw__bro_id=value)
