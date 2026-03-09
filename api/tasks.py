@@ -163,7 +163,7 @@ class DeliveryNotReadyError(Exception):
     autoretry_for=(DeliveryNotReadyError,),
     retry_backoff=5,  # Factor in seconds (first retry: 5s, second: 10s, third: 20s, etc.)
     retry_jitter=False,  # Set False to disable randomization (use exact values: 5s, 10s, 20s)
-    retry_kwargs={"max_retries": 10},
+    max_retries=10,  # Total retry time will be around 5s + 10s + 20s + 40s + 80s + 160s + 320s + 640s + 1280s + 2560s = ~1.5 hours
 )
 def check_delivery_status_task(self, context):
     if context is None:
