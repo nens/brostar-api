@@ -18,6 +18,16 @@ class GAR(models.Model):
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
+
+    # Added to speed up queries
+    monitoring_tube = models.ForeignKey(
+        "gmw.MonitoringTube",
+        on_delete=models.CASCADE,
+        related_name="groundwater_analysis_reports",
+        null=True,
+        blank=True,
+    )
+
     quality_control_method = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)
     tube_number = models.CharField(max_length=100, null=True)
