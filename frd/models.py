@@ -23,6 +23,16 @@ class FRD(models.Model):
     linked_gmns = JSONField(
         "Gmns", default=list, blank=False
     )  # In GLD XMLs these are actually returned.
+
+    # Added to speed up queries
+    monitoring_tube = models.ForeignKey(
+        "gmw.MonitoringTube",
+        on_delete=models.CASCADE,
+        related_name="formation_resistance_dossiers",
+        null=True,
+        blank=True,
+    )
+
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)

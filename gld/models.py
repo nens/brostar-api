@@ -24,6 +24,16 @@ class GLD(models.Model):
     linked_gmns = JSONField(
         "Gmns", default=list, blank=False
     )  # In GLD XMLs these are actually returned.
+
+    # Added to speed up queries
+    monitoring_tube = models.ForeignKey(
+        "gmw.MonitoringTube",
+        on_delete=models.CASCADE,
+        related_name="groundwater_level_dossiers",
+        null=True,
+        blank=True,
+    )
+
     quality_regime = models.CharField(max_length=100, null=True)
     gmw_bro_id = models.CharField(max_length=100, null=True)
     tube_number = models.CharField(max_length=100, null=True)
