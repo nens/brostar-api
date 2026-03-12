@@ -416,6 +416,9 @@ class GMWObjectImporter(ObjectImporter):
 
         # If GMW_PPO is not found, it basically means that the object is not relevant anymore
         if "GMW_PPO" not in dispatch_document_data:
+            logger.warning(
+                "GMW_PPO not found in dispatch document data, no data to save."
+            )
             return
 
         gmw_data, monitoringtubes_data = self._split_json_data(dispatch_document_data)

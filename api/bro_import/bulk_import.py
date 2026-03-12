@@ -122,7 +122,7 @@ class BulkImporter:
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""
         bro_domain = self.bro_domain.lower()
-        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}"
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}&registered=ja"
         return url
 
     def _fetch_bro_ids(self, url: str) -> list:
@@ -132,8 +132,19 @@ class BulkImporter:
             list: The fetched BRO IDs.
         """
         try:
-            r = requests.get(url)
-            r.raise_for_status()
+            retry = 0
+            while True:
+                r = requests.get(url)
+                if r.status_code > 499 and retry < 3:
+                    logger.warning(
+                        f"Received status code {r.status_code} from BRO service. Retrying in 5 seconds..."
+                    )
+                    time.sleep(3)
+                    retry += 1
+                else:
+                    r.raise_for_status()
+                    break
+
             bro_ids = r.json()["broIds"]
 
             return bro_ids

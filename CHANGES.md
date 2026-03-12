@@ -3,7 +3,9 @@
 ## 1.66 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Import]: do not try to import deregistered IDs
+-   Bugfix [Import]: do not use int.bronhouderportaal.nl but demo.bronhouderportaal.nl
+-   Enhancement [data-models]: use options more often
 
 
 ## 1.65 (2026-03-12)

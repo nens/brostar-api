@@ -41,7 +41,7 @@ class UploadTaskMetadata(CamelModel):
 
 class GARBulkUploadMetadata(CamelModel):
     request_reference: str
-    quality_regime: str
+    quality_regime: QualityRegimeOptions
     delivery_accountable_party: str | None = None
     quality_control_method: str | None = None
     groundwater_monitoring_nets: list[str] = []
@@ -50,14 +50,14 @@ class GARBulkUploadMetadata(CamelModel):
 
 class GLDBulkUploadMetadata(CamelModel):
     request_reference: str
-    quality_regime: str
+    quality_regime: QualityRegimeOptions
     delivery_accountable_party: str | None = None
     bro_id: str
 
 
 class GMNBulkUploadMetadata(CamelModel):
     request_reference: str
-    quality_regime: str
+    quality_regime: QualityRegimeOptions
     delivery_accountable_party: str | None = None
     bro_id: str
 
