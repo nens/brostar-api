@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.66 (unreleased)
+## 1.66 (2026-03-12)
 
 
 -   Bugfix [Import]: do not try to import deregistered IDs
