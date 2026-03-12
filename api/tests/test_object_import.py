@@ -39,12 +39,13 @@ def test_create_bro_ids_import_url(bulk_importer):
 def test_fetch_bro_ids_succes(mocker, bulk_importer):
     expected_bro_ids = ["BRO123", "BRO456", "BRO789"]
     mock_response = mocker.Mock()
+    mock_response.status_code = 200
     mock_response.json.return_value = {"broIds": expected_bro_ids}
     mock_response.raise_for_status = mocker.Mock()
     mocker.patch("requests.get", return_value=mock_response)
 
     bro_ids = bulk_importer._fetch_bro_ids(
-        f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmn/v1/bro-ids?bronhouder=12345678"
+        f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmn/v1/bro-ids?bronhouder=12345678&registered=ja"
     )
 
     assert expected_bro_ids == bro_ids
