@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.65 (unreleased)
+## 1.65 (2026-03-12)
 
 
 -   Bugfix [GMW]: Correct GMWConstruction Templates (v1.1)
