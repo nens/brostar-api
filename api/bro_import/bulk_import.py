@@ -38,6 +38,8 @@ class BulkImporter:
             uuid=import_task_instance_uuid
         )
         self.import_task_instance.status = "PROCESSING"
+        self.force = self.import_task_instance.log == "FORCE"
+
         self.import_task_instance.save()
 
         self.bro_domain = self.import_task_instance.bro_domain
@@ -70,7 +72,7 @@ class BulkImporter:
                 counter += 1
                 try:
                     data_importer = self.object_importer_class(bro_id, self.data_owner)
-                    data_importer.run()
+                    data_importer.run(force=self.force)
                 except Exception as e:
                     logger.info(e)
                     raise DataImportError(

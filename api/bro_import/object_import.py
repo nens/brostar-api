@@ -164,8 +164,8 @@ class ObjectImporter(ABC):
             logger.error(f"Error checking PDOK for bro_id {self.bro_id}: {e}")
             return True  # Default to importing if there's an error
 
-    def run(self) -> None:
-        if not self.should_import():
+    def run(self, force: bool = False) -> None:
+        if not self.should_import() and not force:
             logger.info(f"No import needed for {self.bro_domain} with ID {self.bro_id}")
             return
 

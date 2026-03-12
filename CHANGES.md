@@ -15,6 +15,7 @@
 -   Bugfix [GMW]: Fix move-templates of events
 -   Bugfix [UploadTask]: Instead of 5 min retry, use backoff correctly
 -   Enhancement [API]: Add BRO-ID icontain filters to all domains
+-   Enhancement [BulkImport]: Added bulk-import option
 
 
 ## 1.64 (2026-02-22)
