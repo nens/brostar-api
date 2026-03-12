@@ -31,7 +31,7 @@ def test_create_bro_ids_import_url(bulk_importer):
     url = bulk_importer._create_bro_ids_import_url()
     assert (
         url
-        == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmn/v1/bro-ids?bronhouder=12345678"
+        == f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gmn/v1/bro-ids?bronhouder=12345678&registered=ja"
     )
 
 

@@ -24,9 +24,18 @@ class GmwFilter(DateTimeFilterMixin, FilterSet):
         field_name="well_construction_date", lookup_expr="icontains"
     )
 
+    linked_gmn = filters.CharFilter(method="filter_by_linked_gmn")
+
     class Meta:
         model = GMW
         fields = "__all__"
+
+    def filter_by_linked_gmn(self, queryset, name, value):
+        if value.lower() == "none":
+            # Filter for wells with no linked GMN
+            return queryset.filter(tubes__measuring_points__gmn__isnull=True).distinct()
+
+        return queryset.filter(tubes__measuring_points__gmn__uuid=value).distinct()
 
 
 class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):

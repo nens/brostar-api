@@ -6,6 +6,8 @@
 -   Bugfix [Import]: do not try to import deregistered IDs
 -   Bugfix [Import]: do not use int.bronhouderportaal.nl but demo.bronhouderportaal.nl
 -   Enhancement [data-models]: use options more often
+-   Enhancement [GeoJSON]: fix swagger
+-   Enhancement [GMW]: add linked_gmn filter
 
 
 ## 1.65 (2026-03-12)
