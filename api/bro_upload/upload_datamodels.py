@@ -766,6 +766,8 @@ class DesignLoop(CamelModel):
 
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     design_loop_id: str
+    design_loop_pos: str  # Position coordinates for LineString geometry
+
     loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type
 
     # Lifespan is formatted from these two fields - ISO-8601 date string
@@ -801,7 +803,7 @@ class DesignWell(CamelModel):
     well_functions: list[WellFunctionOptions] = Field(min_length=1)
     height: float  # meters
 
-    pos: str  # Position coordinates
+    well_pos: str  # Position coordinates
     geometry_publicly_available: Literal["ja", "nee"] | None = None
 
     maximum_well_depth: float | None = None  # meters
@@ -828,7 +830,7 @@ class DesignSurfaceInfiltration(CamelModel):
 
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     design_surface_infiltration_id: str
-    pos: str  # Position coordinates for Polygon geometry
+    design_surface_infiltration_pos: str  # Position coordinates for Polygon geometry
 
     @field_validator("gml_id", mode="before")
     @classmethod
@@ -845,7 +847,7 @@ class DesignInstallation(CamelModel):
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     design_installation_id: str
     installation_function: InstallationFunctionOptions = "onttrekking"
-    pos: str  # Position coordinates
+    design_installation_pos: str  # Position coordinates
     licensed_quantities: list["LicensedQuantity"] = []
     energy_characteristics: str | None = None  # For energy systems
     design_loops: list[DesignLoop] = []
@@ -932,7 +934,7 @@ class RealisedLoop(CamelModel):
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     realised_loop_id: str
     end_depth_bottom: float  # meters
-    pos: str | None = None  # Position coordinates for Point geometry
+    realised_loop_pos: str | None = None  # Position coordinates for Point geometry
     segments: str | None = None  # For Curve geometry
     geometry_type: Literal["Point", "Curve"] = "Point"
     loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type
@@ -982,7 +984,7 @@ class RealisedScreen(CamelModel):
     screen_type: FilterTypeOptions
     top_screen_depth: float  # meters
     length: float  # meters
-    pos: str | None = None  # For Point geometry
+    realised_screen_pos: str | None = None  # For Point geometry
     segments: str | None = None  # For Curve geometry
     geometry_type: Literal["Point", "Curve"] = "Point"
 
@@ -1001,7 +1003,7 @@ class RealisedWell(CamelModel):
     well_functions: list[WellFunctionOptions] = Field(min_length=1, max_length=2)
     height: float  # meters
     well_depth: float  # meters
-    pos: str
+    wellPos: str
     publicly_available: Literal["ja", "nee"] | None = None
     relative_temperature: RelativeTemperatureOptions | None = None
     validity: str | None = None  # Not allowed in ExpandRealisedInstallation
@@ -1019,7 +1021,7 @@ class RealisedSurfaceInfiltration(CamelModel):
 
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     realised_surface_infiltration_id: str
-    pos: str  # Position coordinates for Polygon geometry
+    realised_surface_infiltration_pos: str  # Position coordinates for Polygon geometry
 
     @field_validator("gml_id", mode="before")
     @classmethod
@@ -1035,7 +1037,7 @@ class GUFAddRealisedInstallation(CamelModel):
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
-    pos: str  # Position coordinates
+    realised_loop_pos: str  # Position coordinates
     start_validity: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
@@ -1051,7 +1053,7 @@ class GUFExpandedRealisedInstallation(CamelModel):
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
-    pos: str  # Position coordinates
+    realised_loop_pos: str  # Position coordinates
     start_validity: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
@@ -1099,7 +1101,7 @@ class GUFClosureRealisedPart(CamelModel):
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions | None = None
-    pos: str | None = None
+    well_pos: str | None = None
     end_time: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",

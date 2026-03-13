@@ -65,7 +65,7 @@
               <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationType">{{ installation.installationFunction }}</gufcom:installationFunction>
               <gufcom:geometry>
                 <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ installation.gmlId }}">
-                  <gml:pos>{{ installation.pos }}</gml:pos>
+                  <gml:pos>{{ installation.designInstallationPos }}</gml:pos>
                 </gml:Point>
               </gufcom:geometry>
               {% for licensed_quantity in installation.licensedQuantities %}
@@ -123,11 +123,11 @@
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
                     <gml:LineString srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
-                      <gml:posList>{{ design_loop.pos }}</gml:posList>
+                      <gml:posList>{{ design_loop.designLoopPos }}</gml:posList>
                     </gml:LineString>
                     {% else %}
                     <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
-                      <gml:pos>{{ design_loop.pos }}</gml:pos>
+                      <gml:pos>{{ design_loop.designLoopPos }}</gml:pos>
                     </gml:Point>
                     {% endif %}
                   </gufcom:geometry>
@@ -143,7 +143,7 @@
                     <gml:Polygon srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ surface_infiltration.gmlId }}">
                       <gml:exterior>
                         <gml:LinearRing>
-                          <gml:posList>{{ surface_infiltration.pos }}</gml:posList>
+                          <gml:posList>{{ surface_infiltration.designSurfaceInfiltrationPos }}</gml:posList>
                         </gml:LinearRing>
                       </gml:exterior>
                     </gml:Polygon>
@@ -161,7 +161,7 @@
                   <gufcom:height uom="m">{{ well.height }}</gufcom:height>
                   <gufcom:geometry>
                     <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ well.gmlId }}">
-                      <gml:pos>{{ well.pos }}</gml:pos>
+                      <gml:pos>{{ well.wellPos }}</gml:pos>
                     </gml:Point>
                   </gufcom:geometry>
                   {% if well.geometryPubliclyAvailable %}
