@@ -3,7 +3,7 @@
 ## 1.67 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [GUF]: Improve GUF setup and templates
 
 
 ## 1.66 (2026-03-12)
