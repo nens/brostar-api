@@ -4,6 +4,7 @@
 
 
 -   Enhancement [GUF]: Improve GUF setup and templates
+-   Enhancement [UploadTasks]: for GUF auto-create GmlIds
 
 
 ## 1.66 (2026-03-12)

@@ -327,10 +327,14 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         validation_class = registration_type_datamodel_mapping.get(
             serializer.validated_data["registration_type"]
         )
+        logger.info(f"Validation_class: {validation_class}")
         if validation_class:
             try:
                 # For GLD addition, some uuids are backfilled into the sourcedocs data
-                if serializer.validated_data["registration_type"] == "GLD_Addition":
+                if (
+                    serializer.validated_data["registration_type"] == "GLD_Addition"
+                    or "GUF" in serializer.validated_data["registration_type"]
+                ):
                     validated_sourcedocument_data = validation_class(
                         **serializer.validated_data["sourcedocument_data"]
                     )
