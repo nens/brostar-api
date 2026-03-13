@@ -45,10 +45,7 @@ DesignLoopTypeOptions = Literal[
 ]
 
 # 6.3 Filtertype (Filter Type) - used for screen_type in wells
-FilterTypeOptions = Literal[
-    "horizontaal",
-    "verticaal",
-]
+FilterTypeOptions = Literal["horizontaal", "verticaal", "onbekend"]
 
 # 6.4 Gebruiksdoel (Usage Purpose) - used for primary/secondary usage types
 UsageTypeOptions = Literal[
@@ -92,12 +89,7 @@ GUFDeliveryContextOptions = Literal[
 ]
 
 # 6.7 Putfunctie (Well Function) - used for well_functions
-WellFunctionOptions = Literal[
-    "infiltratie",
-    "lozen",
-    "onttrekking",
-    "retourneren",
-]
+WellFunctionOptions = Literal["infiltratie", "onttrekking", "retournering", "onbekend"]
 
 # 6.8 Rechtstype (Legal Type) - used for legal_type
 LegalTypeOptions = Literal[
@@ -114,8 +106,8 @@ RegistrationStatusOptions = Literal[
 # 6.10 RelatieveTemperatuur (Relative Temperature) - used for relative_temperature
 RelativeTemperatureOptions = Literal[
     "koud",
-    "neutraal",
     "warm",
+    "onbekend",
 ]
 
 # 6.11 Verplaatsingsrichting (Displacement Direction) - used for licensed_in_out
