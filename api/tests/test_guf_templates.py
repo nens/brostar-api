@@ -34,7 +34,7 @@ def test_guf_startregistration_xml():
                 {
                     "designInstallationId": "590241",
                     "installationFunction": "onttrekking",
-                    "pos": "214928 490230",
+                    "designInstallationPos": "214928 490230",
                     "licensedQuantities": [],
                     "energyCharacteristics": None,
                     "designLoops": [],
@@ -44,7 +44,7 @@ def test_guf_startregistration_xml():
                             "designWellId": "538269",
                             "wellFunctions": ["onttrekking"],
                             "height": 0,
-                            "pos": "214928 490230",
+                            "wellPos": "214928 490230",
                             "maximumWellDepth": 0,
                             "maximumWellCapacity": 75,
                             "designScreen": None,

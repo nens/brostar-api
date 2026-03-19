@@ -8,7 +8,7 @@
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
-    <sourceDocument>
+  <sourceDocument>
     <gufcom:GUF_StartRegistration gml:id="id_0001">
       <gufcom:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</gufcom:objectIdAccountableParty>
       <gufcom:deliveryContext codeSpace="urn:bro:guf:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</gufcom:deliveryContext>
@@ -24,6 +24,17 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:startTime>
+        <gufcom:endTime>
+          {% if design_loop.endDate|length == 10 %}
+          <brocom:date>{{ design_loop.endDate }}</brocom:date>
+          {% elif design_loop.endDate|length == 7 %}
+          <brocom:yearMonth>{{ design_loop.endDate }}</brocom:yearMonth>
+          {% elif design_loop.endDate|length == 4 %}
+          <brocom:year>{{ design_loop.endDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </gufcom:endTime>
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
@@ -117,6 +128,7 @@
                       {% else %}
                       <brocom:voidReason>onbekend</brocom:voidReason>
                       {% endif %}
+                    </gufcom:endTime>
                   </gufcom:lifespan>
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
