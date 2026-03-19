@@ -6,6 +6,7 @@
 -   Enhancement [GUF]: Improve GUF setup and templates
 -   Enhancement [UploadTasks]: for GUF auto-create GmlIds
 -   Bugfix [GMW-Import]: Update internal-id instead of match on internal id on import
+-   Bugfix [GMW-Templates]: Correct GMW-Insertion templates
 
 
 ## 1.66 (2026-03-12)
