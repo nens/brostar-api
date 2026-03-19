@@ -375,7 +375,7 @@ class GMWObjectImporter(ObjectImporter):
     def retrieve_internal_id(
         self,
         bro_id: str,
-    ) -> str:
+    ) -> str | None:
         bronhouder_url = settings.BRONHOUDERSPORTAAL_URL
         try:
             r = self.s.get(
@@ -447,14 +447,14 @@ class GMWObjectImporter(ObjectImporter):
         well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
             "wellConstructionDate", {}
         )
-        internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", None))
+        internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", ""))
         self.gmw_obj = GMW.objects.update_or_create(
-            internal_id=internal_id[:100]
-            if internal_id
-            else None,  # Only accepts 100 chars
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
+                "internal_id": internal_id[:100]
+                if internal_id
+                else None,  # Only accepts 100 chars
                 "delivery_accountable_party": gmw_data.get(
                     "brocom:deliveryAccountableParty", None
                 ),
