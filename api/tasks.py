@@ -303,17 +303,17 @@ def upload_task(
 
     # Add error handling to each task using .on_error()
     workflow = chain(
-        validate_xml_file_task.s(
-            upload_task_instance_uuid, bro_username, bro_password
-        ).on_error(handle_task_error.s(upload_task_instance_uuid, "validate_xml")),
-        deliver_xml_file_task.s().on_error(
-            handle_task_error.s(upload_task_instance_uuid, "deliver_xml")
-        ),
-        check_delivery_status_task.s().on_error(
-            handle_task_error.s(upload_task_instance_uuid, "check_delivery")
-        ),
+        validate_xml_file_task.s(upload_task_instance_uuid, bro_username, bro_password)
+        .set(queue="upload")
+        .on_error(handle_task_error.s(upload_task_instance_uuid, "validate_xml")),
+        deliver_xml_file_task.s()
+        .set(queue="upload")
+        .on_error(handle_task_error.s(upload_task_instance_uuid, "deliver_xml")),
+        check_delivery_status_task.s()
+        .set(queue="upload")
+        .on_error(handle_task_error.s(upload_task_instance_uuid, "check_delivery")),
     )
-    workflow.apply_async()
+    workflow.apply_async(queue="upload")
 
 
 @shared_task(queue="upload")

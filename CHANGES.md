@@ -7,6 +7,7 @@
 -   Enhancement [UploadTasks]: for GUF auto-create GmlIds
 -   Bugfix [GMW-Import]: Update internal-id instead of match on internal id on import
 -   Bugfix [GMW-Templates]: Correct GMW-Insertion templates
+-   Bugfix [UploadTasks]: Keep uploadtasks in upload celery queue
 
 
 ## 1.66 (2026-03-12)
