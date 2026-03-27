@@ -4,7 +4,6 @@ from api.bro_upload.upload_datamodels import (
     BHRP,
     CPT,
     GAR,
-    GPD,
     SFR,
     FRDEmmInstrumentConfiguration,
     FRDEmmMeasurement,
@@ -34,6 +33,9 @@ from api.bro_upload.upload_datamodels import (
     GMWSubsequentAdditionalSurvey,
     GMWTubeStatus,
     GMWWellHeadProtector,
+    GPDAddReport,
+    GPDEndRegistration,
+    GPDStartRegistration,
     GUFAddRealisedInstallation,
     GUFClosure,
     GUFClosureRealisedPart,
@@ -122,7 +124,9 @@ REGISTRATION_TYPE_OPTIONS = [
     ("GUF_Closure", "GUF_Closure"),
     ("GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
     ("GUF_ClosureRealisedPart", "GUF_ClosureRealisedPart"),
-    ("GPD", "GPD"),
+    ("GPD_StartRegistration", "GPD_StartRegistration"),
+    ("GPD_AddReport", "GPD_AddReport"),
+    ("GPD_EndRegistration", "GPD_EndRegistration"),
 ]
 
 
@@ -172,7 +176,9 @@ registration_type_datamodel_mapping = {
     "GUF_Closure": GUFClosure,
     "GUF_AddRealisedInstallation": GUFAddRealisedInstallation,
     "GUF_ClosureRealisedPart": GUFClosureRealisedPart,
-    "GPD": GPD,
+    "GPD_StartRegistration": GPDStartRegistration,
+    "GPD_AddReport": GPDAddReport,
+    "GPD_EndRegistration": GPDEndRegistration,
 }
 
 

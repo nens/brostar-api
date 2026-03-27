@@ -11,6 +11,8 @@ from gar.models import GAR
 from gld.models import GLD
 from gmn.models import GMN
 from gmw.models import GMW
+from gpd.models import GPD
+from guf.models import GUF
 
 logger = logging.getLogger("general")
 
@@ -45,6 +47,7 @@ class BulkImporter:
         self.bro_domain = self.import_task_instance.bro_domain
         self.kvk_number = self.import_task_instance.kvk_number
         self.data_owner = self.import_task_instance.data_owner
+        self.bro_category = "gm" if self.bro_domain not in ["GUF", "GPD"] else "gu"
 
         # Lookup the right importer class to initiate for object
         try:
@@ -118,11 +121,20 @@ class BulkImporter:
             FRD.objects.filter(
                 data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
             ).delete()
+        if self.bro_domain == "GUF":
+            GUF.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
+        if self.bro_domain == "GPD":
+            GPD.objects.filter(
+                data_owner=self.data_owner, delivery_accountable_party=self.kvk_number
+            ).delete()
 
     def _create_bro_ids_import_url(self) -> str:
         """Creates the import url for a given bro object type and kvk combination."""
         bro_domain = self.bro_domain.lower()
-        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}&registered=ja"
+        bro_category = self.bro_category.lower()
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/{bro_category}/{bro_domain}/v1/bro-ids?bronhouder={self.kvk_number}&registered=ja"
         return url
 
     def _fetch_bro_ids(self, url: str) -> list:

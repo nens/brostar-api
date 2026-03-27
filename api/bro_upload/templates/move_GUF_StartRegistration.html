@@ -99,7 +99,43 @@
               {% endfor %}
               {% if installation.installationFunction == "openBodemenergiesysteem" or installation.installationFunction == "geslotenBodemenergiesysteem" %}
               {% if installation.energyCharacteristics %}
-              <gufcom:energyCharacteristics>{{ installation.energyCharacteristics }}</gufcom:energyCharacteristics>
+              <gufcommon:energyCharacteristics>
+                {% if installation.energyCharacteristics.energyCold %}
+                <gufcommon:energyCold uom="MWh">{{ installation.energyCharacteristics.energyCold }}</gufcommon:energyCold>
+                {% if installation.energyCharacteristics.energyWarm %}
+                <gufcommon:energyWarm uom="MWh">{{ installation.energyCharacteristics.energyWarm }}</gufcommon:energyWarm>
+                {% endif %}
+                {% if installation.energyCharacteristics.maximumInfiltrationTemperatureWarm %}
+                <gufcommon:maximumInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.maximumInfiltrationTemperatureWarm }}</gufcommon:maximumInfiltrationTemperatureWarm>
+                {% endif %}
+                {% if installation.energyCharacteristics.averageInfiltrationTemperatureCold %}
+                <gufcommon:averageInfiltrationTemperatureCold uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureCold }}</gufcommon:averageInfiltrationTemperatureCold>
+                {% endif %}
+                {% if installation.energyCharacteristics.averageInfiltrationTemperatureWarm %}
+                <gufcommon:averageInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureWarm }}</gufcommon:averageInfiltrationTemperatureWarm>
+                {% endif %}
+                {% if installation.energyCharacteristics.powerCold %}
+                <gufcommon:powerCold uom="kW">{{ installation.energyCharacteristics.powerCold }}</gufcommon:powerCold>
+                {% endif %}
+                {% if installation.energyCharacteristics.powerWarm %}
+                <gufcommon:powerWarm uom="kW">{{ installation.energyCharacteristics.powerWarm }}</gufcommon:powerWarm>
+                {% endif %}
+                {% if installation.energyCharacteristics.power %}
+                <gufcommon:power uom="kW">{{ installation.energyCharacteristics.power }}</gufcommon:power>
+                {% endif %}
+                {% if installation.energyCharacteristics.averageColdWater %}
+                <gufcommon:averageColdWater uom="m3">{{ installation.energyCharacteristics.averageColdWater }}</gufcommon:averageColdWater>
+                {% endif %}
+                {% if installation.energyCharacteristics.averageWarmWater %}
+                <gufcommon:averageWarmWater uom="m3">{{ installation.energyCharacteristics.averageWarmWater }}</gufcommon:averageWarmWater>
+                {% endif %}
+                {% if installation.energyCharacteristics.maximumYearQuantityCold %}
+                <gufcommon:maximumYearQuantityCold uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityCold }}</gufcommon:maximumYearQuantityCold>
+                {% endif %}
+                {% if installation.energyCharacteristics.maximumYearQuantityWarm %}
+                <gufcommon:maximumYearQuantityWarm uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityWarm }}</gufcommon:maximumYearQuantityWarm>
+                {% endif %}
+              </gufcommon:energyCharacteristics>
               {% endif %}
               {% endif %}
               {% for design_loop in installation.designLoops %}

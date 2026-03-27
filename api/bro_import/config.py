@@ -6,4 +6,6 @@ object_importer_mapping: dict[str, type[object_import.ObjectImporter]] = {
     "GAR": object_import.GARObjectImporter,
     "GLD": object_import.GLDObjectImporter,
     "FRD": object_import.FRDObjectImporter,
+    "GUF": object_import.GUFObjectImporter,
+    "GPD": object_import.GPDObjectImporter,
 }

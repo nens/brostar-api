@@ -1,4 +1,21 @@
-from typing import Literal
+import re
+from typing import Literal, get_args
+
+
+def camel_to_label(value: str) -> str:
+    spaced = re.sub(r"(?<!^)(?=[A-Z])", " ", value)
+    # Capitalize first letter only
+    return spaced.capitalize()
+
+
+def literal_to_choices(literal_type):
+    choices = []
+    for value in get_args(literal_type):
+        if value is None:
+            continue  # Skip None values for choices
+        choices.append((value, camel_to_label(value)))
+    return choices
+
 
 QualityRegimeOptions = Literal["IMBRO", "IMBRO/A"]
 CorrectionReasonOptions = Literal[
@@ -33,6 +50,9 @@ RegistrationTypeOptions = Literal[
     "GLD_Closure",
     "GUF_StartRegistration",
     "GUF_Completion",
+    "GPD_StartRegistration",
+    "GPD_AddReport",
+    "GPD_EndRegistration",
 ]
 
 # GUF-specific value lists (from Section 6 of the BRO GUF Catalog)
@@ -115,3 +135,9 @@ DisplacementDirectionOptions = Literal[
     "inbrengen",
     "onttrekken",
 ]
+
+IndicationYesNoOptions = Literal["ja", "nee", "onbekend"]
+WaterInOutOptions = Literal["ingebracht", "onttrokken"]
+TemperatureOptions = Literal["koud", "warm", "onbekend", None]
+PubliclyAvailableOptions = Literal["ja", "nee", "onbekend", None]
+MethodOptions = Literal["berekening", "watermeter", "onbekend"]

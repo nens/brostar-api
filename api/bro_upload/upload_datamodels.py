@@ -11,13 +11,18 @@ from .type_helpers import (
     DisplacementDirectionOptions,
     FilterTypeOptions,
     GUFDeliveryContextOptions,
+    IndicationYesNoOptions,
     InstallationFunctionOptions,
     LegalTypeOptions,
+    MethodOptions,
+    PubliclyAvailableOptions,
     QualityRegimeOptions,
     RegistrationTypeOptions,
     RelativeTemperatureOptions,
     RequestTypeOptions,
+    TemperatureOptions,
     UsageTypeOptions,
+    WaterInOutOptions,
     WellFunctionOptions,
 )
 
@@ -804,16 +809,16 @@ class DesignWell(CamelModel):
     height: float  # meters
 
     well_pos: str  # Position coordinates
-    geometry_publicly_available: Literal["ja", "nee"] | None = None
+    geometry_publicly_available: PubliclyAvailableOptions
 
     maximum_well_depth: float | None = None  # meters
-    maximum_well_depth_publicly_available: Literal["ja", "nee"] | None = None
+    maximum_well_depth_publicly_available: PubliclyAvailableOptions = None
 
     maximum_well_capacity: float | None = None  # m3/h
     relative_temperature: RelativeTemperatureOptions | None = None
 
     design_screen: DesignScreen | None = None
-    design_screen_publicly_available: Literal["ja", "nee"] | None = None
+    design_screen_publicly_available: PubliclyAvailableOptions = None
 
     installation_function: InstallationFunctionOptions | None = None
 
@@ -840,6 +845,85 @@ class DesignSurfaceInfiltration(CamelModel):
         return v
 
 
+class EnergyCharacteristics(CamelModel):
+    """
+    Energy characteristics for a ground-source heat pump installation.
+    Maps to «Gegevensgroeptype» Energiekenmerken.
+    """
+
+    # energie koude per jaar
+    energy_cold: float | None = Field(
+        default=None,
+        description="energie koude per jaar",
+    )
+
+    # energie warmte per jaar
+    energy_warm: float | None = Field(
+        default=None,
+        description="energie warmte per jaar",
+    )
+
+    # maximale infiltratietemperatuur warm
+    maximum_infiltration_temperature_warm: float | None = Field(
+        default=None,
+        description="maximale infiltratietemperatuur warm",
+    )
+
+    # jaargemiddelde infiltratietemperatuur koud [0..1]
+    average_infiltration_temperature_cold: float | None = Field(
+        default=None,
+        description="jaargemiddelde infiltratietemperatuur koud",
+    )
+
+    # jaargemiddelde infiltratietemperatuur warm [0..1]
+    average_infiltration_temperature_warm: float | None = Field(
+        default=None,
+        description="jaargemiddelde infiltratietemperatuur warm",
+    )
+
+    # bodemzijdig vermogen koud [0..1]
+    power_cold: float | None = Field(
+        default=None,
+        description="bodemzijdig vermogen koud",
+    )
+
+    # bodemzijdig vermogen warm [0..1]
+    power_warm: float | None = Field(
+        default=None,
+        description="bodemzijdig vermogen warm",
+    )
+
+    # bodemzijdig vermogen [0..1]
+    power: float | None = Field(
+        default=None,
+        description="bodemzijdig vermogen",
+    )
+
+    # gemiddeld jaarvolume koud [0..1]
+    average_cold_water: float | None = Field(
+        default=None,
+        description="gemiddeld jaarvolume koud",
+    )
+
+    # gemiddeld jaarvolume warm [0..1]
+    average_warm_water: float | None = Field(
+        default=None,
+        description="gemiddeld jaarvolume warm",
+    )
+
+    # maximaal jaarvolume koud [0..1]
+    maximum_year_quantity_cold: float | None = Field(
+        default=None,
+        description="maximaal jaarvolume koud",
+    )
+
+    # maximaal jaarvolume warm [0..1]
+    maximum_year_quantity_warm: float | None = Field(
+        default=None,
+        description="maximaal jaarvolume warm",
+    )
+
+
 # Updated DesignInstallation class
 class DesignInstallation(CamelModel):
     """Design installation containing wells"""
@@ -849,7 +933,7 @@ class DesignInstallation(CamelModel):
     installation_function: InstallationFunctionOptions = "onttrekking"
     design_installation_pos: str  # Position coordinates
     licensed_quantities: list["LicensedQuantity"] = []
-    energy_characteristics: str | None = None  # For energy systems
+    energy_characteristics: EnergyCharacteristics | None = None  # For energy systems
     design_loops: list[DesignLoop] = []
     design_surface_infiltrations: list[DesignSurfaceInfiltration] = []
     design_wells: list[DesignWell] = []
@@ -859,6 +943,21 @@ class DesignInstallation(CamelModel):
     def generate_gml_id(cls, v):
         if v is None or v == "":
             return f"_{uuid.uuid4()}"
+        return v
+
+    # Add validator, if installation_function in 'openBodemenergiesysteem' or 'geslotenBodemenergiesysteem', then energy_characteristics must be provided
+    @field_validator("energy_characteristics", mode="before")
+    @classmethod
+    def validate_energy_characteristics(cls, v, values):
+        installation_function = values.get("installation_function")
+        if (
+            installation_function
+            in ["openBodemenergiesysteem", "geslotenBodemenergiesysteem"]
+            and v is None
+        ):
+            raise ValueError(
+                "energy_characteristics must be provided when installation_function is 'openBodemenergiesysteem' or 'geslotenBodemenergiesysteem'"
+            )
         return v
 
 
@@ -890,7 +989,7 @@ class GUFStartRegistration(CamelModel):
     legal_type: LegalTypeOptions
     primary_usage_type: UsageTypeOptions
     secondary_usage_types: list[UsageTypeOptions] = []
-    human_consumption: Literal["ja", "nee"]
+    human_consumption: IndicationYesNoOptions
     licensed_quantities: list[LicensedQuantity] = []
     design_installations: list[DesignInstallation] = []
 
@@ -911,7 +1010,7 @@ class GUFNewLicence(CamelModel):
     legal_type: LegalTypeOptions
     primary_usage_type: UsageTypeOptions
     secondary_usage_types: list[UsageTypeOptions] = []
-    human_consumption: Literal["ja", "nee"]
+    human_consumption: IndicationYesNoOptions
     licensed_quantities: list[LicensedQuantity] = []
     start_time: str = Field(
         ...,
@@ -1004,7 +1103,7 @@ class RealisedWell(CamelModel):
     height: float  # meters
     well_depth: float  # meters
     wellPos: str
-    publicly_available: Literal["ja", "nee"] | None = None
+    publicly_available: PubliclyAvailableOptions = None
     relative_temperature: RelativeTemperatureOptions | None = None
     validity: str | None = None  # Not allowed in ExpandRealisedInstallation
     lifespan: str | None = None  # Not allowed in ExpandRealisedInstallation
@@ -1118,6 +1217,33 @@ class GUFClosure(CamelModel):
     )
 
 
-class GPD(CamelModel):
-    object_id_accountable_party: str | None = None
-    bro_id: str | None = None
+class GPDStartRegistration(CamelModel):
+    object_id_accountable_party: str
+    publicly_available: PubliclyAvailableOptions = None
+
+
+class VolumeSeries(CamelModel):
+    volume_id: str
+    water_in_out: WaterInOutOptions
+    volume_total_number: float  # in m3
+    temperature: TemperatureOptions = None
+    begin_date: str = Field(
+        ...,
+        description="YYYY-MM-DD",
+    )
+    end_date: str = Field(
+        ...,
+        description="YYYY-MM-DD",
+    )
+
+
+class GPDAddReport(CamelModel):
+    report_id: str
+    method: MethodOptions = "onbekend"
+    volume_series: list[VolumeSeries]
+    groundwater_usage_facility_bro_id: str  # BRO-ID of GUF
+
+
+class GPDEndRegistration(CamelModel):
+    # Empty class as no data is needed
+    pass

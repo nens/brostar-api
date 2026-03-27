@@ -82,6 +82,9 @@ class APIOverview(views.APIView):
                 "api:gld:observation-list", request=request, format=format
             ),
             "frds": reverse("api:frd:frd-list", request=request, format=format),
+            "gufs": reverse("api:guf:guf-list", request=request, format=format),
+            "gpds": reverse("api:gpd:gpd-list", request=request, format=format),
+            "reports": reverse("api:gpd:report-list", request=request, format=format),
         }
         return Response(data)
 
