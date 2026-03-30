@@ -65,41 +65,29 @@ DesignLoopTypeOptions = Literal[
 ]
 
 # 6.3 Filtertype (Filter Type) - used for screen_type in wells
-FilterTypeOptions = Literal["horizontaal", "verticaal", "onbekend"]
+FilterTypeOptions = Literal["nietVerticaal", "verticaal", "onbekend"]
 
 # 6.4 Gebruiksdoel (Usage Purpose) - used for primary/secondary usage types
 UsageTypeOptions = Literal[
     "agrarischeDoeleinden",
     "bemaling",
-    "bodembeschermingsgebied",
-    "bodemenergie",
-    "drinkwatervoorziening",
+    "brandblusvoorziening",
     "geslotenBodemenergiesysteem",
     "grondwatersanering",
     "industrieleToepassing",
-    "infiltratieOpenbaarWater",
-    "infiltratieRegenwater",
-    "klimaatbeheersing",
-    "koeling",
-    "landbouwkundigeDoeleinden",
-    "natteInfrastructuur",
-    "natuurbeheer",
-    "onbekend",
-    "ontwatering",
     "openBodemenergiesysteem",
-    "proceswater",
-    "proefbronnering",
-    "suppletie",
-    "verversing",
-    "warmte",
+    "openbareDrinkwatervoorziening",
+    "overigeDoeleinden",
 ]
 
 # 6.5 Installatiefunctie (Installation Function)
 InstallationFunctionOptions = Literal[
-    "infiltratie",
-    "lozen",
+    "geslotenBodemenergiesysteem",
+    "onttrekkingEnRetournering",
     "onttrekking",
-    "retourneren",
+    "infiltratie",
+    "infiltratieEnOnttrekking",
+    "openBodemenergiesysteem",
 ]
 
 # 6.6 KaderAanlevering (Delivery Framework) - used for delivery_context
@@ -114,7 +102,7 @@ WellFunctionOptions = Literal["infiltratie", "onttrekking", "retournering", "onb
 # 6.8 Rechtstype (Legal Type) - used for legal_type
 LegalTypeOptions = Literal[
     "melding",
-    "vergunning",
+    "beschikking",
 ]
 
 # 6.9 Registratiestatus (Registration Status)

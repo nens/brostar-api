@@ -26,6 +26,7 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:startTime>
+        {% if sourcedocs_data.endTime %}
         <gufcom:endTime>
           {% if design_loop.endDate|length == 10 %}
           <brocom:date>{{ design_loop.endDate }}</brocom:date>
@@ -33,10 +34,11 @@
           <brocom:yearMonth>{{ design_loop.endDate }}</brocom:yearMonth>
           {% elif design_loop.endDate|length == 4 %}
           <brocom:year>{{ design_loop.endDate }}</brocom:year>
-          {% else %}
+          {% elif design_loop.endDate == 'onbekend' %}
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:endTime>
+        {% endif %}
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
@@ -101,43 +103,44 @@
               {% endfor %}
               {% if installation.installationFunction == "openBodemenergiesysteem" or installation.installationFunction == "geslotenBodemenergiesysteem" %}
               {% if installation.energyCharacteristics %}
-              <gufcommon:energyCharacteristics>
+              <gufcom:energyCharacteristics>
                 {% if installation.energyCharacteristics.energyCold %}
-                <gufcommon:energyCold uom="MWh">{{ installation.energyCharacteristics.energyCold }}</gufcommon:energyCold>
+                <gufcom:energyCold uom="MWh">{{ installation.energyCharacteristics.energyCold }}</gufcom:energyCold>
+                {% endif %}
                 {% if installation.energyCharacteristics.energyWarm %}
-                <gufcommon:energyWarm uom="MWh">{{ installation.energyCharacteristics.energyWarm }}</gufcommon:energyWarm>
+                <gufcom:energyWarm uom="MWh">{{ installation.energyCharacteristics.energyWarm }}</gufcom:energyWarm>
                 {% endif %}
                 {% if installation.energyCharacteristics.maximumInfiltrationTemperatureWarm %}
-                <gufcommon:maximumInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.maximumInfiltrationTemperatureWarm }}</gufcommon:maximumInfiltrationTemperatureWarm>
+                <gufcom:maximumInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.maximumInfiltrationTemperatureWarm }}</gufcom:maximumInfiltrationTemperatureWarm>
                 {% endif %}
                 {% if installation.energyCharacteristics.averageInfiltrationTemperatureCold %}
-                <gufcommon:averageInfiltrationTemperatureCold uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureCold }}</gufcommon:averageInfiltrationTemperatureCold>
+                <gufcom:averageInfiltrationTemperatureCold uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureCold }}</gufcom:averageInfiltrationTemperatureCold>
                 {% endif %}
                 {% if installation.energyCharacteristics.averageInfiltrationTemperatureWarm %}
-                <gufcommon:averageInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureWarm }}</gufcommon:averageInfiltrationTemperatureWarm>
+                <gufcom:averageInfiltrationTemperatureWarm uom="Cel">{{ installation.energyCharacteristics.averageInfiltrationTemperatureWarm }}</gufcom:averageInfiltrationTemperatureWarm>
                 {% endif %}
                 {% if installation.energyCharacteristics.powerCold %}
-                <gufcommon:powerCold uom="kW">{{ installation.energyCharacteristics.powerCold }}</gufcommon:powerCold>
+                <gufcom:powerCold uom="kW">{{ installation.energyCharacteristics.powerCold }}</gufcom:powerCold>
                 {% endif %}
                 {% if installation.energyCharacteristics.powerWarm %}
-                <gufcommon:powerWarm uom="kW">{{ installation.energyCharacteristics.powerWarm }}</gufcommon:powerWarm>
+                <gufcom:powerWarm uom="kW">{{ installation.energyCharacteristics.powerWarm }}</gufcom:powerWarm>
                 {% endif %}
                 {% if installation.energyCharacteristics.power %}
-                <gufcommon:power uom="kW">{{ installation.energyCharacteristics.power }}</gufcommon:power>
+                <gufcom:power uom="kW">{{ installation.energyCharacteristics.power }}</gufcom:power>
                 {% endif %}
                 {% if installation.energyCharacteristics.averageColdWater %}
-                <gufcommon:averageColdWater uom="m3">{{ installation.energyCharacteristics.averageColdWater }}</gufcommon:averageColdWater>
+                <gufcom:averageColdWater uom="m3">{{ installation.energyCharacteristics.averageColdWater }}</gufcom:averageColdWater>
                 {% endif %}
                 {% if installation.energyCharacteristics.averageWarmWater %}
-                <gufcommon:averageWarmWater uom="m3">{{ installation.energyCharacteristics.averageWarmWater }}</gufcommon:averageWarmWater>
+                <gufcom:averageWarmWater uom="m3">{{ installation.energyCharacteristics.averageWarmWater }}</gufcom:averageWarmWater>
                 {% endif %}
                 {% if installation.energyCharacteristics.maximumYearQuantityCold %}
-                <gufcommon:maximumYearQuantityCold uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityCold }}</gufcommon:maximumYearQuantityCold>
+                <gufcom:maximumYearQuantityCold uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityCold }}</gufcom:maximumYearQuantityCold>
                 {% endif %}
                 {% if installation.energyCharacteristics.maximumYearQuantityWarm %}
-                <gufcommon:maximumYearQuantityWarm uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityWarm }}</gufcommon:maximumYearQuantityWarm>
+                <gufcom:maximumYearQuantityWarm uom="m3">{{ installation.energyCharacteristics.maximumYearQuantityWarm }}</gufcom:maximumYearQuantityWarm>
                 {% endif %}
-              </gufcommon:energyCharacteristics>
+              </gufcom:energyCharacteristics>
               {% endif %}
               {% endif %}
               {% for design_loop in installation.designLoops %}
@@ -156,6 +159,7 @@
                       <brocom:voidReason>onbekend</brocom:voidReason>
                       {% endif %}
                     </gufcom:startTime>
+                    {% if design_loop.endDate %}
                     <gufcom:endTime>
                       {% if design_loop.endDate|length == 10 %}
                       <brocom:date>{{ design_loop.endDate }}</brocom:date>
@@ -167,12 +171,30 @@
                       <brocom:voidReason>onbekend</brocom:voidReason>
                       {% endif %}
                     </gufcom:endTime>
+                    {% endif %}
                   </gufcom:lifespan>
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
-                    <gml:LineString srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
-                      <gml:posList>{{ design_loop.designLoopPos }}</gml:posList>
-                    </gml:LineString>
+                    <gufcom:geometry>
+                      <gml:Curve gml:id="id_0006"  srsDimension="{{ 3 if design_loop.has_z else 2 }}" srsName="EPSG:28992">
+                        <gml:segments>
+                          <gml:LineStringSegment interpolation="linear">
+                            <gml:posList>
+                              {% for line_point in design_loop.linePoints %}
+                                {{ line_point.x }} {{ line_point.y }}{% if design_loop.has_z %} {{ line_point.z if line_point.z is not none else 0 }}{% endif %}
+                              {% endfor %}
+                            </gml:posList>
+                          </gml:LineStringSegment>
+                          <gml:ArcString interpolation="circularArc3Points" numArc="1">
+                            <gml:posList>
+                              {% for arc_point in design_loop.arcPoints %}
+                                {{ arc_point.x }} {{ arc_point.y }}{% if design_loop.has_z %} {{ arc_point.z if arc_point.z is not none else 0 }}{% endif %}
+                              {% endfor %}
+                            </gml:posList>
+                          </gml:ArcString>
+                        </gml:segments>
+                      </gml:Curve>
+                    </gufcom:geometry>
                     {% else %}
                     <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="geom{{ design_loop.gmlId }}">
                       <gml:pos>{{ design_loop.designLoopPos }}</gml:pos>
@@ -235,8 +257,8 @@
                     <gufcom:designScreenBottom uom="m">{{ well.designScreen.designScreenBottom }}</gufcom:designScreenBottom>
                     {% endif %}
                   </gufcom:designScreen>
-                  {% if well.designScreen.publiclyAvailable %}
-                  <gufcom:designScreenPubliclyAvailable>{{ well.designScreen.publiclyAvailable }}</gufcom:designScreenPubliclyAvailable>
+                  {% if well.designScreen.geometryPubliclyAvailable %}
+                  <gufcom:designScreenPubliclyAvailable>{{ well.designScreen.geometryPubliclyAvailable }}</gufcom:designScreenPubliclyAvailable>
                   {% endif %}
                   {% endif %}
                 </gufcom:DesignWell>

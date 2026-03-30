@@ -20,8 +20,8 @@
           <brocom:beginDate>{{ volume.beginDate }}</brocom:beginDate>
           <brocom:endDate>{{ volume.endDate }}</brocom:endDate>
         </gpdcommon:period>
-        <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.volumeNumber }}</gpdcom:waterInOut>
-        <gpdcom:volume uom="m3">{{ volume.volumeTotalNumber }}</gpdcom:volume>
+        <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.waterInOut }}</gpdcom:waterInOut>
+        <gpdcom:volume uom="m3">{{ volume.volume }}</gpdcom:volume>
         {% if volume.temperature %}
         <gpdcom:temperature>{{ volume.temperature }}</gpdcom:temperature>
         {% endif %}

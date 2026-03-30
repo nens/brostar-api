@@ -797,6 +797,7 @@ class DesignScreen(CamelModel):
     design_screen_bottom: float | None = (
         None  # meters (mandatory if screenType is verticaal)
     )
+    geometry_publicly_available: PubliclyAvailableOptions
 
 
 # Updated DesignWell class
@@ -1223,9 +1224,8 @@ class GPDStartRegistration(CamelModel):
 
 
 class VolumeSeries(CamelModel):
-    volume_id: str
     water_in_out: WaterInOutOptions
-    volume_total_number: float  # in m3
+    volume: float  # in m3
     temperature: TemperatureOptions = None
     begin_date: str = Field(
         ...,
