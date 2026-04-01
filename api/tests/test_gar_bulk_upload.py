@@ -14,7 +14,6 @@ from api.bro_upload.gar_bulk_upload import (
     create_gar_field_measurements,
     csv_or_excel_to_df,
 )
-from api.bro_upload.type_helpers import LimitSymbolOptions
 from api.bro_upload.upload_datamodels import FieldMeasurement
 from api.tests import fixtures
 
@@ -663,7 +662,7 @@ def test_create_analysis_process():
     assert analysis.quality_control_status == "onbeslist"
 
     # Get values from literal type hinting
-    for limit_symbol in LimitSymbolOptions.__args__:
+    for limit_symbol in ["<", "GT"]:
         row = pd.Series(
             {
                 "GMW BRO ID": "GMW1234567890",

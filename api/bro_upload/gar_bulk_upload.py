@@ -475,7 +475,8 @@ def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
             analysis_process = AnalysisProcess(**analysis_process_dict)
             analysis_processes.append(analysis_process)
 
-        elif value in ["LT", "GT"]:
+        elif value in ["<", "GT"]:
+            value = "LT" if value == "<" else value
             reporting_limit_column_pattern = (
                 rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
             )
