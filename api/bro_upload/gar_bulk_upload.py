@@ -434,7 +434,9 @@ def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
             (col for col in row.index if re.search(value_column_pattern, col)), None
         )
 
-        if value_column and pd.notna(row[value_column]):
+        value = row[value_column] if value_column else None
+
+        if value_column and isinstance(value, int | float) and pd.notna(value):
             reporting_limit_column_pattern = (
                 rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
             )
@@ -455,14 +457,56 @@ def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
             analysis_dict = {
                 "parameter": details["parameter_id"],
                 "unit": details["unit"],
-                "analysisMeasurementValue": row[value_column],
-                "reportingLimit": row[reporting_limit_column],
+                "analysisMeasurementValue": value,
+                "reportingLimit": row[reporting_limit_column]
+                if reporting_limit_column
+                else None,
                 "qualityControlStatus": "onbeslist",
             }
             analysis = Analysis(**analysis_dict)
 
             analysis_process_dict = {
-                "date": row[date_column],
+                "date": row[date_column] if date_column else None,
+                "analyticalTechnique": details["analyticalTechnique"],
+                "valuationMethod": details["validationMethod"],
+                "analyses": [analysis],
+            }
+
+            analysis_process = AnalysisProcess(**analysis_process_dict)
+            analysis_processes.append(analysis_process)
+
+        elif value in ["<", "GT"]:
+            value = "LT" if value == "<" else value
+            reporting_limit_column_pattern = (
+                rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
+            )
+            reporting_limit_column = next(
+                (
+                    col
+                    for col in row.index
+                    if re.search(reporting_limit_column_pattern, col)
+                ),
+                None,
+            )
+
+            date_column_pattern = rf"^\s*Analysedatum\s+{parameter}\s+\(.*\)\s*$"
+            date_column = next(
+                (col for col in row.index if re.search(date_column_pattern, col)), None
+            )
+
+            analysis_dict = {
+                "parameter": details["parameter_id"],
+                "unit": details["unit"],
+                "reportingLimit": row[reporting_limit_column]
+                if reporting_limit_column
+                else None,
+                "limitSymbol": value,
+                "qualityControlStatus": "onbeslist",
+            }
+            analysis = Analysis(**analysis_dict)
+
+            analysis_process_dict = {
+                "date": row[date_column] if date_column else None,
                 "analyticalTechnique": details["analyticalTechnique"],
                 "valuationMethod": details["validationMethod"],
                 "analyses": [analysis],

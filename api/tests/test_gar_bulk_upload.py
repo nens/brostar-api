@@ -10,6 +10,7 @@ from openpyxl import Workbook
 from rest_framework.test import APIClient
 
 from api.bro_upload.gar_bulk_upload import (
+    create_analysis_process,
     create_gar_field_measurements,
     csv_or_excel_to_df,
 )
@@ -627,3 +628,60 @@ class TestCreateGarFieldMeasurementsIntegration:
         assert isinstance(result, list)
         if len(result) > 0:
             assert all(isinstance(fm, FieldMeasurement) for fm in result)
+
+
+def test_create_analysis_process():
+    row = pd.Series(
+        {
+            "GMW BRO ID": "GMW1234567890",
+            "Filternummer": 1,
+            "Datum bemonsterd": "2018-10-25",
+            "Bronhouder": "test",
+            "Meetronde": 1,
+            "Naam grondwatermonitoringnet": "GMN1234567890",
+            "Uitvoerder veldwerk": "OMWB",
+            "Verantwoordelijk laboratorium": "AL-West BV",
+            "Cl (mg/l)": 0.1,
+            "Rapportagegrens Cl (mg/l)": 1,
+            "Analysedatum Cl (mg/l)": "2018-10-25",
+            "Bijzonderheden Cl (mg/l)": "",
+        }
+    )
+
+    analysis_process = create_analysis_process(row)
+    analysis_process = analysis_process[0]
+    assert analysis_process.date == "2018-10-25"
+    assert analysis_process.analytical_technique == "DA-S"
+    assert analysis_process.valuation_method == "I15923-1.13"
+    assert len(analysis_process.analyses) == 1
+    analysis = analysis_process.analyses[0]
+    assert analysis.parameter == 508
+    assert analysis.unit == "mg/l"
+    assert analysis.analysis_measurement_value == 0.1
+    assert analysis.reporting_limit == 1
+    assert analysis.quality_control_status == "onbeslist"
+
+    # Get values from literal type hinting
+    options = [("<", "LT"), ("GT", "GT")]
+    for input, result in options:
+        row = pd.Series(
+            {
+                "GMW BRO ID": "GMW1234567890",
+                "Filternummer": 1,
+                "Datum bemonsterd": "2018-10-25",
+                "Bronhouder": "test",
+                "Meetronde": 1,
+                "Naam grondwatermonitoringnet": "GMN1234567890",
+                "Uitvoerder veldwerk": "OMWB",
+                "Verantwoordelijk laboratorium": "AL-West BV",
+                "Cl (mg/l)": input,
+                "Rapportagegrens Cl (mg/l)": 1,
+                "Analysedatum Cl (mg/l)": "2018-10-25",
+                "Bijzonderheden Cl (mg/l)": "",
+            }
+        )
+
+        analysis_process = create_analysis_process(row)
+        analysis_process = analysis_process[0]
+        assert analysis_process.analyses[0].analysis_measurement_value is None
+        assert analysis_process.analyses[0].limit_symbol == result

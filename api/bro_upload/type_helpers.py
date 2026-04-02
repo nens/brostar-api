@@ -35,6 +35,8 @@ RegistrationTypeOptions = Literal[
     "GUF_Completion",
 ]
 
+LimitSymbolOptions = Literal["LT", "GT"]
+
 # GUF-specific value lists (from Section 6 of the BRO GUF Catalog)
 
 # 6.1 Bodemlustype (Soil Loop Type)
