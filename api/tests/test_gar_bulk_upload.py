@@ -662,7 +662,8 @@ def test_create_analysis_process():
     assert analysis.quality_control_status == "onbeslist"
 
     # Get values from literal type hinting
-    for limit_symbol in ["<", "GT"]:
+    options = [("<", "LT"), ("GT", "GT")]
+    for input, result in options:
         row = pd.Series(
             {
                 "GMW BRO ID": "GMW1234567890",
@@ -673,7 +674,7 @@ def test_create_analysis_process():
                 "Naam grondwatermonitoringnet": "GMN1234567890",
                 "Uitvoerder veldwerk": "OMWB",
                 "Verantwoordelijk laboratorium": "AL-West BV",
-                "Cl (mg/l)": limit_symbol,
+                "Cl (mg/l)": input,
                 "Rapportagegrens Cl (mg/l)": 1,
                 "Analysedatum Cl (mg/l)": "2018-10-25",
                 "Bijzonderheden Cl (mg/l)": "",
@@ -683,4 +684,4 @@ def test_create_analysis_process():
         analysis_process = create_analysis_process(row)
         analysis_process = analysis_process[0]
         assert analysis_process.analyses[0].analysis_measurement_value is None
-        assert analysis_process.analyses[0].limit_symbol == limit_symbol
+        assert analysis_process.analyses[0].limit_symbol == result
