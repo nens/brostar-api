@@ -295,7 +295,9 @@ def create_gmn_measuringpoint(
         gmn=gmn,
         data_owner=data_owner,
         measuringpoint_code=sourcedocument_data.get("measuringPointCode"),
-        gmw_bro_id=sourcedocument_data.get("gmwBroId"),
+        gmw_bro_id=sourcedocument_data.get(
+            "broId"
+        ),  # In GMN MeasuringPoint model, broId instead of gmwBroId is used.
         tube_number=sourcedocument_data.get("tubeNumber"),
         event_type=event_type,
         defaults={
