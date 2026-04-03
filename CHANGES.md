@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.67 (unreleased)
+## 1.67 (2026-04-03)
 
 
 -   Enhancement [GUF]: Improve GUF setup and templates
