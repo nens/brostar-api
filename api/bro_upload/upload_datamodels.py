@@ -13,6 +13,7 @@ from .type_helpers import (
     GUFDeliveryContextOptions,
     InstallationFunctionOptions,
     LegalTypeOptions,
+    LimitSymbolOptions,
     QualityRegimeOptions,
     RegistrationTypeOptions,
     RelativeTemperatureOptions,
@@ -385,8 +386,8 @@ class FieldResearch(CamelModel):
 class Analysis(CamelModel):
     parameter: str | int
     unit: str
-    analysis_measurement_value: float
-    limit_symbol: str | None = None
+    analysis_measurement_value: float | None = None
+    limit_symbol: LimitSymbolOptions | None = None
     reporting_limit: str | float | None = None
     quality_control_status: str
 

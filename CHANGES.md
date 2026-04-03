@@ -8,6 +8,7 @@
 -   Bugfix [GMW-Import]: Update internal-id instead of match on internal id on import
 -   Bugfix [GMW-Templates]: Correct GMW-Insertion templates
 -   Bugfix [UploadTasks]: Keep uploadtasks in upload celery queue
+-   Enhancement [GAR]: Allow for limiting symbol to be used in GAR-LabExcel
 
 
 ## 1.66 (2026-03-12)
