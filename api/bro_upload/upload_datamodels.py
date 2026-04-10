@@ -464,9 +464,9 @@ class GLDAddition(CamelModel):
     validation_status: str | None = None
     investigator_kvk: str
     observation_type: str
-    evaluation_procedure: str
-    measurement_instrument_type: str
-    process_reference: str
+    evaluation_procedure: str | None
+    measurement_instrument_type: str | None
+    process_reference: str | None
     air_pressure_compensation_type: str | None = None
     begin_position: str
     end_position: str
