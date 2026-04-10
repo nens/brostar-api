@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.68 (unreleased)
+## 1.68 (2026-04-10)
 
 
 -   Enhancement [GLD]: Allow for re-use of observatio-process-id
