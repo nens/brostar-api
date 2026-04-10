@@ -75,6 +75,9 @@
               {% endif %}
             </gml:TimeInstant>
           </om:resultTime>
+          {% if sourcedocs_data.repeatProcedure %}
+          <om:procedure xlink:href="{{ sourcedocs_data.observationProcessId }}" />
+          {% else %}
           <om:procedure>
             <wml2:ObservationProcess gml:id="{{ sourcedocs_data.observationProcessId }}">
               <wml2:processType xlink:href="http://www.opengis.net/def/waterml/2.0/processType/Algorithm" />
@@ -101,6 +104,7 @@
               </wml2:parameter>
             </wml2:ObservationProcess>
           </om:procedure>
+          {% endif %}
           <om:observedProperty />
           <om:featureOfInterest />
           <om:result>

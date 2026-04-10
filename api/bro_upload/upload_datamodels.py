@@ -473,6 +473,9 @@ class GLDAddition(CamelModel):
     result_time: str | None = None
     time_value_pairs: list[TimeValuePair]
 
+    # New
+    repeat_procedure: bool = False  # Indicates if the observation_process_id alone should be used as a repeat.
+
     @model_validator(mode="before")
     def generate_missing_ids(cls, data):
         if isinstance(data, dict):
