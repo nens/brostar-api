@@ -59,3 +59,37 @@ class GAR(models.Model):
 
     class Meta:
         verbose_name_plural = "GAR's"
+
+
+class FieldSample(models.Model):
+    """Field sample taken during a GAR."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    gar = models.ForeignKey(GAR, on_delete=models.CASCADE, related_name="field_samples")
+    sample_number = models.CharField(max_length=100, null=True)
+    sample_depth = models.CharField(max_length=100, null=True)
+    sample_type = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        verbose_name_plural = "Field samples"
+
+    def __str__(self) -> str:
+        return f"Sample {self.sample_number} from {self.gar.bro_id}"
+
+
+class LaboratoryAnalysis(models.Model):
+    """Laboratory analysis performed on a field sample."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    gar = models.ForeignKey(
+        GAR, on_delete=models.CASCADE, related_name="laboratory_analyses"
+    )
+    parameter = models.CharField(max_length=100, null=True)
+    value = models.CharField(max_length=100, null=True)
+    unit = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        verbose_name_plural = "Laboratory analyses"
+
+    def __str__(self) -> str:
+        return f"{self.parameter} analysis for {self.gar.bro_id}"
