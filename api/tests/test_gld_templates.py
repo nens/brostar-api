@@ -46,6 +46,7 @@ def test_gld_addition_xml_registration():
         },
         sourcedocs_data={
             "observationId": "_12345",
+            "observationProcessId": "_a2ieh2i29u91u3ninwidn",
             "investigatorKvk": "Kvk_123",
             "observationType": "controlemeting",
             "measurementInstrumentType": "type_1",
@@ -62,6 +63,17 @@ def test_gld_addition_xml_registration():
     xml = generator.create_xml_file()
     assert xml is not None
     assert "registrationRequest" in xml
+    assert "processReference" in xml
+
+    generator.sourcedocs_data.update({"repeatProcedure": True})
+
+    xml = generator.create_xml_file()
+    assert xml is not None
+    assert "processReference" not in xml
+    assert (
+        f'procedure xlink:href="{generator.sourcedocs_data["observationProcessId"]}"'
+        in xml
+    )
 
 
 def test_gld_addition_xml_replace():
