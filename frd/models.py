@@ -62,6 +62,8 @@ class MeasurementConfiguration(models.Model):
     measurement_pair = JSONField(null=True, blank=True)
     current_pair = JSONField(null=True, blank=True)
 
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "Measurement configurations"
 
@@ -82,6 +84,8 @@ class GeoElectricMeasurement(models.Model):
     determination_procedure = models.CharField(max_length=100, null=True)
     evaluation_procedure = models.CharField(max_length=100, null=True)
 
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "Geo-electric measurements"
 
@@ -100,6 +104,8 @@ class GeoElectricMeasure(models.Model):
     )
     resistance = models.CharField(max_length=50, null=True)
     related_measurement_configuration = models.CharField(max_length=50, null=True)
+
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Geo-electric measures"
@@ -123,6 +129,8 @@ class CalculatedApparentFormationResistance(models.Model):
     )
     evaluation_procedure = models.CharField(max_length=100, null=True)
     values = models.TextField(null=True, blank=True)
+
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Calculated apparent formation resistances"

@@ -870,6 +870,15 @@ class GARObjectImporter(ObjectImporter):
             self._save_laboratory_researches(gar, lab_analysis)
 
     @staticmethod
+    def _attr_or_none(value: Any, attr: str) -> str | None:
+        """Return an attribute value from a xmltodict dict, or None."""
+        if value is None:
+            return None
+        if isinstance(value, dict):
+            return value.get(f"@{attr}", None)
+        return None
+
+    @staticmethod
     def _text_or_none(value: Any) -> str | None:
         """Return the #text value from a xmltodict dict, or the plain string, or None."""
         if value is None:
@@ -889,12 +898,15 @@ class GARObjectImporter(ObjectImporter):
 
         FieldMeasurement.objects.filter(gar=gar).delete()
         for measurement in measurements:
+            measurement_value = measurement.get(
+                "garcommon:analysisMeasurementValue", None
+            )
+
             FieldMeasurement.objects.create(
                 gar=gar,
                 parameter=int(measurement.get("garcommon:parameter")),
-                field_measurement_value=self._text_or_none(
-                    measurement.get("garcommon:fieldMeasurementValue", None)
-                ),
+                unit=self._attr_or_none(measurement_value, "uom"),
+                field_measurement_value=self._text_or_none(measurement_value),
                 quality_control_status=self._text_or_none(
                     measurement.get("garcommon:qualityControlStatus", None)
                 ),
@@ -959,12 +971,12 @@ class GARObjectImporter(ObjectImporter):
         analyses = raw if isinstance(raw, list) else [raw]
 
         for analysis in analyses:
+            analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
             Analysis.objects.create(
                 analysis_process=analysis_process,
                 parameter=int(analysis.get("garcommon:parameter")),
-                value=self._text_or_none(
-                    analysis.get("garcommon:analysisMeasurementValue", None)
-                ),
+                value=self._text_or_none(analysis_value),
+                unit=self._attr_or_none(analysis_value, "uom"),
                 limit_symbol=self._text_or_none(
                     analysis.get("garcommon:limitSymbol", None)
                 ),

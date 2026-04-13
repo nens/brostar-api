@@ -75,10 +75,18 @@ class FieldMeasurement(models.Model):
     parameter = models.IntegerField(
         null=False, blank=False, verbose_name="Parameter ID"
     )
-    field_measurement_value = models.CharField(max_length=100, null=True)
-    quality_control_status = models.CharField(
-        choices=QUALITY_CONTROL_STATUS, max_length=100, null=True
+    unit = models.CharField(max_length=100, null=True, verbose_name="Eenheid")
+    field_measurement_value = models.CharField(
+        max_length=100, null=True, verbose_name="Waarde veldmeting"
     )
+    quality_control_status = models.CharField(
+        choices=QUALITY_CONTROL_STATUS,
+        max_length=100,
+        null=True,
+        verbose_name="Kwaliteitscontrole status",
+    )
+
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Field measurements"
@@ -99,6 +107,8 @@ class LaboratoryResearch(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     laboratory_kvk_number = models.CharField(max_length=100, null=True)
+
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Laboratory researches"
@@ -128,6 +138,8 @@ class AnalysisProcess(models.Model):
         max_length=100, null=True, verbose_name="Waardebepalingsprocedure"
     )
 
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+
     class Meta:
         verbose_name_plural = "Laboratory processes"
 
@@ -150,6 +162,7 @@ class Analysis(models.Model):
     limit_symbol = models.CharField(
         max_length=100, null=True, verbose_name="Limietsymbool"
     )
+    unit = models.CharField(max_length=100, null=True, verbose_name="Eenheid")
     value = models.CharField(max_length=100, null=True, verbose_name="Waarde")
     reporting_limit = models.CharField(
         max_length=100, null=True, verbose_name="Rapporteringsgrens"
@@ -160,6 +173,8 @@ class Analysis(models.Model):
         null=True,
         verbose_name="Kwaliteitscontrole status",
     )
+
+    data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "Laboratory analyses"
