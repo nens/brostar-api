@@ -3,5 +3,7 @@ from django.contrib import admin
 from . import models
 
 admin.site.register(models.GAR)
-admin.site.register(models.FieldSample)
-admin.site.register(models.LaboratoryAnalysis)
+admin.site.register(models.FieldMeasurement)
+admin.site.register(models.LaboratoryResearch)
+admin.site.register(models.AnalysisProcess)
+admin.site.register(models.Analysis)

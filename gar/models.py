@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 
+from gar.choices import QUALITY_CONTROL_STATUS
 from gmw import models as gmw_models
 
 
@@ -43,6 +44,7 @@ class GAR(models.Model):
     sample_aerated = models.CharField(max_length=100, null=True)
     hose_reused = models.CharField(max_length=100, null=True)
     temperature_difficult_to_measure = models.CharField(max_length=100, null=True)
+
     lab_analysis_date = models.DateField(null=True, blank=True)
 
     def __str__(self) -> str:
@@ -61,35 +63,106 @@ class GAR(models.Model):
         verbose_name_plural = "GAR's"
 
 
-class FieldSample(models.Model):
+class FieldMeasurement(models.Model):
     """Field sample taken during a GAR."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gar = models.ForeignKey(GAR, on_delete=models.CASCADE, related_name="field_samples")
-    sample_number = models.CharField(max_length=100, null=True)
-    sample_depth = models.CharField(max_length=100, null=True)
-    sample_type = models.CharField(max_length=100, null=True)
+    gar = models.ForeignKey(
+        GAR, on_delete=models.CASCADE, related_name="field_measurements"
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    parameter = models.IntegerField(
+        null=False, blank=False, verbose_name="Parameter ID"
+    )
+    field_measurement_value = models.CharField(max_length=100, null=True)
+    quality_control_status = models.CharField(
+        choices=QUALITY_CONTROL_STATUS, max_length=100, null=True
+    )
 
     class Meta:
-        verbose_name_plural = "Field samples"
+        verbose_name_plural = "Field measurements"
 
     def __str__(self) -> str:
-        return f"Sample {self.sample_number} from {self.gar.bro_id}"
+        return f"Param {self.parameter} from {self.gar.bro_id}"
 
 
-class LaboratoryAnalysis(models.Model):
+class LaboratoryResearch(models.Model):
+    """Laboratory research performed on a field sample."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    gar = models.ForeignKey(
+        GAR, on_delete=models.CASCADE, related_name="laboratory_researches"
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    laboratory_kvk_number = models.CharField(max_length=100, null=True)
+
+    class Meta:
+        verbose_name_plural = "Laboratory researches"
+
+    def __str__(self) -> str:
+        return f"Laboratory research for {self.gar.bro_id}"
+
+
+class AnalysisProcess(models.Model):
+    """Laboratory process performed on a field sample."""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    laboratory_research = models.ForeignKey(
+        LaboratoryResearch,
+        on_delete=models.CASCADE,
+        related_name="laboratory_processes",
+    )
+    analyses_date = models.DateField(
+        null=False, blank=False, verbose_name="Datum van analyse"
+    )
+    analytical_technique = models.CharField(
+        max_length=100, null=True, verbose_name="Analysetechniek"
+    )
+    validation_method = models.CharField(
+        max_length=100, null=True, verbose_name="Waardebepalingsprocedure"
+    )
+
+    class Meta:
+        verbose_name_plural = "Laboratory processes"
+
+    def __str__(self) -> str:
+        return f"Laboratory process for {self.laboratory_research.gar.bro_id}"
+
+
+class Analysis(models.Model):
     """Laboratory analysis performed on a field sample."""
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    gar = models.ForeignKey(
-        GAR, on_delete=models.CASCADE, related_name="laboratory_analyses"
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    analysis_process = models.ForeignKey(
+        AnalysisProcess, on_delete=models.CASCADE, related_name="laboratory_analyses"
     )
-    parameter = models.CharField(max_length=100, null=True)
-    value = models.CharField(max_length=100, null=True)
-    unit = models.CharField(max_length=100, null=True)
+    parameter = models.IntegerField(
+        null=False, blank=False, verbose_name="Parameter ID"
+    )
+    limit_symbol = models.CharField(
+        max_length=100, null=True, verbose_name="Limietsymbool"
+    )
+    value = models.CharField(max_length=100, null=True, verbose_name="Waarde")
+    reporting_limit = models.CharField(
+        max_length=100, null=True, verbose_name="Rapporteringsgrens"
+    )
+    status_quality_control = models.CharField(
+        choices=QUALITY_CONTROL_STATUS,
+        max_length=100,
+        null=True,
+        verbose_name="Kwaliteitscontrole status",
+    )
 
     class Meta:
         verbose_name_plural = "Laboratory analyses"
 
     def __str__(self) -> str:
-        return f"{self.parameter} analysis for {self.gar.bro_id}"
+        return f"{self.parameter} analysis for {self.analysis_process.laboratory_research.gar.bro_id}"
