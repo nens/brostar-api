@@ -9,6 +9,9 @@ from . import models as gar_models
 
 class GarFilter(DateTimeFilterMixin, FilterSet):
     bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
+    gmw_bro_id__icontains = filters.CharFilter(
+        field_name="gmw_bro_id", lookup_expr="icontains"
+    )
 
     class Meta:
         model = gar_models.GAR

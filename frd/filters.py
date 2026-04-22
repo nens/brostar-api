@@ -14,6 +14,9 @@ from .models import (
 
 class FrdFilter(DateTimeFilterMixin, FilterSet):
     bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
+    gmw_bro_id__icontains = filters.CharFilter(
+        field_name="gmw_bro_id", lookup_expr="icontains"
+    )
 
     class Meta:
         model = FRD
