@@ -1,12 +1,18 @@
 # Changelog for BROStar API
 
-## 1.68 (unreleased)
+## 1.69 (unreleased)
 
 
 -   Enhancement [GAR]: Add all GAR models, including API pages, serializers and filters
 -   Enhancement [FRD]: Add all FRD models, including API pages, serializers and filters
 -   Enhancement [GAR]: Improve GAR-import to include all data, instead of just the main information of GAR
 -   Enhancement [FRD]: Improve FRD-import to include all data, instead of just the main dossier.
+
+
+## 1.68 (2026-04-10)
+
+
+-   Enhancement [GLD]: Allow for re-use of observatio-process-id
 
 
 ## 1.67 (2026-04-03)

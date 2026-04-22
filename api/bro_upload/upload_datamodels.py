@@ -464,14 +464,17 @@ class GLDAddition(CamelModel):
     validation_status: str | None = None
     investigator_kvk: str
     observation_type: str
-    evaluation_procedure: str
-    measurement_instrument_type: str
-    process_reference: str
+    evaluation_procedure: str | None
+    measurement_instrument_type: str | None
+    process_reference: str | None
     air_pressure_compensation_type: str | None = None
     begin_position: str
     end_position: str
     result_time: str | None = None
     time_value_pairs: list[TimeValuePair]
+
+    # New
+    repeat_procedure: bool = False  # Indicates if the observation_process_id alone should be used as a repeat.
 
     @model_validator(mode="before")
     def generate_missing_ids(cls, data):
