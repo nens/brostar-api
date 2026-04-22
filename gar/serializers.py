@@ -35,3 +35,27 @@ class GARIdsSerializer(serializers.ModelSerializer):
             "delivery_accountable_party",
             "data_owner",
         ]
+
+
+class FieldMeasurementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gar_models.FieldMeasurement
+        fields = "__all__"
+
+
+class LaboratoryResearchSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gar_models.LaboratoryResearch
+        fields = "__all__"
+
+
+class AnalysisProcessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gar_models.AnalysisProcess
+        fields = "__all__"
+
+
+class AnalysisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = gar_models.Analysis
+        fields = "__all__"

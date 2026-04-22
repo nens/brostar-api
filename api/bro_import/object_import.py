@@ -13,8 +13,20 @@ from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
 
 from api.models import ImportTask, Organisation
-from frd.models import FRD
-from gar.models import GAR
+from frd.models import (
+    FRD,
+    CalculatedApparentFormationResistance,
+    GeoElectricMeasure,
+    GeoElectricMeasurement,
+    MeasurementConfiguration,
+)
+from gar.models import (
+    GAR,
+    Analysis,
+    AnalysisProcess,
+    FieldMeasurement,
+    LaboratoryResearch,
+)
 from gld.models import GLD, Observation
 from gmn.choices import GMN_EVENT_MAPPING
 from gmn.models import GMN, IntermediateEvent, Measuringpoint
@@ -802,7 +814,7 @@ class GARObjectImporter(ObjectImporter):
         else:
             lab_analysis_date = None
 
-        GAR.objects.update_or_create(
+        gar, _ = GAR.objects.update_or_create(
             bro_id=gar_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -852,6 +864,129 @@ class GARObjectImporter(ObjectImporter):
                 "lab_analysis_date": lab_analysis_date,
             },
         )
+
+        self._save_field_measurements(gar, field_research_data)
+        if lab_analysis:
+            self._save_laboratory_researches(gar, lab_analysis)
+
+    @staticmethod
+    def _attr_or_none(value: Any, attr: str) -> str | None:
+        """Return an attribute value from a xmltodict dict, or None."""
+        if value is None:
+            return None
+        if isinstance(value, dict):
+            return value.get(f"@{attr}", None)
+        return None
+
+    @staticmethod
+    def _text_or_none(value: Any) -> str | None:
+        """Return the #text value from a xmltodict dict, or the plain string, or None."""
+        if value is None:
+            return None
+        if isinstance(value, dict):
+            return value.get("#text", None)
+        return value
+
+    def _save_field_measurements(
+        self, gar: GAR, field_research_data: dict[str, Any]
+    ) -> None:
+        raw = field_research_data.get("garcommon:fieldMeasurement", None)
+        if not raw:
+            return
+
+        measurements = raw if isinstance(raw, list) else [raw]
+
+        FieldMeasurement.objects.filter(gar=gar).delete()
+        for measurement in measurements:
+            measurement_value = measurement.get(
+                "garcommon:analysisMeasurementValue", None
+            )
+
+            FieldMeasurement.objects.create(
+                gar=gar,
+                parameter=int(measurement.get("garcommon:parameter")),
+                unit=self._attr_or_none(measurement_value, "uom"),
+                field_measurement_value=self._text_or_none(measurement_value),
+                quality_control_status=self._text_or_none(
+                    measurement.get("garcommon:qualityControlStatus", None)
+                ),
+            )
+
+    def _save_laboratory_researches(
+        self, gar: GAR, lab_analysis_data: dict | list
+    ) -> None:
+        lab_analyses = (
+            lab_analysis_data
+            if isinstance(lab_analysis_data, list)
+            else [lab_analysis_data]
+        )
+
+        LaboratoryResearch.objects.filter(gar=gar).delete()
+        for lab_analysis in lab_analyses:
+            responsible_lab = lab_analysis.get("garcommon:responsibleLaboratory", None)
+            kvk_number = None
+            if responsible_lab:
+                kvk_number = self._text_or_none(
+                    responsible_lab.get("garcommon:chamberOfCommerceNumber", None)
+                )
+
+            lab_research = LaboratoryResearch.objects.create(
+                gar=gar,
+                laboratory_kvk_number=kvk_number,
+            )
+            self._save_analysis_processes(lab_research, lab_analysis)
+
+    def _save_analysis_processes(
+        self, lab_research: LaboratoryResearch, lab_analysis_data: dict[str, Any]
+    ) -> None:
+        raw = lab_analysis_data.get("garcommon:analysisProcess", None)
+        if not raw:
+            return
+
+        processes = raw if isinstance(raw, list) else [raw]
+
+        for process in processes:
+            analyses_date = process.get("garcommon:analysisDate", {}).get(
+                "brocom:date", None
+            )
+            analysis_process = AnalysisProcess.objects.create(
+                laboratory_research=lab_research,
+                analyses_date=analyses_date,
+                analytical_technique=self._text_or_none(
+                    process.get("garcommon:analyticalTechnique", None)
+                ),
+                validation_method=self._text_or_none(
+                    process.get("garcommon:valuationMethod", None)
+                ),
+            )
+            self._save_analyses(analysis_process, process)
+
+    def _save_analyses(
+        self, analysis_process: AnalysisProcess, process_data: dict[str, Any]
+    ) -> None:
+        raw = process_data.get("garcommon:analysis", None)
+        if not raw:
+            return
+
+        analyses = raw if isinstance(raw, list) else [raw]
+
+        for analysis in analyses:
+            analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
+            Analysis.objects.create(
+                analysis_process=analysis_process,
+                parameter=int(analysis.get("garcommon:parameter")),
+                value=self._text_or_none(analysis_value),
+                unit=self._attr_or_none(analysis_value, "uom"),
+                limit_symbol=self._text_or_none(
+                    analysis.get("garcommon:limitSymbol", None)
+                ),
+                reporting_limit=self._text_or_none(
+                    analysis.get("garcommon:reportingLimit", None)
+                ),
+                status_quality_control=self._text_or_none(
+                    analysis.get("garcommon:qualityControlStatus", None)
+                ),
+            )
 
 
 OBSERVATION_NAMESPACE = {
@@ -1088,10 +1223,10 @@ class FRDObjectImporter(ObjectImporter):
 
         frd_data = dispatch_document_data.get("FRD_O")
         tube_data = frd_data.get("groundwaterMonitoringTube").get(
-            "frdcom:MonitoringTube"
+            "frdcommon:MonitoringTube"
         )
 
-        FRD.objects.update_or_create(
+        frd, _ = FRD.objects.update_or_create(
             bro_id=frd_data.get("brocom:broId", None),
             data_owner=self.data_owner,
             defaults={
@@ -1099,9 +1234,108 @@ class FRDObjectImporter(ObjectImporter):
                     "brocom:deliveryAccountableParty", None
                 ),
                 "quality_regime": frd_data.get("brocom:qualityRegime", None),
-                "gmw_bro_id": tube_data.get("frdcom:broId", None),
-                "tube_number": tube_data.get("frdcom:tubeNumber", None),
+                "determination_type": frd_data.get("determinationType", {}).get(
+                    "#text", None
+                ),
+                "gmw_bro_id": tube_data.get("frdcommon:broId", None),
+                "tube_number": tube_data.get("frdcommon:tubeNumber", None),
                 "research_first_date": frd_data.get("researchFirstDate", None),
                 "research_last_date": frd_data.get("researchLastDate", None),
             },
+        )
+
+        self._save_measurement_configurations(frd, frd_data)
+        self._save_geo_electric_measurements(frd, frd_data)
+
+    @staticmethod
+    def _text_or_none(value: Any) -> str | None:
+        if value is None:
+            return None
+        if isinstance(value, dict):
+            return value.get("#text", None)
+        return value
+
+    def _save_measurement_configurations(
+        self, frd: FRD, frd_data: dict[str, Any]
+    ) -> None:
+        raw = frd_data.get("measurementConfiguration", None)
+        if not raw:
+            return
+        configs = raw if isinstance(raw, list) else [raw]
+
+        MeasurementConfiguration.objects.filter(frd=frd).delete()
+        for config in configs:
+            mc = config.get("frdcommon:MeasurementConfiguration", {})
+            MeasurementConfiguration.objects.create(
+                frd=frd,
+                measurement_configuration_id=mc.get(
+                    "frdcommon:measurementConfigurationID"
+                ),
+                measurement_pair=mc.get("frdcommon:measurementPair", None),
+                current_pair=mc.get("frdcommon:currentPair", None),
+            )
+
+    def _save_geo_electric_measurements(
+        self, frd: FRD, frd_data: dict[str, Any]
+    ) -> None:
+        raw = frd_data.get("relatedGeoElectricMeasurement", None)
+        if not raw:
+            return
+        measurements = raw if isinstance(raw, list) else [raw]
+
+        GeoElectricMeasurement.objects.filter(frd=frd).delete()
+        for item in measurements:
+            gem_data = item.get("frdcommon:GeoElectricMeasurement", {})
+            gem = GeoElectricMeasurement.objects.create(
+                frd=frd,
+                measurement_date=gem_data.get("frdcommon:measurementDate", None),
+                determination_procedure=self._text_or_none(
+                    gem_data.get("frdcommon:determinationProcedure", None)
+                ),
+                evaluation_procedure=self._text_or_none(
+                    gem_data.get("frdcommon:evaluationProcedure", None)
+                ),
+            )
+            self._save_geo_electric_measures(gem, gem_data)
+            self._save_calculated_resistance(gem, gem_data)
+
+    def _save_geo_electric_measures(
+        self, gem: GeoElectricMeasurement, gem_data: dict[str, Any]
+    ) -> None:
+        raw = gem_data.get("frdcommon:measure", None)
+        if not raw:
+            return
+        measures = raw if isinstance(raw, list) else [raw]
+
+        for measure in measures:
+            GeoElectricMeasure.objects.create(
+                geo_electric_measurement=gem,
+                resistance=self._text_or_none(
+                    measure.get("frdcommon:resistance", None)
+                ),
+                related_measurement_configuration=measure.get(
+                    "frdcommon:relatedMeasurementConfiguration", {}
+                ).get("@xlink:href", None),
+            )
+
+    def _save_calculated_resistance(
+        self, gem: GeoElectricMeasurement, gem_data: dict[str, Any]
+    ) -> None:
+        raw = gem_data.get(
+            "frdcommon:relatedCalculatedApparentFormationResistance", None
+        )
+        if not raw:
+            return
+        calc_data = raw.get("frdcommon:CalculatedApparentFormationResistance", {})
+        values = (
+            calc_data.get("frdcommon:apparentFormationResistanceSeries", {})
+            .get("swe:DataArray", {})
+            .get("swe:values", None)
+        )
+        CalculatedApparentFormationResistance.objects.create(
+            geo_electric_measurement=gem,
+            evaluation_procedure=self._text_or_none(
+                calc_data.get("frdcommon:evaluationProcedure", None)
+            ),
+            values=values,
         )
