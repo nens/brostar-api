@@ -1,6 +1,21 @@
 # Changelog for BROStar API
 
-## 1.67 (unreleased)
+## 1.69 (unreleased)
+
+
+-   Enhancement [GAR]: Add all GAR models, including API pages, serializers and filters
+-   Enhancement [FRD]: Add all FRD models, including API pages, serializers and filters
+-   Enhancement [GAR]: Improve GAR-import to include all data, instead of just the main information of GAR
+-   Enhancement [FRD]: Improve FRD-import to include all data, instead of just the main dossier.
+
+
+## 1.68 (2026-04-10)
+
+
+-   Enhancement [GLD]: Allow for re-use of observatio-process-id
+
+
+## 1.67 (2026-04-03)
 
 
 -   Enhancement [GUF]: Improve GUF setup and templates
@@ -8,6 +23,7 @@
 -   Bugfix [GMW-Import]: Update internal-id instead of match on internal id on import
 -   Bugfix [GMW-Templates]: Correct GMW-Insertion templates
 -   Bugfix [UploadTasks]: Keep uploadtasks in upload celery queue
+-   Enhancement [GAR]: Allow for limiting symbol to be used in GAR-LabExcel
 
 
 ## 1.66 (2026-03-12)

@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from .models import FRD
+from .models import (
+    FRD,
+    GeoElectricMeasure,
+    GeoElectricMeasurement,
+    MeasurementConfiguration,
+)
 
 
 class FRDAdmin(admin.ModelAdmin):
@@ -14,3 +19,6 @@ class FRDAdmin(admin.ModelAdmin):
 
 
 admin.site.register(FRD)
+admin.site.register(MeasurementConfiguration)
+admin.site.register(GeoElectricMeasurement)
+admin.site.register(GeoElectricMeasure)

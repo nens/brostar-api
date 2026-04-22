@@ -516,7 +516,7 @@ def test_post_save_uploadtask_triggers_create_objects_gmn_event(
                 "objectIdAccountableParty": "test_upload",
                 "eventDate": event_date,
                 "measuringPointCode": "MP1",
-                "gmwBroId": "GMW000000034567"
+                "broId": "GMW000000034567"
                 if event == "GMN_MeasuringPoint"
                 else "GMW000000012345",
                 "tubeNumber": 1,
