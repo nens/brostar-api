@@ -10,12 +10,12 @@
   <sourceDocument>
     <GMN_MeasuringPoint gml:id="id_0001">
       <eventDate>
-        {% if sourcedocs_data.endDateMonitoring|length == 10 %}
-        <brocom:date>{{ sourcedocs_data.endDateMonitoring }}</brocom:date>
-        {% elif sourcedocs_data.endDateMonitoring|length == 7 %}
-        <brocom:yearMonth>{{ sourcedocs_data.endDateMonitoring }}</brocom:yearMonth>
-        {% elif sourcedocs_data.endDateMonitoring|length == 4 %}
-        <brocom:year>{{ sourcedocs_data.endDateMonitoring }}</brocom:year>
+        {% if sourcedocs_data.evenDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.evenDate }}</brocom:date>
+        {% elif sourcedocs_data.evenDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.evenDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.evenDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.evenDate }}</brocom:year>
         {% else %}
         <brocom:voidReason>onbekend</brocom:voidReason>
         {% endif %}
