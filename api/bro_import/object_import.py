@@ -896,7 +896,7 @@ class GARObjectImporter(ObjectImporter):
 
         measurements = raw if isinstance(raw, list) else [raw]
 
-        FieldMeasurement.objects.filter(gar=gar).delete()
+        FieldMeasurement.objects.filter(gar=gar, data_owner=self.data_owner).delete()
         for measurement in measurements:
             measurement_value = measurement.get(
                 "garcommon:analysisMeasurementValue", None
@@ -910,6 +910,7 @@ class GARObjectImporter(ObjectImporter):
                 quality_control_status=self._text_or_none(
                     measurement.get("garcommon:qualityControlStatus", None)
                 ),
+                data_owner=self.data_owner,
             )
 
     def _save_laboratory_researches(
@@ -921,7 +922,7 @@ class GARObjectImporter(ObjectImporter):
             else [lab_analysis_data]
         )
 
-        LaboratoryResearch.objects.filter(gar=gar).delete()
+        LaboratoryResearch.objects.filter(gar=gar, data_owner=self.data_owner).delete()
         for lab_analysis in lab_analyses:
             responsible_lab = lab_analysis.get("garcommon:responsibleLaboratory", None)
             kvk_number = None
@@ -933,6 +934,7 @@ class GARObjectImporter(ObjectImporter):
             lab_research = LaboratoryResearch.objects.create(
                 gar=gar,
                 laboratory_kvk_number=kvk_number,
+                data_owner=self.data_owner,
             )
             self._save_analysis_processes(lab_research, lab_analysis)
 
@@ -945,6 +947,9 @@ class GARObjectImporter(ObjectImporter):
 
         processes = raw if isinstance(raw, list) else [raw]
 
+        AnalysisProcess.objects.filter(
+            lab_research=lab_research, data_owner=self.data_owner
+        ).delete()
         for process in processes:
             analyses_date = process.get("garcommon:analysisDate", {}).get(
                 "brocom:date", None
@@ -958,6 +963,7 @@ class GARObjectImporter(ObjectImporter):
                 validation_method=self._text_or_none(
                     process.get("garcommon:valuationMethod", None)
                 ),
+                data_owner=self.data_owner,
             )
             self._save_analyses(analysis_process, process)
 
@@ -969,7 +975,9 @@ class GARObjectImporter(ObjectImporter):
             return
 
         analyses = raw if isinstance(raw, list) else [raw]
-
+        Analysis.objects.filter(
+            analysis_process=analysis_process, data_owner=self.data_owner
+        ).delete()
         for analysis in analyses:
             analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
             Analysis.objects.create(
@@ -986,6 +994,7 @@ class GARObjectImporter(ObjectImporter):
                 status_quality_control=self._text_or_none(
                     analysis.get("garcommon:qualityControlStatus", None)
                 ),
+                data_owner=self.data_owner,
             )
 
 
