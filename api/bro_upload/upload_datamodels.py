@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, ValidationInfo, field_validator, model_validator
 
 from .type_helpers import (
     BroDomainOptions,
@@ -953,8 +953,8 @@ class DesignInstallation(CamelModel):
     # Add validator, if installation_function in 'openBodemenergiesysteem' or 'geslotenBodemenergiesysteem', then energy_characteristics must be provided
     @field_validator("energy_characteristics", mode="before")
     @classmethod
-    def validate_energy_characteristics(cls, v, values):
-        installation_function = values.get("installation_function")
+    def validate_energy_characteristics(cls, v, info: ValidationInfo):
+        installation_function = info.data.get("installation_function")
         if (
             installation_function
             in ["openBodemenergiesysteem", "geslotenBodemenergiesysteem"]

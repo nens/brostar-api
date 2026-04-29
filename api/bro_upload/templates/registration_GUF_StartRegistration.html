@@ -28,13 +28,13 @@
         </gufcom:startTime>
         {% if sourcedocs_data.endTime %}
         <gufcom:endTime>
-          {% if design_loop.endDate|length == 10 %}
-          <brocom:date>{{ design_loop.endDate }}</brocom:date>
-          {% elif design_loop.endDate|length == 7 %}
-          <brocom:yearMonth>{{ design_loop.endDate }}</brocom:yearMonth>
-          {% elif design_loop.endDate|length == 4 %}
-          <brocom:year>{{ design_loop.endDate }}</brocom:year>
-          {% elif design_loop.endDate == 'onbekend' %}
+          {% if sourcedocs_data.endTime|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
+          {% elif sourcedocs_data.endTime|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
+          {% elif sourcedocs_data.endTime|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
+          {% elif sourcedocs_data.endTime == 'onbekend' %}
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:endTime>
@@ -176,19 +176,19 @@
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
                     <gufcom:geometry>
-                      <gml:Curve gml:id="id_0006"  srsDimension="{{ 3 if design_loop.has_z else 2 }}" srsName="EPSG:28992">
+                      <gml:Curve gml:id="id_0006" srsDimension="{% if design_loop.has_z %}3{% else %}2{% endif %}" srsName="EPSG:28992">
                         <gml:segments>
                           <gml:LineStringSegment interpolation="linear">
                             <gml:posList>
                               {% for line_point in design_loop.linePoints %}
-                                {{ line_point.x }} {{ line_point.y }}{% if design_loop.has_z %} {{ line_point.z if line_point.z is not none else 0 }}{% endif %}
+                                {{ line_point.x }} {{ line_point.y }}{% if design_loop.has_z %}{% if line_point.z is not None %} {{ line_point.z }}{% else %} 0{% endif %}{% endif %}
                               {% endfor %}
                             </gml:posList>
                           </gml:LineStringSegment>
                           <gml:ArcString interpolation="circularArc3Points" numArc="1">
                             <gml:posList>
                               {% for arc_point in design_loop.arcPoints %}
-                                {{ arc_point.x }} {{ arc_point.y }}{% if design_loop.has_z %} {{ arc_point.z if arc_point.z is not none else 0 }}{% endif %}
+                                {{ arc_point.x }} {{ arc_point.y }}{% if design_loop.has_z %}{% if arc_point.z is not None %} {{ arc_point.z }}{% else %} 0{% endif %}{% endif %}
                               {% endfor %}
                             </gml:posList>
                           </gml:ArcString>

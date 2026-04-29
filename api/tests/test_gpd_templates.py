@@ -58,11 +58,10 @@ def test_gpd_addreport_xml():
         "method": "berekening",
         "volumeSeries": [
             {
-                "volumeId": "Volume1234",
                 "waterInOut": "onttrokken",
-                "volumeTotalNumber": 1000,
+                "volume": 1000,
                 "temperature": "koud",
-                "startDate": "2024-01-01",
+                "beginDate": "2024-01-01",
                 "endDate": "2024-01-31",
             }
         ],

@@ -60,6 +60,7 @@ def test_guf_startregistration_xml():
                             "maximumWellDepth": 0,
                             "maximumWellCapacity": 75,
                             "designScreen": None,
+                            "geometryPubliclyAvailable": "nee",
                         }
                     ],
                 }
@@ -80,8 +81,11 @@ def test_guf_startregistration_xml():
         },
         sourcedocs_data=source_docs_data.model_dump(mode="json", by_alias=True),
     )
+    print(generator.template_filepath)
+    print(generator.sourcedocs_data)
 
     xml = generator.create_xml_file()
+    print(xml)
     assert xml is not None
     assert "registrationRequest" in xml
     assert "GUF_StartRegistration" in xml
