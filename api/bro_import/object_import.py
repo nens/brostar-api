@@ -73,6 +73,7 @@ DOMAIN_MODEL_MAPPING = {
     "GLD": GLD,
     "FRD": FRD,
     "GPD": GPD,
+    "GUF": GUF,
 }
 
 
