@@ -5,13 +5,14 @@ import requests
 
 from .namespaces import (
     ns_reg_gmw,
+    ns_reg_gpd,
 )
 
 
 def _request_bro_xml(
     bro_id: str, query_params: str, type: str, bro_url: str
 ) -> bytes | None:
-    options = ["gmw", "frd", "gar", "gmn", "gld"]
+    options = ["gmw", "frd", "gar", "gmn", "gld", "gpd"]
     if type.lower() not in options:
         raise Exception(f"Unknown type: {type}. Use a correct option: {options}.")
 
@@ -643,3 +644,182 @@ class GMWXML:
             if event.get("electrodeData", None):
                 events.append(event)
         return events
+
+
+class GPDXML:
+    def __init__(
+        self,
+        bro_id: str,
+        bro_url: str,
+        full_history: bool = True,
+    ) -> None:
+        fh = "ja" if full_history else "nee"
+        if not isinstance(bro_id, str):
+            raise TypeError(f"Incorrect type: {type(bro_id)}.")
+        elif (
+            bro_id.startswith("GPD")
+            and bro_id.split("GPD")[-1].isdigit()
+            and len(bro_id) == 15
+        ):
+            self.xml_content = _request_bro_xml(
+                bro_id, f"fullHistory={fh}", "gpd", bro_url
+            )
+            self.xml_etree = ET.fromstring(self.xml_content)
+        else:
+            raise ValueError(f"Incorrect GPD-ID: {bro_id}")
+
+    @property
+    def bro_id(self) -> str | None:
+        return self.xml_etree.find(".//brocom:broId", ns_reg_gpd).text
+
+    @property
+    def delivery_accountable_party(self) -> str | None:
+        return self.xml_etree.find(
+            ".//brocom:deliveryAccountableParty", ns_reg_gpd
+        ).text
+
+    @property
+    def quality_regime(self) -> str | None:
+        return self.xml_etree.find(".//brocom:qualityRegime", ns_reg_gpd).text
+
+    @property
+    def start_time(self) -> str | None:
+        start_time_elem = self.xml_etree.find(".//lifespan/startTime", ns_reg_gpd)
+        return start_time_elem.text if start_time_elem is not None else None
+
+    @property
+    def end_time(self) -> str | None:
+        end_time_elem = self.xml_etree.find(".//lifespan/endTime", ns_reg_gpd)
+        return end_time_elem.text if end_time_elem is not None else None
+
+    @property
+    def registration_history(self) -> dict:
+        reg_hist = self.xml_etree.find(".//registrationHistory", ns_reg_gpd)
+        if reg_hist is None:
+            return {}
+
+        history = {}
+
+        # Object registration time
+        obj_reg_time = reg_hist.find("brocom:objectRegistrationTime", ns_reg_gpd)
+        if obj_reg_time is not None:
+            history["objectRegistrationTime"] = obj_reg_time.text
+
+        # Registration status
+        reg_status = reg_hist.find("brocom:registrationStatus", ns_reg_gpd)
+        if reg_status is not None:
+            history["registrationStatus"] = reg_status.text
+
+        # Latest addition time
+        latest_add = reg_hist.find("brocom:latestAdditionTime", ns_reg_gpd)
+        if latest_add is not None:
+            history["latestAdditionTime"] = latest_add.text
+
+        # Corrected
+        corrected = reg_hist.find("brocom:corrected", ns_reg_gpd)
+        if corrected is not None:
+            history["corrected"] = corrected.text
+
+        # Latest correction time
+        latest_corr = reg_hist.find("brocom:latestCorrectionTime", ns_reg_gpd)
+        if latest_corr is not None:
+            history["latestCorrectionTime"] = latest_corr.text
+
+        # Under review
+        under_review = reg_hist.find("brocom:underReview", ns_reg_gpd)
+        if under_review is not None:
+            history["underReview"] = under_review.text
+
+        # Deregistered
+        dereg = reg_hist.find("brocom:deregistered", ns_reg_gpd)
+        if dereg is not None:
+            history["deregistered"] = dereg.text
+
+        # Reregistered
+        rereg = reg_hist.find("brocom:reregistered", ns_reg_gpd)
+        if rereg is not None:
+            history["reregistered"] = rereg.text
+
+        return history
+
+    @property
+    def reports(self) -> list[dict]:  # noqa C901
+        reports = []
+        report_elements = self.xml_etree.findall(
+            ".//report/gpdcommon:Report", ns_reg_gpd
+        )
+
+        for report_elem in report_elements:
+            report_data = {}
+
+            # Report ID
+            report_id = report_elem.find("gpdcommon:reportId", ns_reg_gpd)
+            if report_id is not None:
+                report_data["reportId"] = report_id.text
+
+            # Method
+            method = report_elem.find("gpdcommon:method", ns_reg_gpd)
+            if method is not None:
+                report_data["method"] = method.text
+
+            # Report period
+            period = report_elem.find("gpdcommon:reportPeriod", ns_reg_gpd)
+            if period is not None:
+                begin_date = period.find("brocom:beginDate", ns_reg_gpd)
+                end_date = period.find("brocom:endDate", ns_reg_gpd)
+                report_data["beginDate"] = (
+                    begin_date.text if begin_date is not None else None
+                )
+                report_data["endDate"] = end_date.text if end_date is not None else None
+
+            # Volume series
+            volume_series_list = []
+            volume_series_elements = report_elem.findall(
+                "gpdcommon:volumeSeries", ns_reg_gpd
+            )
+
+            for vs_elem in volume_series_elements:
+                vs_data = {}
+
+                # Period
+                vs_period = vs_elem.find("gpdcommon:period", ns_reg_gpd)
+                if vs_period is not None:
+                    vs_begin = vs_period.find("brocom:beginDate", ns_reg_gpd)
+                    vs_end = vs_period.find("brocom:endDate", ns_reg_gpd)
+                    vs_data["beginDate"] = (
+                        vs_begin.text if vs_begin is not None else None
+                    )
+                    vs_data["endDate"] = vs_end.text if vs_end is not None else None
+
+                # Water in/out
+                water_inout = vs_elem.find("gpdcommon:waterInOut", ns_reg_gpd)
+                if water_inout is not None:
+                    vs_data["waterInOut"] = water_inout.text
+
+                # Volume
+                volume = vs_elem.find("gpdcommon:volume", ns_reg_gpd)
+                if volume is not None:
+                    vs_data["volume"] = float(volume.text) if volume.text else 0.0
+
+                # Temperature (only for 'ingebracht')
+                temp = vs_elem.find("gpdcommon:temperatureIn", ns_reg_gpd)
+                if temp is not None:
+                    vs_data["temperatureIn"] = temp.text
+                else:
+                    vs_data["temperatureIn"] = None
+
+                volume_series_list.append(vs_data)
+
+            report_data["volumeSeries"] = volume_series_list
+
+            # Installation/facility (GUF reference)
+            installation = report_elem.find(
+                ".//gpdcommon:installationOrFacility/gpdcommon:InstallationOrFacility/gpdcommon:relatedGroundwaterUsageFacility/gpdcommon:GroundwaterUsageFacility/gpdcommon:broId",
+                ns_reg_gpd,
+            )
+            if installation is not None:
+                report_data["groundwaterUsageFacilityBroId"] = installation.text
+
+            reports.append(report_data)
+
+        return reports

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deleteRequest
+  xmlns="http://www.broservices.nl/xsd/isgpd/1.0"
+  xmlns:gpdcom="http://www.broservices.nl/xsd/gpdcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isgpd/1.0 https://schema.broservices.nl/xsd/isgpd/1.0/isgpd-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <brocom:correctionReason>{{ metadata.correctionReason }}</brocom:correctionReason>
+  <sourceDocument>
+    <gpdcom:GPD_AddReport gml:id="id_0001">
+      <gpdcom:reportId>{{ sourcedocs_data.reportId }}</gpdcom:reportId>
+      <gpdcom:method codeSpace="urn:bro:gpd:Method">{{ sourcedocs_data.method }}</gpdcom:method>
+      {% for volume in sourcedocs_data.volume_series %}
+      <gpdcom:volumeSeries>
+        <gpdcommon:period>
+          <brocom:beginDate>{{ volume.beginDate }}</brocom:beginDate>
+          <brocom:endDate>{{ volume.endDate }}</brocom:endDate>
+        </gpdcommon:period>
+        <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.volumeNumber }}</gpdcom:waterInOut>
+        <gpdcom:volume uom="m3">{{ volume.volumeTotalNumber }}</gpdcom:volume>
+        {% if volume.temperature %}
+        <gpdcom:temperature>{{ volume.temperature }}</gpdcom:temperature>
+        {% endif %}
+      </gpdcom:volumeSeries>
+      {% endfor %}
+      <gpdcommon:installationOrFacility>
+        <gpdcommon:InstallationOrFacility>
+          <gpdcommon:relatedGroundwaterUsageFacility>
+            <gpdcommon:GroundwaterUsageFacility gml:id="BRO_0001">
+              <gpdcommon:broId>{{ sourcedocs_data.groundwaterUsageFacilityBroId }}</gpdcommon:broId>
+            </gpdcommon:GroundwaterUsageFacility>
+          </gpdcommon:relatedGroundwaterUsageFacility>
+        </gpdcommon:InstallationOrFacility>
+      </gpdcommon:installationOrFacility>
+    </gpdcom:GPD_AddReport>
+</deleteRequest>

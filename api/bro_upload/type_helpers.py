@@ -1,4 +1,21 @@
-from typing import Literal
+import re
+from typing import Literal, get_args
+
+
+def camel_to_label(value: str) -> str:
+    spaced = re.sub(r"(?<!^)(?=[A-Z])", " ", value)
+    # Capitalize first letter only
+    return spaced.capitalize()
+
+
+def literal_to_choices(literal_type):
+    choices = []
+    for value in get_args(literal_type):
+        if value is None:
+            continue  # Skip None values for choices
+        choices.append((value, camel_to_label(value)))
+    return choices
+
 
 QualityRegimeOptions = Literal["IMBRO", "IMBRO/A"]
 CorrectionReasonOptions = Literal[
@@ -33,6 +50,9 @@ RegistrationTypeOptions = Literal[
     "GLD_Closure",
     "GUF_StartRegistration",
     "GUF_Completion",
+    "GPD_StartRegistration",
+    "GPD_AddReport",
+    "GPD_EndRegistration",
 ]
 
 LimitSymbolOptions = Literal["LT", "GT"]
@@ -47,41 +67,29 @@ DesignLoopTypeOptions = Literal[
 ]
 
 # 6.3 Filtertype (Filter Type) - used for screen_type in wells
-FilterTypeOptions = Literal["horizontaal", "verticaal", "onbekend"]
+FilterTypeOptions = Literal["nietVerticaal", "verticaal", "onbekend"]
 
 # 6.4 Gebruiksdoel (Usage Purpose) - used for primary/secondary usage types
 UsageTypeOptions = Literal[
     "agrarischeDoeleinden",
     "bemaling",
-    "bodembeschermingsgebied",
-    "bodemenergie",
-    "drinkwatervoorziening",
+    "brandblusvoorziening",
     "geslotenBodemenergiesysteem",
     "grondwatersanering",
     "industrieleToepassing",
-    "infiltratieOpenbaarWater",
-    "infiltratieRegenwater",
-    "klimaatbeheersing",
-    "koeling",
-    "landbouwkundigeDoeleinden",
-    "natteInfrastructuur",
-    "natuurbeheer",
-    "onbekend",
-    "ontwatering",
     "openBodemenergiesysteem",
-    "proceswater",
-    "proefbronnering",
-    "suppletie",
-    "verversing",
-    "warmte",
+    "openbareDrinkwatervoorziening",
+    "overigeDoeleinden",
 ]
 
 # 6.5 Installatiefunctie (Installation Function)
 InstallationFunctionOptions = Literal[
-    "infiltratie",
-    "lozen",
+    "geslotenBodemenergiesysteem",
+    "onttrekkingEnRetournering",
     "onttrekking",
-    "retourneren",
+    "infiltratie",
+    "infiltratieEnOnttrekking",
+    "openBodemenergiesysteem",
 ]
 
 # 6.6 KaderAanlevering (Delivery Framework) - used for delivery_context
@@ -96,7 +104,7 @@ WellFunctionOptions = Literal["infiltratie", "onttrekking", "retournering", "onb
 # 6.8 Rechtstype (Legal Type) - used for legal_type
 LegalTypeOptions = Literal[
     "melding",
-    "vergunning",
+    "beschikking",
 ]
 
 # 6.9 Registratiestatus (Registration Status)
@@ -117,3 +125,9 @@ DisplacementDirectionOptions = Literal[
     "inbrengen",
     "onttrekken",
 ]
+
+IndicationYesNoOptions = Literal["ja", "nee", "onbekend"]
+WaterInOutOptions = Literal["ingebracht", "onttrokken"]
+TemperatureOptions = Literal["koud", "warm", "onbekend", None]
+PubliclyAvailableOptions = Literal["ja", "nee", "onbekend", None]
+MethodOptions = Literal["berekening", "watermeter", "onbekend"]

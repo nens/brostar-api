@@ -36,7 +36,19 @@ def test_guf_startregistration_xml():
                     "installationFunction": "onttrekking",
                     "designInstallationPos": "214928 490230",
                     "licensedQuantities": [],
-                    "energyCharacteristics": None,
+                    "energyCharacteristics": {
+                        "energyCold": 0,
+                        "energyWarm": 0,
+                        "maximumInfiltrationTemperatureWarm": 25.0,
+                        "averageInfiltrationTemperatureCold": 8.0,
+                        "averageInfiltrationTemperatureWarm": 15.0,
+                        "powerCold": 0,
+                        "powerWarm": 0,
+                        "averageColdWater": 240000,
+                        "averageWarmWater": 240000,
+                        "maximumYearQuantityCold": 360000,
+                        "maximumYearQuantityWarm": 360000,
+                    },
                     "designLoops": [],
                     "designSurfaceInfiltrations": [],
                     "designWells": [
@@ -48,6 +60,7 @@ def test_guf_startregistration_xml():
                             "maximumWellDepth": 0,
                             "maximumWellCapacity": 75,
                             "designScreen": None,
+                            "geometryPubliclyAvailable": "nee",
                         }
                     ],
                 }
@@ -68,8 +81,11 @@ def test_guf_startregistration_xml():
         },
         sourcedocs_data=source_docs_data.model_dump(mode="json", by_alias=True),
     )
+    print(generator.template_filepath)
+    print(generator.sourcedocs_data)
 
     xml = generator.create_xml_file()
+    print(xml)
     assert xml is not None
     assert "registrationRequest" in xml
     assert "GUF_StartRegistration" in xml

@@ -31,6 +31,14 @@ from gld.models import GLD, Observation
 from gmn.choices import GMN_EVENT_MAPPING
 from gmn.models import GMN, IntermediateEvent, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube
+from gpd.models import GPD, Report, VolumeSeries
+from guf.models import (
+    GUF,
+    DesignInstallation,
+    DesignWell,
+    EnergyCharacteristics,
+    GUFEvent,
+)
 
 logger = logging.getLogger("general")
 
@@ -64,6 +72,8 @@ DOMAIN_MODEL_MAPPING = {
     "GAR": GAR,
     "GLD": GLD,
     "FRD": FRD,
+    "GPD": GPD,
+    "GUF": GUF,
 }
 
 
@@ -83,6 +93,7 @@ class ObjectImporter(ABC):
     """
 
     bro_domain: str
+    bro_category: str = "gm"
 
     def __init__(self, bro_id: str, data_owner: Organisation) -> None:
         if not bro_id.startswith(self.bro_domain):
@@ -191,7 +202,8 @@ class ObjectImporter(ABC):
     def _create_download_url(self) -> str:
         """Creates the import url for a given bro object."""
         bro_domain = self.bro_domain.lower()
-        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
+        bro_category = self.bro_category.lower()
+        url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/{bro_category}/{bro_domain}/v1/objects/{self.bro_id}?fullHistory=nee"
         return url
 
     def _download_xml(self, url: str) -> IO[bytes]:
@@ -1348,3 +1360,522 @@ class FRDObjectImporter(ObjectImporter):
             ),
             values=values,
         )
+
+
+class GUFObjectImporter(ObjectImporter):
+    bro_domain = "GUF"
+    bro_category = "gu"
+
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If GUF_PPO is not found, it basically means that the object is not relevant anymore
+        if "GUF_PPO" not in dispatch_document_data:
+            return
+
+        guf_ppo = dispatch_document_data.get("GUF_PPO", {})
+
+        # Create/update main GUF object
+        guf_obj = self._save_guf_data(guf_ppo)
+
+        # Process events from objectHistory
+        self._save_guf_events(guf_ppo, guf_obj)
+
+        # Process licence and nested installations/wells
+        self._save_installations_and_wells(guf_ppo, guf_obj)
+
+    def _parse_flexible_date(self, date_str: str | None) -> datetime.date | None:
+        """Parse BRO dates with flexible granularity (YYYY, YYYY-MM, YYYY-MM-DD)"""
+        if not date_str:
+            return None
+        try:
+            if len(date_str) == 4:  # YYYY
+                return datetime.date(int(date_str), 1, 1)
+            elif len(date_str) == 7:  # YYYY-MM
+                year, month = date_str.split("-")
+                return datetime.date(int(year), int(month), 1)
+            else:  # YYYY-MM-DD
+                return datetime.datetime.fromisoformat(date_str).date()
+        except (ValueError, AttributeError):
+            return None
+
+    def _extract_text_from_xml_element(self, element: dict | str | None) -> str | None:
+        """Extract text from XML elements that may have attributes"""
+        if isinstance(element, dict):
+            return element.get("#text")
+        return element
+
+    def _save_guf_data(self, guf_ppo: dict[str, Any]):  # noqa C901 - This function is complex but breaking it down further would reduce readability due to the nested structure of the data.
+        # Extract basic metadata
+        bro_id = guf_ppo.get("brocom:broId")
+        delivery_accountable_party = guf_ppo.get("brocom:deliveryAccountableParty")
+        quality_regime = self._extract_text_from_xml_element(
+            guf_ppo.get("brocom:qualityRegime")
+        )
+        delivery_context = self._extract_text_from_xml_element(
+            guf_ppo.get("deliveryContext")
+        )
+
+        # Extract lifespan with flexible date handling
+        lifespan = guf_ppo.get("lifespan", {})
+        start_time_data = lifespan.get("gufcommon:startTime", {})
+        start_time_str = None
+        if start_time_data.get("brocom:date"):
+            start_time_str = start_time_data.get("brocom:date")
+        elif start_time_data.get("brocom:yearMonth"):
+            start_time_str = start_time_data.get("brocom:yearMonth")
+        elif start_time_data.get("brocom:year"):
+            start_time_str = start_time_data.get("brocom:year")
+
+        # Extract licence data for GUF fields.
+        # The XML may contain multiple <licence> elements, which xmltodict parses as a list.
+        # Use the first licence entry for GUF-level fields.
+        licence_raw = guf_ppo.get("licence", {})
+        if isinstance(licence_raw, list):
+            licence_raw = licence_raw[0]
+        licence_data = licence_raw.get("gufcommon:LicenceGroundwaterUsage", {})
+        identification_licence = licence_data.get("gufcommon:identificationLicence")
+        legal_type = self._extract_text_from_xml_element(
+            licence_data.get("gufcommon:legalType")
+        )
+
+        # Extract usage type information
+        usage_facility = licence_data.get("gufcommon:usageTypeFacility", {})
+        primary_usage_type = self._extract_text_from_xml_element(
+            usage_facility.get("gufcommon:primaryUsageType")
+        )
+        human_consumption = self._extract_text_from_xml_element(
+            usage_facility.get("gufcommon:humanConsumption")
+        )
+
+        # Extract secondary usage types (array)
+        secondary_types = usage_facility.get("gufcommon:secondaryUsageType", [])
+        if isinstance(secondary_types, dict):
+            secondary_types = [secondary_types]
+        secondary_usage_types = [
+            self._extract_text_from_xml_element(st) for st in secondary_types if st
+        ]
+
+        # Extract licensed quantities (array with units)
+        licensed_quantities = []
+        license_quantities_raw = licence_data.get("gufcommon:licensedQuantity", [])
+        if isinstance(license_quantities_raw, dict):
+            license_quantities_raw = [license_quantities_raw]
+
+        for qty in license_quantities_raw:
+            qty_obj = {
+                "licensed_in_out": self._extract_text_from_xml_element(
+                    qty.get("gufcommon:licensedInOut")
+                ),
+            }
+            # Handle quantities with units
+            for period in ["Hour", "Day", "Month", "Quarter", "Year"]:
+                key = f"gufcommon:maximumPer{period}"
+                if qty.get(key):
+                    value_data = qty.get(key)
+                    if isinstance(value_data, dict):
+                        qty_obj[f"maximum_per_{period.lower()}"] = {
+                            "value": value_data.get("#text"),
+                            "unit": value_data.get("@uom", "m3"),
+                        }
+                    else:
+                        qty_obj[f"maximum_per_{period.lower()}"] = {
+                            "value": value_data,
+                            "unit": "m3",
+                        }
+            licensed_quantities.append(qty_obj)
+
+        # Create or update GUF object
+        guf_obj, _ = GUF.objects.update_or_create(
+            bro_id=bro_id,
+            data_owner=self.data_owner,
+            defaults={
+                "delivery_accountable_party": delivery_accountable_party,
+                "quality_regime": quality_regime,
+                "delivery_context": delivery_context,
+                "start_time": self._parse_flexible_date(start_time_str),
+                "identification_licence": identification_licence,
+                "legal_type": legal_type,
+                "primary_usage_type": primary_usage_type,
+                "human_consumption": human_consumption,
+                "secondary_usage_types": secondary_usage_types,
+                "licensed_quantities": licensed_quantities,
+            },
+        )
+
+        return guf_obj
+
+    def _save_guf_events(self, guf_ppo: dict[str, Any], guf_obj: GUF) -> None:
+        # Extract events from objectHistory
+        object_history = guf_ppo.get("objectHistory", {})
+        events = object_history.get("event", [])
+        if isinstance(events, dict):
+            events = [events]
+
+        for event_data in events:
+            event_name = self._extract_text_from_xml_element(event_data.get("name"))
+            event_date_str = event_data.get("date", {}).get("brocom:date")
+            event_date = self._parse_flexible_date(event_date_str)
+
+            if not event_name or not event_date:
+                continue
+
+            # Metadata for the event
+            metadata = {
+                "broId": guf_obj.bro_id,
+                "qualityRegime": guf_obj.quality_regime,
+                "deliveryAccountableParty": guf_obj.delivery_accountable_party,
+            }
+
+            # Sourcedocument data (entire event structure)
+            sourcedocument_data = event_data.get("sourceDocument", {})
+
+            GUFEvent.objects.update_or_create(
+                guf=guf_obj,
+                event_name=event_name,
+                event_date=event_date,
+                data_owner=self.data_owner,
+                defaults={
+                    "metadata": metadata,
+                    "sourcedocument_data": sourcedocument_data,
+                },
+            )
+
+    def _save_installations_and_wells(
+        self, guf_ppo: dict[str, Any], guf_obj: GUF
+    ) -> None:
+        # The XML may contain multiple <licence> elements; xmltodict parses these as a list.
+        # Iterate all licences so every DesignInstallation is captured.
+        licence_raw = guf_ppo.get("licence", {})
+        if isinstance(licence_raw, dict):
+            licence_raw = [licence_raw]
+
+        for licence_entry in licence_raw:
+            licence_data = licence_entry.get("gufcommon:LicenceGroundwaterUsage", {})
+            installations = licence_data.get("gufcommon:designInstallation", [])
+            if isinstance(installations, dict):
+                installations = [installations]
+
+            for installation_data in installations:
+                installation_obj = installation_data.get(
+                    "gufcommon:DesignInstallation", {}
+                )
+
+                # Extract installation data
+                design_installation_id = installation_obj.get(
+                    "gufcommon:designInstallationId"
+                )
+                installation_function = self._extract_text_from_xml_element(
+                    installation_obj.get("gufcommon:installationFunction")
+                )
+
+                # Extract geometry (Point coordinates)
+                geometry = installation_obj.get("gufcommon:geometry", {})
+                point = geometry.get("gml:Point", {})
+                pos = point.get("gml:pos")
+
+                # Create/update Installation
+                installation_model, _ = DesignInstallation.objects.update_or_create(
+                    guf=guf_obj,
+                    design_installation_id=design_installation_id,
+                    data_owner=self.data_owner,
+                    defaults={
+                        "installation_function": installation_function,
+                        "design_installation_pos": pos,
+                    },
+                )
+
+                # Process energy characteristics for this installation
+                self._save_energy_characteristics(installation_obj, installation_model)
+
+                # Process wells for this installation
+                self._save_wells_for_installation(installation_obj, installation_model)
+
+    def _save_energy_characteristics(
+        self, installation_obj: dict[str, Any], installation_model
+    ) -> None:
+        """Import gufcommon:energyCharacteristics nested inside a DesignInstallation."""
+        ec_data = installation_obj.get("gufcommon:energyCharacteristics")
+        if not ec_data:
+            return
+
+        def _val(key: str) -> str | None:
+            """Extract the text value from an element that may carry unit attributes."""
+            raw = ec_data.get(key)
+            if raw is None:
+                return None
+            if isinstance(raw, dict):
+                return raw.get("#text")
+            return str(raw)
+
+        EnergyCharacteristics.objects.update_or_create(
+            installation=installation_model,
+            defaults={
+                "data_owner": self.data_owner,
+                "energy_cold": _val("gufcommon:energyCold"),
+                "energy_warm": _val("gufcommon:energyWarm"),
+                "maximum_infiltration_temperature_warm": _val(
+                    "gufcommon:maximumInfiltrationTemperatureWarm"
+                ),
+                "average_infiltration_temperature_cold": _val(
+                    "gufcommon:averageInfiltrationTemperatureCold"
+                ),
+                "average_infiltration_temperature_warm": _val(
+                    "gufcommon:averageInfiltrationTemperatureWarm"
+                ),
+                "power_cold": _val("gufcommon:powerCold"),
+                "power_warm": _val("gufcommon:powerWarm"),
+                "power": _val("gufcommon:power"),
+                "average_warm_water": _val("gufcommon:averageWarmWater"),
+                "average_cold_water": _val("gufcommon:averageColdWater"),
+                "maximum_year_quantity_warm": _val("gufcommon:maximumYearQuantityWarm"),
+                "maximum_year_quantity_cold": _val("gufcommon:maximumYearQuantityCold"),
+            },
+        )
+
+    def _save_wells_for_installation(
+        self, installation_obj: dict[str, Any], installation_model
+    ) -> None:
+        # Extract wells
+        wells = installation_obj.get("gufcommon:designWell", [])
+        if isinstance(wells, dict):
+            wells = [wells]
+
+        for well_data in wells:
+            well_obj = well_data.get("gufcommon:DesignWell", {})
+
+            design_well_id = well_obj.get("gufcommon:designWellId")
+            height_data = well_obj.get("gufcommon:height")
+            height = (
+                height_data.get("#text")
+                if isinstance(height_data, dict)
+                else height_data
+            )
+
+            # Extract well functions (can be multiple)
+            well_functions_raw = well_obj.get("gufcommon:wellFunction", [])
+            if isinstance(well_functions_raw, dict):
+                well_functions_raw = [well_functions_raw]
+            well_functions = [
+                self._extract_text_from_xml_element(wf)
+                for wf in well_functions_raw
+                if wf
+            ]
+
+            # Extract boolean fields
+            geometry_publicly_available = self._extract_text_from_xml_element(
+                well_obj.get("gufcommon:geometryPubliclyAvailable")
+            )
+            max_well_depth_publicly_available = self._extract_text_from_xml_element(
+                well_obj.get("gufcommon:maximumWellDepthPubliclyAvailable")
+            )
+
+            # Extract well geometry (Point coordinates)
+            well_geometry = well_obj.get("gufcommon:geometry", {})
+            well_point = well_geometry.get("gml:Point", {})
+            well_pos = well_point.get("gml:pos")
+
+            # Extract maximum well depth with unit
+            max_well_depth_data = well_obj.get("gufcommon:maximumWellDepth")
+            max_well_depth = (
+                max_well_depth_data.get("#text")
+                if isinstance(max_well_depth_data, dict)
+                else max_well_depth_data
+            )
+
+            # Extract capacity with unit
+            capacity_data = well_obj.get("gufcommon:maximumWellCapacity")
+            capacity = (
+                capacity_data.get("#text")
+                if isinstance(capacity_data, dict)
+                else capacity_data
+            )
+
+            # Extract relative temperature
+            relative_temperature = self._extract_text_from_xml_element(
+                well_obj.get("gufcommon:relativeTemperature")
+            )
+
+            # Extract design screen (nested object)
+            design_screen_raw = well_obj.get("gufcommon:designScreen", {})
+            design_screen = {}
+            if design_screen_raw:
+                screen_type_data = design_screen_raw.get("gufcommon:screenType")
+                screen_top_data = design_screen_raw.get("gufcommon:designScreenTop")
+                screen_bottom_data = design_screen_raw.get(
+                    "gufcommon:designScreenBottom"
+                )
+                design_screen = {
+                    "screen_type": self._extract_text_from_xml_element(
+                        screen_type_data
+                    ),
+                    "design_screen_top": (
+                        screen_top_data.get("#text")
+                        if isinstance(screen_top_data, dict)
+                        else screen_top_data
+                    ),
+                    "design_screen_bottom": (
+                        screen_bottom_data.get("#text")
+                        if isinstance(screen_bottom_data, dict)
+                        else screen_bottom_data
+                    ),
+                }
+
+            DesignWell.objects.update_or_create(
+                installation=installation_model,
+                design_well_id=design_well_id,
+                data_owner=self.data_owner,
+                defaults={
+                    "height": height,
+                    "well_functions": well_functions,
+                    "well_pos": well_pos,
+                    "geometry_publicly_available": geometry_publicly_available,
+                    "maximum_well_depth": max_well_depth,
+                    "maximum_well_depth_publicly_available": max_well_depth_publicly_available,
+                    "maximum_well_capacity": capacity,
+                    "relative_temperature": relative_temperature,
+                    "design_screen": design_screen,
+                },
+            )
+
+
+class GPDObjectImporter(ObjectImporter):
+    bro_domain = "GPD"
+    bro_category = "gu"
+
+    def _save_data_to_database(self, json_data: dict[str, Any]) -> None:
+        dispatch_document_data = json_data.get("dispatchDataResponse", {}).get(
+            "dispatchDocument", {}
+        )
+
+        # If GPD_O is not found, it basically means that the object is not relevant anymore
+        if "GPD_O" not in dispatch_document_data:
+            return
+
+        gpd_data = dispatch_document_data.get("GPD_O")
+
+        # Parse lifespan
+        lifespan = gpd_data.get("lifespan", {})
+        start_time = lifespan.get("startTime")
+        end_time = lifespan.get("endTime")
+
+        # Create or update main GPD record
+        gpd_obj, created = GPD.objects.update_or_create(
+            bro_id=gpd_data.get("brocom:broId", None),
+            data_owner=self.data_owner,
+            defaults={
+                "delivery_accountable_party": gpd_data.get(
+                    "brocom:deliveryAccountableParty", None
+                ),
+                "quality_regime": gpd_data.get("brocom:qualityRegime", None),
+                "start_time": datetime.datetime.fromisoformat(start_time).date()
+                if start_time
+                else None,
+                "end_time": datetime.datetime.fromisoformat(end_time).date()
+                if end_time
+                else None,
+            },
+        )
+
+        # Process reports
+        reports = gpd_data.get("report", [])
+        if isinstance(reports, dict):
+            reports = [reports]  # Convert single report to list
+
+        for report_data in reports:
+            report_obj = report_data.get("gpdcommon:Report", {})
+
+            # Extract report period
+            report_period = report_obj.get("gpdcommon:reportPeriod", {})
+            report_begin = report_period.get("brocom:beginDate")
+            report_end = report_period.get("brocom:endDate")
+
+            # Get GUF reference
+            guf_ref = self._extract_guf_reference(report_obj)
+
+            # Create or update report
+            report_model, created = Report.objects.update_or_create(
+                gpd=gpd_obj,
+                report_id=report_obj.get("gpdcommon:reportId"),
+                data_owner=self.data_owner,
+                defaults={
+                    "method": report_obj.get("gpdcommon:method", "onbekend"),
+                    "begin_date": datetime.datetime.fromisoformat(report_begin).date()
+                    if report_begin
+                    else None,
+                    "end_date": datetime.datetime.fromisoformat(report_end).date()
+                    if report_end
+                    else None,
+                    "groundwater_usage_facility_bro_id": guf_ref or "",
+                },
+            )
+
+            # Process volume series for this report
+            volume_series_list = report_obj.get("gpdcommon:volumeSeries", [])
+            if isinstance(volume_series_list, dict):
+                volume_series_list = [volume_series_list]  # Convert single item to list
+
+            for vs_data in volume_series_list:
+                # Extract period
+                vs_period = vs_data.get("gpdcommon:period", {})
+                vs_begin = vs_period.get("brocom:beginDate")
+                vs_end = vs_period.get("brocom:endDate")
+
+                # Extract volume and other attributes
+                volume_data = vs_data.get("gpdcommon:volume")
+                if isinstance(volume_data, dict):
+                    # Handle XML elements with attributes: {"#text": "value", "@uom": "m3"}
+                    volume_value = (
+                        float(volume_data.get("#text", 0))
+                        if volume_data.get("#text")
+                        else 0.0
+                    )
+                elif isinstance(volume_data, (str | int | float)):
+                    # Handle simple text values
+                    volume_value = float(volume_data) if volume_data else 0.0
+                else:
+                    volume_value = 0.0
+
+                # Extract water in/out (might have codeSpace attribute)
+                water_inout_data = vs_data.get("gpdcommon:waterInOut", "onbekend")
+                if isinstance(water_inout_data, dict):
+                    water_in_out = water_inout_data.get("#text", "onbekend")
+                else:
+                    water_in_out = water_inout_data or "onbekend"
+
+                # Extract temperature (might have codeSpace attribute)
+                temp_data = vs_data.get("gpdcommon:temperatureIn", "onbekend")
+                if isinstance(temp_data, dict):
+                    temperature_in = temp_data.get("#text", "onbekend")
+                else:
+                    temperature_in = temp_data or "onbekend"
+
+                # Create or update volume series
+                VolumeSeries.objects.update_or_create(
+                    report=report_model,
+                    begin_date=datetime.datetime.fromisoformat(vs_begin).date()
+                    if vs_begin
+                    else None,
+                    end_date=datetime.datetime.fromisoformat(vs_end).date()
+                    if vs_end
+                    else None,
+                    water_in_out=water_in_out,
+                    data_owner=self.data_owner,
+                    defaults={
+                        "volume": volume_value,
+                        "temperature": temperature_in,
+                    },
+                )
+
+    def _extract_guf_reference(self, report_obj: dict[str, Any]) -> str | None:
+        """Extract GUF BRO ID from the report installation/facility section"""
+        try:
+            installation = report_obj.get("gpdcommon:installationOrFacility", {})
+            facility = installation.get("gpdcommon:InstallationOrFacility", {})
+            related_guf = facility.get("gpdcommon:relatedGroundwaterUsageFacility", {})
+            guf_facility = related_guf.get("gpdcommon:GroundwaterUsageFacility", {})
+            return guf_facility.get("gpdcommon:broId")
+        except (KeyError, TypeError):
+            return None

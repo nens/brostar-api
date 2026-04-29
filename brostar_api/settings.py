@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     "gar.apps.GarConfig",
     "gld.apps.GldConfig",
     "frd.apps.FrdConfig",
+    "guf.apps.GufConfig",
+    "gpd.apps.GpdConfig",
     "miscellaneous.apps.MiscellaneousConfig",
     "nens_auth_client",
     "django.contrib.admin",
@@ -323,7 +325,7 @@ if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 else:
-    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
+    BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
 
 if not DEBUG:

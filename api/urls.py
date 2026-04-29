@@ -21,6 +21,8 @@ urlpatterns = [
     path("gar/", include("gar.urls", namespace="gar")),
     path("gld/", include("gld.urls", namespace="gld")),
     path("frd/", include("frd.urls", namespace="frd")),
+    path("guf/", include("guf.urls", namespace="guf")),
+    path("gpd/", include("gpd.urls", namespace="gpd")),
     path(
         "uploadtasks/overview/",
         views.UploadTaskOverviewList.as_view(),
