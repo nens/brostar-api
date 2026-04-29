@@ -78,16 +78,16 @@ class APIOverview(views.APIView):
             "events": reverse("api:gmw:event-list", request=request, format=format),
             "gars": reverse("api:gar:gar-list", request=request, format=format),
             "field-measurements": reverse(
-                "api:gld:field-measurement-list", request=request, format=format
+                "api:gar:field-measurement-list", request=request, format=format
             ),
             "laboratory-researches": reverse(
-                "api:gld:laboratory-research-list", request=request, format=format
+                "api:gar:laboratory-research-list", request=request, format=format
             ),
             "analysis-processes": reverse(
-                "api:gld:analysis-process-list", request=request, format=format
+                "api:gar:analysis-process-list", request=request, format=format
             ),
             "analyses": reverse(
-                "api:gld:analysis-list", request=request, format=format
+                "api:gar:analysis-list", request=request, format=format
             ),
             "glds": reverse("api:gld:gld-list", request=request, format=format),
             "observations": reverse(
