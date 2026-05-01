@@ -67,6 +67,28 @@ Met een licensie op de BROSTAR krijgt een organisatie een eigen omgeving op beid
 
 ## Frequently Asked Questions [FAQ]
 
+### Welke BRO-Domeinen kan BROSTAR op dit moment leveren?
+BROSTAR is continu in ontwikkeling. De ontwikkeling begon in Maart 2024, in samenwerking met de Provincie Noord-Brabant, en was bedoeld voor grootschalige GAR-leveringen. In de loop der tijd zijn eerst GMW, GMN en GLD toegevoegd. Het afgelopen jaar zijn GAR en FRD uitgebreid, en momenteel zijn we de functionaliteiten voor GUF en GPD aan het uitbreiden.
+
+Afhankelijk van de inbreng van bestaande klanten, en geluiden vanuit de markt, wordt bepaald welke doorontwikkeling het belangrijkste is - en dus als eerste wordt opgepakt.
+
+Volledig:
+- GMW
+- GLD
+- GMN
+- GAR
+- FRD
+
+In ontwikkeling:
+- GUF
+- GPD
+
+In onderzoek:
+- SAD
+- CPT
+- BHR
+
+
 ### Ik begrijp de foutmelding die geschreven wordt niet, hoe lees ik een foutmelding vanuit de basisregistratie ondergrond?
 Het is altijd vervelend als je niet helemaal begrijpt wat er misgaat. Bij BROSTAR proberen we veel voorkomende fouten te vertalen naar een begrijpbaardere taal, maar er zijn simpelweg te veel mogelijkheden om alles af te vangen.
 
@@ -85,7 +107,8 @@ Is dit het geval? Mooi dan mag je leveren. Anders wordt de levering afgekeurd.
 
 De genoemde foutmelding treed dus op wanneer je een levering probeert voor een registratie vanuit bronhouder A onder een project van bronhouder B.
 
-
+### Kan je BROSTAR uitproberen?
+Wanneer je nog geen ervaring hebt met BROSTAR kan het lastig zijn om in te schatten of de software aansluit bij de behoefte van de organisatie. In overleg is er bijna altijd wel wat mogelijk. We hebben een test-omgeving die is verbonden met de demo-omgeving van het bronhoudersportaal. Hier kan je dus vrij in oefenen en ervaring op doen. Ben je nieuwsgierig? Neem contact op via [info@nelen-schuurmans.nl](mailto:info@nelen-schuurmans.nl?subject=Interesse in de BROSTAR).
 
 ## Interesse of vragen?
 
