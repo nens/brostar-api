@@ -28,7 +28,7 @@ from api.bro_upload.upload_datamodels import (
     UploadTaskMetadata,
 )
 from api.choices import registration_type_datamodel_mapping
-from api.utils import drop_empty_strings
+from api.utils import drop_empty_strings, strip_whitespace
 from brostar_api import __version__
 
 logger = logging.getLogger("general")
@@ -362,14 +362,17 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                     validated_sourcedocument_data = validation_class(
                         **serializer.validated_data["sourcedocument_data"]
                     )
+
                     # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
                     serializer.validated_data["sourcedocument_data"] = (
                         validated_sourcedocument_data.model_dump(by_alias=True)
                     )
                 # Else, just a pydantic validation is required
                 else:
-                    sourcedocument_data = drop_empty_strings(
-                        serializer.validated_data["sourcedocument_data"]
+                    sourcedocument_data = strip_whitespace(
+                        drop_empty_strings(
+                            serializer.validated_data["sourcedocument_data"]
+                        )
                     )
                     validation_class(**sourcedocument_data)
                     serializer.validated_data["sourcedocument_data"] = (

@@ -427,6 +427,16 @@ def empty_strings_to_none(d: dict) -> dict:
     return d
 
 
+def strip_whitespace(data):
+    if isinstance(data, dict):
+        return {k: strip_whitespace(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [strip_whitespace(item) for item in data]
+    elif isinstance(data, str):
+        return data.strip()
+    return data
+
+
 def drop_empty_strings(d: dict) -> dict:  # noqa: C901
     cleaned = {}
     for key, value in d.items():

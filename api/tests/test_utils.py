@@ -23,6 +23,7 @@ from api.bro_upload.utils import (
 )
 from api.models import Organisation, UploadFile
 from api.tests.fixtures import bulk_upload, organisation
+from api.utils import drop_empty_strings, strip_whitespace
 
 organisation
 bulk_upload
@@ -640,3 +641,72 @@ def test_file_to_df_invalid_extension(bulk_upload):
 #             assert result.equals(expected_data)
 #         finally:
 #             temp_path.unlink(missing_ok=True)
+
+
+### API.Utils
+
+
+def test_strip_whitespace():
+    data = {
+        "name": " Alice ",
+        "age": 30,
+        "address": {
+            "street": " Main St ",
+            "city": " New York ",
+        },
+        "hobbies": [" Reading ", " Traveling ", 123],
+    }
+    expected = {
+        "name": "Alice",
+        "age": 30,
+        "address": {
+            "street": "Main St",
+            "city": "New York",
+        },
+        "hobbies": ["Reading", "Traveling", 123],
+    }
+    assert strip_whitespace(data) == expected
+
+
+def test_strip_whitespace_with_non_string():
+    data = {
+        "number": 42,
+        "boolean": True,
+        "none": None,
+        "list": [1, 2, 3],
+        "dict": {"key": " value "},
+    }
+    expected = {
+        "number": 42,
+        "boolean": True,
+        "none": None,
+        "list": [1, 2, 3],
+        "dict": {"key": "value"},
+    }
+    assert strip_whitespace(data) == expected
+
+
+def test_empty_string_strip_whitespace():
+    data = {"empty": "   ", "non_empty": "  text  "}
+    expected = {"empty": "", "non_empty": "text"}
+    assert strip_whitespace(data) == expected
+
+
+def test_drop_empty_strings():
+    data = {
+        "name": "Alice",
+        "age": "",
+        "address": {
+            "street": "",
+            "city": "New York",
+        },
+        "hobbies": ["Reading", "", 123],
+    }
+    expected = {
+        "name": "Alice",
+        "address": {
+            "city": "New York",
+        },
+        "hobbies": ["Reading", 123],
+    }
+    assert drop_empty_strings(data) == expected
