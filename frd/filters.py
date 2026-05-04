@@ -1,8 +1,11 @@
+import django_filters
+from django import forms
 from django.db.models import JSONField
 from django_filters import CharFilter, FilterSet
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
+from gmw.models import MonitoringTube
 
 from .models import (
     FRD,
@@ -16,6 +19,10 @@ class FrdFilter(DateTimeFilterMixin, FilterSet):
     bro_id__icontains = filters.CharFilter(field_name="bro_id", lookup_expr="icontains")
     gmw_bro_id__icontains = filters.CharFilter(
         field_name="gmw_bro_id", lookup_expr="icontains"
+    )
+    gmw = django_filters.ModelChoiceFilter(
+        queryset=MonitoringTube.objects.all(),
+        widget=forms.TextInput(attrs={"placeholder": "Enter GMW ID"}),
     )
 
     class Meta:

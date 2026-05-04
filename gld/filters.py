@@ -1,6 +1,7 @@
 import datetime
 
-from django.db.models import JSONField
+import django_filters
+from django.db.models import ForeignKey, JSONField
 from django_filters import CharFilter, DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
@@ -45,6 +46,9 @@ class GldFilter(DateTimeFilterMixin, FilterSet):
         filter_overrides = {
             JSONField: {
                 "filter_class": CharFilter,
+            },
+            ForeignKey: {
+                "filter_class": django_filters.UUIDFilter,
             },
         }
 

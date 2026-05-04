@@ -1,5 +1,7 @@
 from typing import Any
 
+import django_filters
+from django.db.models import ForeignKey
 from django_filters import DateFilter, FilterSet
 from django_filters import rest_framework as filters
 
@@ -39,11 +41,6 @@ class GmwFilter(DateTimeFilterMixin, FilterSet):
 
 
 class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
-    gmn_bro_id = filters.CharFilter(
-        field_name="gmw__bro_id",  # dummy or related field for validation
-        method="filter_by_gmn_bro_id",
-        label="GMN BRO ID",
-    )
     gmw_bro_id = filters.CharFilter(
         field_name="gmw__bro_id",  # this one actually matches the model
         method="filter_by_gmw_bro_id",
@@ -53,6 +50,11 @@ class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = MonitoringTube
         exclude = ["geo_ohm_cables"]
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": django_filters.UUIDFilter,
+            },
+        }
 
     def filter_by_gmn_bro_id(self, queryset, name, value) -> Any:
         measuringpoints = Measuringpoint.objects.filter(gmn__bro_id=value)
