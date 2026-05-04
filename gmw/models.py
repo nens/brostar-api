@@ -106,7 +106,10 @@ class MonitoringTube(models.Model):
     plain_tube_part_length = models.CharField(max_length=100, null=True)
 
     def __str__(self) -> str:
-        return f"{self.gmw}-{self.tube_number}"
+        try:
+            return f"{self.gmw.bro_id}-{self.tube_number}"
+        except Exception:
+            return f"{self.gmw_id}-{self.tube_number}"
 
     class Meta:
         verbose_name_plural = "Monitoring Tubes"
