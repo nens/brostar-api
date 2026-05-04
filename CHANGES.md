@@ -10,6 +10,7 @@
 -   Enhancement [UploadTasks]: Strip leading and trailing whitespace from values to make errors less likely.
 -   Bugfix [GAR]: Correct the urls for the API of the GAR
 -   Bugfix [GMN]: Correct Move MonitoringTube Request
+-   Bugfix [GAR]: ObjectImport improved for multiple lab analyses
 
 
 ## 1.68 (2026-04-10)

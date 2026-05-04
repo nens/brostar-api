@@ -810,20 +810,24 @@ class GARObjectImporter(ObjectImporter):
         lab_analysis = gar_data.get("laboratoryAnalysis", None)
 
         if lab_analysis:
-            analysis_process = lab_analysis.get("garcommon:analysisProcess", None)
+            lab_analyses = (
+                lab_analysis if isinstance(lab_analysis, list) else [lab_analysis]
+            )
+
+            # Extract date from the first analysisProcess of the first laboratoryAnalysis
+            first_analysis = lab_analyses[0]
+            analysis_process = first_analysis.get("garcommon:analysisProcess", None)
             if isinstance(analysis_process, list):
-                lab_analysis_date = (
-                    lab_analysis.get("garcommon:analysisProcess", None)[0]
-                    .get("garcommon:analysisDate", None)
-                    .get("brocom:date")
-                )
+                first_process = analysis_process[0]
             else:
-                lab_analysis_date = (
-                    lab_analysis.get("garcommon:analysisProcess", None)
-                    .get("garcommon:analysisDate", None)
-                    .get("brocom:date")
-                )
+                first_process = analysis_process
+            lab_analysis_date = (
+                first_process.get("garcommon:analysisDate", {}).get("brocom:date")
+                if first_process
+                else None
+            )
         else:
+            lab_analyses = []
             lab_analysis_date = None
 
         gar, _ = GAR.objects.update_or_create(
@@ -878,8 +882,10 @@ class GARObjectImporter(ObjectImporter):
         )
 
         self._save_field_measurements(gar, field_research_data)
-        if lab_analysis:
-            self._save_laboratory_researches(gar, lab_analysis)
+        if lab_analyses:
+            self._save_laboratory_researches(
+                gar, lab_analyses
+            )  # pass the normalized list
 
     @staticmethod
     def _attr_or_none(value: Any, attr: str) -> str | None:
@@ -925,15 +931,7 @@ class GARObjectImporter(ObjectImporter):
                 data_owner=self.data_owner,
             )
 
-    def _save_laboratory_researches(
-        self, gar: GAR, lab_analysis_data: dict | list
-    ) -> None:
-        lab_analyses = (
-            lab_analysis_data
-            if isinstance(lab_analysis_data, list)
-            else [lab_analysis_data]
-        )
-
+    def _save_laboratory_researches(self, gar: GAR, lab_analyses: list) -> None:
         LaboratoryResearch.objects.filter(gar=gar, data_owner=self.data_owner).delete()
         for lab_analysis in lab_analyses:
             responsible_lab = lab_analysis.get("garcommon:responsibleLaboratory", None)
