@@ -958,7 +958,7 @@ class GARObjectImporter(ObjectImporter):
         processes = raw if isinstance(raw, list) else [raw]
 
         AnalysisProcess.objects.filter(
-            lab_research=lab_research, data_owner=self.data_owner
+            laboratory_research=lab_research, data_owner=self.data_owner
         ).delete()
         for process in processes:
             analyses_date = process.get("garcommon:analysisDate", {}).get(
