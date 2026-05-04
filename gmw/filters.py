@@ -41,6 +41,11 @@ class GmwFilter(DateTimeFilterMixin, FilterSet):
 
 
 class MonitoringTubeFilter(DateTimeFilterMixin, FilterSet):
+    gmn_bro_id = filters.CharFilter(
+        field_name="gmw__bro_id",  # dummy or related field for validation
+        method="filter_by_gmn_bro_id",
+        label="GMN BRO ID",
+    )
     gmw_bro_id = filters.CharFilter(
         field_name="gmw__bro_id",  # this one actually matches the model
         method="filter_by_gmw_bro_id",
