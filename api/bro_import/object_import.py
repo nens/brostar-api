@@ -857,6 +857,15 @@ class GARObjectImporter(ObjectImporter):
                 "sampling_standard": field_research_data.get(
                     "garcommon:samplingStandard", None
                 ).get("#text", None),
+                "primary_colour": field_research_data.get(
+                    "garcommon:primaryColour", None
+                ),
+                "secondary_colour": field_research_data.get(
+                    "garcommon:secondaryColour", None
+                ),
+                "colour_strength": field_research_data.get(
+                    "garcommon:colourStrength", None
+                ),
                 "pump_type": field_research_data.get("garcommon:samplingDevice", None)
                 .get("garcommon:pumpType", None)
                 .get("#text", None),
