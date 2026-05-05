@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
-from django.db.models import JSONField
-from django_filters import CharFilter, FilterSet
+from django.db.models import ForeignKey, JSONField
+from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -43,6 +43,9 @@ class MeasurementConfigurationFilter(DateTimeFilterMixin, FilterSet):
             JSONField: {
                 "filter_class": CharFilter,
             },
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
         }
 
 
@@ -50,9 +53,19 @@ class MeasurementFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = GeoElectricMeasurement
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
 
 
 class GeoElectricMeasureFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = GeoElectricMeasure
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }

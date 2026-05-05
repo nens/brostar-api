@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
-from django.db.models import JSONField
-from django_filters import CharFilter, FilterSet
+from django.db.models import ForeignKey, JSONField
+from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -35,21 +35,41 @@ class FieldMeasurementFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = gar_models.FieldMeasurement
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
 
 
 class LaboratoryResearchFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = gar_models.LaboratoryResearch
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
 
 
 class AnalysisProcessFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = gar_models.AnalysisProcess
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
 
 
 class AnalysisFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = gar_models.Analysis
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
