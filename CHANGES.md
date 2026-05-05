@@ -8,9 +8,11 @@
 -   Enhancement [GAR]: Improve GAR-import to include all data, instead of just the main information of GAR
 -   Enhancement [FRD]: Improve FRD-import to include all data, instead of just the main dossier.
 -   Enhancement [UploadTasks]: Strip leading and trailing whitespace from values to make errors less likely.
+-   Enhancement [ImportTasks]: Add monitoringtube fk to GLD, FRD and GAR.
 -   Bugfix [GAR]: Correct the urls for the API of the GAR
 -   Bugfix [GMN]: Correct Move MonitoringTube Request
 -   Bugfix [GAR]: ObjectImport improved for multiple lab analyses
+-   Bugfix [ImportTasks]: Correct pathways to fieldmeasurement value, and reporting limit
 
 
 ## 1.68 (2026-04-10)

@@ -830,6 +830,14 @@ class GARObjectImporter(ObjectImporter):
             lab_analyses = []
             lab_analysis_date = None
 
+        monitoring_tube = MonitoringTube.objects.filter(
+            gmw__bro_id=monitoring_point_data.get("garcommon:broId", None),  # GMW ID
+            tube_number=monitoring_point_data.get(
+                "garcommon:tubeNumber", None
+            ),  # Tube Number
+            data_owner=self.data_owner,
+        ).first()
+
         gar, _ = GAR.objects.update_or_create(
             bro_id=gar_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -878,6 +886,7 @@ class GARObjectImporter(ObjectImporter):
                     "garcommon:temperatureDifficultToMeasure", None
                 ),
                 "lab_analysis_date": lab_analysis_date,
+                "monitoring_tube": monitoring_tube,
             },
         )
 
@@ -916,9 +925,7 @@ class GARObjectImporter(ObjectImporter):
 
         FieldMeasurement.objects.filter(gar=gar, data_owner=self.data_owner).delete()
         for measurement in measurements:
-            measurement_value = measurement.get(
-                "garcommon:analysisMeasurementValue", None
-            )
+            measurement_value = measurement.get("garcommon:fieldMeasurementValue", None)
 
             FieldMeasurement.objects.create(
                 gar=gar,
@@ -990,17 +997,22 @@ class GARObjectImporter(ObjectImporter):
         ).delete()
         for analysis in analyses:
             analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
+            value = self._text_or_none(analysis_value)
+            limit_symbol = self._text_or_none(
+                analysis.get("garcommon:limitSymbol", None)
+            )
+            reporting_limit = None
+            if limit_symbol is not None:
+                reporting_limit = value
+                value = None
+
             Analysis.objects.create(
                 analysis_process=analysis_process,
                 parameter=int(analysis.get("garcommon:parameter")),
-                value=self._text_or_none(analysis_value),
+                value=value,
                 unit=self._attr_or_none(analysis_value, "uom"),
-                limit_symbol=self._text_or_none(
-                    analysis.get("garcommon:limitSymbol", None)
-                ),
-                reporting_limit=self._text_or_none(
-                    analysis.get("garcommon:reportingLimit", None)
-                ),
+                reporting_limit=reporting_limit,
+                limit_symbol=limit_symbol,
                 status_quality_control=self._text_or_none(
                     analysis.get("garcommon:qualityControlStatus", None)
                 ),
@@ -1054,6 +1066,14 @@ class GLDObjectImporter(ObjectImporter):
 
         gmn_ids = self._gmn_ids(gld_data)
 
+        monitoring_tube = MonitoringTube.objects.filter(
+            gmw__bro_id=monitoring_point_data.get("gldcommon:broId", None),  # GMW ID
+            tube_number=monitoring_point_data.get(
+                "gldcommon:tubeNumber", None
+            ),  # Tube Number
+            data_owner=self.data_owner,
+        ).first()
+
         self.gld = GLD.objects.update_or_create(
             bro_id=gld_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -1067,6 +1087,7 @@ class GLDObjectImporter(ObjectImporter):
                 "research_first_date": gld_data.get("researchFirstDate", None),
                 "research_last_date": gld_data.get("researchLastDate", None),
                 "linked_gmns": gmn_ids,
+                "monitoring_tube": monitoring_tube,
             },
         )[0]
         self._save_observations()
@@ -1245,6 +1266,12 @@ class FRDObjectImporter(ObjectImporter):
             "frdcommon:MonitoringTube"
         )
 
+        monitoring_tube = MonitoringTube.objects.filter(
+            gmw__bro_id=tube_data.get("frdcommon:broId", None),  # GMW ID
+            tube_number=tube_data.get("frdcommon:tubeNumber", None),  # Tube Number
+            data_owner=self.data_owner,
+        ).first()
+
         frd, _ = FRD.objects.update_or_create(
             bro_id=frd_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -1260,6 +1287,7 @@ class FRDObjectImporter(ObjectImporter):
                 "tube_number": tube_data.get("frdcommon:tubeNumber", None),
                 "research_first_date": frd_data.get("researchFirstDate", None),
                 "research_last_date": frd_data.get("researchLastDate", None),
+                "monitoring_tube": monitoring_tube,
             },
         )
 
