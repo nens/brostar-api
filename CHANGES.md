@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.69 (unreleased)
+## 1.69 (2026-05-05)
 
 
 -   Enhancement [GAR]: Add all GAR models, including API pages, serializers and filters
