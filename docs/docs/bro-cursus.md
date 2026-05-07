@@ -61,6 +61,10 @@ Voor aanvullende technische informatie over de Basisregistratie Ondergrond en gr
 
 Bent u ook geïnteresseerd in onze technische oplossingen voor BRO-compliance? Bekijk dan onze [BRO-oplossingen en BROSTAR](brostar-oplossingen.md) voor geautomatiseerde berichtenafhandeling en procesondersteuning.
 
+### Wie zijn je voorgegaan?
+
+Tot nu toe hebben we twee-maal een in-house cursus gegeven, bij het Wetterskip Fryslân en bij de Provincie Overijssel. Daarnaast hebben we een algemene cursus gegeven waar 9 verschillende bronhouders op af kwamen. Gemeenten, drinkwaterbedrijven, waterschappen en Provincies, alle varianten waren aanwezig.
+
 ---
 
 *Met jarenlange ervaring in BRO-implementaties bij verschillende bronhouders biedt Nelen & Schuurmans u praktische kennis die direct toepasbaar is in uw organisatie. Investeer in kennis en laat de BRO voor u werken.*

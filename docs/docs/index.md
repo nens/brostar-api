@@ -4,11 +4,21 @@
 
 De [BROSTAR](https://www.brostar.nl/) is een applicatie die is ontwikkeld door [Nelen & Schuurmans](https://nelen-schuurmans.nl/) om het aanleverproces van data naar de [Basis Registratie Ondergrond (BRO)](https://basisregistratieondergrond.nl/) aanzienlijk makkelijker te maken.
 
-Voor de app ga je naar https://www.brostar.nl/ - hier kan je direct aan de gang met je leveringen. Heb je nog bedenkingen, of weet je niet goed wat BROSTAR exact is. De website biedt ook wat meer uitleg over welke rol de applicatie speelt in het beheer proces. Als laatste vind je daar ook de Frequently Asked Questions. Staat jou vraag er niet tussen? Neem contact met ons op via de [mail](mailto:servicedesk@nelen-schuurmans.nl).
+Voor de app ga je naar https://www.brostar.nl/ - hier kan je direct aan de gang met het beheer van jou BRO-gegevens via eenvoudige formulieren. Heb je nog bedenkingen, of weet je niet goed wat BROSTAR exact is. De website biedt ook wat meer uitleg over welke rol de applicatie speelt in het beheer proces. Als laatste vind je daar ook de Frequently Asked Questions. Staat jou vraag er niet tussen? Neem contact met ons op via de [mail](mailto:servicedesk@nelen-schuurmans.nl).
 
 Het aanleveren van data naar de BRO is een technisch proces, waarbij kennis van o.a. XML bestanden, scripting en API's vereist is bij de leverancier. Daarom wordt dit proces vaak uitbesteed door bronhouders. In de praktijk bleek dat hierbij de mate van maatwerk enorm hoog was in verband met eigen manieren van dataopslag, datamodellen, applicaties en data governance. De BROSTAR is een applicatie die door elke organisatie op meerdere manieren ingezet kan worden.
 
 De BROSTAR bestaat uit een [open-source API](https://github.com/nens/brostar-api) en een [closed-source frontend](https://www.brostar.nl/).
+
+## BROSTAR in essentie
+
+De informatie uitwisseling met de Basisregistratie Ondergrond is lang niet altijd eenvoudig te koppelen op legacy-beheer systemen. Om al deze functionaliteiten binnen een legacy-systeem te ontwikkelen kost veel tijd, geld en moeite. BROSTAR biedt dan ook geen database aan op dit moment.
+
+De beheer wensen verschillen veel tussen organisaties, van kleine bronhouders die via Excels, of uitbesteding werken, tot grote bronhouders die een heel beheersysteem hebben ontwikkeld om aan hun eigen business-wensen te voldoen.
+
+Wat ieder van deze bronhouders gemeen hebben is dat zij garant staan voor de gegevens die onder hun naam worden gepubliceerd in de Basisregistratie Ondergrond. Hoewel deze verantwoordelijkheid te delegeren is via contracten, kan het toch fijn zijn om zelf enige inspraak te hebben. BROSTAR biedt daarvoor een laagdrempelige mogelijkheid, die voor verschillende afdelingen binnen de organisatie inzetbaar is.
+
+Wanneer je juist een databeheer vraagstuk hebt, dan denken onze adviseurs graag met je mee om te kijken wat er mogelijk is.
 
 ## API
 

@@ -20,6 +20,7 @@ Het aanmaken van nieuwe berichten gaat via het (+)-teken. Alle nieuwe registrati
 3. GAR: Aanmaken
 4. GLD: StartRegistratie, Aanvulling, Beeindigen
 5. FRD: StartRegistratie, Meetconfiguraties, Metingen, Beeindigen
+6. GUF: StartRegistratie
 
 Voor meer informatie over elk van de documenten, ga naar het desbetreffende kopje.
 
@@ -27,12 +28,20 @@ Voor meer informatie over elk van de documenten, ga naar het desbetreffende kopj
 
 De verschillende tabellen per bro-domein zijn er om vervang correcties door te voeren op reeds bestaande objecten. In deze tabellen vindt je dus alle in de BRO geregistreerde informatie. Mits je de data hebt gesynchroniseerd. Op dit moment ondersteunen we correcties van:
 
-1. GMN: StartRegistraties
+1. GMN: StartRegistraties, Meetpunt wijzigingen
 2. GMW: Constructies, Tussentijdse gebeurtenissen
 3. GLD: StartRegistratie, Aanvulling
-4. Uploadtaak: alle leveringen die je hebt (proberen) te doen.
+4. GAR: Registratie
+5. FRD: StartRegistratie
 
 Voor het beeindigen zijn vervang correcties niet direct van toepassing.
+
+Ook is het mogelijk om gebeurtenissen na de 'registratie' te verwijderen. Het gaat hier dus om berichten die niet hebben geleid tot het maken van de BRO-ID. Dit kan voor de volgende berichten:
+
+1. GMN: Meetpunt wijzigingen
+2. GMW: Tussentijdse gebeurtenissen
+3. GLD: Aanvullingen
+
 
 ### De GMW-Tabel
 
@@ -76,14 +85,40 @@ Op het moment dat er aanvullingen onder een tijdsreeksdossier zijn gedaan, dan k
 
 Let hierbij wel op: je dient alle metingen uit de reeks aan te leveren, niet alleen de gecorrigeerde waarde.
 
+
+## De GAR-Tabel
+Sinds mei 2026 is het mogelijk om ook wijzigingen door te voeren aan aangeleverde grondwatersamenstellingsonderzoeken. Middels de tabel krijg je al wat inzicht in de manier waarop het onderzoek is opgezet, de volgende gegevens zijn zichtbaar in de tabel:
+
+...
+
+Wanneer je op het BRO-ID klikt zal je in het correctie formulier terecht komen, waar wij alle overige informatie via onze API inladen.
+
+## De FRD-Tabel
+Tijdens dezelfde update is de tabel voor formatieweerstandsmetingen toegevoegd. Hoewel de metingen en configuraties op dit moment nog niet gewijzigd kunnen worden, is dat voor de toekomst zeker wel de wens.
+
+Voor nu is het mogelijk om de peilbuis en het kwaliteitsregime van formatieweerstandsdossiers te corrigeren middels deze weg. In de tabel vind je de volgende gegevens van alle dossiers:
+
+...
+
 ### De Uploadtaak-tabel
 
 In de upload taak tabel vind je informatie over alle aanleveringen die zijn gedaan onder jou organisatie. Op deze manier krijg je een goed inzicht van hoeveel, hoe vaak en hoe succesvol jou leveringen lopen. Ook krijg je hier feedback op je levering mocht er toch iets niet helemaal correct zijn rondom je waardes.
 
 Mocht een levering niet helemaal voldoen aan de validatie regels, dan kan je wijzigingen doen aan dit verzoek. Op deze manier hoef je niet alles opnieuw in te voeren.
 
+Meestal worden berichten binnen enkele seconden tot minuten door de BRO verwerkt. Mocht het erg druk zijn dan kan het soms enkele uren duren. Bij BROSTAR controleren we de status met een oplopend interval, om zo de belasting van alle leveringen die we verwerken te reguleren.
+
+Mocht je na ons uiterlijke controle moment (1,5 uur) nog geen bevestiging hebben, dan kun je middels de acties (knop aan de rechterkant van de tabel) de status opnieuw controleren. Deze status is vooral voor je eigen beeld, wanneer de berichten zijn doorgeleverd in het bronhoudersportaal wordt dit vanzelf zichtbaar in het BROLoket en de BRO-APIs, hiervoor is de statuscheck in BROSTAR niet nodig.
+
+Wel maken wij standaard de juiste gegevens aan in BROSTAR wanneer een uploadtaak 'COMPLETED' is. Mocht je dus niet de statuscontroleren, dan zal een synchronisatie met de BRO alle nieuwe informatie voor je inladen.
+
+
+## Nieuwe berichten leveren (+)
+
 ### GMW-Aanleveringen
-Om de grondwatermetingen aan te leveren, moeten eerst de meetnetten aangemaakt worden. Dat wordt eerst via 'GMW-Constructie' gedaan. Tussentijdse gebeurtenissen kunnen daarna aangegeven worden.
+Om de grondwatermetingen aan te leveren, moeten eerst de peilbuizen aangemaakt worden waarbinnen deze metingen verricht zijn. Deze registratie gebeurt via het 'GMW-Constructie' bericht. Hierin wordt aangegeven op welke methode de peilbuis is ingericht, van het maaiveld niveau en de manier van het meten, tot het buismateriaal en de filterlengte.
+
+Mocht er in de loop der tijd een wijziging in de waarden van deze gegevens zijn, dit kan gebeuren doordat een deel van de peilbuis wordt afgesneden, of doordat het land van nature verzakt, dan kan dit met zogenoemde 'tussentijdse gebeurtenissen'. Dit zijn kleine berichten, die enkel de wijziging op een specifieke datum communiceren.
 
 #### GMW-Constructie
 

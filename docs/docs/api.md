@@ -66,6 +66,14 @@ De API bestaat uit de volgende endpoints:
 
 -   [FRDs](#Data endpoints)
 
+-   [MeasurementConfigs](#Data endpoints)
+
+-   [GeoElectricMeasurements](#Data endpoints)
+
+-   [GUFs](#Data endpoints)
+
+-   [GPDs](#Data endpoints)
+
 ### Organisations
 
 !!! note

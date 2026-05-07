@@ -3,7 +3,7 @@
 ## 1.70 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [Docs]: Update and improve all documentation pages
 
 
 ## 1.69 (2026-05-05)

@@ -24,11 +24,17 @@ Nelen & Schuurmans biedt een compleet pakket aan diensten om organisaties te ond
 #### Ontwikkeling van assetbeheersystemen
 Wij ontwikkelen op maat gemaakte assetbeheersystemen die naadloos aansluiten op uw bestaande werkprocessen. Deze systemen helpen bij het structureel vastleggen, beheren en analyseren van ondergrondgegevens, waarbij automatische koppeling met de BRO mogelijk is.
 
+Een open-source project waar wij actief aan bijdragen voor dit doel is de BRO-Connector.
+
+Het beheer van grondwaterstanden is ook goed mogelijk via ons Dataplatform Lizard, waarop de validatietooling van Artesia 'ArtDiver' naadloos op aansluit. Dit is inclusief geautomatiseerde aanlevering richting de Basisregistratie Ondergrond, waaronder ook correcties vallen die worden doorgegeven vanuit ArtDiver.
+
+
 #### Technische en procesmatige ondersteuning
 Ons team van specialisten biedt uitgebreide ondersteuning bij de implementatie van BRO-processen binnen uw organisatie. Dit omvat technische implementatie, procesoptimalisatie, training van medewerkers en ongoing support bij het gebruik van de systemen.
 
 #### Advies en consultancy
 Wij adviseren organisaties over de meest efficiënte aanpak voor BRO-compliance, datamigratie strategieën en het opzetten van duurzame workflows voor ondergrondgegevens. Onze ervaring met verschillende sectoren stelt ons in staat om passende oplossingen te bieden voor elke organisatie.
+
 
 #### BROSTAR: Geautomatiseerde berichtenafhandeling
 Met BROSTAR bieden wij een geavanceerde tool die de volledige afhandeling van het berichtenverkeer richting de BRO automatiseert. Deze oplossing neemt de complexiteit weg van het aanleveren van gegevens en zorgt voor een betrouwbare, efficiënte uitwisseling tussen uw systemen en de BRO.
