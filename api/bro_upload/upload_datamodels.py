@@ -195,7 +195,7 @@ class GMWConstruction(CamelModel):
     # Newly added in GMW1.1
     geometric_data_publicly_available: str | None = None
     is_abroad: str | None = None
-    survey: list[str] | None = None
+    related_surveys: list[str] | None = None
 
 
 # noqa: N815 - Using mixedCase to match API requirements

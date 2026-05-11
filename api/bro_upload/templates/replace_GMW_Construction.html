@@ -123,8 +123,8 @@
       {% if sourcedocs_data.isAbroad %}
       <ns:isAbroad>{{ sourcedocs_data.isAbroad }}</ns:isAbroad>
       {% endif %}
-      <!-- Optional for GMW 1.1 for surveys  -->
-      {% if sourcedocs_data.surveys %}
+      <!-- Optional for GMW 1.1 for relatedSurveys  -->
+      {% if sourcedocs_data.relatedSurveys %}
       {% for survey in sourcedocs_data.relatedSurveys %}
       <ns:IsRelatedTo>
         {% with prefix=survey.broId|slice:":3" %}
