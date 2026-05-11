@@ -4,6 +4,7 @@
 
 
 -   Enhancement [Docs]: Update and improve all documentation pages
+-   Bugfix [GMW]: relatedSurveys fixed in GMWConstruction model
 
 
 ## 1.69 (2026-05-05)
