@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.70 (unreleased)
+## 1.70 (2026-05-12)
 
 
 -   Enhancement [Docs]: Update and improve all documentation pages
