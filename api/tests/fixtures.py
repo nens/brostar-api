@@ -5,6 +5,7 @@ import pytz
 from django.contrib.auth.models import User
 
 from api import models as api_models
+from frd import models as frd_models
 from gar import models as gar_models
 from gld import models as gld_models
 from gmn import models as gmn_models
@@ -204,4 +205,47 @@ def bulk_upload(organisation):
         status="PROCESSING",
         log="",
         progress=20.0,
+    )
+
+
+@pytest.fixture
+def frd(organisation):
+    return frd_models.FRD.objects.create(
+        data_owner=organisation,
+        bro_id="FRD123456789",
+        gmw_bro_id="GMW123456789",
+        tube_number="1",
+        quality_regime="IMBRO/A",
+    )
+
+
+@pytest.fixture
+def measurement_configuration(organisation, frd):
+    return frd_models.MeasurementConfiguration.objects.create(
+        frd=frd,
+        data_owner=organisation,
+        measurement_configuration_id="MC001",
+    )
+
+
+@pytest.fixture
+def geo_electric_measurement(organisation, frd):
+    return frd_models.GeoElectricMeasurement.objects.create(
+        frd=frd,
+        data_owner=organisation,
+        measurement_date=datetime.date(2024, 1, 1),
+    )
+
+
+@pytest.fixture
+def observation(organisation, gld):
+    return gld_models.Observation.objects.create(
+        gld=gld,
+        data_owner=organisation,
+        observation_id="_obs1",
+        begin_position=datetime.date(2024, 1, 1),
+        end_position=datetime.date(2024, 12, 31),
+        result_time=datetime.datetime(2024, 12, 31, 12, 0, 0, tzinfo=pytz.UTC),
+        observation_type="reguliereMeting",
+        investigator_kvk="12345678",
     )

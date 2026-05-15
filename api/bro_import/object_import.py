@@ -48,6 +48,7 @@ def check_dates(
     last_correction_date: str | None,
     last_addition_date: str | None,
     registration_completion_time: str | None,
+    object_registration_time: str | None,
 ) -> bool:
     """Check if any of the date fields is more recent than the last_import_date"""
     dates = [
@@ -56,6 +57,7 @@ def check_dates(
             last_correction_date,
             last_addition_date,
             registration_completion_time,
+            object_registration_time,
         ]
         if d is not None
     ]
@@ -170,12 +172,16 @@ class ObjectImporter(ABC):
             registration_completion_time = properties.get(
                 "registration_completion_time", None
             )  # ISO String or None
+            object_registration_time = properties.get(
+                "object_registration_time", None
+            )  # ISO String or None
 
             if check_dates(
                 last_import_date,
                 last_correction_date,
                 last_addition_date,
                 registration_completion_time,
+                object_registration_time,
             ):
                 logger.info(
                     f"Data is more recent in PDOK for {self.bro_domain} and ID {self.bro_id} - Should import - dates: {last_correction_date}, {last_addition_date}, {registration_completion_time}"
