@@ -370,6 +370,9 @@ class GMNObjectImporter(ObjectImporter):
                 if not event.is_empty():
                     event_name = event.item(0, 0)
                     event_type = GMN_EVENT_MAPPING[event_name]
+
+                    # FUTURE: This is tricky, as MoveRequests might make this not true
+                    # If a MeasuringPoint is moved, it's date changes while it might already be in the database.
                     IntermediateEvent.objects.update_or_create(
                         gmn=self.gmn_obj,
                         data_owner=self.gmn_obj.data_owner,
@@ -384,17 +387,19 @@ class GMNObjectImporter(ObjectImporter):
                 defaults = {
                     "measuringpoint_start_date": mp_start_date,
                     "measuringpoint_end_date": mp_end_date,
+                    "gmw_bro_id": bro_id,
                     "tube_number": tube_nr,
                     "tube_start_date": event_date,
                     "tube_end_date": end_date,
                     "event_type": event_type,
                 }
 
+                # There can only be one measuring point with the same code active at one point
+                # GMW-ID is not a contributing factor
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
                     data_owner=self.data_owner,
                     measuringpoint_code=mp_code,
-                    gmw_bro_id=bro_id,
                     defaults=defaults,
                 )
 
@@ -477,7 +482,11 @@ class GMWObjectImporter(ObjectImporter):
         well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
             "wellConstructionDate", {}
         )
+        well_removal_date: dict = gmw_data.get("wellHistory", {}).get(
+            "wellRemovalDate", {}
+        )
         internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", ""))
+        removed = gmw_data.get("removed", None)
         self.gmw_obj = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -500,7 +509,7 @@ class GMWObjectImporter(ObjectImporter):
                 "initial_function": gmw_data.get("initialFunction", {}).get(
                     "#text", None
                 ),
-                "removed": gmw_data.get("removed", None),
+                "removed": removed,
                 "ground_level_stable": gmw_data.get("groundLevelStable", None),
                 "well_stability": gmw_data.get("wellStability", {}).get("#text", None),
                 "nitg_code": gmw_data.get("nitgCode", None),
@@ -545,6 +554,24 @@ class GMWObjectImporter(ObjectImporter):
                 .get("#text", None),
             },
         )[0]
+
+        if removed:
+            Event.objects.update_or_create(
+                gmw=self.gmw_obj,
+                data_owner=self.data_owner,
+                event_type="GMW_Removal",
+                defaults={
+                    "event_date": well_removal_date,
+                    "metadata": {
+                        "broId": self.gmw_obj.bro_id,
+                        "qualityRegime": self.gmw_obj.quality_regime,
+                        "deliveryAccountableParty": self.gmw_obj.delivery_accountable_party,
+                    },
+                    "sourcedocument_data": {
+                        "eventDate": well_removal_date,
+                    },
+                },
+            )
 
     def _save_monitoringtubes_data(
         self,
@@ -732,6 +759,7 @@ class GMWObjectImporter(ObjectImporter):
                 intermediate_event
             )
 
+            # FUTURE: This is tricky, as MoveRequests might make this not true. The same event can be in the history multiple times with different dates, but only the most recent one is relevant. Currently, we create an event for each of them, which can lead to duplicates. A solution could be to check if an event with the same name already exists for this GMW, and if so, only update it if the date is more recent. For now, we just create an event for each entry in the history, which can lead to duplicates.
             Event.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
@@ -942,15 +970,17 @@ class GARObjectImporter(ObjectImporter):
         for measurement in measurements:
             measurement_value = measurement.get("garcommon:fieldMeasurementValue", None)
 
-            FieldMeasurement.objects.create(
+            FieldMeasurement.objects.update_or_create(
                 gar=gar,
                 parameter=int(measurement.get("garcommon:parameter")),
-                unit=self._attr_or_none(measurement_value, "uom"),
-                field_measurement_value=self._text_or_none(measurement_value),
-                quality_control_status=self._text_or_none(
-                    measurement.get("garcommon:qualityControlStatus", None)
-                ),
                 data_owner=self.data_owner,
+                defaults={
+                    "unit": self._attr_or_none(measurement_value, "uom"),
+                    "field_measurement_value": self._text_or_none(measurement_value),
+                    "quality_control_status": self._text_or_none(
+                        measurement.get("garcommon:qualityControlStatus", None)
+                    ),
+                },
             )
 
     def _save_laboratory_researches(self, gar: GAR, lab_analyses: list) -> None:
@@ -986,7 +1016,7 @@ class GARObjectImporter(ObjectImporter):
             analyses_date = process.get("garcommon:analysisDate", {}).get(
                 "brocom:date", None
             )
-            analysis_process = AnalysisProcess.objects.create(
+            analysis_process = AnalysisProcess.objects.update_or_create(
                 laboratory_research=lab_research,
                 analyses_date=analyses_date,
                 analytical_technique=self._text_or_none(
@@ -1021,17 +1051,19 @@ class GARObjectImporter(ObjectImporter):
                 reporting_limit = value
                 value = None
 
-            Analysis.objects.create(
+            Analysis.objects.update_or_create(
                 analysis_process=analysis_process,
                 parameter=int(analysis.get("garcommon:parameter")),
-                value=value,
-                unit=self._attr_or_none(analysis_value, "uom"),
-                reporting_limit=reporting_limit,
-                limit_symbol=limit_symbol,
-                status_quality_control=self._text_or_none(
-                    analysis.get("garcommon:qualityControlStatus", None)
-                ),
                 data_owner=self.data_owner,
+                defaults={
+                    "value": value,
+                    "unit": self._attr_or_none(analysis_value, "uom"),
+                    "reporting_limit": reporting_limit,
+                    "limit_symbol": limit_symbol,
+                    "status_quality_control": self._text_or_none(
+                        analysis.get("garcommon:qualityControlStatus", None)
+                    ),
+                },
             )
 
 

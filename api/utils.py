@@ -169,9 +169,9 @@ def create_gmw_removal(
     Event.objects.update_or_create(
         gmw=gmw,
         event_name="GMW_Removal",
-        event_date=sourcedocument_data.get("eventDate"),
         data_owner=data_owner,
         defaults={
+            "event_date": sourcedocument_data.get("eventDate"),
             "metadata": metadata,
             "sourcedocument_data": sourcedocument_data,
         },
@@ -536,7 +536,8 @@ def update_gmw_event(
         )
 
         ## FUTURE: Make sure that the sourcedocument and metadata are formatted correctly
-        Event.objects.create(
+        # Currently this creates, not updates the right event.
+        Event.objects.update(
             gmw=gmw,
             event_name=event_type,
             event_date=sourcedocument_data.get("eventDate"),
