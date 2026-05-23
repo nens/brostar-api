@@ -17,10 +17,10 @@
       <gpdcom:method codeSpace="urn:bro:gpd:Method">{{ sourcedocs_data.method }}</gpdcom:method>
       {% for volume in sourcedocs_data.volume_series %}
       <gpdcom:volumeSeries>
-        <gpdcommon:period>
+        <gpdcom:period>
           <brocom:beginDate>{{ volume.beginDate }}</brocom:beginDate>
           <brocom:endDate>{{ volume.endDate }}</brocom:endDate>
-        </gpdcommon:period>
+        </gpdcom:period>
         <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.volumeNumber }}</gpdcom:waterInOut>
         <gpdcom:volume uom="m3">{{ volume.volumeTotalNumber }}</gpdcom:volume>
         {% if volume.temperature %}
@@ -28,14 +28,14 @@
         {% endif %}
       </gpdcom:volumeSeries>
       {% endfor %}
-      <gpdcommon:installationOrFacility>
-        <gpdcommon:InstallationOrFacility>
-          <gpdcommon:relatedGroundwaterUsageFacility>
-            <gpdcommon:GroundwaterUsageFacility gml:id="BRO_0001">
-              <gpdcommon:broId>{{ sourcedocs_data.groundwaterUsageFacilityBroId }}</gpdcommon:broId>
-            </gpdcommon:GroundwaterUsageFacility>
-          </gpdcommon:relatedGroundwaterUsageFacility>
-        </gpdcommon:InstallationOrFacility>
-      </gpdcommon:installationOrFacility>
+      <gpdcom:installationOrFacility>
+        <gpdcom:InstallationOrFacility>
+          <gpdcom:relatedGroundwaterUsageFacility>
+            <gpdcom:GroundwaterUsageFacility gml:id="BRO_0001">
+              <gpdcom:broId>{{ sourcedocs_data.groundwaterUsageFacilityBroId }}</gpdcom:broId>
+            </gpdcom:GroundwaterUsageFacility>
+          </gpdcom:relatedGroundwaterUsageFacility>
+        </gpdcom:InstallationOrFacility>
+      </gpdcom:installationOrFacility>
     </gpdcom:GPD_AddReport>
 </deleteRequest>
