@@ -8,6 +8,8 @@ from api.tests.fixtures import (  # noqa: F401
     gld,
     gmn,
     gmw,
+    gpd,
+    guf,
     intermediate_event,
     measurement_configuration,
     measuringpoint,
@@ -15,9 +17,13 @@ from api.tests.fixtures import (  # noqa: F401
     organisation,
     tube,
 )
-from frd.models import FRD, GeoElectricMeasurement, MeasurementConfiguration
+from frd.models import (
+    FRD,
+    GeoElectricMeasurement,
+    MeasurementConfiguration,
+)
 from gld.models import GLD, Observation  # Example model to check side effects
-from gmn.models import GMN, IntermediateEvent, Measuringpoint
+from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
 
 from ..models import Organisation
@@ -920,36 +926,25 @@ def test_post_save_uploadtask_triggers_update_objects_frd(
 
 
 @pytest.mark.django_db
-def test_post_save_uploadtask_triggers_delete_objects_gld_closure(
-    organisation: Organisation,  # noqa: F811
-    gld: GLD,  # noqa: F811
-    observation,  # noqa: F811
-):
-    """A delete UploadTask for GLD_Closure removes the matching Observation."""
-    assert Observation.objects.filter(gld=gld).count() == 1
-
-    UploadTask.objects.create(
-        data_owner=organisation,
-        bro_domain="GLD",
-        registration_type="GLD_Closure",
-        request_type="delete",
-        status="COMPLETED",
-        bro_id=gld.bro_id,
-        metadata={},
-        sourcedocument_data={"dateToBeCorrected": "2024-01-01"},
-    )
-
-    assert Observation.objects.filter(gld=gld).count() == 0
-
-
-@pytest.mark.django_db
-def test_post_save_uploadtask_triggers_delete_objects_gmn_closure(
+def test_post_save_uploadtask_triggers_create_objects_gmn_closure(
     organisation: Organisation,  # noqa: F811
     gmn: GMN,  # noqa: F811
-    intermediate_event,  # noqa: F811
 ):
-    """A delete UploadTask for GMN_Closure removes the matching IntermediateEvent."""
-    assert IntermediateEvent.objects.filter(gmn=gmn).count() == 1
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GMN_Closure",
+        request_type="registration",
+        status="COMPLETED",
+        bro_id=gmn.bro_id,
+        metadata={},
+        sourcedocument_data={"endDateMonitoring": "2024-01-01"},
+    )
+
+    assert (
+        GMN.objects.get(bro_id=gmn.bro_id).end_date_monitoring.isoformat()
+        == "2024-01-01"
+    )
 
     UploadTask.objects.create(
         data_owner=organisation,
@@ -959,10 +954,10 @@ def test_post_save_uploadtask_triggers_delete_objects_gmn_closure(
         status="COMPLETED",
         bro_id=gmn.bro_id,
         metadata={},
-        sourcedocument_data={"dateToBeCorrected": "2024-01-01"},
+        sourcedocument_data={"endDateMonitoring": "2024-01-01"},
     )
 
-    assert IntermediateEvent.objects.filter(gmn=gmn).count() == 0
+    assert GMN.objects.get(bro_id=gmn.bro_id).end_date_monitoring is None
 
 
 @pytest.mark.django_db

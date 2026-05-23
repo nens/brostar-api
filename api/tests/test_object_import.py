@@ -297,41 +297,41 @@ def test_create_upload_task(api_client, user, organisation):
 def test_check_dates():
     last_import_datetime = datetime.datetime(2021, 6, 15)
     assert (
-        object_import.check_dates(last_import_datetime, "2021-01-01", None, None)
+        object_import.check_dates(last_import_datetime, "2021-01-01", None, None, None)
         is False
     )  # older
     assert (
-        object_import.check_dates(last_import_datetime, "2021-12-31", None, None)
+        object_import.check_dates(last_import_datetime, "2021-12-31", None, None, None)
         is True
     )  # newer
     assert (
-        object_import.check_dates(last_import_datetime, None, "2021-01-01", None)
+        object_import.check_dates(last_import_datetime, None, "2021-01-01", None, None)
         is False
     )  # older
     assert (
-        object_import.check_dates(last_import_datetime, None, "2021-12-31", None)
+        object_import.check_dates(last_import_datetime, None, "2021-12-31", None, None)
         is True
     )  # newer
     assert (
-        object_import.check_dates(last_import_datetime, None, None, "2021-01-01")
+        object_import.check_dates(last_import_datetime, None, None, "2021-01-01", None)
         is False
     )  # older
     assert (
-        object_import.check_dates(last_import_datetime, None, None, "2021-12-31")
+        object_import.check_dates(last_import_datetime, None, None, "2021-12-31", None)
         is True
     )  # newer
     assert (
         object_import.check_dates(
-            last_import_datetime, "2021-01-01", "2021-02-01", "2021-03-01"
+            last_import_datetime, "2021-01-01", "2021-02-01", "2021-03-01", None
         )
         is False
     )  # all older
     assert (
         object_import.check_dates(
-            last_import_datetime, "2022-01-01", "2010-01-01", None
+            last_import_datetime, "2022-01-01", "2010-01-01", None, None
         )
         is True
     )  # one newer
     assert (
-        object_import.check_dates(last_import_datetime, None, None, None) is True
+        object_import.check_dates(last_import_datetime, None, None, None, None) is True
     )  # no dates

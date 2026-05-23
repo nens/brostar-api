@@ -10,6 +10,8 @@ from gar import models as gar_models
 from gld import models as gld_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
+from gpd import models as gpd_models
+from guf import models as guf_models
 
 TZ_INFO = pytz.timezone("Europe/Amsterdam")
 
@@ -248,4 +250,28 @@ def observation(organisation, gld):
         result_time=datetime.datetime(2024, 12, 31, 12, 0, 0, tzinfo=pytz.UTC),
         observation_type="reguliereMeting",
         investigator_kvk="12345678",
+    )
+
+
+@pytest.fixture
+def guf(organisation):
+    return guf_models.GUF.objects.create(
+        data_owner=organisation,
+        bro_id="GUF123456789",
+        quality_regime="IMBRO/A",
+        delivery_context="waterwet",
+        identification_licence="LIC-001",
+        legal_type="melding",
+        primary_usage_type="bemaling",
+        human_consumption="nee",
+    )
+
+
+@pytest.fixture
+def gpd(organisation):
+    return gpd_models.GPD.objects.create(
+        data_owner=organisation,
+        bro_id="GPD123456789",
+        quality_regime="IMBRO/A",
+        internal_id="test_gpd",
     )
