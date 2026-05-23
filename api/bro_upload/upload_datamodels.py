@@ -780,8 +780,9 @@ class DesignLoop(CamelModel):
     loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type
 
     # Lifespan is formatted from these two fields - ISO-8601 date string
-    start_date: str
-    end_date: str
+    # Lifespan is not allowed to be present for NewLicense
+    start_date: str | None
+    end_date: str | None
 
     geometry_type: Literal["Point", "LineString"] = "Point"  # Type of geometry
 
@@ -1065,18 +1066,23 @@ class RealisedInstallationHeightPart(CamelModel):
         return v if v is not None and v != "" else f"_{uuid.uuid4()}"
 
 
+class RealisedScreenChanges(CamelModel):
+    realised_screen_id: str
+    top_screen_depth: float  # meters
+
+
 # Updated GUFHeight class
 class GUFHeight(CamelModel):
     """Source document data for GUF_Height"""
 
     realised_well_id: str
-    well_functions: list[WellFunctionOptions]
-    relative_temperature: RelativeTemperatureOptions | None = None
+    height: float  # meters
+    well_depth: float | None = None
     start_validity: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
     )
-    realised_installation: RealisedInstallationHeightPart | None = None
+    realised_screens: list[RealisedScreenChanges] = []
 
 
 # Updated RealisedScreen class
@@ -1224,7 +1230,9 @@ class GUFClosure(CamelModel):
 
 class GPDStartRegistration(CamelModel):
     object_id_accountable_party: str
-    publicly_available: PubliclyAvailableOptions = None
+    publicly_available: PubliclyAvailableOptions = (
+        None  # Only registered for drinkwater
+    )
 
 
 class VolumeSeries(CamelModel):

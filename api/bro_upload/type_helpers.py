@@ -129,5 +129,5 @@ DisplacementDirectionOptions = Literal[
 IndicationYesNoOptions = Literal["ja", "nee", "onbekend"]
 WaterInOutOptions = Literal["ingebracht", "onttrokken"]
 TemperatureOptions = Literal["koud", "warm", "onbekend", None]
-PubliclyAvailableOptions = Literal["ja", "nee", "onbekend", None]
+PubliclyAvailableOptions = Literal["ja", "nee", None]
 MethodOptions = Literal["berekening", "watermeter", "onbekend"]

@@ -33,6 +33,7 @@ class GMN(models.Model):
     monitoring_purpose = models.CharField(max_length=100, null=True)
     groundwater_aspect = models.CharField(max_length=100, null=True)
     start_date_monitoring = models.DateField(null=True)
+    end_date_monitoring = models.DateField(null=True)
     object_registration_time = models.DateTimeField(null=True)
     registration_status = models.CharField(max_length=50, null=True)
     color = models.CharField(max_length=7, null=True, blank=True, default=None)
