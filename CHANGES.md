@@ -3,7 +3,10 @@
 ## 1.71 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [UploadTask]: On succesful task also handle updates and deletes
+-   Rework [API]: Split utils into multiple files, as it became too large to properly handle
+-   Bugfix [GPD]: Fix a minor bug in the AddReport template
+
 
 
 ## 1.70 (2026-05-12)
