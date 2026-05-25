@@ -67,6 +67,7 @@ class DesignInstallationListView(mixins.UserOrganizationMixin, generics.ListAPIV
     serializer_class = serializers.DesignInstallationSerializer
     queryset = guf_models.DesignInstallation.objects.all().order_by("-created")
 
+    filterset_class = filters.DesignInstallationFilter
     filter_backends = [DjangoFilterBackend]
     ordering = ["id"]
 
@@ -99,6 +100,7 @@ class DesignLoopListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = guf_models.DesignLoop.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.DesignLoopFilter
     ordering = ["id"]
 
 
@@ -122,6 +124,7 @@ class DesignWellListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = guf_models.DesignWell.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.DesignWellFilter
     ordering = ["id"]
 
 
@@ -147,6 +150,7 @@ class DesignSurfaceInfiltrationListView(
     queryset = guf_models.DesignSurfaceInfiltration.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.DesignSurfaceInfiltrationFilter
     ordering = ["id"]
 
 
@@ -172,6 +176,7 @@ class GUFEventListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     queryset = guf_models.GUFEvent.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.GUFEventFilter
     ordering = ["id"]
 
 
@@ -195,6 +200,7 @@ class EnergyCharacteristicsListView(mixins.UserOrganizationMixin, generics.ListA
     queryset = guf_models.EnergyCharacteristics.objects.all().order_by("-created")
 
     filter_backends = [DjangoFilterBackend]
+    filterset_class = filters.EnergyCharacteristicsFilter
     ordering = ["id"]
 
 
