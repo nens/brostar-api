@@ -3,9 +3,12 @@
 ## 1.71 (unreleased)
 
 
+-   Feat [GPD]: Add VolumesSeries API pages
 -   Enhancement [UploadTask]: On succesful task also handle updates and deletes
+-   Enhancement [GPD]: Add filtering on Report and VolumeSeries API pages
 -   Rework [API]: Split utils into multiple files, as it became too large to properly handle
 -   Bugfix [GPD]: Fix a minor bug in the AddReport template
+-   Bugfix [GPD]: Correct method import to rertrieve text attribute
 
 
 

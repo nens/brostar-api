@@ -120,6 +120,12 @@ class ObjectImporter(ABC):
         self.s.mount("http://", adapter)
         self.s.mount("https://", adapter)
 
+    def _extract_text_from_xml_element(self, element: dict | str | None) -> str | None:
+        """Extract text from XML elements that may have attributes"""
+        if isinstance(element, dict):
+            return element.get("#text")
+        return element
+
     def should_import(self) -> bool:
         """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
         last_import_task = (
@@ -1474,12 +1480,6 @@ class GUFObjectImporter(ObjectImporter):
         except (ValueError, AttributeError):
             return None
 
-    def _extract_text_from_xml_element(self, element: dict | str | None) -> str | None:
-        """Extract text from XML elements that may have attributes"""
-        if isinstance(element, dict):
-            return element.get("#text")
-        return element
-
     def _save_guf_data(self, guf_ppo: dict[str, Any]):  # noqa C901 - This function is complex but breaking it down further would reduce readability due to the nested structure of the data.
         # Extract basic metadata
         bro_id = guf_ppo.get("brocom:broId")
@@ -1868,13 +1868,17 @@ class GPDObjectImporter(ObjectImporter):
             # Get GUF reference
             guf_ref = self._extract_guf_reference(report_obj)
 
+            ## Need to extract the text from method, because it can be an XML element with attributes (e.g. {"#text": "value", "@codeSpace": "someURI"})
+            method = report_obj.get("gpdcommon:method", "onbekend")
+            method_value = self._extract_text_from_xml_element(method) or "onbekend"
+
             # Create or update report
             report_model, created = Report.objects.update_or_create(
                 gpd=gpd_obj,
                 report_id=report_obj.get("gpdcommon:reportId"),
                 data_owner=self.data_owner,
                 defaults={
-                    "method": report_obj.get("gpdcommon:method", "onbekend"),
+                    "method": method_value,
                     "begin_date": datetime.datetime.fromisoformat(report_begin).date()
                     if report_begin
                     else None,

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from api.mixins import RequiredFieldsMixin, UrlFieldMixin
-from gpd.models import GPD, Report
+from gpd.models import GPD, Report, VolumeSeries
 
 
 class GPDSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
@@ -24,4 +24,12 @@ class GPDIdsSerializer(serializers.ModelSerializer):
 class ReportSerializer(UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer):
     class Meta:
         model = Report
+        fields = "__all__"
+
+
+class VolumeSeriesSerializer(
+    UrlFieldMixin, RequiredFieldsMixin, serializers.ModelSerializer
+):
+    class Meta:
+        model = VolumeSeries
         fields = "__all__"

@@ -12,4 +12,12 @@ urlpatterns = [
     path(
         "reports/<uuid:uuid>/", views.ReportDetailView.as_view(), name="report-detail"
     ),
+    path(
+        "volume-series/", views.VolumeSeriesListView.as_view(), name="volumeseries-list"
+    ),
+    path(
+        "volume-series/<uuid:uuid>/",
+        views.VolumeSeriesDetailView.as_view(),
+        name="volumeseries-detail",
+    ),
 ]
