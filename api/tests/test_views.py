@@ -220,6 +220,62 @@ def test_uploadtask_view_post_valid_data(api_client, user, userprofile, organisa
 
 
 @pytest.mark.django_db
+def test_uploadtask_view_post_whitespace_correction(
+    api_client, user, userprofile, organisation
+):
+    """Test posting on the uploadtask enpoint
+    Note: userprofile needs to be used as fixture for this test
+    """
+    api_client.force_authenticate(user=user)
+    url = "/api/uploadtasks/"
+
+    data = {
+        "bro_domain": "GMN",
+        "project_number": "1",
+        "registration_type": "GMN_StartRegistration",
+        "request_type": "registration",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+        },
+        "sourcedocument_data": {
+            "objectIdAccountableParty": "test",
+            "name": "test",
+            "deliveryContext": " kaderrichtlijnWater",
+            "monitoringPurpose": "strategischBeheerKwaliteitRegionaal",
+            "groundwaterAspect": "kwantiteit ",
+            "startDateMonitoring": "2024-01-01",
+            "measuringPoints": [
+                {
+                    "measuringPointCode": "GMW000000038946 ",
+                    "broId": "GMW000000038946",
+                    "tubeNumber": "1",
+                }
+            ],
+        },
+        "data_owner": organisation.uuid,
+    }
+
+    response = api_client.post(url, data, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    # Additional check to assert the returned data
+    response_data = response.json()
+
+    # Check if whitespace is stripped in the returned data
+    assert (
+        response_data["sourcedocument_data"]["deliveryContext"] == "kaderrichtlijnWater"
+    )
+    assert response_data["sourcedocument_data"]["groundwaterAspect"] == "kwantiteit"
+    assert (
+        response_data["sourcedocument_data"]["measuringPoints"][0]["measuringPointCode"]
+        == "GMW000000038946"
+    )
+
+
+@pytest.mark.django_db
 def test_uploadtask_view_post_valid_data2(api_client, user, userprofile, organisation):
     """Test posting on the uploadtask enpoint
     Note: userprofile needs to be used as fixture for this test
