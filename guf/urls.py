@@ -13,38 +13,44 @@ urlpatterns = [
     path(
         "installations/",
         views.DesignInstallationListView.as_view(),
-        name="installation-list",
+        name="designinstallation-list",
     ),
     path(
         "installations/<uuid:uuid>/",
         views.DesignInstallationDetailView.as_view(),
-        name="installation-detail",
+        name="designinstallation-detail",
     ),
     # Design Loop endpoints
-    path("loops/", views.DesignLoopListView.as_view(), name="loop-list"),
+    path("loops/", views.DesignLoopListView.as_view(), name="designloop-list"),
     path(
-        "loops/<uuid:uuid>/", views.DesignLoopDetailView.as_view(), name="loop-detail"
+        "loops/<uuid:uuid>/",
+        views.DesignLoopDetailView.as_view(),
+        name="designloop-detail",
     ),
     # Design Well endpoints
-    path("wells/", views.DesignWellListView.as_view(), name="well-list"),
+    path("wells/", views.DesignWellListView.as_view(), name="designwell-list"),
     path(
-        "wells/<uuid:uuid>/", views.DesignWellDetailView.as_view(), name="well-detail"
+        "wells/<uuid:uuid>/",
+        views.DesignWellDetailView.as_view(),
+        name="designwell-detail",
     ),
     # Design Surface Infiltration endpoints
     path(
         "surfaceinfiltrations/",
         views.DesignSurfaceInfiltrationListView.as_view(),
-        name="surfaceinfiltration-list",
+        name="designsurfaceinfiltration-list",
     ),
     path(
         "surfaceinfiltrations/<uuid:uuid>/",
         views.DesignSurfaceInfiltrationDetailView.as_view(),
-        name="surfaceinfiltration-detail",
+        name="designsurfaceinfiltration-detail",
     ),
     # GUF Event endpoints
-    path("events/", views.GUFEventListView.as_view(), name="event-list"),
+    path("events/", views.GUFEventListView.as_view(), name="gufevent-list"),
     path(
-        "events/<uuid:uuid>/", views.GUFEventDetailView.as_view(), name="event-detail"
+        "events/<uuid:uuid>/",
+        views.GUFEventDetailView.as_view(),
+        name="gufevent-detail",
     ),
     # Energy Characteristics endpoints
     path(

@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from collections import defaultdict
 from typing import TypeVar
 
 import pandas as pd
@@ -21,6 +22,120 @@ logger = logging.getLogger("general")
 
 
 T = TypeVar("T", bound="api_models.UploadFile")
+
+
+_REPORTING_LIMIT_COLUMN_RE = re.compile(r"^\s*Rapportagegrens\s+(.+?)\s+\(.*\)\s*$")
+_ANALYSIS_DATE_COLUMN_RE = re.compile(r"^\s*Analysedatum\s+(.+?)\s+\(.*\)\s*$")
+_MEASUREMENT_VALUE_COLUMN_RE = re.compile(r"^\s*(.+?)\s+\(.*\)\s*$")
+_OLD_FORMAT_TRIGGER_HEADERS = {"Zuurstof (mg/l)"}
+
+
+def _normalize_header(value: str) -> str:
+    return re.sub(r"\s+", "", str(value)).lower()
+
+
+def _is_missing_measurement_value(value: object) -> bool:
+    if pd.isna(value):
+        return True
+    if isinstance(value, str) and value.strip().lower() in {"", "niet bepaald"}:
+        return True
+    return False
+
+
+def _resolve_field_measurement_columns(
+    row: pd.Series,
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Map parameter names to source columns, preferring *_field over unsuffixed columns.
+
+    *_lab columns are ignored for field measurements.
+    Suffixes are stripped before regex matching to correctly identify parameters.
+    """
+    columns_by_base_name: dict[str, str] = {}
+    normalized_columns: dict[str, str] = {}
+
+    for column in row.index.tolist():
+        column_str = str(column)
+        if column_str.endswith("_lab"):
+            continue
+
+        base_name = column_str[:-6] if column_str.endswith("_field") else column_str
+        is_field_column = column_str.endswith("_field")
+
+        if base_name not in columns_by_base_name or is_field_column:
+            columns_by_base_name[base_name] = column_str
+
+        normalized_base_name = _normalize_header(base_name)
+        if normalized_base_name not in normalized_columns or is_field_column:
+            normalized_columns[normalized_base_name] = column_str
+
+    return columns_by_base_name, normalized_columns
+
+
+def _resolve_lab_analysis_columns(
+    row: pd.Series,
+) -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
+    """Map lab parameter names to source columns, preferring *_lab over unsuffixed.
+
+    *_field columns are ignored for lab analyses to avoid field/lab interference.
+    Suffixes are stripped before regex matching to correctly identify parameters.
+    """
+    value_columns_by_parameter: dict[str, str] = {}
+    reporting_limit_columns_by_parameter: dict[str, str] = {}
+    analysis_date_columns_by_parameter: dict[str, str] = {}
+
+    for column in row.index:
+        column_str = str(column)
+        is_lab_column = column_str.endswith("_lab")
+
+        if column_str.endswith("_field"):
+            continue
+
+        # Strip suffix before applying regex to correctly identify parameter names
+        base_column = column_str[:-4] if is_lab_column else column_str
+
+        reporting_limit_match = _REPORTING_LIMIT_COLUMN_RE.match(base_column)
+        if reporting_limit_match:
+            parameter = reporting_limit_match.group(1)
+            if parameter not in reporting_limit_columns_by_parameter or is_lab_column:
+                reporting_limit_columns_by_parameter[parameter] = column_str
+            continue
+
+        analysis_date_match = _ANALYSIS_DATE_COLUMN_RE.match(base_column)
+        if analysis_date_match:
+            parameter = analysis_date_match.group(1)
+            if parameter not in analysis_date_columns_by_parameter or is_lab_column:
+                analysis_date_columns_by_parameter[parameter] = column_str
+            continue
+
+        measurement_match = _MEASUREMENT_VALUE_COLUMN_RE.match(base_column)
+        if measurement_match:
+            parameter = measurement_match.group(1)
+            if parameter not in value_columns_by_parameter or is_lab_column:
+                value_columns_by_parameter[parameter] = column_str
+
+    return (
+        value_columns_by_parameter,
+        reporting_limit_columns_by_parameter,
+        analysis_date_columns_by_parameter,
+    )
+
+
+def _build_lab_parameters_by_process() -> dict[
+    tuple[str, str], list[tuple[str, int, str]]
+]:
+    grouped_parameters: dict[tuple[str, str], list[tuple[str, int, str]]] = defaultdict(
+        list
+    )
+    for parameter in config.LAB_PARAMETER_OPTIONS:
+        process_key = (parameter["analyticalTechnique"], parameter["validationMethod"])
+        grouped_parameters[process_key].append(
+            (parameter["code"], parameter["parameter_id"], parameter["unit"])
+        )
+
+    return dict(grouped_parameters)
+
+
+LAB_PARAMETERS_BY_PROCESS = _build_lab_parameters_by_process()
 
 
 class GARBulkUploader:
@@ -83,17 +198,20 @@ class GARBulkUploader:
     ) -> pd.DataFrame:
         try:
             # Rename headers
-            required_fields = ["GMW BRO ID", "Datum bemonsterd", "Filternummer"]
+            required_fields_field = ["GMW BRO ID", "Datum bemonsterd", "Filternummer"]
+            required_fields_lab = ["GMW BRO ID", "Datum bemonsterd", "Filternummer"]
             has_lab = True
-            if all(field in fieldwork_df.columns for field in required_fields) and all(
-                field in lab_df.columns for field in required_fields
-            ):
+            if all(
+                field in fieldwork_df.columns for field in required_fields_field
+            ) and all(field in lab_df.columns for field in required_fields_lab):
                 merged_df = merge_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
-            elif all(field in fieldwork_df.columns for field in required_fields):
+            elif all(field in fieldwork_df.columns for field in required_fields_field):
                 merged_df = fieldwork_df
                 has_lab = False
             else:
                 merged_df = lab_df
+
+            logger.info(f"has lab: {has_lab}")
 
             fieldwork_df_rename_dict = {
                 "GMW BRO ID": "bro_id",
@@ -111,7 +229,9 @@ class GARBulkUploader:
                 "Monsternummer lab",
             ]
             trimmed_df = remove_df_columns(merged_df, field_columns_exclude)
-
+            logger.info(
+                f"Trimmed the dataframe to the following columns: {trimmed_df.columns.tolist()}"
+            )
             # Pandas DF: create new column meetronde, which should only have the year of datum bemonsterd, as a string
             trimmed_df["Meetronde"] = trimmed_df["date"].dt.year.astype(str)
 
@@ -139,6 +259,8 @@ class GARBulkUploader:
         logger.info("Initialized the dataframes.")
 
         # Step 2: transform the pandas files to a useable format
+        logger.info(fieldwork_df.columns.tolist())
+        logger.info(lab_df.columns.tolist())
         trimmed_df, has_lab = self._process_fieldwork_and_lab_dfs(fieldwork_df, lab_df)
         if trimmed_df is None:
             return
@@ -224,10 +346,12 @@ def merge_fieldwork_and_lab_dfs(
 
     This filters out the location/date combinations that are only present in 1 file."""
     return pd.merge(
-        fieldwork_df,
-        lab_df,
-        on=["GMW BRO ID", "Datum bemonsterd", "Filternummer"],
+        left=fieldwork_df,
+        right=lab_df,
+        left_on=["GMW BRO ID", "Datum bemonsterd", "Filternummer"],
+        right_on=["GMW BRO ID", "Datum bemonsterd", "Filternummer"],
         how="inner",
+        suffixes=("_field", "_lab"),
     )
 
 
@@ -374,41 +498,53 @@ def create_gar_field_measurements(row: pd.Series) -> list[FieldMeasurement]:
 
     curdir = os.path.dirname(os.path.abspath(__file__))
     logger.info(f"column names: {row.index.tolist()}")
-    if "Zuurstof (mg/L)" in row:
-        logger.info("Using old GAR parameter format.")
+
+    columns_by_base_name, _ = _resolve_field_measurement_columns(row)
+    logger.info(f"columns by base name: {columns_by_base_name}")
+    has_old_format_trigger = any(
+        trigger in columns_by_base_name for trigger in _OLD_FORMAT_TRIGGER_HEADERS
+    )
+
+    if has_old_format_trigger:
+        logger.info("Using old format parameter config from hardcoded dict.")
         # Old format from Provincie Noord-Brabant
-        for parameter, details in config.FIELD_PARAMETER_OPTIONS.items():
-            logger.info(f"Checking column: {parameter}")
-            if parameter in row and pd.notna(row[parameter]):
-                parameter_dict = {
-                    "parameter": details["parameter_id"],
-                    "unit": details["unit"],
-                    "fieldMeasurementValue": row[parameter],
-                    "qualityControlStatus": "onbeslist",
-                }
-
-                field_measurement = FieldMeasurement(**parameter_dict)
-                field_measurement_list.append(field_measurement)
-
+        df = pl.DataFrame(config.FIELD_PARAMETER_OPTIONS)
     else:
-        logger.info("Using new GAR parameter format.")
+        logger.info("Using new format parameter config from CSV file.")
         df = pl.read_csv(os.path.join(curdir, "20260107_GARVarList.csv"), separator=";")
-        for column in row.index.tolist():
-            logger.info(f"Checking column: {column}")
-            if column in df["aquocode"].to_list() and row[column] != "niet bepaald":
-                parameter_details = df.filter(pl.col("aquocode") == column).to_dicts()[
-                    0
-                ]
-                parameter = column
-                parameter_dict = {
-                    "parameter": parameter_details["ID"],
-                    "unit": parameter_details["eenheid"],
-                    "fieldMeasurementValue": row[parameter],
-                    "qualityControlStatus": "onbeslist",
-                }
+        df = df.rename({"aquocode": "code", "ID": "parameter_id", "eenheid": "unit"})
 
-                field_measurement = FieldMeasurement(**parameter_dict)
-                field_measurement_list.append(field_measurement)
+    for param in columns_by_base_name.keys():
+        logger.info(f"Checking parameter '{param}' against config options.")
+
+        parameter = df.filter(pl.col("code") == param).select("parameter_id", "unit")
+        if parameter.height == 0:
+            logger.warning(
+                f"Parameter '{param}' not found in config, skipping this parameter."
+            )
+            continue
+
+        parameter = parameter.row(0, named=True)
+        source_column = columns_by_base_name.get(param)
+        value = row[source_column]
+        if _is_missing_measurement_value(value):
+            logger.warning(
+                f"Skipping missing value for parameter '{parameter['parameter_id']}' in column '{source_column}'"
+            )
+            continue
+
+        parameter_dict = {
+            "parameter": parameter["parameter_id"],
+            "unit": parameter["unit"],
+            "fieldMeasurementValue": value,
+            "qualityControlStatus": "onbeslist",
+        }
+        logger.info(
+            f"Created field measurement dict for parameter '{parameter['parameter_id']}': {parameter_dict}"
+        )
+
+        field_measurement = FieldMeasurement(**parameter_dict)
+        field_measurement_list.append(field_measurement)
 
     return field_measurement_list
 
@@ -425,94 +561,68 @@ def create_gar_lab_analysis(
     return [LaboratoryAnalysis(**lab_analysis)]
 
 
-def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:
+def create_analysis_process(row: pd.Series) -> list[AnalysisProcess]:  # noqa C901
     analysis_processes = []
 
-    for parameter, details in config.LAB_PARAMETER_OPTIONS.items():
-        value_column_pattern = rf"^\s*{parameter}\s+\(.*\)\s*$"
-        value_column = next(
-            (col for col in row.index if re.search(value_column_pattern, col)), None
-        )
+    (
+        value_columns_by_parameter,
+        reporting_limit_columns_by_parameter,
+        analysis_date_columns_by_parameter,
+    ) = _resolve_lab_analysis_columns(row)
 
-        value = row[value_column] if value_column else None
+    for (technique, method), parameters in LAB_PARAMETERS_BY_PROCESS.items():
+        analyses = []
+        process_date = None
 
-        if value_column and isinstance(value, int | float) and pd.notna(value):
-            reporting_limit_column_pattern = (
-                rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
+        for parameter, parameter_id, unit in parameters:
+            value_column = value_columns_by_parameter.get(parameter)
+            if not value_column:
+                continue
+
+            date_column = analysis_date_columns_by_parameter.get(parameter)
+            if not date_column:
+                continue
+
+            date_value = row.get(date_column)
+            if pd.isna(date_value) or date_value == "":
+                continue
+
+            value = row[value_column]
+            reporting_limit_column = reporting_limit_columns_by_parameter.get(parameter)
+            reporting_limit = (
+                row[reporting_limit_column] if reporting_limit_column else None
             )
-            reporting_limit_column = next(
-                (
-                    col
-                    for col in row.index
-                    if re.search(reporting_limit_column_pattern, col)
-                ),
-                None,
-            )
 
-            date_column_pattern = rf"^\s*Analysedatum\s+{parameter}\s+\(.*\)\s*$"
-            date_column = next(
-                (col for col in row.index if re.search(date_column_pattern, col)), None
-            )
+            if pd.api.types.is_number(value) and pd.notna(value):
+                analysis_dict = {
+                    "parameter": parameter_id,
+                    "unit": unit,
+                    "analysisMeasurementValue": value,
+                    "reportingLimit": reporting_limit,
+                    "qualityControlStatus": "onbeslist",
+                }
+                analyses.append(Analysis(**analysis_dict))
+                if process_date is None:
+                    process_date = date_value
+            elif value in ["<", "GT"]:
+                analysis_dict = {
+                    "parameter": parameter_id,
+                    "unit": unit,
+                    "reportingLimit": reporting_limit,
+                    "limitSymbol": "LT" if value == "<" else value,
+                    "qualityControlStatus": "onbeslist",
+                }
+                analyses.append(Analysis(**analysis_dict))
+                if process_date is None:
+                    process_date = date_value
 
-            analysis_dict = {
-                "parameter": details["parameter_id"],
-                "unit": details["unit"],
-                "analysisMeasurementValue": value,
-                "reportingLimit": row[reporting_limit_column]
-                if reporting_limit_column
-                else None,
-                "qualityControlStatus": "onbeslist",
-            }
-            analysis = Analysis(**analysis_dict)
-
+        if analyses and process_date is not None:
             analysis_process_dict = {
-                "date": row[date_column] if date_column else None,
-                "analyticalTechnique": details["analyticalTechnique"],
-                "valuationMethod": details["validationMethod"],
-                "analyses": [analysis],
+                "date": process_date,
+                "analyticalTechnique": technique,
+                "valuationMethod": method,
+                "analyses": analyses,
             }
-
-            analysis_process = AnalysisProcess(**analysis_process_dict)
-            analysis_processes.append(analysis_process)
-
-        elif value in ["<", "GT"]:
-            value = "LT" if value == "<" else value
-            reporting_limit_column_pattern = (
-                rf"^\s*Rapportagegrens\s+{parameter}\s+\(.*\)\s*$"
-            )
-            reporting_limit_column = next(
-                (
-                    col
-                    for col in row.index
-                    if re.search(reporting_limit_column_pattern, col)
-                ),
-                None,
-            )
-
-            date_column_pattern = rf"^\s*Analysedatum\s+{parameter}\s+\(.*\)\s*$"
-            date_column = next(
-                (col for col in row.index if re.search(date_column_pattern, col)), None
-            )
-
-            analysis_dict = {
-                "parameter": details["parameter_id"],
-                "unit": details["unit"],
-                "reportingLimit": row[reporting_limit_column]
-                if reporting_limit_column
-                else None,
-                "limitSymbol": value,
-                "qualityControlStatus": "onbeslist",
-            }
-            analysis = Analysis(**analysis_dict)
-
-            analysis_process_dict = {
-                "date": row[date_column] if date_column else None,
-                "analyticalTechnique": details["analyticalTechnique"],
-                "valuationMethod": details["validationMethod"],
-                "analyses": [analysis],
-            }
-
-            analysis_process = AnalysisProcess(**analysis_process_dict)
-            analysis_processes.append(analysis_process)
+            analysis_processes.append(AnalysisProcess(**analysis_process_dict))
 
     return analysis_processes

@@ -2,8 +2,26 @@
 import pytest
 
 from api.models import UploadTask
-from api.tests.fixtures import gld, gmn, gmw, organisation  # noqa: F401
-from frd.models import FRD
+from api.tests.fixtures import (  # noqa: F401
+    frd,
+    geo_electric_measurement,
+    gld,
+    gmn,
+    gmw,
+    gpd,
+    guf,
+    intermediate_event,
+    measurement_configuration,
+    measuringpoint,
+    observation,
+    organisation,
+    tube,
+)
+from frd.models import (
+    FRD,
+    GeoElectricMeasurement,
+    MeasurementConfiguration,
+)
 from gld.models import GLD, Observation  # Example model to check side effects
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
@@ -283,16 +301,16 @@ def test_post_save_uploadtask_triggers_create_objects_gld_observation(
     assert GLD.objects.filter(bro_id=gld.bro_id).exists()
     assert Observation.objects.filter(gld=gld).exists()
 
-    observation = Observation.objects.get(gld=gld)
+    observation_object = Observation.objects.get(gld=gld)
 
-    assert observation.observation_id == "_1ae0ebbf-4845-4237-aa68-f6a0c3b7e6bc"
-    assert observation.begin_position.isoformat() == "2021-08-23"
-    assert observation.end_position.isoformat() == "2025-05-08"
-    assert observation.result_time.isoformat() == "2025-05-08T08:16:40+00:00"
-    assert observation.investigator_kvk == "08213234"
-    assert observation.observation_type == "controlemeting"
-    assert observation.process_reference == "vitensMeetprotocolGrondwater"
-    assert observation.measurement_instrument_type == "elektronischPeilklokje"
+    assert observation_object.observation_id == "_1ae0ebbf-4845-4237-aa68-f6a0c3b7e6bc"
+    assert observation_object.begin_position.isoformat() == "2021-08-23"
+    assert observation_object.end_position.isoformat() == "2025-05-08"
+    assert observation_object.result_time.isoformat() == "2025-05-08T08:16:40+00:00"
+    assert observation_object.investigator_kvk == "08213234"
+    assert observation_object.observation_type == "controlemeting"
+    assert observation_object.process_reference == "vitensMeetprotocolGrondwater"
+    assert observation_object.measurement_instrument_type == "elektronischPeilklokje"
 
 
 @pytest.mark.django_db
@@ -371,8 +389,8 @@ def test_post_save_uploadtask_triggers_create_objects_frd(organisation: Organisa
     #    For example, if create_objects makes DB entries:
     assert FRD.objects.filter(bro_id="BRO123").exists()
 
-    frd = FRD.objects.get(bro_id="BRO123")
-    assert frd.internal_id == "test_upload"
+    frd_object = FRD.objects.get(bro_id="BRO123")
+    assert frd_object.internal_id == "test_upload"
 
 
 GMW_EVENT_TYPES = [
@@ -595,3 +613,394 @@ def test_pre_save_uploadtask_triggers_insert(
     assert task.request_type == "insert"
     assert task.bro_errors == ""
     assert task.status == "PROCESSING"
+
+
+# ── Update tests ──────────────────────────────────────────────────────────────
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmw(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """Saving a replace UploadTask for GMW_Construction updates GMW fields and upserts MonitoringTubes."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMW",
+        registration_type="GMW_Construction",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gmw.bro_id,
+        metadata={
+            "qualityRegime": "IMBRO",
+            "deliveryAccountableParty": "99999999",
+        },
+        sourcedocument_data={
+            "nitgCode": "B09A0001",
+            "owner": "11111111",
+            "deliveredLocation": "250000 450000",
+            "objectIdAccountableParty": "updated_id",
+            "monitoringTubes": [
+                {
+                    "tubeNumber": 1,
+                    "tubeType": "standaardbuis",
+                    "tubeStatus": "gebruiksklaar",
+                    "tubeMaterial": "pvc",
+                    "tubeTopPosition": "1.0",
+                    "plainTubePartLength": "2.0",
+                    "screenLength": "1.0",
+                    "sedimentSumpPresent": "nee",
+                    "artesianWellCapPresent": "nee",
+                    "variableDiameter": "nee",
+                    "numberOfGeoOhmCables": 0,
+                    "geoOhmCables": [],
+                }
+            ],
+        },
+    )
+
+    gmw.refresh_from_db()
+    assert gmw.nitg_code == "B09A0001"
+    assert gmw.owner == "11111111"
+    assert gmw.quality_regime == "IMBRO"
+    assert gmw.internal_id == "updated_id"
+    assert gmw.standardized_location is not None
+
+    assert MonitoringTube.objects.filter(gmw=gmw, tube_number=1).exists()
+    tube_obj = MonitoringTube.objects.get(gmw=gmw, tube_number=1)
+    assert tube_obj.tube_material == "pvc"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmw_event(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """Replacing a GMW event updates its metadata and sourcedocument_data."""
+    Event.objects.create(
+        gmw=gmw,
+        event_name="GMW_Positions",
+        event_date="2025-01-10",
+        data_owner=organisation,
+        metadata={"qualityRegime": "IMBRO/A"},
+        sourcedocument_data={"eventDate": "2025-01-10"},
+    )
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMW",
+        registration_type="GMW_Positions",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gmw.bro_id,
+        metadata={"qualityRegime": "IMBRO", "deliveryAccountableParty": "88888888"},
+        sourcedocument_data={
+            "eventDate": "2025-01-10",
+            "wellHeadProtector": "kokerPlastic",
+        },
+    )
+
+    event = Event.objects.get(gmw=gmw, event_name="GMW_Positions")
+    assert event.metadata["qualityRegime"] == "IMBRO"
+    assert event.sourcedocument_data["wellHeadProtector"] == "kokerPlastic"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmw_event_move(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """Moving a GMW event (dateToBeCorrected) updates its event_date."""
+    Event.objects.create(
+        gmw=gmw,
+        event_name="GMW_Owner",
+        event_date="2025-01-10",
+        data_owner=organisation,
+        metadata={"qualityRegime": "IMBRO/A"},
+        sourcedocument_data={"eventDate": "2025-01-10"},
+    )
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMW",
+        registration_type="GMW_Owner",
+        request_type="move",
+        status="COMPLETED",
+        bro_id=gmw.bro_id,
+        metadata={"qualityRegime": "IMBRO/A"},
+        sourcedocument_data={
+            "dateToBeCorrected": "2025-01-10",
+            "eventDate": "2025-03-01",
+        },
+    )
+
+    event = Event.objects.get(gmw=gmw, event_name="GMW_Owner")
+    assert str(event.event_date) == "2025-03-01"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmw_removal(
+    organisation: Organisation,  # noqa: F811
+    gmw: GMW,  # noqa: F811
+):
+    """Replacing a GMW_Removal event updates its metadata and sourcedocument_data."""
+    Event.objects.create(
+        gmw=gmw,
+        event_name="GMW_Removal",
+        event_date="2025-06-01",
+        data_owner=organisation,
+        metadata={"qualityRegime": "IMBRO/A"},
+        sourcedocument_data={"eventDate": "2025-06-01", "removalReason": "old"},
+    )
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMW",
+        registration_type="GMW_Removal",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gmw.bro_id,
+        metadata={"qualityRegime": "IMBRO"},
+        sourcedocument_data={"eventDate": "2025-06-01", "removalReason": "updated"},
+    )
+
+    event = Event.objects.get(gmw=gmw, event_name="GMW_Removal")
+    assert event.sourcedocument_data["removalReason"] == "updated"
+    assert event.metadata["qualityRegime"] == "IMBRO"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gld(
+    organisation: Organisation,  # noqa: F811
+    gld: GLD,  # noqa: F811
+):
+    """Replacing a GLD_StartRegistration updates GLD fields."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GLD",
+        registration_type="GLD_StartRegistration",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gld.bro_id,
+        metadata={
+            "qualityRegime": "IMBRO",
+            "deliveryAccountableParty": "77777777",
+        },
+        sourcedocument_data={
+            "objectIdAccountableParty": "updated_gld_id",
+            "gmwBroId": "GMW999999999",
+            "tubeNumber": 3,
+        },
+    )
+
+    gld.refresh_from_db()
+    assert gld.internal_id == "updated_gld_id"
+    assert gld.gmw_bro_id == "GMW999999999"
+    assert str(gld.tube_number) == "3"
+    assert gld.quality_regime == "IMBRO"
+    assert gld.delivery_accountable_party == "77777777"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gld_observation(
+    organisation: Organisation,  # noqa: F811
+    gld: GLD,  # noqa: F811
+    observation,  # noqa: F811
+):
+    """Replacing a GLD_Addition updates the matching Observation fields."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GLD",
+        registration_type="GLD_Addition",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gld.bro_id,
+        metadata={"qualityRegime": "IMBRO"},
+        sourcedocument_data={
+            "dateToBeCorrected": "2024-01-01",
+            "beginPosition": "2024-01-01",
+            "endPosition": "2024-12-31",
+            "observationType": "controlemeting",
+            "investigatorKvk": "99999999",
+            "processReference": "updatedProcess",
+            "evaluationProcedure": "updatedProcedure",
+            "measurementInstrumentType": "elektronischPeilklokje",
+        },
+    )
+
+    observation.refresh_from_db()
+    assert observation.observation_type == "controlemeting"
+    assert observation.investigator_kvk == "99999999"
+    assert observation.process_reference == "updatedProcess"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmn(
+    organisation: Organisation,  # noqa: F811
+    gmn: GMN,  # noqa: F811
+):
+    """Replacing a GMN_StartRegistration updates GMN fields."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GMN_StartRegistration",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gmn.bro_id,
+        metadata={"qualityRegime": "IMBRO"},
+        sourcedocument_data={
+            "name": "Updated GMN name",
+            "monitoringPurpose": "strategischBeheerKwaliteitRegionaal",
+            "groundwaterAspect": "kwantiteit",
+            "deliveryContext": "waterwetPeilbeheer",
+            "startDateMonitoring": "2025-01-01",
+        },
+    )
+
+    gmn.refresh_from_db()
+    assert gmn.name == "Updated GMN name"
+    assert gmn.monitoring_purpose == "strategischBeheerKwaliteitRegionaal"
+    assert gmn.groundwater_aspect == "kwantiteit"
+    assert gmn.quality_regime == "IMBRO"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gmn_measuringpoint(
+    organisation: Organisation,  # noqa: F811
+    gmn: GMN,  # noqa: F811
+    measuringpoint,  # noqa: F811
+):
+    """Replacing a GMN_MeasuringPoint updates the matching Measuringpoint fields."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GMN_MeasuringPoint",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=gmn.bro_id,
+        metadata={"qualityRegime": "IMBRO/A"},
+        sourcedocument_data={
+            "measuringPointCode": "MP123456",
+            "broId": "GMW999999999",
+            "tubeNumber": 2,
+            "eventDate": "2025-06-01",
+        },
+    )
+
+    measuringpoint.refresh_from_db()
+    assert measuringpoint.gmw_bro_id == "GMW999999999"
+    assert str(measuringpoint.tube_number) == "2"
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_frd(
+    organisation: Organisation,  # noqa: F811
+    frd,  # noqa: F811
+):
+    """Replacing a FRD_StartRegistration updates FRD fields."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="FRD",
+        registration_type="FRD_StartRegistration",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id=frd.bro_id,
+        metadata={"qualityRegime": "IMBRO"},
+        sourcedocument_data={
+            "objectIdAccountableParty": "updated_frd_id",
+            "gmwBroId": "GMW888888888",
+            "tubeNumber": 4,
+            "deliveryAccountableParty": "55555555",
+        },
+    )
+
+    frd.refresh_from_db()
+    assert frd.internal_id == "updated_frd_id"
+    assert frd.gmw_bro_id == "GMW888888888"
+    assert str(frd.tube_number) == "4"
+    assert frd.quality_regime == "IMBRO"
+    assert frd.delivery_accountable_party == "55555555"
+
+
+# ── Delete tests ──────────────────────────────────────────────────────────────
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_create_objects_gmn_closure(
+    organisation: Organisation,  # noqa: F811
+    gmn: GMN,  # noqa: F811
+):
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GMN_Closure",
+        request_type="registration",
+        status="COMPLETED",
+        bro_id=gmn.bro_id,
+        metadata={},
+        sourcedocument_data={"endDateMonitoring": "2024-01-01"},
+    )
+
+    assert (
+        GMN.objects.get(bro_id=gmn.bro_id).end_date_monitoring.isoformat()
+        == "2024-01-01"
+    )
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GMN",
+        registration_type="GMN_Closure",
+        request_type="delete",
+        status="COMPLETED",
+        bro_id=gmn.bro_id,
+        metadata={},
+        sourcedocument_data={"endDateMonitoring": "2024-01-01"},
+    )
+
+    assert GMN.objects.get(bro_id=gmn.bro_id).end_date_monitoring is None
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_delete_objects_frd_gem_measurement_configuration(
+    organisation: Organisation,  # noqa: F811
+    frd,  # noqa: F811
+    measurement_configuration,  # noqa: F811
+):
+    """A delete UploadTask for FRD_GEM_MeasurementConfiguration removes the matching MeasurementConfiguration."""
+    assert MeasurementConfiguration.objects.filter(frd=frd).count() == 1
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="FRD",
+        registration_type="FRD_GEM_MeasurementConfiguration",
+        request_type="delete",
+        status="COMPLETED",
+        bro_id=frd.bro_id,
+        metadata={},
+        sourcedocument_data={"measurementConfigurationId": "MC001"},
+    )
+
+    assert MeasurementConfiguration.objects.filter(frd=frd).count() == 0
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_delete_objects_frd_gem_measurement(
+    organisation: Organisation,  # noqa: F811
+    frd,  # noqa: F811
+    geo_electric_measurement,  # noqa: F811
+):
+    """A delete UploadTask for FRD_GEM_Measurement removes the matching GeoElectricMeasurement."""
+    assert GeoElectricMeasurement.objects.filter(frd=frd).count() == 1
+
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="FRD",
+        registration_type="FRD_GEM_Measurement",
+        request_type="delete",
+        status="COMPLETED",
+        bro_id=frd.bro_id,
+        metadata={},
+        sourcedocument_data={"dateToBeCorrected": "2024-01-01"},
+    )
+
+    assert GeoElectricMeasurement.objects.filter(frd=frd).count() == 0

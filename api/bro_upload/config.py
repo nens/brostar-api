@@ -1,57 +1,70 @@
-FIELD_PARAMETER_OPTIONS = {
-    "pH": {
+FIELD_PARAMETER_OPTIONS = [
+    {
+        "code": "pH",
         "parameter_id": 1398,
         "unit": "1",
     },
-    "Zuurstof (mg/l)": {
+    {
+        "code": "Zuurstof (mg/l)",
         "parameter_id": 1701,
         "unit": "mg/l",
     },
-    "Geleidbaarheid (mS/m)": {
+    {
+        "code": "Geleidbaarheid (mS/m)",
         "parameter_id": 3548,
         "unit": "mS/m",
     },
-    "Temperatuur (°C)": {
+    {
+        "code": "Temperatuur (°C)",
         "parameter_id": 1522,
         "unit": "Cel",
     },
-    "Troebelheid (NTU)": {
+    {
+        "code": "Troebelheid (NTU)",
         "parameter_id": 2031,
         "unit": "[NTU]",
     },
-    "Alkaliniteit (HCO3 - mg/l)": {
+    {
+        "code": "Alkaliniteit (HCO3 - mg/l)",
         "parameter_id": 374,
         "unit": "mg/l",
     },
-    "Chloride (mg/l)": {
+    {
+        "code": "Chloride (mg/l)",
         "parameter_id": 508,
         "unit": "mg/l",
     },
-}
+]
 
 
-DAWACO_GAR_FIELD_DATA_MAPPING = {
-    "T": {
+DAWACO_GAR_FIELD_DATA_MAPPING = [
+    {
+        "code": "T",
         "parameter_id": 1522,
         "unit": "Cel",
     },
-    "pH": {
+    {
+        "code": "pH",
         "parameter_id": 1398,
         "unit": "1",
     },
-    "GELDHD": {
+    {
+        "code": "GELDHD",
         "parameter_id": 3548,
         "unit": "mS/m",
     },
-    "HCO3": {
+    {
+        "code": "HCO3",
         "parameter_id": 374,
         "unit": "mg/l",
     },
-    "O2": {
+    {
+        "code": "O2",
         "parameter_id": 1701,
         "unit": "mg/l",
     },
-}
+]
+
 
 # This list was automatically created by using the 3rd tab in a lab research excel file.
 # Save the aquacode, validationmethod and analyticalTechnique columns as csv.
@@ -60,2480 +73,2879 @@ DAWACO_GAR_FIELD_DATA_MAPPING = {
 # is used to fill in the parameter_ids and units.
 # Some parameters from the lab Excel were not found in the BRO list. These have been removed.
 
-LAB_PARAMETER_OPTIONS = {
-    "FRD-903": {
+LAB_PARAMETER_OPTIONS = [
+    {
+        "code": "FRD-903",
         "parameter_id": 5741,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "134DClFy3C1y": {
+    {
+        "code": "134DClFy3C1y",
         "parameter_id": 2817,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "134DClFyurum": {
+    {
+        "code": "134DClFyurum",
         "parameter_id": 2818,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "14iC3yFyurum": {
+    {
+        "code": "14iC3yFyurum",
         "parameter_id": 4944,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "11DClC2a": {
+    {
+        "code": "11DClC2a",
         "parameter_id": 8,
         "unit": "ug/l",
         "validationMethod": "I15680.03",
         "analyticalTechnique": "GC-MS",
     },
-    "t1011DHOx101": {
+    {
+        "code": "t1011DHOx101",
         "parameter_id": 5111,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "etnetDol": {
+    {
+        "code": "etnetDol",
         "parameter_id": 2294,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "17bestDol": {
+    {
+        "code": "17bestDol",
         "parameter_id": 2314,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "H-PFC10asfzr": {
+    {
+        "code": "H-PFC10asfzr",
         "parameter_id": 5830,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "H-PFC12asfzr": {
+    {
+        "code": "H-PFC12asfzr",
         "parameter_id": 5831,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "H-PFC6asfzr": {
+    {
+        "code": "H-PFC6asfzr",
         "parameter_id": 5996,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "2PFC6yC2a1sf": {
+    {
+        "code": "2PFC6yC2a1sf",
         "parameter_id": 5517,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "234TClFol": {
+    {
+        "code": "234TClFol",
         "parameter_id": 83,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "235TClFol": {
+    {
+        "code": "235TClFol",
         "parameter_id": 86,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "236TClFol": {
+    {
+        "code": "236TClFol",
         "parameter_id": 89,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "245TClFol": {
+    {
+        "code": "245TClFol",
         "parameter_id": 101,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "245T": {
+    {
+        "code": "245T",
         "parameter_id": 102,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "246TClFol": {
+    {
+        "code": "246TClFol",
         "parameter_id": 106,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "s2425DClAn": {
+    {
+        "code": "s2425DClAn",
         "parameter_id": 108,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "GC-MS",
     },
-    "24D": {
+    {
+        "code": "24D",
         "parameter_id": 116,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "24DDD": {
+    {
+        "code": "24DDD",
         "parameter_id": 111,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "24DDT": {
+    {
+        "code": "24DDT",
         "parameter_id": 113,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "24DClFol": {
+    {
+        "code": "24DClFol",
         "parameter_id": 115,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "24DB": {
+    {
+        "code": "24DB",
         "parameter_id": 117,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "24DC1yFol": {
+    {
+        "code": "24DC1yFol",
         "parameter_id": 124,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "GC-MS",
     },
-    "24DNO2Fol": {
+    {
+        "code": "24DNO2Fol",
         "parameter_id": 669,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "26DClBenAd": {
+    {
+        "code": "26DClBenAd",
         "parameter_id": 135,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "26xyldne": {
+    {
+        "code": "26xyldne",
         "parameter_id": 2944,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "GC-MS",
     },
-    "2Aoactfnn": {
+    {
+        "code": "2Aoactfnn",
         "parameter_id": 2950,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "2HOxatzne": {
+    {
+        "code": "2HOxatzne",
         "parameter_id": 2999,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DNOC": {
+    {
+        "code": "DNOC",
         "parameter_id": 668,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "2NO2Fol": {
+    {
+        "code": "2NO2Fol",
         "parameter_id": 170,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "345TClFol": {
+    {
+        "code": "345TClFol",
         "parameter_id": 177,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "44DDE": {
+    {
+        "code": "44DDE",
         "parameter_id": 216,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "42monoPAP": {
+    {
+        "code": "42monoPAP",
         "parameter_id": 6453,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clxlnl": {
+    {
+        "code": "clxlnl",
         "parameter_id": 3486,
         "unit": "ug/l",
         "validationMethod": "D12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "4ClFol": {
+    {
+        "code": "4ClFol",
         "parameter_id": 229,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "4CPA": {
+    {
+        "code": "4CPA",
         "parameter_id": 2412,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "4NO2Fol": {
+    {
+        "code": "4NO2Fol",
         "parameter_id": 235,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bisPFC10yPO4": {
+    {
+        "code": "bisPFC10yPO4",
         "parameter_id": 5998,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "abmtne": {
+    {
+        "code": "abmtne",
         "parameter_id": 2304,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "acsfmeK": {
+    {
+        "code": "acsfmeK",
         "parameter_id": 3131,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "actmpd": {
+    {
+        "code": "actmpd",
         "parameter_id": 3135,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "acnfn": {
+    {
+        "code": "acnfn",
         "parameter_id": 3127,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "alDcSO": {
+    {
+        "code": "alDcSO",
         "parameter_id": 267,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "aedsfn": {
+    {
+        "code": "aedsfn",
         "parameter_id": 269,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Al": {
+    {
+        "code": "Al",
         "parameter_id": 284,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "amttdn": {
+    {
+        "code": "amttdn",
         "parameter_id": 5242,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "amdTzinzr": {
+    {
+        "code": "amdTzinzr",
         "parameter_id": 3165,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Aoprld": {
+    {
+        "code": "Aoprld",
         "parameter_id": 5561,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "amsbm": {
+    {
+        "code": "amsbm",
         "parameter_id": 5137,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "amtl": {
+    {
+        "code": "amtl",
         "parameter_id": 287,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "NH4": {
+    {
+        "code": "NH4",
         "parameter_id": 289,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "AMPA": {
+    {
+        "code": "AMPA",
         "parameter_id": 292,
         "unit": "ug/l",
         "validationMethod": "I16308.17",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "antcnn": {
+    {
+        "code": "antcnn",
         "parameter_id": 300,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Sb": {
+    {
+        "code": "Sb",
         "parameter_id": 301,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "As": {
+    {
+        "code": "As",
         "parameter_id": 310,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "aslm": {
+    {
+        "code": "aslm",
         "parameter_id": 323,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "atnll": {
+    {
+        "code": "atnll",
         "parameter_id": 3186,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "atzne": {
+    {
+        "code": "atzne",
         "parameter_id": 325,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "azsfrn": {
+    {
+        "code": "azsfrn",
         "parameter_id": 5028,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C2yazfs": {
+    {
+        "code": "C2yazfs",
         "parameter_id": 327,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "C1yazfs": {
+    {
+        "code": "C1yazfs",
         "parameter_id": 328,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "aztmcne": {
+    {
+        "code": "aztmcne",
         "parameter_id": 3198,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "azoxsbn": {
+    {
+        "code": "azoxsbn",
         "parameter_id": 3196,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Ba": {
+    {
+        "code": "Ba",
         "parameter_id": 333,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "benlxl": {
+    {
+        "code": "benlxl",
         "parameter_id": 336,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "benDocb": {
+    {
+        "code": "benDocb",
         "parameter_id": 337,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "benfn": {
+    {
+        "code": "benfn",
         "parameter_id": 3213,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "bentzn": {
+    {
+        "code": "bentzn",
         "parameter_id": 340,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bentavlcbiC3": {
+    {
+        "code": "bentavlcbiC3",
         "parameter_id": 3218,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Be": {
+    {
+        "code": "Be",
         "parameter_id": 362,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "bedsfn": {
+    {
+        "code": "bedsfn",
         "parameter_id": 365,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "bezafbt": {
+    {
+        "code": "bezafbt",
         "parameter_id": 2463,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bfnx": {
+    {
+        "code": "bfnx",
         "parameter_id": 375,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "biftn": {
+    {
+        "code": "biftn",
         "parameter_id": 376,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "bispll": {
+    {
+        "code": "bispll",
         "parameter_id": 3266,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bittnl": {
+    {
+        "code": "bittnl",
         "parameter_id": 3268,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bixfn": {
+    {
+        "code": "bixfn",
         "parameter_id": 5077,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "B": {
+    {
+        "code": "B",
         "parameter_id": 386,
         "unit": "ug/l",
         "validationMethod": "I11885.98",
         "analyticalTechnique": "ICP-MS",
     },
-    "boscld": {
+    {
+        "code": "boscld",
         "parameter_id": 3272,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "bromcl": {
+    {
+        "code": "bromcl",
         "parameter_id": 390,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Br": {
+    {
+        "code": "Br",
         "parameter_id": 391,
         "unit": "mg/l",
         "validationMethod": "I10304-1.09",
         "analyticalTechnique": "IC ",
     },
-    "BrOxnl": {
+    {
+        "code": "BrOxnl",
         "parameter_id": 394,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "buprmt": {
+    {
+        "code": "buprmt",
         "parameter_id": 403,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Cd": {
+    {
+        "code": "Cd",
         "parameter_id": 441,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "caffine": {
+    {
+        "code": "caffine",
         "parameter_id": 442,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Ca": {
+    {
+        "code": "Ca",
         "parameter_id": 447,
         "unit": "mg/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "carbmzpne": {
+    {
+        "code": "carbmzpne",
         "parameter_id": 3380,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "carbrl": {
+    {
+        "code": "carbrl",
         "parameter_id": 458,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "carbdzm": {
+    {
+        "code": "carbdzm",
         "parameter_id": 460,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "carbtAd": {
+    {
+        "code": "carbtAd",
         "parameter_id": 3384,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "carftznC2y": {
+    {
+        "code": "carftznC2y",
         "parameter_id": 3386,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Clafncl": {
+    {
+        "code": "Clafncl",
         "parameter_id": 2497,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "chloratnlpl": {
+    {
+        "code": "chloratnlpl",
         "parameter_id": 5175,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Clpfm": {
+    {
+        "code": "Clpfm",
         "parameter_id": 492,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "C2yClprfs": {
+    {
+        "code": "C2yClprfs",
         "parameter_id": 494,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "ClT4ccne": {
+    {
+        "code": "ClT4ccne",
         "parameter_id": 3481,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Cltlnl": {
+    {
+        "code": "Cltlnl",
         "parameter_id": 497,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Cltlrn": {
+    {
+        "code": "Cltlrn",
         "parameter_id": 503,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Clidzn": {
+    {
+        "code": "Clidzn",
         "parameter_id": 507,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Cl": {
+    {
+        "code": "Cl",
         "parameter_id": 508,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "Cr": {
+    {
+        "code": "Cr",
         "parameter_id": 517,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "cipfxcne": {
+    {
+        "code": "cipfxcne",
         "parameter_id": 3436,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clartmcne": {
+    {
+        "code": "clartmcne",
         "parameter_id": 3448,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clodnfppgl": {
+    {
+        "code": "clodnfppgl",
         "parameter_id": 3466,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clofbnzr": {
+    {
+        "code": "clofbnzr",
         "parameter_id": 2464,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clomzn": {
+    {
+        "code": "clomzn",
         "parameter_id": 3468,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clopdl": {
+    {
+        "code": "clopdl",
         "parameter_id": 6136,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cloprld": {
+    {
+        "code": "cloprld",
         "parameter_id": 526,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clotandne": {
+    {
+        "code": "clotandne",
         "parameter_id": 3472,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "clotmzl": {
+    {
+        "code": "clotmzl",
         "parameter_id": 3473,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "crotmtn": {
+    {
+        "code": "crotmtn",
         "parameter_id": 6451,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "CNazne": {
+    {
+        "code": "CNazne",
         "parameter_id": 534,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cyazfAd": {
+    {
+        "code": "cyazfAd",
         "parameter_id": 3528,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cycffAd": {
+    {
+        "code": "cycffAd",
         "parameter_id": 2478,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cycxdm": {
+    {
+        "code": "cycxdm",
         "parameter_id": 2462,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cyffAd": {
+    {
+        "code": "cyffAd",
         "parameter_id": 5562,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cyftn": {
+    {
+        "code": "cyftn",
         "parameter_id": 2232,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "cypcnzl": {
+    {
+        "code": "cypcnzl",
         "parameter_id": 3537,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cypdnl": {
+    {
+        "code": "cypdnl",
         "parameter_id": 3538,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cyrmzne": {
+    {
+        "code": "cyrmzne",
         "parameter_id": 3542,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "damnzde": {
+    {
+        "code": "damnzde",
         "parameter_id": 3551,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DEET": {
+    {
+        "code": "DEET",
         "parameter_id": 2308,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "dmtn": {
+    {
+        "code": "dmtn",
         "parameter_id": 563,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "desC2yatzne": {
+    {
+        "code": "desC2yatzne",
         "parameter_id": 571,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "desC2ytC4yaz": {
+    {
+        "code": "desC2ytC4yaz",
         "parameter_id": 3614,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "desiC3yatzne": {
+    {
+        "code": "desiC3yatzne",
         "parameter_id": 573,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "desmdfm": {
+    {
+        "code": "desmdfm",
         "parameter_id": 3616,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "desFyClidzn": {
+    {
+        "code": "desFyClidzn",
         "parameter_id": 3615,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "valum": {
+    {
+        "code": "valum",
         "parameter_id": 4913,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Daznn": {
+    {
+        "code": "Daznn",
         "parameter_id": 592,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dcba": {
+    {
+        "code": "Dcba",
         "parameter_id": 602,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dcbnl": {
+    {
+        "code": "Dcbnl",
         "parameter_id": 603,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "24DP": {
+    {
+        "code": "24DP",
         "parameter_id": 140,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DClvs": {
+    {
+        "code": "DClvs",
         "parameter_id": 624,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dclofnc": {
+    {
+        "code": "Dclofnc",
         "parameter_id": 2466,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "dieldn": {
+    {
+        "code": "dieldn",
         "parameter_id": 633,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Dfncnzl": {
+    {
+        "code": "Dfncnzl",
         "parameter_id": 3627,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dfbzrn": {
+    {
+        "code": "Dfbzrn",
         "parameter_id": 648,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dffncn": {
+    {
+        "code": "Dffncn",
         "parameter_id": 3624,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dikglc": {
+    {
+        "code": "Dikglc",
         "parameter_id": 3644,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "dikglNa": {
+    {
+        "code": "dikglNa",
         "parameter_id": 5563,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DmtCl": {
+    {
+        "code": "DmtCl",
         "parameter_id": 3652,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DmtAd": {
+    {
+        "code": "DmtAd",
         "parameter_id": 3651,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dmtat": {
+    {
+        "code": "Dmtat",
         "parameter_id": 653,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dmtmf": {
+    {
+        "code": "Dmtmf",
         "parameter_id": 3654,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DMST": {
+    {
+        "code": "DMST",
         "parameter_id": 3650,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dnsb": {
+    {
+        "code": "Dnsb",
         "parameter_id": 671,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dntb": {
+    {
+        "code": "Dntb",
         "parameter_id": 672,
         "unit": "ug/l",
         "validationMethod": "D38407-35.10",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Dtann": {
+    {
+        "code": "Dtann",
         "parameter_id": 3692,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "sDtocbmt": {
+    {
+        "code": "sDtocbmt",
         "parameter_id": 681,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "GC-MS",
     },
-    "Durn": {
+    {
+        "code": "Durn",
         "parameter_id": 683,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Corg": {
+    {
+        "code": "Corg",
         "parameter_id": 1318,
         "unit": "mg/l",
         "validationMethod": "N1484.97",
         "analyticalTechnique": "IR",
     },
-    "dodmf": {
+    {
+        "code": "dodmf",
         "parameter_id": 3668,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "dodne": {
+    {
+        "code": "dodne",
         "parameter_id": 2455,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "doxccne": {
+    {
+        "code": "doxccne",
         "parameter_id": 3672,
         "unit": "ng/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "emmtn": {
+    {
+        "code": "emmtn",
         "parameter_id": 3705,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "enrfxcne": {
+    {
+        "code": "enrfxcne",
         "parameter_id": 3713,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "epxcnzl": {
+    {
+        "code": "epxcnzl",
         "parameter_id": 3718,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "ertmcne": {
+    {
+        "code": "ertmcne",
         "parameter_id": 2480,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "esfvlrt": {
+    {
+        "code": "esfvlrt",
         "parameter_id": 3723,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "esTol": {
+    {
+        "code": "esTol",
         "parameter_id": 2295,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "oestn": {
+    {
+        "code": "oestn",
         "parameter_id": 2313,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "etfmst": {
+    {
+        "code": "etfmst",
         "parameter_id": 721,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "etpfs": {
+    {
+        "code": "etpfs",
         "parameter_id": 722,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C2oxsfrn": {
+    {
+        "code": "C2oxsfrn",
         "parameter_id": 3346,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "etxzl": {
+    {
+        "code": "etxzl",
         "parameter_id": 3739,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "eTDazl": {
+    {
+        "code": "eTDazl",
         "parameter_id": 740,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "fenmdn": {
+    {
+        "code": "fenmdn",
         "parameter_id": 2362,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenamfs": {
+    {
+        "code": "fenamfs",
         "parameter_id": 745,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenzn": {
+    {
+        "code": "fenzn",
         "parameter_id": 2481,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenhxAd": {
+    {
+        "code": "fenhxAd",
         "parameter_id": 3764,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "feNO2ton": {
+    {
+        "code": "feNO2ton",
         "parameter_id": 750,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "fenfbt": {
+    {
+        "code": "fenfbt",
         "parameter_id": 2482,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenOxcb": {
+    {
+        "code": "fenOxcb",
         "parameter_id": 3768,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenppmf": {
+    {
+        "code": "fenppmf",
         "parameter_id": 3771,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "fenprAe": {
+    {
+        "code": "fenprAe",
         "parameter_id": 5564,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fenrn": {
+    {
+        "code": "fenrn",
         "parameter_id": 2451,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fipnl": {
+    {
+        "code": "fipnl",
         "parameter_id": 3786,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "floncmd": {
+    {
+        "code": "floncmd",
         "parameter_id": 3793,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "flurslm": {
+    {
+        "code": "flurslm",
         "parameter_id": 3829,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fluaznm": {
+    {
+        "code": "fluaznm",
         "parameter_id": 773,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "flubDad": {
+    {
+        "code": "flubDad",
         "parameter_id": 5174,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fludoxnl": {
+    {
+        "code": "fludoxnl",
         "parameter_id": 3808,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "flumoxzn": {
+    {
+        "code": "flumoxzn",
         "parameter_id": 3812,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fluopclde": {
+    {
+        "code": "fluopclde",
         "parameter_id": 3816,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fluoprm": {
+    {
+        "code": "fluoprm",
         "parameter_id": 5245,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "F": {
+    {
+        "code": "F",
         "parameter_id": 1853,
         "unit": "mg/l",
         "validationMethod": "N6578.85",
         "analyticalTechnique": "POTM",
     },
-    "fluoxsbn": {
+    {
+        "code": "fluoxsbn",
         "parameter_id": 3818,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "flurOxpr": {
+    {
+        "code": "flurOxpr",
         "parameter_id": 2363,
         "unit": "ug/l",
         "validationMethod": "D38407-35.10",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "flutlnl": {
+    {
+        "code": "flutlnl",
         "parameter_id": 2305,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fluxprxd": {
+    {
+        "code": "fluxprxd",
         "parameter_id": 5078,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "forasfrn": {
+    {
+        "code": "forasfrn",
         "parameter_id": 3836,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fostazt": {
+    {
+        "code": "fostazt",
         "parameter_id": 3845,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "fursmde": {
+    {
+        "code": "fursmde",
         "parameter_id": 3854,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "gabptne": {
+    {
+        "code": "gabptne",
         "parameter_id": 3857,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "cHCH": {
+    {
+        "code": "cHCH",
         "parameter_id": 816,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "GELDHD": {
+    {
+        "code": "GELDHD",
         "parameter_id": 3548,
         "unit": "mS/m",
         "validationMethod": "I7888.94",
         "analyticalTechnique": "COND",
     },
-    "gemfbzl": {
+    {
+        "code": "gemfbzl",
         "parameter_id": 2469,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "glufsnt": {
+    {
+        "code": "glufsnt",
         "parameter_id": 3877,
         "unit": "ug/l",
         "validationMethod": "I16308.17",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "glyfst": {
+    {
+        "code": "glyfst",
         "parameter_id": 840,
         "unit": "ug/l",
         "validationMethod": "I16308.17",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Hxznn": {
+    {
+        "code": "Hxznn",
         "parameter_id": 871,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "hextazx": {
+    {
+        "code": "hextazx",
         "parameter_id": 3935,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "HCltazde": {
+    {
+        "code": "HCltazde",
         "parameter_id": 3928,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "ibpfn": {
+    {
+        "code": "ibpfn",
         "parameter_id": 2470,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "iffAd": {
+    {
+        "code": "iffAd",
         "parameter_id": 3984,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Fe": {
+    {
+        "code": "Fe",
         "parameter_id": 879,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "imzll": {
+    {
+        "code": "imzll",
         "parameter_id": 2300,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "imzmx": {
+    {
+        "code": "imzmx",
         "parameter_id": 5047,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "imdcpd": {
+    {
+        "code": "imdcpd",
         "parameter_id": 2306,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "indmtcne": {
+    {
+        "code": "indmtcne",
         "parameter_id": 2471,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "IsfrnC1y": {
+    {
+        "code": "IsfrnC1y",
         "parameter_id": 4027,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "johxl": {
+    {
+        "code": "johxl",
         "parameter_id": 4040,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "jopmdl": {
+    {
+        "code": "jopmdl",
         "parameter_id": 4043,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "jopmde": {
+    {
+        "code": "jopmde",
         "parameter_id": 4042,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "jotlmnzr": {
+    {
+        "code": "jotlmnzr",
         "parameter_id": 4045,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "joxgnzr": {
+    {
+        "code": "joxgnzr",
         "parameter_id": 4046,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "ipDon": {
+    {
+        "code": "ipDon",
         "parameter_id": 890,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "iClidzn": {
+    {
+        "code": "iClidzn",
         "parameter_id": 3981,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "iptrn": {
+    {
+        "code": "iptrn",
         "parameter_id": 913,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "isprzm": {
+    {
+        "code": "isprzm",
         "parameter_id": 5079,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "isxbn": {
+    {
+        "code": "isxbn",
         "parameter_id": 4030,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "iOaftl": {
+    {
+        "code": "iOaftl",
         "parameter_id": 4010,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "jompl": {
+    {
+        "code": "jompl",
         "parameter_id": 4041,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "K": {
+    {
+        "code": "K",
         "parameter_id": 920,
         "unit": "mg/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "ketpfn": {
+    {
+        "code": "ketpfn",
         "parameter_id": 2472,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Co": {
+    {
+        "code": "Co",
         "parameter_id": 527,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Cu": {
+    {
+        "code": "Cu",
         "parameter_id": 971,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "kresOxmC1y": {
+    {
+        "code": "kresOxmC1y",
         "parameter_id": 4063,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Hg": {
+    {
+        "code": "Hg",
         "parameter_id": 1097,
         "unit": "ug/l",
         "validationMethod": "I12846.12",
         "analyticalTechnique": "AAS-KD",
     },
-    "lcyhltn": {
+    {
+        "code": "lcyhltn",
         "parameter_id": 2233,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "lencl": {
+    {
+        "code": "lencl",
         "parameter_id": 1898,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "lidcine": {
+    {
+        "code": "lidcine",
         "parameter_id": 4093,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "linrn": {
+    {
+        "code": "linrn",
         "parameter_id": 1114,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Li": {
+    {
+        "code": "Li",
         "parameter_id": 1115,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Pb": {
+    {
+        "code": "Pb",
         "parameter_id": 1116,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "lufnrn": {
+    {
+        "code": "lufnrn",
         "parameter_id": 4104,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Mg": {
+    {
+        "code": "Mg",
         "parameter_id": 1125,
         "unit": "mg/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "malton": {
+    {
+        "code": "malton",
         "parameter_id": 1127,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mandppAd": {
+    {
+        "code": "mandppAd",
         "parameter_id": 4117,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Mn": {
+    {
+        "code": "Mn",
         "parameter_id": 1128,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "MCPA": {
+    {
+        "code": "MCPA",
         "parameter_id": 225,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "MCPP": {
+    {
+        "code": "MCPP",
         "parameter_id": 73,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mefpDC2y": {
+    {
+        "code": "mefpDC2y",
         "parameter_id": 4143,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "mepqCl": {
+    {
+        "code": "mepqCl",
         "parameter_id": 5248,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metocb": {
+    {
+        "code": "metocb",
         "parameter_id": 2307,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "messfrnC1y": {
+    {
+        "code": "messfrnC1y",
         "parameter_id": 4152,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "meston": {
+    {
+        "code": "meston",
         "parameter_id": 4153,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mesnl": {
+    {
+        "code": "mesnl",
         "parameter_id": 4151,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mfmzn": {
+    {
+        "code": "mfmzn",
         "parameter_id": 5254,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mlxl": {
+    {
+        "code": "mlxl",
         "parameter_id": 1149,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mAh": {
+    {
+        "code": "mAh",
         "parameter_id": 4110,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mmtn": {
+    {
+        "code": "mmtn",
         "parameter_id": 1151,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mzCl": {
+    {
+        "code": "mzCl",
         "parameter_id": 1152,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metcnzl": {
+    {
+        "code": "metcnzl",
         "parameter_id": 4156,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metfmne": {
+    {
+        "code": "metfmne",
         "parameter_id": 4157,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metbtazrn": {
+    {
+        "code": "metbtazrn",
         "parameter_id": 1148,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metdton": {
+    {
+        "code": "metdton",
         "parameter_id": 1155,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C1oxfnzde": {
+    {
+        "code": "C1oxfnzde",
         "parameter_id": 3318,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C1ydesFyClid": {
+    {
+        "code": "C1ydesFyClid",
         "parameter_id": 3331,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metbmrn": {
+    {
+        "code": "metbmrn",
         "parameter_id": 1184,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metlCl": {
+    {
+        "code": "metlCl",
         "parameter_id": 1185,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metpll": {
+    {
+        "code": "metpll",
         "parameter_id": 2485,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metxrn": {
+    {
+        "code": "metxrn",
         "parameter_id": 1187,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metfnn": {
+    {
+        "code": "metfnn",
         "parameter_id": 4158,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "metbzn": {
+    {
+        "code": "metbzn",
         "parameter_id": 1188,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C1ymsfrn": {
+    {
+        "code": "C1ymsfrn",
         "parameter_id": 2453,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "mevfs": {
+    {
+        "code": "mevfs",
         "parameter_id": 1191,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Mo": {
+    {
+        "code": "Mo",
         "parameter_id": 1243,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Mlnrn": {
+    {
+        "code": "Mlnrn",
         "parameter_id": 1253,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "monrn": {
+    {
+        "code": "monrn",
         "parameter_id": 1254,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "DC1ysAd": {
+    {
+        "code": "DC1ysAd",
         "parameter_id": 5565,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "nappAd": {
+    {
+        "code": "nappAd",
         "parameter_id": 4230,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "napxn": {
+    {
+        "code": "napxn",
         "parameter_id": 2474,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Na": {
+    {
+        "code": "Na",
         "parameter_id": 1262,
         "unit": "mg/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "EtFOSAA": {
+    {
+        "code": "EtFOSAA",
         "parameter_id": 5744,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "nicsfrn": {
+    {
+        "code": "nicsfrn",
         "parameter_id": 4254,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Ni": {
+    {
+        "code": "Ni",
         "parameter_id": 1267,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "NO3": {
+    {
+        "code": "NO3",
         "parameter_id": 1270,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "NO2": {
+    {
+        "code": "NO2",
         "parameter_id": 1273,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "MeFOSA": {
+    {
+        "code": "MeFOSA",
         "parameter_id": 6001,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "N-MeFOSAA": {
+    {
+        "code": "N-MeFOSAA",
         "parameter_id": 5937,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "norfxcne": {
+    {
+        "code": "norfxcne",
         "parameter_id": 4278,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "ofxcne": {
+    {
+        "code": "ofxcne",
         "parameter_id": 4310,
         "unit": "ng/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PO4": {
+    {
+        "code": "PO4",
         "parameter_id": 1334,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "Oaml": {
+    {
+        "code": "Oaml",
         "parameter_id": 1343,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Oasfrn": {
+    {
+        "code": "Oasfrn",
         "parameter_id": 4301,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "oxzpm": {
+    {
+        "code": "oxzpm",
         "parameter_id": 4337,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C1yOxdmtn": {
+    {
+        "code": "C1yOxdmtn",
         "parameter_id": 568,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "OxT4ccnHCl": {
+    {
+        "code": "OxT4ccnHCl",
         "parameter_id": 5124,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pacbtzl": {
+    {
+        "code": "pacbtzl",
         "parameter_id": 4344,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "parctml": {
+    {
+        "code": "parctml",
         "parameter_id": 4347,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "paroonC1y": {
+    {
+        "code": "paroonC1y",
         "parameter_id": 4350,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pencnzl": {
+    {
+        "code": "pencnzl",
         "parameter_id": 2302,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "penccrn": {
+    {
+        "code": "penccrn",
         "parameter_id": 2301,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pendmtln": {
+    {
+        "code": "pendmtln",
         "parameter_id": 1971,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "PeClFol": {
+    {
+        "code": "PeClFol",
         "parameter_id": 1390,
         "unit": "ug/l",
         "validationMethod": "N12673.99",
         "analyticalTechnique": "GC-MS",
     },
-    "L_PFBS": {
+    {
+        "code": "L_PFBS",
         "parameter_id": 3895,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFBA": {
+    {
+        "code": "PFBA",
         "parameter_id": 4437,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "L_PFDS": {
+    {
+        "code": "L_PFDS",
         "parameter_id": 3898,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFDA": {
+    {
+        "code": "PFDA",
         "parameter_id": 4438,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFDPA": {
+    {
+        "code": "PFDPA",
         "parameter_id": 6455,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFDoA": {
+    {
+        "code": "PFDoA",
         "parameter_id": 4439,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "42FTOH": {
+    {
+        "code": "42FTOH",
         "parameter_id": 6452,
         "unit": "ug/l",
         "validationMethod": "Inhouse",
         "analyticalTechnique": "GC-MS",
     },
-    "L_PFHpS": {
+    {
+        "code": "L_PFHpS",
         "parameter_id": 3931,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFHpA": {
+    {
+        "code": "PFHpA",
         "parameter_id": 4440,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "L_PFHxS": {
+    {
+        "code": "L_PFHxS",
         "parameter_id": 3932,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFHxA": {
+    {
+        "code": "PFHxA",
         "parameter_id": 4441,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFC16azr": {
+    {
+        "code": "PFC16azr",
         "parameter_id": 5735,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFNA": {
+    {
+        "code": "PFNA",
         "parameter_id": 4442,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFOSA": {
+    {
+        "code": "PFOSA",
         "parameter_id": 4446,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFOS": {
+    {
+        "code": "PFOS",
         "parameter_id": 4445,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFOA": {
+    {
+        "code": "PFOA",
         "parameter_id": 4443,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFOA_NH4": {
+    {
+        "code": "PFOA_NH4",
         "parameter_id": 5970,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFC18azr": {
+    {
+        "code": "PFC18azr",
         "parameter_id": 5736,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFOPA": {
+    {
+        "code": "PFOPA",
         "parameter_id": 6454,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFC5asfzr": {
+    {
+        "code": "PFC5asfzr",
         "parameter_id": 5935,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFPA": {
+    {
+        "code": "PFPA",
         "parameter_id": 4448,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFPeDA": {
+    {
+        "code": "PFPeDA",
         "parameter_id": 6456,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFTeDA": {
+    {
+        "code": "PFTeDA",
         "parameter_id": 4450,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFTDA": {
+    {
+        "code": "PFTDA",
         "parameter_id": 4449,
         "unit": "ug/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "PFUdA": {
+    {
+        "code": "PFUdA",
         "parameter_id": 4451,
         "unit": "ng/l",
         "validationMethod": "I21675.19",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "permtn": {
+    {
+        "code": "permtn",
         "parameter_id": 1394,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "pH": {
+    {
+        "code": "pH",
         "parameter_id": 1398,
         "unit": "1",
         "validationMethod": "I10523.12",
         "analyticalTechnique": "POTM",
     },
-    "fenmdfm": {
+    {
+        "code": "fenmdfm",
         "parameter_id": 3765,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pinadn": {
+    {
+        "code": "pinadn",
         "parameter_id": 4459,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "piprnbO": {
+    {
+        "code": "piprnbO",
         "parameter_id": 1405,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pirmcb": {
+    {
+        "code": "pirmcb",
         "parameter_id": 1406,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "C1yprmfs": {
+    {
+        "code": "C1yprmfs",
         "parameter_id": 1408,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "primdn": {
+    {
+        "code": "primdn",
         "parameter_id": 2489,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "proClaz": {
+    {
+        "code": "proClaz",
         "parameter_id": 1416,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "procmdn": {
+    {
+        "code": "procmdn",
         "parameter_id": 1417,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "propmcb": {
+    {
+        "code": "propmcb",
         "parameter_id": 1424,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "propcnzl": {
+    {
+        "code": "propcnzl",
         "parameter_id": 1429,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "propxr": {
+    {
+        "code": "propxr",
         "parameter_id": 1432,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "propnll": {
+    {
+        "code": "propnll",
         "parameter_id": 2491,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "propfnzn": {
+    {
+        "code": "propfnzn",
         "parameter_id": 4494,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "propAd": {
+    {
+        "code": "propAd",
         "parameter_id": 1438,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "prosfcb": {
+    {
+        "code": "prosfcb",
         "parameter_id": 2361,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "prosfrn": {
+    {
+        "code": "prosfrn",
         "parameter_id": 4507,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "protocnzl": {
+    {
+        "code": "protocnzl",
         "parameter_id": 4510,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "protocnzdto": {
+    {
+        "code": "protocnzdto",
         "parameter_id": 5252,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pymtzne": {
+    {
+        "code": "pymtzne",
         "parameter_id": 4521,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrcsbn": {
+    {
+        "code": "pyrcsbn",
         "parameter_id": 4524,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrffnC2y": {
+    {
+        "code": "pyrffnC2y",
         "parameter_id": 4529,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrdt": {
+    {
+        "code": "pyrdt",
         "parameter_id": 4527,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrdll": {
+    {
+        "code": "pyrdll",
         "parameter_id": 5249,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrmtnl": {
+    {
+        "code": "pyrmtnl",
         "parameter_id": 2303,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrpxfn": {
+    {
+        "code": "pyrpxfn",
         "parameter_id": 4533,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "pyrslm": {
+    {
+        "code": "pyrslm",
         "parameter_id": 4535,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "quinmrc": {
+    {
+        "code": "quinmrc",
         "parameter_id": 4543,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "quincmn": {
+    {
+        "code": "quincmn",
         "parameter_id": 4540,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "quizlfC2y": {
+    {
+        "code": "quizlfC2y",
         "parameter_id": 4546,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "rimsfrn": {
+    {
+        "code": "rimsfrn",
         "parameter_id": 4570,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "roxtmcne": {
+    {
+        "code": "roxtmcne",
         "parameter_id": 2492,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Se": {
+    {
+        "code": "Se",
         "parameter_id": 1476,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "siltofm": {
+    {
+        "code": "siltofm",
         "parameter_id": 4654,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "simzne": {
+    {
+        "code": "simzne",
         "parameter_id": 1480,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "endsfn": {
+    {
+        "code": "endsfn",
         "parameter_id": 2161,
         "unit": "ug/l",
         "validationMethod": "I6468.97",
         "analyticalTechnique": "AUTOMATISCH",
     },
-    "sotll": {
+    {
+        "code": "sotll",
         "parameter_id": 4675,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "spirttmt": {
+    {
+        "code": "spirttmt",
         "parameter_id": 5056,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Sr": {
+    {
+        "code": "Sr",
         "parameter_id": 1501,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "sulcton": {
+    {
+        "code": "sulcton",
         "parameter_id": 4735,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "SO4": {
+    {
+        "code": "SO4",
         "parameter_id": 1508,
         "unit": "mg/l",
         "validationMethod": "I15923-1.13",
         "analyticalTechnique": "DA-S",
     },
-    "sulfdazne": {
+    {
+        "code": "sulfdazne",
         "parameter_id": 4737,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "sulfdmdne": {
+    {
+        "code": "sulfdmdne",
         "parameter_id": 2494,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "sulfmtoazl": {
+    {
+        "code": "sulfmtoazl",
         "parameter_id": 2475,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "sulfprdne": {
+    {
+        "code": "sulfprdne",
         "parameter_id": 4742,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "sulfsfrn": {
+    {
+        "code": "sulfsfrn",
         "parameter_id": 5058,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "tebcnzl": {
+    {
+        "code": "tebcnzl",
         "parameter_id": 2298,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "tefbzrn": {
+    {
+        "code": "tefbzrn",
         "parameter_id": 2454,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "teftn": {
+    {
+        "code": "teftn",
         "parameter_id": 4825,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Te": {
+    {
+        "code": "Te",
         "parameter_id": 1520,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "tembtone": {
+    {
+        "code": "tembtone",
         "parameter_id": 5112,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "T": {
+    {
+        "code": "T",
         "parameter_id": 1522,
         "unit": "Cel",
         "validationMethod": "I10523.12",
         "analyticalTechnique": "POTM",
     },
-    "terbtn": {
+    {
+        "code": "terbtn",
         "parameter_id": 1524,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "terC4yazne": {
+    {
+        "code": "terC4yazne",
         "parameter_id": 1525,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "T4mtn": {
+    {
+        "code": "T4mtn",
         "parameter_id": 1548,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Tl": {
+    {
+        "code": "Tl",
         "parameter_id": 1553,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "tabdzl": {
+    {
+        "code": "tabdzl",
         "parameter_id": 4770,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "thiacpd": {
+    {
+        "code": "thiacpd",
         "parameter_id": 4863,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "thiamtxm": {
+    {
+        "code": "thiamtxm",
         "parameter_id": 4864,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "thifsfrnC1y": {
+    {
+        "code": "thifsfrnC1y",
         "parameter_id": 4867,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "toDcb": {
+    {
+        "code": "toDcb",
         "parameter_id": 2447,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "tofnC1y": {
+    {
+        "code": "tofnC1y",
         "parameter_id": 4882,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Sn": {
+    {
+        "code": "Sn",
         "parameter_id": 1564,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Ti": {
+    {
+        "code": "Ti",
         "parameter_id": 1565,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "tolcfsC1y": {
+    {
+        "code": "tolcfsC1y",
         "parameter_id": 1567,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "tolfande": {
+    {
+        "code": "tolfande",
         "parameter_id": 2235,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "topmzn": {
+    {
+        "code": "topmzn",
         "parameter_id": 4884,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Ptot": {
+    {
+        "code": "Ptot",
         "parameter_id": 4188,
         "unit": "mg/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "tramdl": {
+    {
+        "code": "tramdl",
         "parameter_id": 4891,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Tadmfn": {
+    {
+        "code": "Tadmfn",
         "parameter_id": 1586,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Tadmnl": {
+    {
+        "code": "Tadmnl",
         "parameter_id": 2297,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Talt": {
+    {
+        "code": "Talt",
         "parameter_id": 4773,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "TbnrC1y": {
+    {
+        "code": "TbnrC1y",
         "parameter_id": 4785,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "TC4yPO4": {
+    {
+        "code": "TC4yPO4",
         "parameter_id": 1591,
         "unit": "ug/l",
         "validationMethod": "D38407-37.13",
         "analyticalTechnique": "GC-MS-MS",
     },
-    "Tcpr": {
+    {
+        "code": "Tcpr",
         "parameter_id": 2450,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Tfxsbn": {
+    {
+        "code": "Tfxsbn",
         "parameter_id": 4846,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "TfsfrnC1y": {
+    {
+        "code": "TfsfrnC1y",
         "parameter_id": 4844,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "Tmtpm": {
+    {
+        "code": "Tmtpm",
         "parameter_id": 2496,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "TnxpcC2y": {
+    {
+        "code": "TnxpcC2y",
         "parameter_id": 4878,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "tritsfrn": {
+    {
+        "code": "tritsfrn",
         "parameter_id": 4897,
         "unit": "ug/l",
         "validationMethod": "D38407-36.14",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "tylsne": {
+    {
+        "code": "tylsne",
         "parameter_id": 4902,
         "unit": "ug/l",
         "validationMethod": "I21676.22",
         "analyticalTechnique": "LC-MS-MS",
     },
-    "U": {
+    {
+        "code": "U",
         "parameter_id": 1637,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "V": {
+    {
+        "code": "V",
         "parameter_id": 1642,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "HCO3": {
+    {
+        "code": "HCO3",
         "parameter_id": 374,
         "unit": "mg/l",
         "validationMethod": "I9963-1.96",
         "analyticalTechnique": "POTM_TITM",
     },
-    "W": {
+    {
+        "code": "W",
         "parameter_id": 1685,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Ag": {
+    {
+        "code": "Ag",
         "parameter_id": 1692,
         "unit": "ug/l",
         "validationMethod": "I17294-2.04",
         "analyticalTechnique": "ICP-MS",
     },
-    "Zn": {
-        "parameter_id": 1693,
-        "unit": "ug/l",
-        "validationMethod": "I17294-2.04",
-        "analyticalTechnique": "ICP-MS",
-    },
-    "Zr": {
-        "parameter_id": 1695,
-        "unit": "ug/l",
-        "validationMethod": "I17294-2.04",
-        "analyticalTechnique": "ICP-MS",
-    },
-}
+]
+
 
 # This parameter is also derived from https://docs.geostandaarden.nl/bro/def-im-gar-20230607/#detail_class_Model_Parameterlijst
 # It serves as translation between cas-number and parameter ID

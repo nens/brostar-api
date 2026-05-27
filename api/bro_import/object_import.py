@@ -1,4 +1,5 @@
 import datetime
+import importlib
 import logging
 import time
 import xml.etree.ElementTree as ET
@@ -48,6 +49,7 @@ def check_dates(
     last_correction_date: str | None,
     last_addition_date: str | None,
     registration_completion_time: str | None,
+    object_registration_time: str | None,
 ) -> bool:
     """Check if any of the date fields is more recent than the last_import_date"""
     dates = [
@@ -56,6 +58,7 @@ def check_dates(
             last_correction_date,
             last_addition_date,
             registration_completion_time,
+            object_registration_time,
         ]
         if d is not None
     ]
@@ -118,6 +121,33 @@ class ObjectImporter(ABC):
         self.s.mount("http://", adapter)
         self.s.mount("https://", adapter)
 
+    def _to_float(value: Any, default: float = 0.0) -> float:
+        if value is None:
+            return default
+        if isinstance(value, dict):
+            value = value.get("#text")
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return default
+
+    def _extract_text_from_xml_element(self, element: dict | str | None) -> str | None:
+        """Extract text from XML elements that may have attributes"""
+        if isinstance(element, dict):
+            return element.get("#text")
+        return element
+
+    def _extract_flexible_date_value(self, value: Any) -> str | None:
+        if isinstance(value, dict):
+            return (
+                value.get("brocom:date")
+                or value.get("brocom:yearMonth")
+                or value.get("brocom:year")
+            )
+        if isinstance(value, str):
+            return value
+        return None
+
     def should_import(self) -> bool:
         """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
         last_import_task = (
@@ -170,12 +200,16 @@ class ObjectImporter(ABC):
             registration_completion_time = properties.get(
                 "registration_completion_time", None
             )  # ISO String or None
+            object_registration_time = properties.get(
+                "object_registration_time", None
+            )  # ISO String or None
 
             if check_dates(
                 last_import_date,
                 last_correction_date,
                 last_addition_date,
                 registration_completion_time,
+                object_registration_time,
             ):
                 logger.info(
                     f"Data is more recent in PDOK for {self.bro_domain} and ID {self.bro_id} - Should import - dates: {last_correction_date}, {last_addition_date}, {registration_completion_time}"
@@ -364,6 +398,9 @@ class GMNObjectImporter(ObjectImporter):
                 if not event.is_empty():
                     event_name = event.item(0, 0)
                     event_type = GMN_EVENT_MAPPING[event_name]
+
+                    # FUTURE: This is tricky, as MoveRequests might make this not true
+                    # If a MeasuringPoint is moved, it's date changes while it might already be in the database.
                     IntermediateEvent.objects.update_or_create(
                         gmn=self.gmn_obj,
                         data_owner=self.gmn_obj.data_owner,
@@ -378,17 +415,19 @@ class GMNObjectImporter(ObjectImporter):
                 defaults = {
                     "measuringpoint_start_date": mp_start_date,
                     "measuringpoint_end_date": mp_end_date,
+                    "gmw_bro_id": bro_id,
                     "tube_number": tube_nr,
                     "tube_start_date": event_date,
                     "tube_end_date": end_date,
                     "event_type": event_type,
                 }
 
+                # There can only be one measuring point with the same code active at one point
+                # GMW-ID is not a contributing factor
                 Measuringpoint.objects.update_or_create(
                     gmn=self.gmn_obj,
                     data_owner=self.data_owner,
                     measuringpoint_code=mp_code,
-                    gmw_bro_id=bro_id,
                     defaults=defaults,
                 )
 
@@ -471,7 +510,11 @@ class GMWObjectImporter(ObjectImporter):
         well_construction_date: dict = gmw_data.get("wellHistory", {}).get(
             "wellConstructionDate", {}
         )
+        well_removal_date: dict = gmw_data.get("wellHistory", {}).get(
+            "wellRemovalDate", {}
+        )
         internal_id = self.retrieve_internal_id(gmw_data.get("brocom:broId", ""))
+        removed = gmw_data.get("removed", None)
         self.gmw_obj = GMW.objects.update_or_create(
             bro_id=gmw_data.get("brocom:broId", None),
             data_owner=self.data_owner,
@@ -494,7 +537,7 @@ class GMWObjectImporter(ObjectImporter):
                 "initial_function": gmw_data.get("initialFunction", {}).get(
                     "#text", None
                 ),
-                "removed": gmw_data.get("removed", None),
+                "removed": removed,
                 "ground_level_stable": gmw_data.get("groundLevelStable", None),
                 "well_stability": gmw_data.get("wellStability", {}).get("#text", None),
                 "nitg_code": gmw_data.get("nitgCode", None),
@@ -539,6 +582,24 @@ class GMWObjectImporter(ObjectImporter):
                 .get("#text", None),
             },
         )[0]
+
+        if removed:
+            Event.objects.update_or_create(
+                gmw=self.gmw_obj,
+                data_owner=self.data_owner,
+                event_type="GMW_Removal",
+                defaults={
+                    "event_date": well_removal_date,
+                    "metadata": {
+                        "broId": self.gmw_obj.bro_id,
+                        "qualityRegime": self.gmw_obj.quality_regime,
+                        "deliveryAccountableParty": self.gmw_obj.delivery_accountable_party,
+                    },
+                    "sourcedocument_data": {
+                        "eventDate": well_removal_date,
+                    },
+                },
+            )
 
     def _save_monitoringtubes_data(
         self,
@@ -726,6 +787,7 @@ class GMWObjectImporter(ObjectImporter):
                 intermediate_event
             )
 
+            # FUTURE: This is tricky, as MoveRequests might make this not true. The same event can be in the history multiple times with different dates, but only the most recent one is relevant. Currently, we create an event for each of them, which can lead to duplicates. A solution could be to check if an event with the same name already exists for this GMW, and if so, only update it if the date is more recent. For now, we just create an event for each entry in the history, which can lead to duplicates.
             Event.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
@@ -800,7 +862,7 @@ class GARObjectImporter(ObjectImporter):
             return
 
         gar_data = dispatch_document_data.get("GAR_O")
-        monitoring_point_data = gar_data.get("monitoringPoint", None).get(
+        monitoring_point_data = gar_data.get("monitoringPoint").get(
             "garcommon:GroundwaterMonitoringTube", None
         )
         field_research_data = gar_data.get("fieldResearch", None)
@@ -936,15 +998,17 @@ class GARObjectImporter(ObjectImporter):
         for measurement in measurements:
             measurement_value = measurement.get("garcommon:fieldMeasurementValue", None)
 
-            FieldMeasurement.objects.create(
+            FieldMeasurement.objects.update_or_create(
                 gar=gar,
                 parameter=int(measurement.get("garcommon:parameter")),
-                unit=self._attr_or_none(measurement_value, "uom"),
-                field_measurement_value=self._text_or_none(measurement_value),
-                quality_control_status=self._text_or_none(
-                    measurement.get("garcommon:qualityControlStatus", None)
-                ),
                 data_owner=self.data_owner,
+                defaults={
+                    "unit": self._attr_or_none(measurement_value, "uom"),
+                    "field_measurement_value": self._text_or_none(measurement_value),
+                    "quality_control_status": self._text_or_none(
+                        measurement.get("garcommon:qualityControlStatus", None)
+                    ),
+                },
             )
 
     def _save_laboratory_researches(self, gar: GAR, lab_analyses: list) -> None:
@@ -980,7 +1044,7 @@ class GARObjectImporter(ObjectImporter):
             analyses_date = process.get("garcommon:analysisDate", {}).get(
                 "brocom:date", None
             )
-            analysis_process = AnalysisProcess.objects.create(
+            analysis_process = AnalysisProcess.objects.update_or_create(
                 laboratory_research=lab_research,
                 analyses_date=analyses_date,
                 analytical_technique=self._text_or_none(
@@ -1015,17 +1079,19 @@ class GARObjectImporter(ObjectImporter):
                 reporting_limit = value
                 value = None
 
-            Analysis.objects.create(
+            Analysis.objects.update_or_create(
                 analysis_process=analysis_process,
                 parameter=int(analysis.get("garcommon:parameter")),
-                value=value,
-                unit=self._attr_or_none(analysis_value, "uom"),
-                reporting_limit=reporting_limit,
-                limit_symbol=limit_symbol,
-                status_quality_control=self._text_or_none(
-                    analysis.get("garcommon:qualityControlStatus", None)
-                ),
                 data_owner=self.data_owner,
+                defaults={
+                    "value": value,
+                    "unit": self._attr_or_none(analysis_value, "uom"),
+                    "reporting_limit": reporting_limit,
+                    "limit_symbol": limit_symbol,
+                    "status_quality_control": self._text_or_none(
+                        analysis.get("garcommon:qualityControlStatus", None)
+                    ),
+                },
             )
 
 
@@ -1421,26 +1487,39 @@ class GUFObjectImporter(ObjectImporter):
         # Process licence and nested installations/wells
         self._save_installations_and_wells(guf_ppo, guf_obj)
 
-    def _parse_flexible_date(self, date_str: str | None) -> datetime.date | None:
-        """Parse BRO dates with flexible granularity (YYYY, YYYY-MM, YYYY-MM-DD)"""
-        if not date_str:
-            return None
-        try:
-            if len(date_str) == 4:  # YYYY
-                return datetime.date(int(date_str), 1, 1)
-            elif len(date_str) == 7:  # YYYY-MM
-                year, month = date_str.split("-")
-                return datetime.date(int(year), int(month), 1)
-            else:  # YYYY-MM-DD
-                return datetime.datetime.fromisoformat(date_str).date()
-        except (ValueError, AttributeError):
-            return None
+    def _resolve_guf_upload_model(
+        self, source_document: dict[str, Any]
+    ) -> tuple[type | None, str | None, dict[str, Any]]:
+        if not isinstance(source_document, dict) or not source_document:
+            return None, None, {}
 
-    def _extract_text_from_xml_element(self, element: dict | str | None) -> str | None:
-        """Extract text from XML elements that may have attributes"""
-        if isinstance(element, dict):
-            return element.get("#text")
-        return element
+        parent_key = next(
+            (
+                key
+                for key in source_document.keys()
+                if self._strip_namespace(key).startswith("GUF_")
+            ),
+            None,
+        )
+        if not parent_key:
+            return None, None, {}
+
+        parent_type = self._strip_namespace(
+            parent_key
+        )  # e.g. GUF_AddRealisedInstallation
+        model_name = parent_type.replace("_", "")  # e.g. GUFAddRealisedInstallation
+        parent_payload = source_document.get(parent_key, {}) or {}
+
+        try:
+            upload_models = importlib.import_module("api.bro_upload.upload_datamodels")
+            model_cls = getattr(upload_models, model_name, None)
+        except Exception:
+            model_cls = None
+
+        if isinstance(parent_payload, list):
+            parent_payload = parent_payload[0] if parent_payload else {}
+
+        return model_cls, model_name, parent_payload
 
     def _save_guf_data(self, guf_ppo: dict[str, Any]):  # noqa C901 - This function is complex but breaking it down further would reduce readability due to the nested structure of the data.
         # Extract basic metadata
@@ -1456,13 +1535,7 @@ class GUFObjectImporter(ObjectImporter):
         # Extract lifespan with flexible date handling
         lifespan = guf_ppo.get("lifespan", {})
         start_time_data = lifespan.get("gufcommon:startTime", {})
-        start_time_str = None
-        if start_time_data.get("brocom:date"):
-            start_time_str = start_time_data.get("brocom:date")
-        elif start_time_data.get("brocom:yearMonth"):
-            start_time_str = start_time_data.get("brocom:yearMonth")
-        elif start_time_data.get("brocom:year"):
-            start_time_str = start_time_data.get("brocom:year")
+        start_time_str = self._extract_flexible_date_value(start_time_data)
 
         # Extract licence data for GUF fields.
         # The XML may contain multiple <licence> elements, which xmltodict parses as a list.
@@ -1542,6 +1615,120 @@ class GUFObjectImporter(ObjectImporter):
 
         return guf_obj
 
+    def _build_add_realised_installation_payload(
+        self, parent_payload: dict[str, Any]
+    ) -> dict[str, Any]:
+        geometry = parent_payload.get("gufcommon:geometry", {})
+        point = geometry.get("gml:Point", {})
+        realised_loop_pos = point.get("gml:pos")
+
+        installation_function = self._extract_text_from_xml_element(
+            parent_payload.get("gufcommon:installationFunction")
+        )
+        realised_installation_id = parent_payload.get(
+            "gufcommon:realisedInstallationId"
+        )
+
+        start_validity = (
+            self._extract_flexible_date_value(
+                parent_payload.get("gufcommon:validityPeriod", {}).get(
+                    "gufcommon:startValidity"
+                )
+            )
+            or self._extract_flexible_date_value(
+                parent_payload.get("gufcommon:startTime")
+            )
+            or "1900-01-01"
+        )
+
+        realised_wells_payload = []
+        raw_wells = self._as_list(parent_payload.get("gufcommon:realisedWell", []))
+        for raw_well in raw_wells:
+            well = raw_well.get("gufcommon:RealisedWell", raw_well)
+            if not isinstance(well, dict):
+                continue
+
+            well_geometry = well.get("gufcommon:geometry", {})
+            well_point = well_geometry.get("gml:Point", {})
+            well_pos = well_point.get("gml:pos")
+
+            raw_well_functions = self._as_list(well.get("gufcommon:wellFunction", []))
+            well_functions = [
+                self._extract_text_from_xml_element(wf)
+                for wf in raw_well_functions
+                if self._extract_text_from_xml_element(wf)
+            ]
+            if not well_functions:
+                well_functions = ["onttrekking"]
+
+            raw_screens = self._as_list(well.get("gufcommon:realisedScreen", []))
+            realised_screens = []
+            for raw_screen in raw_screens:
+                screen = raw_screen.get("gufcommon:RealisedScreen", raw_screen)
+                if not isinstance(screen, dict):
+                    continue
+
+                realised_screens.append(
+                    {
+                        "realised_screen_id": screen.get("gufcommon:realisedScreenId"),
+                        "screen_type": self._extract_text_from_xml_element(
+                            screen.get("gufcommon:screenType")
+                        )
+                        or "onbekend",
+                        "top_screen_depth": self._to_float(
+                            screen.get("gufcommon:topScreenDepth")
+                        ),
+                        "length": self._to_float(screen.get("gufcommon:length")),
+                    }
+                )
+
+            realised_wells_payload.append(
+                {
+                    "realised_well_id": well.get("gufcommon:realisedWellId"),
+                    "well_functions": well_functions,
+                    "height": self._to_float(well.get("gufcommon:height")),
+                    "well_depth": self._to_float(well.get("gufcommon:wellDepth")),
+                    "wellPos": well_pos or "",
+                    "relative_temperature": self._extract_text_from_xml_element(
+                        well.get("gufcommon:relativeTemperature")
+                    ),
+                    "realised_screens": realised_screens,
+                }
+            )
+
+        return {
+            "realised_installation_id": realised_installation_id,
+            "installation_function": installation_function,
+            "realised_loop_pos": realised_loop_pos or "",
+            "start_validity": start_validity,
+            "realised_wells": realised_wells_payload,
+        }
+
+    def _build_guf_sourcedocument_data(
+        self, event_data: dict[str, Any]
+    ) -> dict[str, Any]:
+        source_document = event_data.get("sourceDocument", {}) or {}
+        model_cls, model_name, parent_payload = self._resolve_guf_upload_model(
+            source_document
+        )
+
+        if not model_cls:
+            return source_document
+
+        if model_name == "GUFAddRealisedInstallation":
+            payload = self._build_add_realised_installation_payload(parent_payload)
+        else:
+            payload = parent_payload
+
+        try:
+            validated = model_cls.model_validate(payload)
+            return validated.model_dump(by_alias=True, exclude_none=True)
+        except Exception as exc:
+            logger.info(
+                f"GUF sourcedocument model validation failed for {model_name}: {exc}"
+            )
+            return source_document
+
     def _save_guf_events(self, guf_ppo: dict[str, Any], guf_obj: GUF) -> None:
         # Extract events from objectHistory
         object_history = guf_ppo.get("objectHistory", {})
@@ -1565,7 +1752,7 @@ class GUFObjectImporter(ObjectImporter):
             }
 
             # Sourcedocument data (entire event structure)
-            sourcedocument_data = event_data.get("sourceDocument", {})
+            sourcedocument_data = self._build_guf_sourcedocument_data(event_data)
 
             GUFEvent.objects.update_or_create(
                 guf=guf_obj,
@@ -1830,13 +2017,17 @@ class GPDObjectImporter(ObjectImporter):
             # Get GUF reference
             guf_ref = self._extract_guf_reference(report_obj)
 
+            ## Need to extract the text from method, because it can be an XML element with attributes (e.g. {"#text": "value", "@codeSpace": "someURI"})
+            method = report_obj.get("gpdcommon:method", "onbekend")
+            method_value = self._extract_text_from_xml_element(method) or "onbekend"
+
             # Create or update report
             report_model, created = Report.objects.update_or_create(
                 gpd=gpd_obj,
                 report_id=report_obj.get("gpdcommon:reportId"),
                 data_owner=self.data_owner,
                 defaults={
-                    "method": report_obj.get("gpdcommon:method", "onbekend"),
+                    "method": method_value,
                     "begin_date": datetime.datetime.fromisoformat(report_begin).date()
                     if report_begin
                     else None,

@@ -66,6 +66,7 @@ class ReportListView(mixins.UserOrganizationMixin, generics.ListAPIView):
     serializer_class = serializers.ReportSerializer
     queryset = gpd_models.Report.objects.all().order_by("-created")
 
+    filterset_class = filters.ReportFilter
     filter_backends = [DjangoFilterBackend]
     ordering = ["id"]
 
@@ -83,4 +84,36 @@ class ReportDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
 
     queryset = gpd_models.Report.objects.all()
     serializer_class = serializers.ReportSerializer
+    lookup_field = "uuid"
+
+
+class VolumeSeriesListView(mixins.UserOrganizationMixin, generics.ListAPIView):
+    """
+    API view to retrieve a list of VolumeSeries for the user's organization.
+
+    Returns:
+        list: List of VolumeSeries ordered by creation date (descending).
+    """
+
+    serializer_class = serializers.VolumeSeriesSerializer
+    queryset = gpd_models.VolumeSeries.objects.all().order_by("-created")
+
+    filterset_class = filters.VolumeSeriesFilter
+    filter_backends = [DjangoFilterBackend]
+    ordering = ["id"]
+
+
+class VolumeSeriesDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
+    """
+    API view to retrieve the details of a single VolumeSeries by UUID.
+
+    Args:
+        uuid (str): UUID of the VolumeSeries.
+
+    Returns:
+        VolumeSeries: Detailed information about the specified VolumeSeries.
+    """
+
+    queryset = gpd_models.VolumeSeries.objects.all()
+    serializer_class = serializers.VolumeSeriesSerializer
     lookup_field = "uuid"

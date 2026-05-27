@@ -3,7 +3,16 @@
 ## 1.71 (unreleased)
 
 
-- Nothing changed yet.
+-   Feat [GPD]: Add VolumesSeries API pages
+-   Enhancement [UploadTask]: On succesful task also handle updates and deletes
+-   Enhancement [UploadTask]: Better handling of leading or trailing whitespace
+-   Enhancement [GPD]: Add filtering on Report and VolumeSeries API pages
+-   Enhancement [GAR-Bulk]: Swapped matching style to use polars for faster handling
+-   Rework [API]: Split utils into multiple files, as it became too large to properly handle
+-   Bugfix [GPD]: Fix a minor bug in the AddReport template
+-   Bugfix [GPD]: Correct method import to rertrieve text attribute
+-   Bugfix [GAR-Bulk]: Improved handling and coupling of lab and field values
+
 
 
 ## 1.70 (2026-05-12)

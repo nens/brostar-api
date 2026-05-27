@@ -1,0 +1,61 @@
+import logging
+
+from pyproj import Transformer
+
+logger = logging.getLogger(__name__)
+
+# Define transformer from RD New (EPSG:28992) to ETRS89 (EPSG:4258 = lat/lon)
+transformer = Transformer.from_crs("EPSG:28992", "EPSG:4258", always_xy=True)
+
+
+def empty_strings_to_none(d: dict) -> dict:
+    for key, value in d.items():
+        if isinstance(value, str) and value.strip() == "":
+            d[key] = None
+        elif isinstance(value, dict):
+            d[key] = empty_strings_to_none(value)
+        elif isinstance(value, list):
+            d[key] = [
+                empty_strings_to_none(v)
+                if isinstance(v, dict)
+                else (None if v == "" else v)
+                for v in value
+            ]
+    return d
+
+
+def strip_whitespace(data):
+    if isinstance(data, dict):
+        return {k: strip_whitespace(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [strip_whitespace(item) for item in data]
+    elif isinstance(data, str):
+        return data.strip()
+    return data
+
+
+def drop_empty_strings(d: dict) -> dict:  # noqa: C901
+    cleaned = {}
+    for key, value in d.items():
+        if isinstance(value, str):
+            if value.strip() == "":
+                continue  # skip this field entirely
+            cleaned[key] = value
+        elif isinstance(value, dict):
+            nested = drop_empty_strings(value)
+            if nested:  # only keep if not empty
+                cleaned[key] = nested
+        elif isinstance(value, list):
+            cleaned_list = []
+            for v in value:
+                if isinstance(v, dict):
+                    nested = drop_empty_strings(v)
+                    if nested:
+                        cleaned_list.append(nested)
+                elif not (isinstance(v, str) and v.strip() == ""):
+                    cleaned_list.append(v)
+            if cleaned_list:
+                cleaned[key] = cleaned_list
+        else:
+            cleaned[key] = value
+    return cleaned

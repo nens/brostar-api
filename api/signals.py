@@ -7,7 +7,7 @@ from django.dispatch import receiver
 
 from . import tasks
 from .models import ImportTask, InviteUser, UploadTask, UserProfile
-from .utils import create_objects
+from .utils import create_objects, delete_objects, update_objects
 
 logger = logging.getLogger(__name__)
 
@@ -117,10 +117,34 @@ def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
 
     if (
         instance.status == "COMPLETED"
-        and instance.request_type == "registration"
+        and instance.request_type in ["registration", "insert"]
         and instance.data_owner
     ):
         create_objects(
+            instance.registration_type,
+            instance.bro_id,
+            instance.metadata,
+            instance.sourcedocument_data,
+            instance.data_owner,
+        )
+    elif (
+        instance.status == "COMPLETED"
+        and instance.request_type in ["replace", "move"]
+        and instance.data_owner
+    ):
+        update_objects(
+            instance.registration_type,
+            instance.bro_id,
+            instance.metadata,
+            instance.sourcedocument_data,
+            instance.data_owner,
+        )
+    elif (
+        instance.status == "COMPLETED"
+        and instance.request_type == "delete"
+        and instance.data_owner
+    ):
+        delete_objects(
             instance.registration_type,
             instance.bro_id,
             instance.metadata,

@@ -5,10 +5,13 @@ import pytz
 from django.contrib.auth.models import User
 
 from api import models as api_models
+from frd import models as frd_models
 from gar import models as gar_models
 from gld import models as gld_models
 from gmn import models as gmn_models
 from gmw import models as gmw_models
+from gpd import models as gpd_models
+from guf import models as guf_models
 
 TZ_INFO = pytz.timezone("Europe/Amsterdam")
 
@@ -204,4 +207,71 @@ def bulk_upload(organisation):
         status="PROCESSING",
         log="",
         progress=20.0,
+    )
+
+
+@pytest.fixture
+def frd(organisation):
+    return frd_models.FRD.objects.create(
+        data_owner=organisation,
+        bro_id="FRD123456789",
+        gmw_bro_id="GMW123456789",
+        tube_number="1",
+        quality_regime="IMBRO/A",
+    )
+
+
+@pytest.fixture
+def measurement_configuration(organisation, frd):
+    return frd_models.MeasurementConfiguration.objects.create(
+        frd=frd,
+        data_owner=organisation,
+        measurement_configuration_id="MC001",
+    )
+
+
+@pytest.fixture
+def geo_electric_measurement(organisation, frd):
+    return frd_models.GeoElectricMeasurement.objects.create(
+        frd=frd,
+        data_owner=organisation,
+        measurement_date=datetime.date(2024, 1, 1),
+    )
+
+
+@pytest.fixture
+def observation(organisation, gld):
+    return gld_models.Observation.objects.create(
+        gld=gld,
+        data_owner=organisation,
+        observation_id="_obs1",
+        begin_position=datetime.date(2024, 1, 1),
+        end_position=datetime.date(2024, 12, 31),
+        result_time=datetime.datetime(2024, 12, 31, 12, 0, 0, tzinfo=pytz.UTC),
+        observation_type="reguliereMeting",
+        investigator_kvk="12345678",
+    )
+
+
+@pytest.fixture
+def guf(organisation):
+    return guf_models.GUF.objects.create(
+        data_owner=organisation,
+        bro_id="GUF123456789",
+        quality_regime="IMBRO/A",
+        delivery_context="waterwet",
+        identification_licence="LIC-001",
+        legal_type="melding",
+        primary_usage_type="bemaling",
+        human_consumption="nee",
+    )
+
+
+@pytest.fixture
+def gpd(organisation):
+    return gpd_models.GPD.objects.create(
+        data_owner=organisation,
+        bro_id="GPD123456789",
+        quality_regime="IMBRO/A",
+        internal_id="test_gpd",
     )

@@ -30,19 +30,6 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:startTime>
-        {% if sourcedocs_data.endTime %}
-        <gufcom:endTime>
-          {% if sourcedocs_data.endTime|length == 10 %}
-          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
-          {% elif sourcedocs_data.endTime|length == 7 %}
-          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
-          {% elif sourcedocs_data.endTime|length == 4 %}
-          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
-          {% elif sourcedocs_data.endTime == 'onbekend' %}
-          <brocom:voidReason>onbekend</brocom:voidReason>
-          {% endif %}
-        </gufcom:endTime>
-        {% endif %}
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">

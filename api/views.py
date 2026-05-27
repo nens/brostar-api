@@ -348,40 +348,26 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate the sourcedocument_data input
+        raw_sourcedocument_data = serializer.validated_data["sourcedocument_data"]
+        sourcedocument_data = strip_whitespace(
+            drop_empty_strings(raw_sourcedocument_data)
+        )
+
         validation_class = registration_type_datamodel_mapping.get(
             serializer.validated_data["registration_type"]
         )
-        logger.info(f"Validation_class: {validation_class}")
         if validation_class:
-            try:
-                # For GLD addition, some uuids are backfilled into the sourcedocs data
-                if (
-                    serializer.validated_data["registration_type"] == "GLD_Addition"
-                    or "GUF" in serializer.validated_data["registration_type"]
-                ):
-                    validated_sourcedocument_data = validation_class(
-                        **serializer.validated_data["sourcedocument_data"]
-                    )
-
-                    # Update sourcedocument_data with validated data, including any modifications (like the UUID generation)
-                    serializer.validated_data["sourcedocument_data"] = (
-                        validated_sourcedocument_data.model_dump(by_alias=True)
-                    )
-                # Else, just a pydantic validation is required
-                else:
-                    sourcedocument_data = strip_whitespace(
-                        drop_empty_strings(
-                            serializer.validated_data["sourcedocument_data"]
-                        )
-                    )
-                    validation_class(**sourcedocument_data)
-                    serializer.validated_data["sourcedocument_data"] = (
-                        sourcedocument_data
-                    )
-
-            except ValidationError as e:
-                errors = utils.simplify_validation_errors(e.errors())
-                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+            if (
+                serializer.validated_data["registration_type"] == "GLD_Addition"
+                or "GUF" in serializer.validated_data["registration_type"]
+            ):
+                validated_sourcedocument_data = validation_class(**sourcedocument_data)
+                serializer.validated_data["sourcedocument_data"] = (
+                    validated_sourcedocument_data.model_dump(by_alias=True)
+                )
+            else:
+                validation_class(**sourcedocument_data)
+                serializer.validated_data["sourcedocument_data"] = sourcedocument_data
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)

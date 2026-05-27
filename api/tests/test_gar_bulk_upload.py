@@ -383,13 +383,12 @@ class TestCreateGarFieldMeasurements:
     def test_old_format_single_parameter(self):
         """Test old format with a single field parameter"""
         row = pd.Series(
-            {"Zuurstof (mg/L)": 8.5, "pH": 7.2, "other_column": "some_value"}
+            {"Zuurstof (mg/l)": 8.5, "pH": 7.2, "other_column": "some_value"}
         )
 
         result = create_gar_field_measurements(row)
 
-        # Zuurstof is written wrong
-        assert len(result) == 1
+        assert len(result) == 2
         assert all(isinstance(fm, FieldMeasurement) for fm in result)
 
         # Check pH measurement
@@ -550,11 +549,56 @@ class TestCreateGarFieldMeasurements:
 
     def test_format_detection_old_format(self):
         """Test that old format is correctly detected"""
-        row = pd.Series({"Zuurstof (mg/L)": 8.5, "pH": 7.2})
+        row = pd.Series({"Zuurstof (mg/L)_field": 8.5, "pH_field": 7.2})
 
         # Should use old format logic
         result = create_gar_field_measurements(row)
         assert len(result) == 1  # Only pH
+
+    def test_format_detection_old_format_lowercase_unit(self):
+        """Test that old format is detected for lowercase mg/l headers."""
+        row = pd.Series({"Zuurstof (mg/l)_field": 8.5, "pH_field": 7.2})
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 2
+        parameter_ids = {measurement.parameter for measurement in result}
+        assert parameter_ids == {1398, 1701}
+
+    def test_old_format_skips_niet_bepaald(self):
+        """Test old format skips textual missing values."""
+        row = pd.Series(
+            {
+                "Zuurstof (mg/l)_field": 8.5,
+                "pH_field": 7.2,
+                "Alkaliniteit (HCO3 - mg/l)_field": "niet bepaald",
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 2
+        parameter_ids = {measurement.parameter for measurement in result}
+        assert 374 not in parameter_ids
+
+    def test_old_format_prefers_field_suffix_when_lab_suffix_exists(self):
+        """When both files are merged, *_field columns should drive field measurements."""
+        row = pd.Series(
+            {
+                "Zuurstof (mg/l)_field": 8.5,
+                "pH_field": 7.2,
+                "pH_lab": 99.9,
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 2
+        measurements_by_parameter = {
+            measurement.parameter: measurement for measurement in result
+        }
+        assert measurements_by_parameter[1398].field_measurement_value == 7.2
+        assert measurements_by_parameter[1701].field_measurement_value == 8.5
 
     @patch("polars.read_csv")
     def test_format_detection_new_format(self, mock_read_csv, mock_csv_data):
@@ -566,6 +610,26 @@ class TestCreateGarFieldMeasurements:
         # Should use new format logic
         result = create_gar_field_measurements(row)
         assert len(result) == 1
+
+    @patch("polars.read_csv")
+    def test_new_format_uses_field_suffix_and_ignores_lab_suffix(
+        self, mock_read_csv, mock_csv_data
+    ):
+        """Aquocode matching should map *_field columns and ignore *_lab columns."""
+        mock_read_csv.return_value = mock_csv_data
+
+        row = pd.Series(
+            {
+                "1112T4ClC2a_field": "5.2",
+                "1112T4ClC2a_lab": "9.9",
+            }
+        )
+
+        result = create_gar_field_measurements(row)
+
+        assert len(result) == 1
+        assert result[0].parameter == 3
+        assert result[0].field_measurement_value == 5.2
 
     def test_empty_series(self):
         """Test with completely empty series"""
@@ -685,3 +749,85 @@ def test_create_analysis_process():
         analysis_process = analysis_process[0]
         assert analysis_process.analyses[0].analysis_measurement_value is None
         assert analysis_process.analyses[0].limit_symbol == result
+
+
+def test_create_analysis_process_groups_parameters_per_method_and_technique():
+    row = pd.Series(
+        {
+            "Cl (mg/l)": 0.1,
+            "Rapportagegrens Cl (mg/l)": 1,
+            "Analysedatum Cl (mg/l)": "2018-10-25",
+            "NO3 (mg/l)": 0.2,
+            "Rapportagegrens NO3 (mg/l)": 2,
+            "Analysedatum NO3 (mg/l)": "2018-10-25",
+        }
+    )
+
+    analysis_processes = create_analysis_process(row)
+    da_s_processes = [
+        process
+        for process in analysis_processes
+        if process.analytical_technique == "DA-S"
+        and process.valuation_method == "I15923-1.13"
+    ]
+
+    assert len(da_s_processes) == 1
+    assert len(da_s_processes[0].analyses) == 2
+    assert {analysis.parameter for analysis in da_s_processes[0].analyses} == {
+        508,
+        1270,
+    }
+
+
+def test_create_analysis_process_skips_analysis_without_analysis_date():
+    row = pd.Series(
+        {
+            "Cl (mg/l)": 0.1,
+            "Rapportagegrens Cl (mg/l)": 1,
+        }
+    )
+
+    analysis_processes = create_analysis_process(row)
+
+    assert analysis_processes == []
+
+
+def test_create_analysis_process_prefers_lab_suffix_and_ignores_field_suffix():
+    row = pd.Series(
+        {
+            "Cl (mg/l)_field": 99.9,
+            "Rapportagegrens Cl (mg/l)_field": 99,
+            "Analysedatum Cl (mg/l)_field": "2018-10-24",
+            "Cl (mg/l)_lab": 0.1,
+            "Rapportagegrens Cl (mg/l)_lab": 1,
+            "Analysedatum Cl (mg/l)_lab": "2018-10-25",
+        }
+    )
+
+    analysis_processes = create_analysis_process(row)
+    da_s_processes = [
+        process
+        for process in analysis_processes
+        if process.analytical_technique == "DA-S"
+        and process.valuation_method == "I15923-1.13"
+    ]
+
+    assert len(da_s_processes) == 1
+    assert len(da_s_processes[0].analyses) == 1
+    assert da_s_processes[0].date == "2018-10-25"
+    assert da_s_processes[0].analyses[0].analysis_measurement_value == 0.1
+    assert da_s_processes[0].analyses[0].reporting_limit == 1
+
+
+def test_create_analysis_process_ignores_field_only_lab_measurement_columns():
+    row = pd.Series(
+        {
+            "Cl (mg/l)_field": 0.1,
+            "Rapportagegrens Cl (mg/l)_field": 1,
+            "Analysedatum Cl (mg/l)_field": "2018-10-25",
+        }
+    )
+
+    analysis_processes = create_analysis_process(row)
+
+    assert analysis_processes == []

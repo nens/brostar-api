@@ -39,6 +39,7 @@ def test_gmn_deserialization(gmn, organisation):
         "monitoring_purpose": "test",
         "groundwater_aspect": "test",
         "start_date_monitoring": date(2000, 1, 1),
+        "end_date_monitoring": None,
         "object_registration_time": datetime(2000, 1, 1),
         "registration_status": "test",
         "color": "#000fff",
