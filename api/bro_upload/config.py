@@ -653,7 +653,7 @@ LAB_PARAMETER_OPTIONS = [
         "parameter_id": 391,
         "unit": "mg/l",
         "validationMethod": "I10304-1.09",
-        "analyticalTechnique": "IC ",
+        "analyticalTechnique": "IC",
     },
     {
         "code": "BrOxnl",
