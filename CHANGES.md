@@ -3,7 +3,8 @@
 ## 1.72 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [GAR]: In the config was a spelling error
+-   Bugfix [UploadModels]: In the GUF-DesignScreen was geometryPubliclyAvailable, this does not exist
 
 
 ## 1.71 (2026-05-27)

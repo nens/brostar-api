@@ -802,7 +802,6 @@ class DesignScreen(CamelModel):
     design_screen_bottom: float | None = (
         None  # meters (mandatory if screenType is verticaal)
     )
-    geometry_publicly_available: PubliclyAvailableOptions
 
 
 # Updated DesignWell class
