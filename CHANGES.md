@@ -3,8 +3,10 @@
 ## 1.72 (unreleased)
 
 
+-   Enhancement [Admin]: Multiple new admin filters
 -   Bugfix [GAR]: In the config was a spelling error
 -   Bugfix [UploadModels]: In the GUF-DesignScreen was geometryPubliclyAvailable, this does not exist
+-   Bugfix [Import]: correct Removal import
 
 
 ## 1.71 (2026-05-27)

@@ -10,7 +10,10 @@ class GMWAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "bro_id",
+    )
 
 
 class MonitoringTubeAdmin(admin.ModelAdmin):
@@ -21,7 +24,10 @@ class MonitoringTubeAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "gmw",
+    )
 
 
 class EventAdmin(admin.ModelAdmin):
@@ -36,6 +42,7 @@ class EventAdmin(admin.ModelAdmin):
     list_filter = (
         "data_owner",
         "event_name",
+        "gmw",
     )
 
 

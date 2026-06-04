@@ -19,7 +19,10 @@ class GUFAdmin(admin.ModelAdmin):
         "delivery_accountable_party",
         "quality_regime",
     )
-    list_filter = ("data_owner", "quality_regime", "delivery_context")
+    list_filter = (
+        "data_owner",
+        "bro_id",
+    )
 
 
 class DesignInstallationAdmin(admin.ModelAdmin):
@@ -30,7 +33,7 @@ class DesignInstallationAdmin(admin.ModelAdmin):
         "installation_function",
         "data_owner",
     )
-    list_filter = ("data_owner", "installation_function")
+    list_filter = ("data_owner", "guf")
     raw_id_fields = ("guf",)
 
 
@@ -42,7 +45,10 @@ class EnergyCharacteristicsAdmin(admin.ModelAdmin):
         "energy_warm",
         "data_owner",
     )
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "installation",
+    )
     raw_id_fields = ("installation",)
 
 
@@ -89,7 +95,11 @@ class GUFEventAdmin(admin.ModelAdmin):
         "event_date",
         "data_owner",
     )
-    list_filter = ("data_owner", "event_name")
+    list_filter = (
+        "data_owner",
+        "event_name",
+        "guf",
+    )
     raw_id_fields = ("guf",)
 
 

@@ -10,7 +10,10 @@ class GLDAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "bro_id",
+    )
 
 
 class ObservationAdmin(admin.ModelAdmin):
@@ -22,7 +25,10 @@ class ObservationAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "gld",
+    )
 
 
 class MeasurementTvpAdmin(admin.ModelAdmin):
@@ -32,7 +38,10 @@ class MeasurementTvpAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "observation",
+    )
 
 
 admin.site.register(gld_models.GLD, GLDAdmin)

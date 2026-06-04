@@ -10,17 +10,24 @@ class GPDAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "bro_id",
+    )
 
 
 class ReportAdmin(admin.ModelAdmin):
     model = Report
     list_display = (
+        "gpd",
         "report_id",
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "gpd",
+    )
 
 
 admin.site.register(GPD, GPDAdmin)

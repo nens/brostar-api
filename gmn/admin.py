@@ -10,7 +10,10 @@ class GMNAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "bro_id",
+    )
 
 
 class MeasuringpointAdmin(admin.ModelAdmin):
@@ -22,7 +25,10 @@ class MeasuringpointAdmin(admin.ModelAdmin):
         "data_owner",
     )
 
-    list_filter = ("data_owner",)
+    list_filter = (
+        "data_owner",
+        "gmn",
+    )
 
 
 class IntermediateEventAdmin(admin.ModelAdmin):
@@ -37,6 +43,7 @@ class IntermediateEventAdmin(admin.ModelAdmin):
     list_filter = (
         "data_owner",
         "event_type",
+        "gmn",
     )
 
 
