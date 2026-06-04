@@ -7,6 +7,7 @@
 -   Bugfix [GAR]: In the config was a spelling error
 -   Bugfix [UploadModels]: In the GUF-DesignScreen was geometryPubliclyAvailable, this does not exist
 -   Bugfix [Import]: correct Removal import
+-   Bugfix [Validation]: Do not sent 500 on validation error, but return the error with a 400 response.
 
 
 ## 1.71 (2026-05-27)

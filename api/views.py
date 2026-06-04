@@ -357,17 +357,25 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             serializer.validated_data["registration_type"]
         )
         if validation_class:
-            if (
-                serializer.validated_data["registration_type"] == "GLD_Addition"
-                or "GUF" in serializer.validated_data["registration_type"]
-            ):
-                validated_sourcedocument_data = validation_class(**sourcedocument_data)
-                serializer.validated_data["sourcedocument_data"] = (
-                    validated_sourcedocument_data.model_dump(by_alias=True)
-                )
-            else:
-                validation_class(**sourcedocument_data)
-                serializer.validated_data["sourcedocument_data"] = sourcedocument_data
+            try:
+                if (
+                    serializer.validated_data["registration_type"] == "GLD_Addition"
+                    or "GUF" in serializer.validated_data["registration_type"]
+                ):
+                    validated_sourcedocument_data = validation_class(
+                        **sourcedocument_data
+                    )
+                    serializer.validated_data["sourcedocument_data"] = (
+                        validated_sourcedocument_data.model_dump(by_alias=True)
+                    )
+                else:
+                    validation_class(**sourcedocument_data)
+                    serializer.validated_data["sourcedocument_data"] = (
+                        sourcedocument_data
+                    )
+            except ValidationError as e:
+                errors = utils.simplify_validation_errors(e.errors())
+                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
