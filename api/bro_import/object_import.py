@@ -583,13 +583,19 @@ class GMWObjectImporter(ObjectImporter):
             },
         )[0]
 
-        if removed:
+        if removed == "ja":
+            removal_date_str = (
+                well_removal_date.get("brocom:date")
+                or well_removal_date.get("brocom:year")
+                if isinstance(well_removal_date, dict)
+                else well_removal_date
+            )
             Event.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
-                event_name="GMW_Removal",
+                event_name="opruimen",
                 defaults={
-                    "event_date": well_removal_date,
+                    "event_date": removal_date_str,
                     "metadata": {
                         "broId": self.gmw_obj.bro_id,
                         "qualityRegime": self.gmw_obj.quality_regime,

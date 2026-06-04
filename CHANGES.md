@@ -3,7 +3,7 @@
 ## 1.73 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Import]: improve and finalize GMW Removal import
 
 
 ## 1.72 (2026-06-04)
