@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.72 (unreleased)
+## 1.72 (2026-06-04)
 
 
 -   Enhancement [Admin]: Multiple new admin filters
