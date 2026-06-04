@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.73 (unreleased)
+## 1.73 (2026-06-04)
 
 
 -   Bugfix [Import]: improve and finalize GMW Removal import
