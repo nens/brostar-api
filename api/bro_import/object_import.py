@@ -587,7 +587,7 @@ class GMWObjectImporter(ObjectImporter):
             Event.objects.update_or_create(
                 gmw=self.gmw_obj,
                 data_owner=self.data_owner,
-                event_type="GMW_Removal",
+                event_name="GMW_Removal",
                 defaults={
                     "event_date": well_removal_date,
                     "metadata": {
