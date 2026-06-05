@@ -3,7 +3,7 @@
 ## 1.74 (unreleased)
 
 
-- Nothing changed yet.
+-   Hotfix [Import]: toevoegen van -01-01 voor removal events waar enkel het jaar beschikbaar is
 
 
 ## 1.73 (2026-06-04)

@@ -590,22 +590,34 @@ class GMWObjectImporter(ObjectImporter):
                 if isinstance(well_removal_date, dict)
                 else well_removal_date
             )
-            Event.objects.update_or_create(
-                gmw=self.gmw_obj,
-                data_owner=self.data_owner,
-                event_name="opruimen",
-                defaults={
-                    "event_date": removal_date_str,
-                    "metadata": {
-                        "broId": self.gmw_obj.bro_id,
-                        "qualityRegime": self.gmw_obj.quality_regime,
-                        "deliveryAccountableParty": self.gmw_obj.delivery_accountable_party,
+            # If event_date is a year, convert it to a date
+            if removal_date_str:
+                removal_date_str = (
+                    removal_date_str + "-01-01"
+                    if len(removal_date_str) == 4
+                    else removal_date_str
+                )
+            try:
+                Event.objects.update_or_create(
+                    gmw=self.gmw_obj,
+                    data_owner=self.data_owner,
+                    event_name="opruimen",
+                    defaults={
+                        "event_date": removal_date_str,
+                        "metadata": {
+                            "broId": self.gmw_obj.bro_id,
+                            "qualityRegime": self.gmw_obj.quality_regime,
+                            "deliveryAccountableParty": self.gmw_obj.delivery_accountable_party,
+                        },
+                        "sourcedocument_data": {
+                            "eventDate": well_removal_date,
+                        },
                     },
-                    "sourcedocument_data": {
-                        "eventDate": well_removal_date,
-                    },
-                },
-            )
+                )
+            except Exception as e:
+                logger.warning(
+                    f"Error creating opruimen event for GMW {self.gmw_obj.bro_id}: {e}"
+                )
 
     def _save_monitoringtubes_data(
         self,
