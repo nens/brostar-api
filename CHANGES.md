@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.74 (unreleased)
+## 1.74 (2026-06-05)
 
 
 -   Hotfix [Import]: toevoegen van -01-01 voor removal events waar enkel het jaar beschikbaar is
