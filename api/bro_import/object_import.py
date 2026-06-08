@@ -218,7 +218,7 @@ class ObjectImporter(ABC):
             return False
 
         except Exception as e:
-            logger.error(f"Error checking PDOK for bro_id {self.bro_id}: {e}")
+            logger.info(f"Error checking PDOK for bro_id {self.bro_id}: {e}")
             return True  # Default to importing if there's an error
 
     def run(self, force: bool = False) -> None:

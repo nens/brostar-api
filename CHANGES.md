@@ -3,7 +3,7 @@
 ## 1.75 (unreleased)
 
 
-- Nothing changed yet.
+-   Hotfix [Import]: remove error logging on unavailable PDOK
 
 
 ## 1.74 (2026-06-05)
