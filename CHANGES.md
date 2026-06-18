@@ -4,6 +4,7 @@
 
 
 -   Hotfix [Import]: remove error logging on unavailable PDOK
+-   Enhancement [Tasks]: import celery task setup
 
 
 ## 1.74 (2026-06-05)

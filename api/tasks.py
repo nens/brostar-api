@@ -160,6 +160,7 @@ class DeliveryNotReadyError(Exception):
 
 @shared_task(
     bind=True,
+    queue="upload",
     autoretry_for=(DeliveryNotReadyError,),
     retry_backoff=5,  # Factor in seconds (first retry: 5s, second: 10s, third: 20s, etc.)
     retry_jitter=False,  # Set False to disable randomization (use exact values: 5s, 10s, 20s)
