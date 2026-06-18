@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.75 (unreleased)
+## 1.75 (2026-06-18)
 
 
 -   Hotfix [Import]: remove error logging on unavailable PDOK
