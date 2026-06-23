@@ -1204,18 +1204,68 @@ class RealisedWellClosurePart(CamelModel):
         return v if v is not None and v != "" else f"_{uuid.uuid4()}"
 
 
+class RealisedLoopClosurePart(CamelModel):
+    """Part of realised well for closure operations"""
+
+    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
+    realised_loop_id: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
+
+
+class RealisedSurfaceInfiltrationClosurePart(CamelModel):
+    """Part of realised well for closure operations"""
+
+    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
+    infiltration_basin_id: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
+
+
 # Updated GUFClosureRealisedPart class
 class GUFClosureRealisedPart(CamelModel):
     """Source document data for GUF_ClosureRealisedPart"""
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions | None = None
-    well_pos: str | None = None
+    installation_pos: str | None = None
     end_time: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
     )
     realised_wells: list[RealisedWellClosurePart] = []
+    realised_loops: list[RealisedLoopClosurePart] = []
+    realised_surface_infiltrations: list[RealisedSurfaceInfiltrationClosurePart] = []
+
+    # Add validation, only one of realised_wells, realised_loops, or realised_surface_infiltrations can be non-empty
+    @field_validator(
+        "realised_wells",
+        "realised_loops",
+        "realised_surface_infiltrations",
+        mode="after",
+    )
+    @classmethod
+    def validate_only_one_non_empty(cls, v, info: ValidationInfo):
+        non_empty_count = sum(
+            1
+            for field in [
+                "realised_wells",
+                "realised_loops",
+                "realised_surface_infiltrations",
+            ]
+            if info.data.get(field)
+        )
+        if non_empty_count > 1:
+            raise ValueError(
+                "Only one of realised_wells, realised_loops, or realised_surface_infiltrations can be non-empty"
+            )
+        return v
 
 
 class GUFClosure(CamelModel):

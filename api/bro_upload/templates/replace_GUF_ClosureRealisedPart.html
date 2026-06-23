@@ -1,53 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <replaceRequest
-  xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-  xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
   xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
 >
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
-  <brocom:deliveryAccountableParty
-    >{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty
-  >
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-  <correctionReason codeSpace="urn:bro:guf:CorrectionReason"
-    >{{ metadata.CorrectionReason }}</correctionReason
-  >
+  <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.CorrectionReason }}</correctionReason>
   <sourceDocument>
-    <gufcom:GUF_ClosureRealisedPart
-      gml:id="id_0001"
-      xmlns:gml="http://www.opengis.net/gml/3.2"
-    >
-      <gufcom:realisedInstallationId
-        >{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId
-      >
-      <!--  Optional: only needed if not all parts of the installation are closed and the installationFunction has changed.
-			<gufcom:installationFunction codeSpace="?">?</gufcom:installationFunction>
-			 -->
-      <!--  Optional: only needed if not all parts of the installation are closed and the geometry has changed.
-			<gufcom:geometry>...</gufcom:geometry>
-			 -->
+    <gufcom:GUF_ClosureRealisedPart gml:id="id_0001">
+      <gufcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallationId }}</gufcom:realisedInstallationId>
+      {% if sourcedocs_data.installationFunction %}
+      <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction">{{ sourcedocs_data.installationFunction }}</gufcom:installationFunction>
+      {% endif %}
+      {% if sourcedocs_data.installation_pos %}
+      <gufcom:geometry>
+        <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="id_0002">
+          <gml:pos>{{ sourcedocs_data.installation_pos }}</gml:pos>
+        </gml:Point>
+      </gufcom:geometry>
+      {% endif %}
       <gufcom:endTime>
-        {% if sourcedocs_data.endTime|length == 10 %}
-        <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
-        {% elif sourcedocs_data.endTime|length == 7 %}
-        <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
-        {% elif sourcedocs_data.endTime|length == 4 %}
-        <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
-        {% else %}
-        <brocom:voidReason>onbekend</brocom:voidReason>
-        {% endif %}
+          {% if sourcedocs_data.endTime|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
+          {% elif sourcedocs_data.endTime|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
+          {% elif sourcedocs_data.endTime|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
       </gufcom:endTime>
+      {% for realised_loop in sourcedocs_data.realisedLoops %}
+      <gufcom:realisedLoop>
+        <gufcom:RealisedLoopClosurePart gml:id="{{ realised_loop.gml_id }}">
+          <gufcom:realisedLoopId>{{ realised_loop.realised_loop_id }}</gufcom:realisedLoopId>
+        </gufcom:RealisedLoopClosurePart>
+      </gufcom:realisedLoop>
+      {% endfor %}
+      {% for realised_surface_infiltration in sourcedocs_data.realisedSurfaceInfiltrations %}
+      <gufcom:realisedSurfaceInfiltration>
+        <gufcom:RealisedSurfaceInfiltrationClosurePart gml:id="{{ realised_surface_infiltration.gml_id }}">
+          <gufcom:infiltrationBasinId>{{ realised_surface_infiltration.infiltration_basin_id }}</gufcom:infiltrationBasinId>
+        </gufcom:RealisedSurfaceInfiltrationClosurePart>
+      </gufcom:realisedSurfaceInfiltration>
+      {% endfor %}
       {% for realised_well in sourcedocs_data.realisedWells %}
       <gufcom:realisedWell>
         <gufcom:RealisedWellClosurePart gml:id="{{ realised_well.gmlId }}">
-          <gufcom:realisedWellId
-            >{{ realised_well.realisedWellId }}</gufcom:realisedWellId
-          >
+          <gufcom:realisedWellId>{{ realised_well.realisedWellId }}</gufcom:realisedWellId>
         </gufcom:RealisedWellClosurePart>
       </gufcom:realisedWell>
-      {% endfor %}
+	    {% endfor %}
     </gufcom:GUF_ClosureRealisedPart>
   </sourceDocument>
 </replaceRequest>
