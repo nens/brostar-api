@@ -19,9 +19,8 @@
       {% for well_function in sourcedocs_data.wellFunctions %}
       <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction">{{ well_function }}</gufcom:wellFunction>
       {% endfor %}
-      {% if sourcedocs_data.relativeTemperature %}
-      <gufcom:relativeTemperature>{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature>
-      {% endif %}
+      <gufcom:height>{{ sourcedocs_data.height }}</gufcom:height>
+      <gufcom:wellDepth>{{ sourcedocs_data.height }}</gufcom:wellDepth>
       <gufcom:startValidity>
         {% if sourcedocs_data.startValidity|length == 10 %}
         <brocom:date>{{ sourcedocs_data.startValidity }}</brocom:date>
@@ -33,14 +32,10 @@
         <brocom:voidReason>onbekend</brocom:voidReason>
         {% endif %}
       </gufcom:startValidity>
-      {% if sourcedocs_data.realisedInstallation %}
-      <gufcom:realisedInstallation>
-        <gufcom:RealisedInstallationHeightPart gml:id="id_{{ sourcedocs_data.realisedInstallation.gmlId }}">
-          <gufcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallation.realisedInstallationId }}</gufcom:realisedInstallationId>
-          <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction">{{ sourcedocs_data.realisedInstallation.installationFunction }}</gufcom:installationFunction>
-        </gufcom:RealisedInstallationHeightPart>
-      </gufcom:realisedInstallation>
-      {% endif %}
+      <gufcom:RealisedScreenChanges gml:id="id_0002">
+        <gufcom:realisedScreenId>{{ sourcedocs_data.realisedScreenId }}</gufcom:realisedScreenId>
+        <gufcom:topScreenDepth>{{ sourcedocs_data.topScreenDepth }}</gufcom:topScreenDepth>
+      </gufcom:RealisedScreenChanges>
     </gufcom:GUF_Height>
   </sourceDocument>
   <dateToBeCorrected>

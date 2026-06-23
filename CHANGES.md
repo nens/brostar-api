@@ -3,7 +3,7 @@
 ## 1.76 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [GUF]: Correct GUF_Height Templates
 
 
 ## 1.75 (2026-06-18)
