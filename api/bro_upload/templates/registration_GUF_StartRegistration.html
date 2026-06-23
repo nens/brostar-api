@@ -26,19 +26,6 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:startTime>
-        {% if sourcedocs_data.endTime %}
-        <gufcom:endTime>
-          {% if sourcedocs_data.endTime|length == 10 %}
-          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
-          {% elif sourcedocs_data.endTime|length == 7 %}
-          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
-          {% elif sourcedocs_data.endTime|length == 4 %}
-          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
-          {% elif sourcedocs_data.endTime == 'onbekend' %}
-          <brocom:voidReason>onbekend</brocom:voidReason>
-          {% endif %}
-        </gufcom:endTime>
-        {% endif %}
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
@@ -147,32 +134,7 @@
               <gufcom:designLoop>
                 <gufcom:DesignLoop gml:id="{{ design_loop.gmlId }}">
                   <gufcom:designLoopId>{{ design_loop.designLoopId }}</gufcom:designLoopId>
-                  <gufcom:lifespan>
-                    <gufcom:startTime>
-                      {% if design_loop.startDate|length == 10 %}
-                      <brocom:date>{{ design_loop.startDate }}</brocom:date>
-                      {% elif design_loop.startDate|length == 7 %}
-                      <brocom:yearMonth>{{ design_loop.startDate }}</brocom:yearMonth>
-                      {% elif design_loop.startDate|length == 4 %}
-                      <brocom:year>{{ design_loop.startDate }}</brocom:year>
-                      {% else %}
-                      <brocom:voidReason>onbekend</brocom:voidReason>
-                      {% endif %}
-                    </gufcom:startTime>
-                    {% if design_loop.endDate %}
-                    <gufcom:endTime>
-                      {% if design_loop.endDate|length == 10 %}
-                      <brocom:date>{{ design_loop.endDate }}</brocom:date>
-                      {% elif design_loop.endDate|length == 7 %}
-                      <brocom:yearMonth>{{ design_loop.endDate }}</brocom:yearMonth>
-                      {% elif design_loop.endDate|length == 4 %}
-                      <brocom:year>{{ design_loop.endDate }}</brocom:year>
-                      {% else %}
-                      <brocom:voidReason>onbekend</brocom:voidReason>
-                      {% endif %}
-                    </gufcom:endTime>
-                    {% endif %}
-                  </gufcom:lifespan>
+                  <!-- lifespan is not allowed, as it is determined based on NewLicense delivery -->
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
                     <gufcom:geometry>

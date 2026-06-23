@@ -5,6 +5,7 @@
 
 -   Enhancement [GUF]: Correct GUF_Height Templates
 -   Enhancement [GUF]: Correct GUF_ClosureRealisedPart
+-   Enhancement [GUF]: Correct GUF_StartRegistration
 
 
 ## 1.75 (2026-06-18)

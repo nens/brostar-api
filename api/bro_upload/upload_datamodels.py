@@ -777,12 +777,7 @@ class DesignLoop(CamelModel):
     design_loop_id: str
     design_loop_pos: str  # Position coordinates for LineString geometry
 
-    loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type
-
-    # Lifespan is formatted from these two fields - ISO-8601 date string
-    # Lifespan is not allowed to be present for NewLicense
-    start_date: str | None
-    end_date: str | None
+    loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type\
 
     geometry_type: Literal["Point", "LineString"] = "Point"  # Type of geometry
 
