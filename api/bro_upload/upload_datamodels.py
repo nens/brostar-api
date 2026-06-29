@@ -824,7 +824,6 @@ class DesignWell(CamelModel):
 
     @field_validator("gml_id", mode="before")
     def generate_gml_id(cls, v):
-        raise Exception(f"generating gmlid: {v}")
         if v is None or v == "":
             return f"_{uuid.uuid4()}"
         return v
