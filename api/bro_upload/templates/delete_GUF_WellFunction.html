@@ -13,23 +13,25 @@
       <gufcom:realisedWellId
         >{{ sourcedocs_data.realisedWellId }}</gufcom:realisedWellId
       >
-      {% for wellFunction in well.wellFunctions %}
+      {% for wellFunction in sourcedocs_data.wellFunctions %}
       <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction"
         >{{ wellFunction }}</gufcom:wellFunction
       >
       {% endfor %}
-      <gufcom:relativeTemperature
+      {% if sourcedocs_data.wellFunctions|length == 2 %}
+      <gufcom:relativeTemperature codeSpace=""
         >{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature
       >
-      <gufcom:startValidity>{{ sourcedocs_data.startValidity }}</gufcom:startValidity>
+      {% endif %}
+      <gufcom:startValidity>{{ sourcedocs_data.eventDate }}</gufcom:startValidity>
       {% if sourcedocs_data.realisedInstallationFunction %}
       <gufcom:realisedInstallationFunction>
         <gufcom:realisedInstallationId
-          >{{ sourcedocs_data.realisedInstallationFunction.realised_installation_id
+          >{{ sourcedocs_data.realisedInstallationFunction.realisedInstallationId
           }}</gufcom:realisedInstallationId
         >
         <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction"
-          >{{ sourcedocs_data.realisedInstallationFunction.installation_function
+          >{{ sourcedocs_data.realisedInstallationFunction.installationFunction
           }}</gufcom:installationFunction
         >
       </gufcom:realisedInstallationFunction>

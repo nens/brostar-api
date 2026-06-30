@@ -7,6 +7,9 @@
 -   Enhancement [GUF]: Correct GUF_ClosureRealisedPart Templates
 -   Enhancement [GUF]: Correct GUF_StartRegistration Templates
 -   Enhancement [GUF]: Correct GUF_NewLicence Templates
+-   Enhancement [GUF]: Correct GUF_AddRealisedInstallation Templates
+-   Enhancement [GUF]: Correct GUF_ExpandRealisedInstallation Templates
+-   Enhancement [GUF]: Correct GUF_WellFunction Templates
 
 
 ## 1.75 (2026-06-18)
