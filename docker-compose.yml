@@ -43,7 +43,7 @@ services:
       - ./media:/media  # <- this is crucial
     command: >
       uv run celery -A brostar_api worker
-      -Q default
+      -Q default,gld_import
       --concurrency=4
       --max-memory-per-child=100000
       --loglevel=INFO

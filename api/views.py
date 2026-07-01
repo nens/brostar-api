@@ -58,6 +58,9 @@ class APIOverview(views.APIView):
             "organisations": reverse(
                 "api:organisation-list", request=request, format=format
             ),
+            "individual-imports": reverse(
+                "api:objectimporttask-list", request=request, format=format
+            ),
             "importtasks": reverse(
                 "api:importtask-list", request=request, format=format
             ),
@@ -292,6 +295,70 @@ class ImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
+
+
+class ObjectImportTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
+    """Import a single BRO object by its BRO ID.
+
+    POST to this endpoint to trigger an on-demand import of one object without
+    running a full bulk import.  The resulting ``ObjectImportTask`` can be
+    polled to follow the status.
+
+    **POST Parameters**
+
+    `bro_id`:
+        String (*required*) e.g. ``"GMW000000000001"``.  The domain is
+        derived automatically from the first three characters.
+
+    `force`:
+        Boolean (*optional*, default ``false``).  When ``true``, skips the
+        PDOK freshness check and always re-imports the object.
+    """
+
+    model = models.ObjectImportTask
+    serializer_class = serializers.ObjectImportTaskSerializer
+    lookup_field = "uuid"
+    queryset = models.ObjectImportTask.objects.all().order_by("-created")
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = "__all__"
+
+    # Only allow create + read; no updates or deletes via this endpoint.
+    http_method_names = ["get", "post", "head", "options"]
+
+    def create(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        from api.tasks import import_object_task
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        bro_id: str = serializer.validated_data["bro_id"].strip().upper()
+        bro_domain = bro_id[:3]
+
+        from api.bro_import.config import object_importer_mapping
+
+        if bro_domain not in object_importer_mapping:
+            return Response(
+                {
+                    "bro_id": f"Onbekend BRO domein '{bro_domain}'. Verwacht: {sorted(object_importer_mapping.keys())}."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        serializer.validated_data["bro_id"] = bro_id
+        serializer.validated_data["bro_domain"] = bro_domain
+        serializer.validated_data["data_owner"] = user_profile.organisation
+        serializer.validated_data["status"] = "PENDING"
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+
+        # Dispatch the Celery task after the DB row is committed.
+        import_object_task.delay(str(serializer.instance.uuid))
+
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )

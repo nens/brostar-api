@@ -9,6 +9,9 @@ router = routers.DefaultRouter()
 router.register("users", views.UserViewSet, basename="user")
 router.register("organisations", views.OrganisationViewSet, basename="organisation")
 router.register("importtasks", views.ImportTaskViewSet, basename="importtask")
+router.register(
+    "objectimporttasks", views.ObjectImportTaskViewSet, basename="objectimporttask"
+)
 router.register("uploadtasks", views.UploadTaskViewSet, basename="uploadtask")
 router.register("bulkuploads", views.BulkUploadViewSet, basename="bulkupload")
 

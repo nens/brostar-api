@@ -55,6 +55,21 @@ class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ObjectImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    class Meta:
+        model = api_models.ObjectImportTask
+        fields = "__all__"
+        read_only_fields = [
+            "uuid",
+            "created",
+            "updated",
+            "data_owner",
+            "bro_domain",
+            "status",
+            "log",
+        ]
+
+
 class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = api_models.UploadTask
