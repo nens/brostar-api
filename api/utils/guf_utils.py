@@ -1,5 +1,6 @@
-import datetime
 import logging
+
+from helpers import parse_flexible_date
 
 from guf.models import (
     GUF,
@@ -11,22 +12,6 @@ from guf.models import (
 )
 
 logger = logging.getLogger(__name__)
-
-
-def _parse_flexible_date(date_str: str | None) -> datetime.date | None:
-    """Parse BRO dates with flexible granularity: YYYY-MM-DD, YYYY-MM, or YYYY."""
-    if not date_str:
-        return None
-    try:
-        if len(date_str) == 4:  # YYYY
-            return datetime.date(int(date_str), 1, 1)
-        elif len(date_str) == 7:  # YYYY-MM
-            year, month = date_str.split("-")
-            return datetime.date(int(year), int(month), 1)
-        else:  # YYYY-MM-DD
-            return datetime.date.fromisoformat(date_str)
-    except (ValueError, AttributeError):
-        return None
 
 
 def create_guf(
@@ -41,7 +26,7 @@ def create_guf(
             "delivery_accountable_party": metadata.get("deliveryAccountableParty"),
             "quality_regime": metadata.get("qualityRegime"),
             "delivery_context": sourcedocument_data.get("deliveryContext"),
-            "start_time": _parse_flexible_date(sourcedocument_data.get("startTime")),
+            "start_time": parse_flexible_date(sourcedocument_data.get("startTime")),
             "identification_licence": sourcedocument_data.get("identificationLicence"),
             "legal_type": sourcedocument_data.get("legalType"),
             "primary_usage_type": sourcedocument_data.get("primaryUsageType"),
@@ -133,8 +118,8 @@ def _create_design_installation(
             data_owner=data_owner,
             defaults={
                 "loop_type": loop_data.get("loopType"),
-                "start_date": _parse_flexible_date(loop_data.get("startDate")),
-                "end_date": _parse_flexible_date(loop_data.get("endDate")),
+                "start_date": parse_flexible_date(loop_data.get("startDate")),
+                "end_date": parse_flexible_date(loop_data.get("endDate")),
                 "geometry_type": loop_data.get("geometryType"),
                 "design_loop_pos": loop_data.get("designLoopPos"),
             },
