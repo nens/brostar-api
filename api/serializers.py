@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class OrganisationSerializer(serializers.ModelSerializer):
     class Meta:
         model = api_models.Organisation
-        fields = "__all__"
+        fields = ["name", "kvk_number"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
