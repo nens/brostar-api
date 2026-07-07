@@ -3,6 +3,7 @@ from typing import Any
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django_filters import rest_framework as filters
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.reverse import reverse
 
 from api import models as api_models
@@ -18,6 +19,22 @@ class UserOrganizationMixin:
         user_organization = self.get_user_organisation()
         queryset = super().get_queryset()  # type: ignore
         return queryset.filter(data_owner=user_organization)
+
+    def perform_create(self, serializer):
+        # Force data_owner to the requesting user's org, ignoring
+        # (or rejecting) any value the client tried to submit.
+        serializer.save(data_owner=self.get_user_organisation())
+
+    def perform_update(self, serializer):
+        # Prevent a PATCH/PUT from reassigning the object to another org.
+        serializer.save(data_owner=self.get_user_organisation())
+
+    def perform_destroy(self, instance):
+        # Belt-and-suspenders: get_object() already filtered by org,
+        # but this guards against get_object() being overridden elsewhere.
+        if instance.data_owner_id != self.get_user_organisation().id:
+            raise PermissionDenied("Not allowed to delete this object.")
+        super().perform_destroy(instance)
 
 
 class UrlFieldMixin:

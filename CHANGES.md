@@ -3,7 +3,7 @@
 ## 1.76 (unreleased)
 
 
-- Nothing changed yet.
+-   Hotfix [Organisations]: limit users ability within the API surrounding organisations to prevent a user from one organisation from deleting other organisations.
 
 
 ## 1.75 (2026-06-18)

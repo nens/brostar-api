@@ -215,9 +215,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OrganisationSerializer
     lookup_field = "uuid"
     queryset = models.Organisation.objects.all().order_by("name")
+    http_method_names = ["get", "head", "patch", "options"]
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = "__all__"
+    filterset_fields = ["uuid", "name", "kvk_number"]
 
     def update(self, request, *args, **kwargs):
         # validate that the user requests the change for own organisation
