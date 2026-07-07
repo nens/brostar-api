@@ -1201,36 +1201,49 @@ class GLDObjectImporter(ObjectImporter):
         return gmn_ids
 
     def _observation_summary(self) -> list[dict[str, Any]]:
+        import random
+
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observationsSummary"
-        r = self.s.get(url=url)
-
-        if r.status_code == 429:
-            wait_time = int(r.headers.get("Retry-After", 5))
-            logger.info(
-                f"Received 429 Too Many Requests. Retrying after {wait_time} seconds."
-            )
-            time.sleep(wait_time)
-            return self._observation_summary()
-
-        r.raise_for_status()
-
-        return r.json()
+        max_retries = 5
+        for attempt in range(max_retries + 1):
+            r = self.s.get(url=url)
+            if r.status_code == 429:
+                if attempt == max_retries:
+                    r.raise_for_status()
+                wait_time = int(r.headers.get("Retry-After", 5))
+                jitter = random.uniform(0, wait_time * 0.5)
+                sleep_time = wait_time + jitter
+                logger.info(
+                    f"Received 429 Too Many Requests. Retrying after {sleep_time:.1f} seconds "
+                    f"(attempt {attempt + 1}/{max_retries})."
+                )
+                time.sleep(sleep_time)
+                continue
+            r.raise_for_status()
+            return r.json()
+        r.raise_for_status()  # unreachable, but satisfies type checker
 
     def _procedure_information(self, observation_id: str):
+        import random
+
         url = f"{settings.BRO_UITGIFTE_SERVICE_URL}/gm/gld/v1/objects/{self.bro_id}/observations/{observation_id}?startTVPTime=1900-01-01T00%3A00%3A00&endTVPTime=1900-01-01T00%3A00%3A00"
-        r = self.s.get(url=url)
-
-        if r.status_code == 429:
-            wait_time = int(r.headers.get("Retry-After", 5))
-            logger.info(
-                f"Received 429 Too Many Requests. Retrying after {wait_time} seconds."
-            )
-            time.sleep(wait_time)
-            return self._procedure_information(observation_id)
-
-        r.raise_for_status()
-
-        return ET.fromstring(r.content)
+        max_retries = 5
+        for attempt in range(max_retries + 1):
+            r = self.s.get(url=url)
+            if r.status_code == 429:
+                if attempt == max_retries:
+                    r.raise_for_status()
+                wait_time = int(r.headers.get("Retry-After", 5))
+                jitter = random.uniform(0, wait_time * 0.5)
+                sleep_time = wait_time + jitter
+                logger.info(
+                    f"Received 429 Too Many Requests for observation {observation_id}. "
+                    f"Retrying after {sleep_time:.1f} seconds (attempt {attempt + 1}/{max_retries})."
+                )
+                time.sleep(sleep_time)
+                continue
+            r.raise_for_status()
+            return ET.fromstring(r.content)
 
     def _format_procedure(self, observation: ET.Element) -> dict:
         procedure = {}

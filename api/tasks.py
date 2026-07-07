@@ -1,10 +1,11 @@
 import logging
 from logging import getLogger
 
-from celery import chain, shared_task
+from celery import chain, chord, group, shared_task
+from django.db.models import F
 
 import api.models as api_models
-from api.bro_import import bulk_import
+from api.bro_import import bulk_import, config
 from api.bro_upload import utils
 from api.bro_upload.gar_bulk_upload import GARBulkUploader
 from api.bro_upload.gld_bulk_upload import GLDBulkUploader
@@ -368,3 +369,227 @@ def gmn_bulk_upload_task(
         uploader.process()
     except Exception as e:
         logger.info(f"Error during GMN bulk upload: {e}")
+
+
+# ---------------------------------------------------------------------------
+# Async bulk import – chord-based fan-out
+# ---------------------------------------------------------------------------
+
+KNOWN_BRO_DOMAINS = set(config.object_importer_mapping.keys())
+
+
+@shared_task(queue="default")
+def fetch_bro_ids_and_dispatch_task(import_task_instance_uuid: str) -> None:
+    """Entry point for the new async bulk import flow.
+
+    Fetches all BRO IDs for the domain/KVK stored in the ImportTask, then
+    dispatches a Celery chord:
+    - header: one ``import_single_object_task`` per BRO ID
+    - callback: ``finalize_bulk_import_task`` that marks the ImportTask done
+
+    The original ``import_bro_data_task`` is kept intact for backward
+    compatibility; new ImportTask signals call this task instead.
+    """
+    import_task = api_models.ImportTask.objects.get(uuid=import_task_instance_uuid)
+    import_task.status = "PROCESSING"
+    import_task.progress = 0.0
+    import_task.log = "Fetching BRO IDs…"
+    import_task.save(update_fields=["status", "progress", "log"])
+
+    try:
+        importer = bulk_import.BulkImporter(import_task_instance_uuid)
+        url = importer._create_bro_ids_import_url()
+        bro_ids = importer._fetch_bro_ids(url)
+    except Exception as e:
+        import_task.status = "FAILED"
+        import_task.log = f"Failed to fetch BRO IDs: {e}"
+        import_task.save(update_fields=["status", "log"])
+        logger.info(f"fetch_bro_ids_and_dispatch_task failed: {e}")
+        return
+
+    total = len(bro_ids)
+    if total == 0:
+        import_task.status = "COMPLETED"
+        import_task.progress = 100.0
+        import_task.log = "No BRO IDs found – nothing to import."
+        import_task.save(update_fields=["status", "progress", "log"])
+        return
+
+    import_task.log = f"Dispatching {total} import tasks…"
+    import_task.save(update_fields=["log"])
+
+    force = import_task.log == "FORCE"
+    data_owner_id = str(import_task.data_owner_id)
+    bro_domain = import_task.bro_domain
+
+    # GLD imports make many sub-requests per object and need a dedicated
+    # rate-limited queue to avoid flooding the BRO API when parallel imports run.
+    task_sig = (
+        import_single_gld_object_task
+        if bro_domain == "GLD"
+        else import_single_object_task
+    )
+
+    header = group(
+        task_sig.s(
+            bro_id,
+            bro_domain,
+            data_owner_id,
+            str(import_task_instance_uuid),
+            force,
+            total,
+        )
+        for bro_id in bro_ids
+    )
+    callback = finalize_bulk_import_task.s(str(import_task_instance_uuid))
+    chord(header, callback).apply_async()
+
+
+def _run_single_object_import(
+    bro_id: str,
+    bro_domain: str,
+    data_owner_id: str,
+    import_task_instance_uuid: str,
+    force: bool,
+    total: int,
+) -> dict:
+    """Shared implementation for both object import tasks."""
+    from api.models import ImportTask, Organisation
+
+    try:
+        importer_class = config.object_importer_mapping.get(bro_domain)
+        if importer_class is None:
+            return {
+                "bro_id": bro_id,
+                "success": False,
+                "error": f"Unknown domain: {bro_domain}",
+            }
+
+        data_owner = Organisation.objects.get(uuid=data_owner_id)
+        importer = importer_class(bro_id, data_owner)
+        importer.run(force=force)
+
+        # Atomically increment progress so concurrent tasks don't overwrite each other
+        increment = 100.0 / total
+        ImportTask.objects.filter(uuid=import_task_instance_uuid).update(
+            progress=F("progress") + increment
+        )
+
+        logger.info(f"Imported {bro_id} successfully.")
+        return {"bro_id": bro_id, "success": True}
+
+    except Exception as e:
+        logger.info(f"Error importing {bro_id}: {e}")
+        return {"bro_id": bro_id, "success": False, "error": str(e)}
+
+
+@shared_task(queue="default", rate_limit="20/m")
+def import_single_object_task(
+    bro_id: str,
+    bro_domain: str,
+    data_owner_id: str,
+    import_task_instance_uuid: str,
+    force: bool,
+    total: int,
+) -> dict:
+    """Import a single non-GLD BRO object and return a result dict.
+
+    This task is designed to never raise so that the chord callback always
+    fires, even when individual objects fail.
+
+    Rate-limited to 20/min per worker to stay within BRO API tolerances.
+    Increment is calculated per-task so progress stays accurate regardless of
+    task ordering.
+    """
+    return _run_single_object_import(
+        bro_id, bro_domain, data_owner_id, import_task_instance_uuid, force, total
+    )
+
+
+@shared_task(queue="gld_import", rate_limit="3/m")
+def import_single_gld_object_task(
+    bro_id: str,
+    bro_domain: str,
+    data_owner_id: str,
+    import_task_instance_uuid: str,
+    force: bool,
+    total: int,
+) -> dict:
+    """Import a single GLD object and return a result dict.
+
+    GLD imports make many sub-requests per object (one observation summary +
+    one request per observation), so they are rate-limited more aggressively
+    than other domains to avoid hitting the BRO API rate limit when multiple
+    GLD imports run in parallel.
+
+    Run workers for this queue with low concurrency, e.g.:
+        celery -A brostar_api worker -Q gld_import --concurrency=1
+    """
+    return _run_single_object_import(
+        bro_id, bro_domain, data_owner_id, import_task_instance_uuid, force, total
+    )
+
+
+@shared_task(queue="default")
+def finalize_bulk_import_task(
+    results: list[dict], import_task_instance_uuid: str
+) -> None:
+    """Chord callback: summarise results and mark ImportTask as COMPLETED or FAILED."""
+    import_task = api_models.ImportTask.objects.get(uuid=import_task_instance_uuid)
+
+    successes = sum(1 for r in results if r and r.get("success"))
+    failures = len(results) - successes
+    failed_ids = [r["bro_id"] for r in results if r and not r.get("success")]
+
+    if successes == 0 and failures > 0:
+        import_task.status = "FAILED"
+    else:
+        import_task.status = "COMPLETED"
+
+    import_task.progress = 100.0
+    summary = f"Import voltooid: {successes} geslaagd, {failures} mislukt."
+    if failed_ids:
+        summary += f" Mislukte IDs: {', '.join(failed_ids[:20])}"
+        if len(failed_ids) > 20:
+            summary += f" … en {len(failed_ids) - 20} meer."
+    import_task.log = summary
+    import_task.save(update_fields=["status", "progress", "log"])
+    logger.info(f"finalize_bulk_import_task: {summary}")
+
+
+# ---------------------------------------------------------------------------
+# Individual object import
+# ---------------------------------------------------------------------------
+
+
+@shared_task(queue="default")
+def import_object_task(object_import_task_uuid: str) -> None:
+    """Import a single BRO object tracked by an ObjectImportTask instance.
+
+    Triggered by ``ObjectImportTaskViewSet.create()``.  Updates
+    ``ObjectImportTask.status`` and ``ObjectImportTask.log`` on completion.
+    """
+    obj_task = api_models.ObjectImportTask.objects.get(uuid=object_import_task_uuid)
+    obj_task.status = "PROCESSING"
+    obj_task.save(update_fields=["status"])
+
+    try:
+        importer_class = config.object_importer_mapping.get(obj_task.bro_domain)
+        if importer_class is None:
+            raise ValueError(
+                f"No importer available for domain '{obj_task.bro_domain}'."
+            )
+
+        importer = importer_class(obj_task.bro_id, obj_task.data_owner)
+        importer.run(force=obj_task.force)
+
+        obj_task.status = "COMPLETED"
+        obj_task.log = f"Import van {obj_task.bro_id} geslaagd."
+        logger.info(f"import_object_task: {obj_task.bro_id} completed.")
+
+    except Exception as e:
+        obj_task.status = "FAILED"
+        obj_task.log = str(e)
+        logger.info(f"import_object_task: {obj_task.bro_id} failed – {e}")
+
+    obj_task.save(update_fields=["status", "log"])

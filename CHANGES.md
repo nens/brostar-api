@@ -3,8 +3,8 @@
 ## 1.77 (unreleased)
 
 
-- Nothing changed yet.
-
+-   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
+-   Enhancement [ImportTasks]: Convert to celery tasks, for faster handling
 
 ## 1.76 (2026-07-07)
 
