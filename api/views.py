@@ -386,10 +386,9 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Always enforce the organisation from the user
-        serializer.validated_data["data_owner"] = user_profile.organisation
-
-        self.perform_create(serializer)
+        # Always enforce the organisation from the user, pass as kwarg so DRF
+        # merges it into validated_data after read-only field filtering.
+        serializer.save(data_owner=user_profile.organisation)
         headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
@@ -409,8 +408,7 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        serializer.validated_data["data_owner"] = user_profile.organisation
-        self.perform_update(serializer)
+        serializer.save(data_owner=user_profile.organisation)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
