@@ -1,10 +1,16 @@
 # Changelog for BROStar API
 
-## 1.76 (unreleased)
+## 1.77 (unreleased)
 
 
 -   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
 -   Enhancement [ImportTasks]: Convert to celery tasks, for faster handling
+
+## 1.76 (2026-07-07)
+
+
+-   Hotfix [Organisations]: limit users ability within the API surrounding organisations to prevent a user from one organisation from deleting other organisations. [Thanks to Ray Sabee @whitehatsecurity.nl]
+
 
 ## 1.75 (2026-06-18)
 
