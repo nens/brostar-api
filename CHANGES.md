@@ -3,7 +3,7 @@
 ## 1.76 (unreleased)
 
 
--   Hotfix [Organisations]: limit users ability within the API surrounding organisations to prevent a user from one organisation from deleting other organisations.
+-   Hotfix [Organisations]: limit users ability within the API surrounding organisations to prevent a user from one organisation from deleting other organisations. [Thanks to Ray Sabee @whitehatsecurity.nl]
 
 
 ## 1.75 (2026-06-18)
