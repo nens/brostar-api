@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.76 (unreleased)
+## 1.76 (2026-07-07)
 
 
 -   Hotfix [Organisations]: limit users ability within the API surrounding organisations to prevent a user from one organisation from deleting other organisations. [Thanks to Ray Sabee @whitehatsecurity.nl]
