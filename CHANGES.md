@@ -5,6 +5,7 @@
 
 -   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
 -   Enhancement [ImportTasks]: Convert to celery tasks, for faster handling
+-   Bugfix [Import]: The most recent tube top was shown within the GMW_Construction, instead of the original.
 
 ## 1.76 (2026-07-07)
 

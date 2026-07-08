@@ -699,9 +699,9 @@ class GMWObjectImporter(ObjectImporter):
                     "tube_status": monitoringtube.get("tubeStatus", {}).get(
                         "#text", None
                     ),
-                    "tube_top_position": self._lookup_most_recent_top_position(
-                        monitoringtube, event_data
-                    ),
+                    "tube_top_position": monitoringtube.get("tubeTopPosition", {}).get(
+                        "#text", None
+                    ),  # This should not be the most-recent, but it should be the original value...
                     "tube_top_positioning_method": monitoringtube.get(
                         "tubeTopPositioningMethod", {}
                     ).get("#text", None),
