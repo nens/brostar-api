@@ -19,6 +19,7 @@ NENS_AUTH_CLIENT_SECRET = os.getenv("NENS_AUTH_CLIENT_SECRET")
 NENS_AUTH_RESOURCE_SERVER_ID = os.getenv(
     "NENS_AUTH_RESOURCE_SERVER_ID", default="development-resource-server-id/"
 )
+NENS_AUTH_APPLICATION = "BROSTAR"
 
 _debug_env = os.getenv("DEBUG", default="true")
 DATABASE_HOST = os.getenv("DATABASE_HOST", "db")

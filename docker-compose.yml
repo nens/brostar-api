@@ -33,6 +33,7 @@ services:
       # # Can be set in .env, we'll pass them on. settings.py has some defaults.
       - FIELD_ENCRYPTION_KEY
       - SECRET_KEY
+      - NENS_AUTH_APPLICATION
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
@@ -59,6 +60,7 @@ services:
       # # Can be set in .env, we'll pass them on. settings.py has some defaults.
       - FIELD_ENCRYPTION_KEY
       - SECRET_KEY
+      - NENS_AUTH_APPLICATION
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
@@ -85,6 +87,7 @@ services:
       # # Can be set in .env, we'll pass them on. settings.py has some defaults.
       - FIELD_ENCRYPTION_KEY
       - SECRET_KEY
+      - NENS_AUTH_APPLICATION
       - NENS_AUTH_ISSUER
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
