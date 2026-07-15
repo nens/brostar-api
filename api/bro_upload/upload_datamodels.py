@@ -117,8 +117,6 @@ class GMNMeasuringPoint(CamelModel):
 class GMNMeasuringPointEndDate(CamelModel):
     event_date: str | None = None
     measuring_point_code: str
-    bro_id: str
-    tube_number: int
 
 
 class GMNTubeReference(CamelModel):
