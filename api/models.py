@@ -203,9 +203,15 @@ class ImportTask(models.Model):
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )
     log = models.TextField(blank=True)
+
     progress = models.FloatField(blank=True, null=True)
 
     def save(self, *args: Any, **kwargs: Any) -> None:
+        if self.progress is not None:
+            # This should always be rounded two 2 digits behind comma
+            # Helps UI, and more digits are not helpful.
+            self.progress = round(self.progress, 2)
+
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
