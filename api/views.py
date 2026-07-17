@@ -1,8 +1,14 @@
+import io
 import logging
+import os
+import uuid
+import zipfile
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
@@ -834,3 +840,267 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class RawXMLUploadView(APIView):
+    """Accept a single BRO XML file or a ZIP archive of BRO XML files and deliver
+    each one directly to the BRO validation and delivery service, bypassing
+    template generation and Pydantic sourcedocument validation.
+
+    Each XML inside the upload becomes its own UploadTask.  Progress can be
+    monitored via the standard ``/api/uploadtasks/{{uuid}}/`` and
+    ``/api/uploadtasks/{{uuid}}/check_status/`` endpoints.
+
+    **POST Parameters (multipart/form-data)**
+
+    ``file`` (*required*)
+        A single ``.xml`` file or a ``.zip`` archive containing ``.xml`` files.
+        Maximum size: {zip} MB for a ZIP archive, {xml} MB for a single XML.
+        A ZIP may contain at most {entries} XML files.
+
+    ``project_number`` (*required*)
+        BRO project number used for validation and delivery.
+    """.format(
+        zip=getattr(settings, "RAW_XML_MAX_ZIP_MB", 250),
+        xml=getattr(settings, "RAW_XML_MAX_XML_MB", 50),
+        entries=getattr(settings, "RAW_XML_MAX_ZIP_ENTRIES", 100),
+    )
+
+    parser_classes = [MultiPartParser]
+
+    _ZIP_MAGIC = b"PK\x03\x04"
+
+    # ------------------------------------------------------------------ helpers
+
+    def _size_limit_mb(self, key: str, default: int) -> int:
+        return int(getattr(settings, key, default))
+
+    def _extract_xml_entries(
+        self, file_bytes: bytes, original_name: str
+    ) -> list[tuple[str, bytes]]:
+        """Return a list of (safe_filename, xml_bytes) tuples.
+
+        For a ZIP file every member is inspected; non-XML entries and unsafe
+        filenames are silently skipped.  Oversized entries are rejected with a
+        ``ValueError``.
+        """
+        max_xml_bytes = self._size_limit_mb("RAW_XML_MAX_XML_MB", 50) * 1024 * 1024
+        max_entries = self._size_limit_mb("RAW_XML_MAX_ZIP_ENTRIES", 100)
+        max_total_bytes = self._size_limit_mb("RAW_XML_MAX_ZIP_MB", 250) * 1024 * 1024
+
+        if file_bytes[:4] == self._ZIP_MAGIC:
+            entries: list[tuple[str, bytes]] = []
+            cumulative = 0
+            try:
+                with zipfile.ZipFile(io.BytesIO(file_bytes)) as zf:
+                    for info in zf.infolist():
+                        safe_name = os.path.basename(info.filename)
+                        # Reject path traversal and non-XML entries
+                        if not safe_name or ".." in info.filename:
+                            continue
+                        if not safe_name.lower().endswith(".xml"):
+                            continue
+                        if len(entries) >= max_entries:
+                            break
+                        if info.file_size > max_xml_bytes:
+                            raise ValueError(
+                                f"Bestand '{safe_name}' overschrijdt de maximale bestandsgrootte "
+                                f"van {max_xml_bytes // (1024 * 1024)} MB."
+                            )
+                        cumulative += info.file_size
+                        if cumulative > max_total_bytes:
+                            raise ValueError(
+                                f"De totale gedecomprimeerde grootte van de ZIP overschrijdt "
+                                f"{max_total_bytes // (1024 * 1024)} MB."
+                            )
+                        xml_bytes = zf.read(info.filename)
+                        entries.append((safe_name, xml_bytes))
+            except zipfile.BadZipFile as exc:
+                raise ValueError(f"Ongeldig ZIP-bestand: {exc}") from exc
+            return entries
+        else:
+            # Treat as a single XML file
+            return [(original_name, file_bytes)]
+
+    def _process_xml_entries(
+        self,
+        entries: list[tuple[str, bytes]],
+        organisation: Any,
+        project_number: str,
+        bro_username: str,
+        bro_password: str,
+    ) -> tuple[list[dict], list[str]]:
+        """Create an UploadTask and fire a Celery task for each valid XML entry.
+
+        Returns (created, skipped) where each element of *created* is a dict
+        summarising the new task and *skipped* lists filenames that could not
+        be processed.
+        """
+        created: list[dict] = []
+        skipped: list[str] = []
+
+        for filename, xml_bytes in entries:
+            try:
+                xml_meta = utils.parse_raw_xml_metadata(xml_bytes)
+            except ValueError as exc:
+                logger.warning("Skipping '%s': %s", filename, exc)
+                skipped.append(filename)
+                continue
+
+            try:
+                xml_string = xml_bytes.decode("utf-8")
+            except UnicodeDecodeError:
+                logger.warning("Skipping '%s': not valid UTF-8", filename)
+                skipped.append(filename)
+                continue
+
+            cache_key = f"raw_xml_{uuid.uuid4().hex}"
+            cache.set(cache_key, xml_string, timeout=3600)
+
+            upload_task = models.UploadTask.objects.create(
+                data_owner=organisation,
+                bro_domain=xml_meta["bro_domain"],
+                project_number=project_number,
+                registration_type=xml_meta["registration_type"],
+                request_type=xml_meta["request_type"],
+                metadata={"_is_raw_xml": True, "requestReference": str(uuid.uuid4())},
+                sourcedocument_data={"filename": filename},
+                status="PENDING",
+            )
+
+            tasks.validate_and_deliver_raw_xml_task.delay(
+                str(upload_task.uuid),
+                bro_username,
+                bro_password,
+                cache_key,
+            )
+
+            created.append(
+                {
+                    "uuid": str(upload_task.uuid),
+                    "filename": filename,
+                    "registration_type": xml_meta["registration_type"],
+                    "request_type": xml_meta["request_type"],
+                }
+            )
+
+        return created, skipped
+
+    # ------------------------------------------------------------------ POST
+
+    def _resolve_credentials(self, request: HttpRequest):
+        """Return (organisation, bro_username, bro_password, error_response).
+
+        *error_response* is non-None when the caller should return early.
+        """
+        user_profile = models.UserProfile.objects.get(user=request.user)
+        organisation = user_profile.organisation
+        if not organisation:
+            return (
+                None,
+                None,
+                None,
+                Response(
+                    {"detail": "No organisation linked to this user."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                ),
+            )
+        bro_username = organisation.bro_user_token
+        bro_password = organisation.bro_user_password
+        if not bro_username or not bro_password:
+            return (
+                None,
+                None,
+                None,
+                Response(
+                    {"detail": "No BRO credentials configured for this organisation."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                ),
+            )
+        return organisation, bro_username, bro_password, None
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        organisation, bro_username, bro_password, err = self._resolve_credentials(
+            request
+        )
+        if err is not None:
+            return err
+        assert organisation is not None
+        assert bro_username is not None
+        assert bro_password is not None
+
+        # --- project_number ---------------------------------------------------
+        project_number = request.data.get("project_number", "").strip()
+        if not project_number:
+            return Response(
+                {"detail": "project_number is verplicht."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- uploaded file ----------------------------------------------------
+        uploaded_file = request.FILES.get("file")
+        if not uploaded_file:
+            return Response(
+                {"detail": "Geen bestand ontvangen. Gebruik het veld 'file'."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        original_name = uploaded_file.name or "upload.xml"
+        max_zip_bytes = self._size_limit_mb("RAW_XML_MAX_ZIP_MB", 250) * 1024 * 1024
+        max_xml_bytes = self._size_limit_mb("RAW_XML_MAX_XML_MB", 50) * 1024 * 1024
+
+        file_bytes = uploaded_file.read()
+
+        # --- size check -------------------------------------------------------
+        is_zip = file_bytes[:4] == self._ZIP_MAGIC
+        size_limit = max_zip_bytes if is_zip else max_xml_bytes
+        if len(file_bytes) > size_limit:
+            limit_mb = size_limit // (1024 * 1024)
+            return Response(
+                {
+                    "detail": f"Bestand is groter dan de maximaal toegestane {limit_mb} MB."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- detect file type by content, not Content-Type header -------------
+        first_non_ws = file_bytes.lstrip()[:1]
+        if not is_zip and first_non_ws not in (b"<", b"\xef"):  # XML or UTF-8 BOM
+            return Response(
+                {"detail": "Bestand moet een XML- of ZIP-bestand zijn."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- extract entries --------------------------------------------------
+        try:
+            entries = self._extract_xml_entries(file_bytes, original_name)
+        except ValueError as exc:
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not entries:
+            return Response(
+                {
+                    "detail": "Geen geldige XML-bestanden gevonden in het geüploade bestand."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # --- process each XML -------------------------------------------------
+        created, skipped = self._process_xml_entries(
+            entries, organisation, project_number, bro_username, bro_password
+        )
+
+        if not created:
+            return Response(
+                {
+                    "detail": "Geen geldig XML-bestanden verwerkt.",
+                    "skipped": skipped,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        response_data: dict = {"created": created}
+        if skipped:
+            response_data["skipped"] = skipped
+
+        return Response(response_data, status=status.HTTP_202_ACCEPTED)
