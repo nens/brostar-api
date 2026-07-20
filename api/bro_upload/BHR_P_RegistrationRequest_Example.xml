@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registrationRequest
+        xmlns="http://www.broservices.nl/xsd/isbhr/2.0"
+        xmlns:bhrcom="http://www.broservices.nl/xsd/bhrcommon/2.0"
+        xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+        xmlns:om="http://www.opengis.net/om/2.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.broservices.nl/xsd/isbhr/2.0 https://schema.broservices.nl/xsd/isbhr/2.0/isbhr-messages.xsd">
+  <!-- Disclaimer: dit voorbeeldbericht valideert tegen de validatieservice van het acc.bronhouderportaal-bro.nl, maar de gegevens zijn fictief en waarschijnlijk inhoudelijk niet correct.
+  -->
+  <brocom:requestReference>levering-object12</brocom:requestReference>
+  <brocom:deliveryAccountableParty>27376655</brocom:deliveryAccountableParty>
+  <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+  <sourceDocument>
+    <BHR_P gml:id="id-1">
+      <objectIdAccountableParty>97166725</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:bhr:DeliveryContext">publiekeTaak</deliveryContext>
+      <surveyPurpose codeSpace="urn:bro:bhr:SurveyPurpose">bodemkaartNederland</surveyPurpose>
+      <discipline codeSpace="urn:bro:bhr:Discipline">bodemkunde</discipline>
+      <researchReportDate>
+        <brocom:date>2015-08-23</brocom:date>
+      </researchReportDate>
+      <siteCharacteristicDetermined>nee</siteCharacteristicDetermined>
+      <litterLayerInvestigated>nee</litterLayerInvestigated>
+      <deliveredLocation>
+        <bhrcom:location gml:id="id-2" srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:pos>134750.000 477800.000</gml:pos>
+        </bhrcom:location>
+        <bhrcom:horizontalPositioningDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </bhrcom:horizontalPositioningDate>
+        <bhrcom:horizontalPositioningMethod codeSpace="urn:bro:bhr:HorizontalPositioningMethod">GPS200tot1000cm</bhrcom:horizontalPositioningMethod>
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <bhrcom:localVerticalReferencePoint codeSpace="urn:bro:bhr:LocalVerticalReferencePoint">maaiveld</bhrcom:localVerticalReferencePoint>
+        <bhrcom:offset uom="m">1.303</bhrcom:offset>
+        <bhrcom:verticalDatum codeSpace="urn:bro:bhr:VerticalDatum">NAP</bhrcom:verticalDatum>
+        <bhrcom:verticalPositioningDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </bhrcom:verticalPositioningDate>
+        <bhrcom:verticalPositioningMethod codeSpace="urn:bro:bhr:VerticalPositioningMethod">AHN3</bhrcom:verticalPositioningMethod>
+      </deliveredVerticalPosition>
+      <boring>
+        <bhrcom:boringStartDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </bhrcom:boringStartDate>
+        <bhrcom:boringEndDate>
+          <brocom:date>2015-08-23</brocom:date>
+        </bhrcom:boringEndDate>
+        <bhrcom:casingUsed>nee</bhrcom:casingUsed>
+        <bhrcom:flushingMedium codeSpace="urn:bro:bhr:FlushingMedium">geen</bhrcom:flushingMedium>
+        <bhrcom:stopCriterion codeSpace="urn:bro:bhr:StopCriterion">einddiepte</bhrcom:stopCriterion>
+        <bhrcom:trajectoryRemoved>nee</bhrcom:trajectoryRemoved>
+        <bhrcom:boringProcedure>
+          <bhrcom:boringStandard codeSpace="urn:bro:bhr:BoringStandard">geen</bhrcom:boringStandard>
+        </bhrcom:boringProcedure>
+        <bhrcom:boredTrajectory>
+          <bhrcom:beginDepth uom="m">0</bhrcom:beginDepth>
+          <bhrcom:endDepth uom="m">15.00</bhrcom:endDepth>
+        </bhrcom:boredTrajectory>
+        <bhrcom:boringTool>
+          <bhrcom:boringToolType codeSpace="urn:bro:bhr:BoringToolType">edelmanboor</bhrcom:boringToolType>
+          <bhrcom:boringToolDiameter uom="mm">70</bhrcom:boringToolDiameter>
+          <bhrcom:boredInterval>
+            <bhrcom:beginDepth uom="m">0</bhrcom:beginDepth>
+            <bhrcom:endDepth uom="m">15.00</bhrcom:endDepth>
+          </bhrcom:boredInterval>
+        </bhrcom:boringTool>
+      </boring>
+      <boreholeSampleDescription gml:id="id-3">
+        <om:phenomenonTime>
+          <gml:TimeInstant gml:id="id-4" frame="#ISO-8601">
+            <gml:timePosition frame="#ISO-8601">2015-08-23</gml:timePosition>
+          </gml:TimeInstant>
+        </om:phenomenonTime>
+        <om:resultTime xlink:type="simple" xlink:href="id-4"/>
+        <om:procedure nilReason="inapplicable"/>
+        <om:observedProperty nilReason="inapplicable"/>
+        <om:featureOfInterest nilReason="inapplicable"/>
+        <bhrcom:result>
+          <bhrcom:sampleQuality codeSpace="urn:bro:bhr:SampleQuality">ongeroerd</bhrcom:sampleQuality>
+          <bhrcom:rootPenetrableDepthReached>nee</bhrcom:rootPenetrableDepthReached>
+          <bhrcom:soilLayer>
+            <bhrcom:upperBoundary uom="m">0</bhrcom:upperBoundary>
+            <bhrcom:lowerBoundary uom="m">6</bhrcom:lowerBoundary>
+            <bhrcom:anthropogenic>ja</bhrcom:anthropogenic>
+            <bhrcom:numberOfLayerComponents>2</bhrcom:numberOfLayerComponents>
+            <bhrcom:layerComponent>
+              <bhrcom:volumePercentage uom="%">70</bhrcom:volumePercentage>
+              <bhrcom:depositionalCharacteristic codeSpace="urn:bro:bhr:DepositionalCharacteristic">dekzandFluvioperiglaciaal</bhrcom:depositionalCharacteristic>
+              <bhrcom:horizonCode codeSpace="urn:bro:bhr:HorizonCode">Bt</bhrcom:horizonCode>
+              <bhrcom:saturatedPermeability uom="m/d">1.23</bhrcom:saturatedPermeability>
+              <bhrcom:soilType>
+                <bhrcom:standardSoilName codeSpace="urn:bro:bhr:StandardSoilName">matigSiltigZand</bhrcom:standardSoilName>
+                <bhrcom:soilTypeLoamBased>ja</bhrcom:soilTypeLoamBased>
+                <bhrcom:pedologicalSoilName codeSpace="urn:bro:bhr:PedologicalSoilName">leemarmZand</bhrcom:pedologicalSoilName>
+                <bhrcom:organicMatterClass codeSpace="urn:bro:bhr:OrganicMatterClass">nietHumeus</bhrcom:organicMatterClass>
+                <bhrcom:sandMedian uom="um">180</bhrcom:sandMedian>
+                <bhrcom:carbonateClass codeSpace="urn:bro:bhr:CarbonateClass">kalkhoudend</bhrcom:carbonateClass>
+                <bhrcom:containsGravel>nee</bhrcom:containsGravel>
+                <bhrcom:containsShellMatter>nee</bhrcom:containsShellMatter>
+                <bhrcom:fractionDistribution>
+                    <bhrcom:gravelContent uom="%">0</bhrcom:gravelContent>
+                    <bhrcom:shellMatterContent uom="%">0</bhrcom:shellMatterContent>
+                    <bhrcom:organicMatterContent uom="%">0</bhrcom:organicMatterContent>
+                    <bhrcom:fineFractionContent uom="%">100</bhrcom:fineFractionContent>
+                    <bhrcom:fineFractionDistribution>
+                        <bhrcom:clayContent uom="%">0</bhrcom:clayContent>
+                        <bhrcom:siltContent uom="%">12</bhrcom:siltContent>
+                        <bhrcom:sandContent uom="%">88</bhrcom:sandContent>
+                    </bhrcom:fineFractionDistribution>
+                </bhrcom:fractionDistribution>
+              </bhrcom:soilType>
+            </bhrcom:layerComponent>
+            <bhrcom:layerComponent>
+              <bhrcom:volumePercentage uom="%">30</bhrcom:volumePercentage>
+              <bhrcom:horizonCode codeSpace="urn:bro:bhr:HorizonCode">Bt</bhrcom:horizonCode>
+              <bhrcom:saturatedPermeability uom="m/d">3.12</bhrcom:saturatedPermeability>
+              <bhrcom:soilType>
+                <bhrcom:standardSoilName codeSpace="urn:bro:bhr:StandardSoilName">sterkZandigeKlei</bhrcom:standardSoilName>
+                <bhrcom:soilTypeLoamBased>nee</bhrcom:soilTypeLoamBased>
+                <bhrcom:pedologicalSoilName codeSpace="urn:bro:bhr:PedologicalSoilName">kleiigZand</bhrcom:pedologicalSoilName>
+                <bhrcom:organicMatterClass codeSpace="urn:bro:bhr:OrganicMatterClass">nietHumeus</bhrcom:organicMatterClass>
+                <bhrcom:sandMedian uom="um">150</bhrcom:sandMedian>
+                <bhrcom:carbonateClass codeSpace="urn:bro:bhr:CarbonateClass">kalkloos</bhrcom:carbonateClass>
+                <bhrcom:containsGravel>nee</bhrcom:containsGravel>
+                <bhrcom:containsShellMatter>nee</bhrcom:containsShellMatter>
+                <bhrcom:fractionDistribution>
+                    <bhrcom:gravelContent uom="%">0</bhrcom:gravelContent>
+                    <bhrcom:shellMatterContent uom="%">0</bhrcom:shellMatterContent>
+                    <bhrcom:organicMatterContent uom="%">0</bhrcom:organicMatterContent>
+                    <bhrcom:fineFractionContent uom="%">100</bhrcom:fineFractionContent>
+                    <bhrcom:fineFractionDistribution>
+                        <bhrcom:clayContent uom="%">65</bhrcom:clayContent>
+                        <bhrcom:siltContent uom="%">0</bhrcom:siltContent>
+                        <bhrcom:sandContent uom="%">35</bhrcom:sandContent>
+                    </bhrcom:fineFractionDistribution>
+                </bhrcom:fractionDistribution>
+              </bhrcom:soilType>
+            </bhrcom:layerComponent>
+          </bhrcom:soilLayer>
+          <bhrcom:soilLayer>
+            <bhrcom:upperBoundary uom="m">6</bhrcom:upperBoundary>
+            <bhrcom:lowerBoundary uom="m">15</bhrcom:lowerBoundary>
+            <bhrcom:anthropogenic>nee</bhrcom:anthropogenic>
+            <bhrcom:numberOfLayerComponents>1</bhrcom:numberOfLayerComponents>
+            <bhrcom:layerComponent>
+              <bhrcom:depositionalCharacteristic codeSpace="urn:bro:bhr:DepositionalCharacteristic">fluviatielRijnHoloceen</bhrcom:depositionalCharacteristic>
+              <bhrcom:horizonCode codeSpace="urn:bro:bhr:HorizonCode">Bt</bhrcom:horizonCode>
+              <bhrcom:soilType>
+                <bhrcom:standardSoilName codeSpace="urn:bro:bhr:StandardSoilName">zwakSiltigZand</bhrcom:standardSoilName>
+                <bhrcom:soilTypeLoamBased>ja</bhrcom:soilTypeLoamBased>
+                <bhrcom:pedologicalSoilName codeSpace="urn:bro:bhr:PedologicalSoilName">leemarmZand</bhrcom:pedologicalSoilName>
+                <bhrcom:organicMatterClass codeSpace="urn:bro:bhr:OrganicMatterClass">nietHumeus</bhrcom:organicMatterClass>
+                <bhrcom:sandMedian uom="um">180</bhrcom:sandMedian>
+                <bhrcom:carbonateClass codeSpace="urn:bro:bhr:CarbonateClass">kalkhoudend</bhrcom:carbonateClass>
+                <bhrcom:containsGravel>nee</bhrcom:containsGravel>
+                <bhrcom:containsShellMatter>nee</bhrcom:containsShellMatter>
+                <bhrcom:fractionDistribution>
+                    <bhrcom:gravelContent uom="%">0</bhrcom:gravelContent>
+                    <bhrcom:shellMatterContent uom="%">0</bhrcom:shellMatterContent>
+                    <bhrcom:organicMatterContent uom="%">0</bhrcom:organicMatterContent>
+                    <bhrcom:fineFractionContent uom="%">100</bhrcom:fineFractionContent>
+                    <bhrcom:fineFractionDistribution>
+                        <bhrcom:clayContent uom="%">0</bhrcom:clayContent>
+                        <bhrcom:siltContent uom="%">8</bhrcom:siltContent>
+                        <bhrcom:sandContent uom="%">92</bhrcom:sandContent>
+                    </bhrcom:fineFractionDistribution>
+                </bhrcom:fractionDistribution>
+              </bhrcom:soilType>
+            </bhrcom:layerComponent>
+          </bhrcom:soilLayer>
+        </bhrcom:result>
+        <bhrcom:descriptionMethod codeSpace="urn:bro:bhr:DescriptionMethod">AlterraTD19A</bhrcom:descriptionMethod>
+        <bhrcom:descriptionLocation codeSpace="urn:bro:bhr:DescriptionLocation">veld</bhrcom:descriptionLocation>
+        <bhrcom:fractionDistributionDetermined>ja</bhrcom:fractionDistributionDetermined>
+        <bhrcom:lowerBoundarySandFraction codeSpace="urn:bro:bhr:LowerBoundarySandFraction">50</bhrcom:lowerBoundarySandFraction>
+        <bhrcom:soilClassification>
+          <bhrcom:codeGroup codeSpace="urn:bro:bhr:CodeGroup">zandgrondKalkloos</bhrcom:codeGroup>
+          <bhrcom:classificationCode>eR4w321bp</bhrcom:classificationCode>
+          <bhrcom:featureTop codeSpace="urn:bro:bhr:FeatureTop">geen</bhrcom:featureTop>
+          <bhrcom:soilClass codeSpace="urn:bro:bhr:SoilClass">poldervaaggrondZeeklei</bhrcom:soilClass>
+          <bhrcom:textureClass codeSpace="urn:bro:bhr:TextureClass">zandKleiarmMatigFijn</bhrcom:textureClass>
+          <bhrcom:reworkingClass codeSpace="urn:bro:bhr:ReworkingClass">geen</bhrcom:reworkingClass>
+          <bhrcom:groundwaterTableClass codeSpace="urn:bro:bhr:GroundwaterTableClass">VIo</bhrcom:groundwaterTableClass>
+          <bhrcom:featureSite codeSpace="urn:bro:bhr:FeatureSite">geen</bhrcom:featureSite>
+          <bhrcom:featureBottom>
+            <bhrcom:feature codeSpace="urn:bro:bhr:Feature">zandPleistoceen</bhrcom:feature>
+            <bhrcom:beginDepth uom="m">1.5</bhrcom:beginDepth>
+          </bhrcom:featureBottom>
+        </bhrcom:soilClassification>
+      </boreholeSampleDescription>
+    </BHR_P>
+  </sourceDocument>
+</registrationRequest>

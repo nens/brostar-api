@@ -748,23 +748,420 @@ class CPT(CamelModel):
     cone_penetrometer_survey: ConePenetrometerSurvey
 
 
-### Add BHR and GUF models below
+### BHR / SFR models
+
+# ---------------------------------------------------------------------------
+# Shared location / vertical-position helpers (used by BHR_P, BHR_GT, SFR)
+# ---------------------------------------------------------------------------
+
+
+class BHRDeliveredLocation(CamelModel):
+    """Delivered location for BHR / SFR registrations."""
+
+    location: str  # Space-separated coordinates: "x y"
+    horizontal_positioning_date: str
+    horizontal_positioning_method: str
+    horizontal_positioning_operator: str | None = None
+
+
+class BHRDeliveredVerticalPosition(CamelModel):
+    """Delivered vertical position for BHR / SFR registrations."""
+
+    local_vertical_reference_point: str
+    offset: float | None = None
+    water_depth: float | None = None
+    vertical_datum: str
+    vertical_positioning_date: str
+    vertical_positioning_method: str
+    vertical_positioning_operator: str | None = None
+
+
+# ---------------------------------------------------------------------------
+# BHR_P
+# ---------------------------------------------------------------------------
+
+
+class BHRPBoredInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+
+
+class BHRPBoringProcedure(CamelModel):
+    boring_standard: str
+
+
+class BHRPBoringTool(CamelModel):
+    boring_tool_type: str
+    boring_tool_diameter: float
+    bored_intervals: list[BHRPBoredInterval] = []
+
+
+class BHRPBoring(CamelModel):
+    boring_start_date: str
+    boring_end_date: str
+    casing_used: str
+    flushing_medium: str
+    stop_criterion: str
+    trajectory_removed: str
+    boring_procedure: BHRPBoringProcedure
+    bored_trajectory: BHRPBoredInterval
+    boring_tools: list[BHRPBoringTool] = []
+
+
+class BHRPFineFractionDistribution(CamelModel):
+    clay_content: float
+    silt_content: float
+    sand_content: float
+
+
+class BHRPFractionDistribution(CamelModel):
+    gravel_content: float
+    shell_matter_content: float
+    organic_matter_content: float
+    fine_fraction_content: float
+    fine_fraction_distribution: BHRPFineFractionDistribution | None = None
+
+
+class BHRPSoilType(CamelModel):
+    standard_soil_name: str
+    soil_type_loam_based: str
+    pedological_soil_name: str | None = None
+    organic_matter_class: str
+    sand_median: float | None = None
+    carbonate_class: str
+    contains_gravel: str
+    contains_shell_matter: str
+    fraction_distribution: BHRPFractionDistribution | None = None
+
+
+class BHRPSoilClassificationFeatureBottom(CamelModel):
+    feature: str
+    begin_depth: float | None = None
+
+
+class BHRPSoilClassification(CamelModel):
+    code_group: str
+    classification_code: str
+    feature_top: str | None = None
+    soil_class: str
+    texture_class: str | None = None
+    reworking_class: str
+    groundwater_table_class: str
+    feature_site: str
+    feature_bottoms: list[BHRPSoilClassificationFeatureBottom] = []
+
+
+class BHRPLayerComponent(CamelModel):
+    volume_percentage: float | None = None
+    depositional_characteristic: str | None = None
+    horizon_code: str | None = None
+    saturated_permeability: float | None = None
+    soil_type: BHRPSoilType | None = None
+
+
+class BHRPSoilLayer(CamelModel):
+    upper_boundary: float
+    lower_boundary: float
+    anthropogenic: str
+    number_of_layer_components: int = 1
+    layer_components: list[BHRPLayerComponent] = []
+
+
+class BHRPBoreholeSampleDescription(CamelModel):
+    phenomenon_time: str
+    sample_quality: str
+    root_penetrable_depth_reached: str
+    soil_layers: list[BHRPSoilLayer] = []
+    description_method: str
+    description_location: str
+    fraction_distribution_determined: str
+    lower_boundary_sand_fraction: str
+    soil_classification: BHRPSoilClassification | None = None
 
 
 class BHRP(CamelModel):
+    """BHR_P (Bodemkundige Horizon Registratie Pedologie) registration."""
+
     object_id_accountable_party: str
+    delivery_context: str
+    survey_purpose: str
+    discipline: str
+    research_report_date: str
+    site_characteristic_determined: str
+    litter_layer_investigated: str
+    delivered_location: BHRDeliveredLocation
+    delivered_vertical_position: BHRDeliveredVerticalPosition
+    boring: BHRPBoring
+    borehole_sample_description: BHRPBoreholeSampleDescription | None = None
+
+
+# ---------------------------------------------------------------------------
+# BHR_G  (no example XML available — stub kept)
+# ---------------------------------------------------------------------------
 
 
 class BHRG(CamelModel):
+    """BHR_G stub — no example XML provided. Template not yet implemented."""
+
     object_id_accountable_party: str
 
 
-class BHRGT(CamelModel):
-    object_id_accountable_party: str
+# ---------------------------------------------------------------------------
+# BHR_GT_CompleteReport_V1
+# ---------------------------------------------------------------------------
 
 
-class SFR(CamelModel):
+class BHRGTBoredInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+    boring_technique: str
+    bored_diameter: float
+
+
+class BHRGTBoringVelocity(CamelModel):
+    elapsed_time: float
+    depth: float
+
+
+class BHRGTSampledInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+    pre_treatment: str
+    sampling_method: str
+    sampling_quality: str
+
+
+class BHRGTContaminatedInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+
+
+class BHRGTCompletedInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+    permanent_casing_present: str
+    backfill_material: str | None = None
+    backfill_material_certified: str | None = None
+
+
+class BHRGTBoring(CamelModel):
+    boring_start_date: str
+    boring_end_date: str
+    boring_operator: str | None = None
+    preparation: str
+    trajectory_excavated: str
+    rock_reached: str
+    boring_procedures: list[str] = []
+    final_depth_boring: float
+    stop_criterion: str
+    sampling_procedure: str
+    final_depth_sampling: float
+    subsurface_contaminated: str
+    borehole_completed: str
+    bored_intervals: list[BHRGTBoredInterval] = []
+    boring_velocities: list[BHRGTBoringVelocity] = []
+    sampled_intervals: list[BHRGTSampledInterval] = []
+    contaminated_intervals: list[BHRGTContaminatedInterval] = []
+    completed_intervals: list[BHRGTCompletedInterval] = []
+
+
+class BHRGTNotDescribedInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+    no_description_reason: str
+
+
+class BHRGTLayer(CamelModel):
+    upper_boundary: float
+    upper_boundary_determination: str
+    lower_boundary: float
+    lower_boundary_determination: str
+    anthropogenic: str
+    # Geological material is deeply nested and optional; pass as raw dict
+    special_material: str | None = None
+    slant: str | None = None
+    internal_structure_intact: str | None = None
+    bedded: str | None = None
+    composite_layer: str | None = None
+    soil: dict | None = None
+    rock: dict | None = None
+
+
+class BHRGTDescriptiveBoreholeLog(CamelModel):
+    description_quality: str
+    continuously_sampled: str
+    description_location: str
+    described_material: str
+    sample_moistness: str | None = None
+    borehole_log_checked: str | None = None
+    layers: list[BHRGTLayer] = []
+    not_described_intervals: list[BHRGTNotDescribedInterval] = []
+
+
+class BHRGTBoreholeSampleDescription(CamelModel):
+    description_report_date: str
+    description_procedures: list[str] = []
+    description_operator: str | None = None
+    descriptive_borehole_logs: list[BHRGTDescriptiveBoreholeLog] = []
+
+
+class BHRGTInvestigatedInterval(CamelModel):
+    begin_depth: float
+    end_depth: float
+    sample_quality: str
+    analysis_type: str
+    water_content_determined: str
+    organic_matter_content_determined: str
+    carbonate_content_determined: str
+    volumetric_mass_density_determined: str
+    volumetric_mass_density_solids_determined: str
+    described: str
+
+
+class BHRGTBoreholeSampleAnalysis(CamelModel):
+    analysis_report_date: str
+    analysis_procedure: str
+    analysis_operator: str | None = None
+    investigated_intervals: list[BHRGTInvestigatedInterval] = []
+
+
+class BHRGTSiteCharacteristic(CamelModel):
+    soil_use: str
+    position_on_ground_body: str
+    temporary_change: str | None = None
+
+
+class BHRGTCompleteReportV1(CamelModel):
+    """BHR_GT_CompleteReport_V1 (Bodemkundige Horizon Registratie Geotechniek)."""
+
     object_id_accountable_party: str
+    delivery_context: str
+    survey_purpose: str
+    discipline: str
+    survey_procedure: str
+    research_operator: str | None = None
+    site_characteristic_determined: str
+    delivered_location: BHRDeliveredLocation
+    delivered_vertical_position: BHRDeliveredVerticalPosition
+    boring: BHRGTBoring
+    borehole_sample_description: BHRGTBoreholeSampleDescription | None = None
+    borehole_sample_analysis: BHRGTBoreholeSampleAnalysis | None = None
+    site_characteristic: BHRGTSiteCharacteristic | None = None
+    research_report_date: str
+
+
+# ---------------------------------------------------------------------------
+# SFR_CompleteReport_V1
+# ---------------------------------------------------------------------------
+
+
+class SFRSoilUncovering(CamelModel):
+    end_depth_soil_face: float
+    soil_face_orientation: float | None = None
+    outcrop_type: str
+    stop_criterion: str | None = None
+    pit_refilled: str | None = None
+
+
+class SFRSiteCharacteristic(CamelModel):
+    soil_use: str
+    artificial_drainage: str
+    position_on_ground_body: str
+    surface_level_shifted: str
+    traces_of_churning_present: str
+    mean_highest_groundwater_table: float | None = None
+    mean_lowest_groundwater_table: float | None = None
+    hydrological_setting: str | None = None
+    landscape_element: str | None = None
+    vegetation_type: str | None = None
+
+
+class SFRLitterLayer(CamelModel):
+    upper_boundary: float
+    lower_boundary: float
+    upper_boundary_determination: str
+    lower_boundary_determination: str
+    lower_boundary_shape: str
+    layer_discontinuous: str
+    horizon_code: str
+    litter_type: str
+    estimated_organic_matter_content: float
+
+
+class SFRSpecialFeatureBottom(CamelModel):
+    special_feature: str
+    begin_depth: float | None = None
+
+
+class SFRSoilClassification(CamelModel):
+    code_group: str
+    classification_code: str
+    special_feature_top: str | None = None
+    soil_class: str
+    texture_class: str | None = None
+    reworking_class: str
+    groundwater_table_class: str
+    anomalous_groundwater_regime: str | None = None
+    special_feature_site: str
+    special_feature_bottoms: list[SFRSpecialFeatureBottom] = []
+
+
+class SFRSoilLayer(CamelModel):
+    upper_boundary: float
+    lower_boundary: float
+    upper_boundary_determination: str
+    lower_boundary_determination: str
+    lower_boundary_shape: str
+    layer_discontinuous: str
+    anthropogenic: str
+    slant: str
+    # Homogeneous material and layer components are highly variable; pass as dict
+    special_material: str | None = None
+    homogeneous_material: dict | None = None
+    layer_components: list[dict] = []
+
+
+class SFRSoilProfile(CamelModel):
+    description_quality: str
+    rootable_depth_reached: str
+    mean_highest_groundwater_level_reached: str
+    horizon_repetition: str
+    upper_boundary_shape: str | None = None
+    sequence_disturbed: str
+    compaction_present: str
+    local_phenomena: list[str] = []
+    litter_layers: list[SFRLitterLayer] = []
+    soil_layers: list[SFRSoilLayer] = []
+
+
+class SFRSoilFaceDescription(CamelModel):
+    description_report_date: str
+    description_procedure: str
+    described_width: float | None = None
+    artificially_humidified: str
+    description_operator: str | None = None
+    fraction_distribution_determined: str
+    lower_boundary_sand_fraction: str
+    soil_profile: SFRSoilProfile
+    soil_classification: SFRSoilClassification | None = None
+
+
+class SFRCompleteReportV1(CamelModel):
+    """SFR_CompleteReport_V1 (Soil Face Registration)."""
+
+    object_id_accountable_party: str
+    delivery_context: str
+    survey_purpose: str
+    discipline: str
+    fieldwork_date: str
+    research_operator: str | None = None
+    litter_layer_investigated: str
+    delivered_location: BHRDeliveredLocation
+    delivered_vertical_position: BHRDeliveredVerticalPosition
+    soil_uncovering: SFRSoilUncovering
+    site_characteristic: SFRSiteCharacteristic
+    soil_face_description: SFRSoilFaceDescription
+    research_report_date: str
 
 
 # Updated DesignLoop class

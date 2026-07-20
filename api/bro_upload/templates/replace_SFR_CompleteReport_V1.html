@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<replaceRequest
+  xmlns="http://www.broservices.nl/xsd/issfr/2.0"
+  xmlns:sfrcom="http://www.broservices.nl/xsd/sfrcommon/2.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/issfr/2.0 https://schema.broservices.nl/xsd/issfr/2.0/issfr-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  {% if metadata.deliveryAccountableParty %}
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  {% endif %}
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  {% if metadata.correctionReason %}
+  <brocom:correctionReason>{{ metadata.correctionReason }}</brocom:correctionReason>
+  {% endif %}
+  <sourceDocument>
+    <SFR_CompleteReport_V1 gml:id="id_0001">
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:sfr:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</deliveryContext>
+      <surveyPurpose codeSpace="urn:bro:sfr:SurveyPurpose">{{ sourcedocs_data.surveyPurpose }}</surveyPurpose>
+      <discipline codeSpace="urn:bro:sfr:Discipline">{{ sourcedocs_data.discipline }}</discipline>
+      <fieldworkDate>
+        {% if sourcedocs_data.fieldworkDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.fieldworkDate }}</brocom:date>
+        {% elif sourcedocs_data.fieldworkDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.fieldworkDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.fieldworkDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.fieldworkDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </fieldworkDate>
+      {% if sourcedocs_data.researchOperator %}
+      <researchOperator>
+        <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.researchOperator }}</brocom:chamberOfCommerceNumber>
+      </researchOperator>
+      {% endif %}
+      <litterLayerInvestigated>{{ sourcedocs_data.litterLayerInvestigated }}</litterLayerInvestigated>
+      <deliveredLocation>
+        <sfrcom:location>
+          <gml:Point gml:id="id_0002" srsName="urn:ogc:def:crs:EPSG::28992">
+            <gml:pos>{{ sourcedocs_data.deliveredLocation.location }}</gml:pos>
+          </gml:Point>
+        </sfrcom:location>
+        <sfrcom:horizontalPositioningDate>
+          {% if sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </sfrcom:horizontalPositioningDate>
+        <sfrcom:horizontalPositioningMethod codeSpace="urn:bro:sfr:HorizontalPositioningMethod">{{ sourcedocs_data.deliveredLocation.horizontalPositioningMethod }}</sfrcom:horizontalPositioningMethod>
+        {% if sourcedocs_data.deliveredLocation.horizontalPositioningOperator %}
+        <sfrcom:horizontalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredLocation.horizontalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </sfrcom:horizontalPositioningOperator>
+        {% endif %}
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <sfrcom:localVerticalReferencePoint codeSpace="urn:bro:sfr:LocalVerticalReferencePoint">{{ sourcedocs_data.deliveredVerticalPosition.localVerticalReferencePoint }}</sfrcom:localVerticalReferencePoint>
+        {% if sourcedocs_data.deliveredVerticalPosition.offset is not none %}
+        <sfrcom:offset uom="m">{{ sourcedocs_data.deliveredVerticalPosition.offset }}</sfrcom:offset>
+        {% else %}
+        <sfrcom:offset uom="m" xsi:nil="true"/>
+        {% endif %}
+        <sfrcom:verticalDatum codeSpace="urn:bro:sfr:VerticalDatum">{{ sourcedocs_data.deliveredVerticalPosition.verticalDatum }}</sfrcom:verticalDatum>
+        <sfrcom:verticalPositioningDate>
+          {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </sfrcom:verticalPositioningDate>
+        <sfrcom:verticalPositioningMethod codeSpace="urn:bro:sfr:VerticalPositioningMethod">{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningMethod }}</sfrcom:verticalPositioningMethod>
+        {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator %}
+        <sfrcom:verticalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </sfrcom:verticalPositioningOperator>
+        {% endif %}
+      </deliveredVerticalPosition>
+      <soilUncovering>
+        <sfrcom:SoilUncovering gml:id="id_0003">
+          <sfrcom:endDepthSoilFace uom="m">{{ sourcedocs_data.soilUncovering.endDepthSoilFace }}</sfrcom:endDepthSoilFace>
+          {% if sourcedocs_data.soilUncovering.soilFaceOrientation is not none %}
+          <sfrcom:soilFaceOrientation uom="deg">{{ sourcedocs_data.soilUncovering.soilFaceOrientation }}</sfrcom:soilFaceOrientation>
+          {% else %}
+          <sfrcom:soilFaceOrientation xsi:nil="true" uom="deg"/>
+          {% endif %}
+          <sfrcom:outcropType codeSpace="urn:bro:sfr:OutcropType">{{ sourcedocs_data.soilUncovering.outcropType }}</sfrcom:outcropType>
+          {% if sourcedocs_data.soilUncovering.stopCriterion %}
+          <sfrcom:stopCriterion codeSpace="urn:bro:sfr:StopCriterion">{{ sourcedocs_data.soilUncovering.stopCriterion }}</sfrcom:stopCriterion>
+          {% endif %}
+          {% if sourcedocs_data.soilUncovering.pitRefilled %}
+          <sfrcom:pitRefilled>{{ sourcedocs_data.soilUncovering.pitRefilled }}</sfrcom:pitRefilled>
+          {% endif %}
+        </sfrcom:SoilUncovering>
+      </soilUncovering>
+      <siteCharacteristic>
+        <sfrcom:SiteCharacteristic gml:id="id_0004">
+          <sfrcom:soilUse codeSpace="urn:bro:sfr:SoilUse">{{ sourcedocs_data.siteCharacteristic.soilUse }}</sfrcom:soilUse>
+          <sfrcom:artificialDrainage codeSpace="urn:bro:sfr:ArtificialDrainage">{{ sourcedocs_data.siteCharacteristic.artificialDrainage }}</sfrcom:artificialDrainage>
+          <sfrcom:positionOnGroundBody codeSpace="urn:bro:sfr:PositionOnGroundBody">{{ sourcedocs_data.siteCharacteristic.positionOnGroundBody }}</sfrcom:positionOnGroundBody>
+          <sfrcom:surfaceLevelShifted codeSpace="urn:bro:sfr:SurfaceLevelShifted">{{ sourcedocs_data.siteCharacteristic.surfaceLevelShifted }}</sfrcom:surfaceLevelShifted>
+          <sfrcom:tracesOfChurningPresent>{{ sourcedocs_data.siteCharacteristic.tracesOfChurningPresent }}</sfrcom:tracesOfChurningPresent>
+          {% if sourcedocs_data.siteCharacteristic.meanHighestGroundwaterTable is not none %}
+          <sfrcom:meanHighestGroundwaterTable uom="m">{{ sourcedocs_data.siteCharacteristic.meanHighestGroundwaterTable }}</sfrcom:meanHighestGroundwaterTable>
+          {% endif %}
+          {% if sourcedocs_data.siteCharacteristic.meanLowestGroundwaterTable is not none %}
+          <sfrcom:meanLowestGroundwaterTable uom="m">{{ sourcedocs_data.siteCharacteristic.meanLowestGroundwaterTable }}</sfrcom:meanLowestGroundwaterTable>
+          {% endif %}
+          {% if sourcedocs_data.siteCharacteristic.vegetationType %}
+          <sfrcom:vegetationType codeSpace="urn:bro:sfr:VegetationType">{{ sourcedocs_data.siteCharacteristic.vegetationType }}</sfrcom:vegetationType>
+          {% endif %}
+        </sfrcom:SiteCharacteristic>
+      </siteCharacteristic>
+      <soilFaceDescription>
+        <sfrcom:SoilFaceDescription gml:id="id_0005">
+          <sfrcom:descriptionReportDate>
+            {% if sourcedocs_data.soilFaceDescription.descriptionReportDate|length == 10 %}
+            <brocom:date>{{ sourcedocs_data.soilFaceDescription.descriptionReportDate }}</brocom:date>
+            {% elif sourcedocs_data.soilFaceDescription.descriptionReportDate|length == 7 %}
+            <brocom:yearMonth>{{ sourcedocs_data.soilFaceDescription.descriptionReportDate }}</brocom:yearMonth>
+            {% elif sourcedocs_data.soilFaceDescription.descriptionReportDate|length == 4 %}
+            <brocom:year>{{ sourcedocs_data.soilFaceDescription.descriptionReportDate }}</brocom:year>
+            {% else %}
+            <brocom:voidReason>onbekend</brocom:voidReason>
+            {% endif %}
+          </sfrcom:descriptionReportDate>
+          <sfrcom:descriptionProcedure codeSpace="urn:bro:sfr:DescriptionProcedure">{{ sourcedocs_data.soilFaceDescription.descriptionProcedure }}</sfrcom:descriptionProcedure>
+          {% if sourcedocs_data.soilFaceDescription.describedWidth is not none %}
+          <sfrcom:describedWidth uom="m">{{ sourcedocs_data.soilFaceDescription.describedWidth }}</sfrcom:describedWidth>
+          {% else %}
+          <sfrcom:describedWidth xsi:nil="true" uom="m"/>
+          {% endif %}
+          <sfrcom:artificiallyHumidified>{{ sourcedocs_data.soilFaceDescription.artificiallyHumidified }}</sfrcom:artificiallyHumidified>
+          {% if sourcedocs_data.soilFaceDescription.descriptionOperator %}
+          <sfrcom:descriptionOperator>
+            <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.soilFaceDescription.descriptionOperator }}</brocom:chamberOfCommerceNumber>
+          </sfrcom:descriptionOperator>
+          {% endif %}
+          <sfrcom:fractionDistributionDetermined>{{ sourcedocs_data.soilFaceDescription.fractionDistributionDetermined }}</sfrcom:fractionDistributionDetermined>
+          <sfrcom:lowerBoundarySandFraction codeSpace="urn:bro:sfr:LowerBoundarySandFraction">{{ sourcedocs_data.soilFaceDescription.lowerBoundarySandFraction }}</sfrcom:lowerBoundarySandFraction>
+          <sfrcom:soilProfile>
+            <sfrcom:SoilProfile gml:id="id_0006">
+              <sfrcom:descriptionQuality codeSpace="urn:bro:sfr:DescriptionQuality">{{ sourcedocs_data.soilFaceDescription.soilProfile.descriptionQuality }}</sfrcom:descriptionQuality>
+              <sfrcom:rootableDepthReached>{{ sourcedocs_data.soilFaceDescription.soilProfile.rootableDepthReached }}</sfrcom:rootableDepthReached>
+              <sfrcom:meanHighestGroundwaterLevelReached>{{ sourcedocs_data.soilFaceDescription.soilProfile.meanHighestGroundwaterLevelReached }}</sfrcom:meanHighestGroundwaterLevelReached>
+              <sfrcom:horizonRepetition>{{ sourcedocs_data.soilFaceDescription.soilProfile.horizonRepetition }}</sfrcom:horizonRepetition>
+              {% for lp in sourcedocs_data.soilFaceDescription.soilProfile.localPhenomena %}
+              <sfrcom:localPhenomenon codeSpace="urn:bro:sfr:LocalPhenomenon">{{ lp }}</sfrcom:localPhenomenon>
+              {% endfor %}
+              {% if sourcedocs_data.soilFaceDescription.soilProfile.upperBoundaryShape %}
+              <sfrcom:upperBoundaryShape codeSpace="urn:bro:sfr:BoundaryShape">{{ sourcedocs_data.soilFaceDescription.soilProfile.upperBoundaryShape }}</sfrcom:upperBoundaryShape>
+              {% endif %}
+              <sfrcom:sequenceDisturbed>{{ sourcedocs_data.soilFaceDescription.soilProfile.sequenceDisturbed }}</sfrcom:sequenceDisturbed>
+              <sfrcom:compactionPresent>{{ sourcedocs_data.soilFaceDescription.soilProfile.compactionPresent }}</sfrcom:compactionPresent>
+              {% for ll in sourcedocs_data.soilFaceDescription.soilProfile.litterLayers %}
+              <sfrcom:litterLayer>
+                <sfrcom:LitterLayer gml:id="id_litter_{{ forloop.counter }}">
+                  <sfrcom:upperBoundary uom="m">{{ ll.upperBoundary }}</sfrcom:upperBoundary>
+                  <sfrcom:upperBoundaryDetermination codeSpace="urn:bro:sfr:BoundaryPositioningMethod">{{ ll.upperBoundaryDetermination }}</sfrcom:upperBoundaryDetermination>
+                  <sfrcom:lowerBoundary uom="m">{{ ll.lowerBoundary }}</sfrcom:lowerBoundary>
+                  <sfrcom:lowerBoundaryDetermination codeSpace="urn:bro:sfr:BoundaryPositioningMethod">{{ ll.lowerBoundaryDetermination }}</sfrcom:lowerBoundaryDetermination>
+                  <sfrcom:lowerBoundaryShape codeSpace="urn:bro:sfr:BoundaryShape">{{ ll.lowerBoundaryShape }}</sfrcom:lowerBoundaryShape>
+                  <sfrcom:layerDiscontinuous>{{ ll.layerDiscontinuous }}</sfrcom:layerDiscontinuous>
+                  <sfrcom:horizonCode codeSpace="urn:bro:sfr:HorizonCode">{{ ll.horizonCode }}</sfrcom:horizonCode>
+                  <sfrcom:litterType codeSpace="urn:bro:sfr:LitterType">{{ ll.litterType }}</sfrcom:litterType>
+                  <sfrcom:estimatedOrganicMatterContent uom="%">{{ ll.estimatedOrganicMatterContent }}</sfrcom:estimatedOrganicMatterContent>
+                </sfrcom:LitterLayer>
+              </sfrcom:litterLayer>
+              {% endfor %}
+              {% for sl in sourcedocs_data.soilFaceDescription.soilProfile.soilLayers %}
+              <sfrcom:soilLayer>
+                <sfrcom:SoilLayer gml:id="id_soil_{{ forloop.counter }}">
+                  <sfrcom:upperBoundary uom="m">{{ sl.upperBoundary }}</sfrcom:upperBoundary>
+                  <sfrcom:upperBoundaryDetermination codeSpace="urn:bro:sfr:BoundaryPositioningMethod">{{ sl.upperBoundaryDetermination }}</sfrcom:upperBoundaryDetermination>
+                  <sfrcom:lowerBoundary uom="m">{{ sl.lowerBoundary }}</sfrcom:lowerBoundary>
+                  <sfrcom:lowerBoundaryDetermination codeSpace="urn:bro:sfr:BoundaryPositioningMethod">{{ sl.lowerBoundaryDetermination }}</sfrcom:lowerBoundaryDetermination>
+                  <sfrcom:lowerBoundaryShape codeSpace="urn:bro:sfr:BoundaryShape">{{ sl.lowerBoundaryShape }}</sfrcom:lowerBoundaryShape>
+                  <sfrcom:layerDiscontinuous>{{ sl.layerDiscontinuous }}</sfrcom:layerDiscontinuous>
+                  <sfrcom:anthropogenic>{{ sl.anthropogenic }}</sfrcom:anthropogenic>
+                  <sfrcom:slant>{{ sl.slant }}</sfrcom:slant>
+                  {% if sl.specialMaterial %}
+                  <sfrcom:homogeneousMaterial>
+                    <sfrcom:specialMaterial codeSpace="urn:bro:sfr:SpecialMaterial">{{ sl.specialMaterial }}</sfrcom:specialMaterial>
+                  </sfrcom:homogeneousMaterial>
+                  {% endif %}
+                </sfrcom:SoilLayer>
+              </sfrcom:soilLayer>
+              {% endfor %}
+            </sfrcom:SoilProfile>
+          </sfrcom:soilProfile>
+          {% if sourcedocs_data.soilFaceDescription.soilClassification %}
+          <sfrcom:soilClassification>
+            <sfrcom:SoilClassification gml:id="id_0009">
+              <sfrcom:codeGroup codeSpace="urn:bro:sfr:CodeGroup">{{ sourcedocs_data.soilFaceDescription.soilClassification.codeGroup }}</sfrcom:codeGroup>
+              <sfrcom:classificationCode>{{ sourcedocs_data.soilFaceDescription.soilClassification.classificationCode }}</sfrcom:classificationCode>
+              {% if sourcedocs_data.soilFaceDescription.soilClassification.specialFeatureTop %}
+              <sfrcom:specialFeatureTop codeSpace="urn:bro:sfr:SpecialFeatureTop">{{ sourcedocs_data.soilFaceDescription.soilClassification.specialFeatureTop }}</sfrcom:specialFeatureTop>
+              {% endif %}
+              <sfrcom:soilClass codeSpace="urn:bro:sfr:SoilClass">{{ sourcedocs_data.soilFaceDescription.soilClassification.soilClass }}</sfrcom:soilClass>
+              {% if sourcedocs_data.soilFaceDescription.soilClassification.textureClass %}
+              <sfrcom:textureClass codeSpace="urn:bro:sfr:TextureClass">{{ sourcedocs_data.soilFaceDescription.soilClassification.textureClass }}</sfrcom:textureClass>
+              {% endif %}
+              <sfrcom:reworkingClass codeSpace="urn:bro:sfr:ReworkingClass">{{ sourcedocs_data.soilFaceDescription.soilClassification.reworkingClass }}</sfrcom:reworkingClass>
+              <sfrcom:groundwaterTableClass codeSpace="urn:bro:sfr:GroundwaterTableClass">{{ sourcedocs_data.soilFaceDescription.soilClassification.groundwaterTableClass }}</sfrcom:groundwaterTableClass>
+              {% if sourcedocs_data.soilFaceDescription.soilClassification.anomalousGroundwaterRegime %}
+              <sfrcom:anomalousGroundwaterRegime codeSpace="urn:bro:sfr:AnomalousGroundwaterRegime">{{ sourcedocs_data.soilFaceDescription.soilClassification.anomalousGroundwaterRegime }}</sfrcom:anomalousGroundwaterRegime>
+              {% endif %}
+              <sfrcom:specialFeatureSite codeSpace="urn:bro:sfr:SpecialFeatureSite">{{ sourcedocs_data.soilFaceDescription.soilClassification.specialFeatureSite }}</sfrcom:specialFeatureSite>
+              {% for sfb in sourcedocs_data.soilFaceDescription.soilClassification.specialFeatureBottoms %}
+              <sfrcom:specialFeatureBottom>
+                <sfrcom:specialFeature codeSpace="urn:bro:sfr:SpecialFeature">{{ sfb.specialFeature }}</sfrcom:specialFeature>
+                {% if sfb.beginDepth is not none %}
+                <sfrcom:beginDepth uom="m">{{ sfb.beginDepth }}</sfrcom:beginDepth>
+                {% endif %}
+              </sfrcom:specialFeatureBottom>
+              {% endfor %}
+            </sfrcom:SoilClassification>
+          </sfrcom:soilClassification>
+          {% endif %}
+        </sfrcom:SoilFaceDescription>
+      </soilFaceDescription>
+      <researchReportDate>
+        {% if sourcedocs_data.researchReportDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.researchReportDate }}</brocom:date>
+        {% elif sourcedocs_data.researchReportDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.researchReportDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.researchReportDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.researchReportDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </researchReportDate>
+    </SFR_CompleteReport_V1>
+  </sourceDocument>
+</replaceRequest>
