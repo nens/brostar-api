@@ -298,7 +298,14 @@ FILTERS_DEFAULT_FILTER_OVERRIDES = {
 CELERY_IMPORTS = ("api.tasks",)
 
 # TODO: fix celery env settings
+# Raw XML upload limits
+RAW_XML_MAX_ZIP_MB = 250
+RAW_XML_MAX_XML_MB = 50
+RAW_XML_MAX_ZIP_ENTRIES = 100
+
 CELERY_BROKER_URL = "redis://redis:6379/0"
+# Use Redis as the result backend (required for chords)
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 # Auto-expire results after 1 day
 CELERY_RESULT_EXPIRES = 60 * 60 * 24
 
@@ -307,6 +314,7 @@ CELERY_TASK_QUEUES = (
     # Define all your requested queues
     Queue("default", Exchange("default"), routing_key="default"),
     Queue("upload", Exchange("upload"), routing_key="upload"),
+    Queue("gld_import", Exchange("gld_import"), routing_key="gld_import"),
 )
 
 # Default queue if not specified
@@ -325,7 +333,7 @@ if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
 else:
-    BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
+    BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
 
 if not DEBUG:

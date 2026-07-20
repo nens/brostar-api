@@ -113,7 +113,7 @@ REGISTRATION_TYPE_OPTIONS = [
     ("BHR-GT", "BHR-GT"),
     ("SFR", "SFR"),
     ("GUF_StartRegistration", "GUF_StartRegistration"),
-    ("GUF_NewLicense", "GUF_NewLicense"),
+    ("GUF_NewLicence", "GUF_NewLicence"),
     ("GUF_ExpandedRealisedInstallation", "GUF_ExpandedRealisedInstallation"),
     # (
     #     "GUF_GeometryRealisedSurfaceInfiltration",

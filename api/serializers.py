@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class OrganisationSerializer(serializers.ModelSerializer):
     class Meta:
         model = api_models.Organisation
-        fields = "__all__"
+        fields = ["name", "kvk_number"]
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -53,6 +53,21 @@ class ImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
     class Meta:
         model = api_models.ImportTask
         fields = "__all__"
+
+
+class ObjectImportTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
+    class Meta:
+        model = api_models.ObjectImportTask
+        fields = "__all__"
+        read_only_fields = [
+            "uuid",
+            "created",
+            "updated",
+            "data_owner",
+            "bro_domain",
+            "status",
+            "log",
+        ]
 
 
 class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):

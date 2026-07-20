@@ -203,13 +203,49 @@ class ImportTask(models.Model):
         max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
     )
     log = models.TextField(blank=True)
+
     progress = models.FloatField(blank=True, null=True)
 
     def save(self, *args: Any, **kwargs: Any) -> None:
+        if self.progress is not None:
+            # This should always be rounded two 2 digits behind comma
+            # Helps UI, and more digits are not helpful.
+            self.progress = round(self.progress, 2)
+
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.bro_domain} import - {self.data_owner}"
+
+
+class ObjectImportTask(models.Model):
+    """Tracks an import request for a single BRO object identified by its BRO ID.
+
+    Allows triggering and monitoring the import of an individual object (e.g.
+    GMW000000000001) without running a full bulk import.
+    """
+
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    data_owner = models.ForeignKey(
+        Organisation, on_delete=models.CASCADE, null=True, blank=True
+    )
+    bro_id = models.CharField(max_length=20)
+    bro_domain = models.CharField(
+        max_length=8, choices=choices.BRO_DOMAIN_CHOICES, blank=True
+    )
+    force = models.BooleanField(
+        default=False,
+        help_text="When True, skip the PDOK freshness check and always re-import.",
+    )
+    status = models.CharField(
+        max_length=20, choices=choices.STATUS_CHOICES, default="PENDING", blank=False
+    )
+    log = models.TextField(blank=True)
+
+    def __str__(self) -> str:
+        return f"{self.bro_id} import ({self.status})"
 
 
 class UploadTask(models.Model):

@@ -38,6 +38,10 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     if not isinstance(instance.bro_errors, str):
         instance.bro_errors = str(instance.bro_errors)
 
+    # Raw XML uploads bypass template logic; do not apply any auto-corrections.
+    if instance.metadata.get("_is_raw_xml"):
+        return
+
     is_staging = "staging" in os.getenv("NENS_AUTH_RESOURCE_SERVER_ID", "")
 
     if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
@@ -101,6 +105,10 @@ def get_plain_tube_part_length(
 @receiver(post_save, sender=UploadTask)
 def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
     """Handle registration where it should be an insert."""
+    # Raw XML uploads manage their own Celery dispatch; skip the standard signal chain.
+    if instance.metadata.get("_is_raw_xml"):
+        return
+
     if instance.status == "PENDING" and instance.data_owner:
         instance._skip_signal = True
         instance.status = "PROCESSING"
@@ -157,5 +165,6 @@ def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
 def post_save_import_task(sender, instance: ImportTask, created, **kwargs):
     """Handle registration where it should be an insert."""
     if instance.status == "PENDING":
-        # Start the celery task
-        tasks.import_bro_data_task.delay(instance.uuid)
+        # Use the chord-based fan-out task for non-blocking parallel imports.
+        # The original import_bro_data_task is kept for backward compatibility.
+        tasks.fetch_bro_ids_and_dispatch_task.delay(instance.uuid)
