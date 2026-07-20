@@ -32,7 +32,7 @@ class UserOrganizationMixin:
     def perform_destroy(self, instance):
         # Belt-and-suspenders: get_object() already filtered by org,
         # but this guards against get_object() being overridden elsewhere.
-        if instance.data_owner_id != self.get_user_organisation().id:
+        if instance.data_owner_uuid != self.get_user_organisation().uuid:
             raise PermissionDenied("Not allowed to delete this object.")
         super().perform_destroy(instance)
 

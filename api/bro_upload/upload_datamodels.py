@@ -823,8 +823,6 @@ class DesignWell(CamelModel):
     design_screen: DesignScreen | None = None
     design_screen_publicly_available: PubliclyAvailableOptions = None
 
-    installation_function: InstallationFunctionOptions | None = None
-
     @field_validator("gml_id", mode="before")
     def generate_gml_id(cls, v):
         raise Exception(f"generating gmlid: {v}")
@@ -1047,20 +1045,6 @@ class RealisedLoop(CamelModel):
         if v is None or v == "":
             return f"_{uuid.uuid4()}"
         return v
-
-
-# Updated RealisedInstallationHeightPart class
-class RealisedInstallationHeightPart(CamelModel):
-    """Height part of realised installation"""
-
-    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
-    realised_installation_id: str
-    installation_function: InstallationFunctionOptions
-
-    @field_validator("gml_id", mode="before")
-    @classmethod
-    def handle_empty_gml_id(cls, v):
-        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
 
 
 class RealisedScreenChanges(CamelModel):
