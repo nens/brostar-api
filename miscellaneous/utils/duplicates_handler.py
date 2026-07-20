@@ -429,7 +429,7 @@ class GMWDuplicatesHandler:
         self.features_ranked = ranked_features
         self.ranking = ranking
 
-    def store_duplicates(self, date: str = None, kvk_number: str = None):
+    def store_duplicates(self, date: str | None = None, kvk_number: str | None = None):
         duplicates = self.duplicates
         sorted_keys = sorted(duplicates.keys(), key=lambda x: str(x[1]))
 

@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from pyproj import Transformer
@@ -59,3 +60,19 @@ def drop_empty_strings(d: dict) -> dict:  # noqa: C901
         else:
             cleaned[key] = value
     return cleaned
+
+
+def parse_flexible_date(date_str: str | None) -> datetime.date | None:
+    """Parse BRO dates with flexible granularity: YYYY-MM-DD, YYYY-MM, or YYYY."""
+    if not date_str:
+        return None
+    try:
+        if len(date_str) == 4:  # YYYY
+            return datetime.date(int(date_str), 1, 1)
+        elif len(date_str) == 7:  # YYYY-MM
+            year, month = date_str.split("-")
+            return datetime.date(int(year), int(month), 1)
+        else:  # YYYY-MM-DD
+            return datetime.date.fromisoformat(date_str)
+    except (ValueError, AttributeError):
+        return None
