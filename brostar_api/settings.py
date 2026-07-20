@@ -298,6 +298,11 @@ FILTERS_DEFAULT_FILTER_OVERRIDES = {
 CELERY_IMPORTS = ("api.tasks",)
 
 # TODO: fix celery env settings
+# Raw XML upload limits
+RAW_XML_MAX_ZIP_MB = 250
+RAW_XML_MAX_XML_MB = 50
+RAW_XML_MAX_ZIP_ENTRIES = 100
+
 CELERY_BROKER_URL = "redis://redis:6379/0"
 # Use Redis as the result backend (required for chords)
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"

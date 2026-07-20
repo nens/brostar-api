@@ -31,6 +31,11 @@ urlpatterns = [
         views.UploadTaskOverviewList.as_view(),
         name="uploadtask-overview",
     ),
+    path(
+        "uploadtasks/xml-upload/",
+        views.RawXMLUploadView.as_view(),
+        name="uploadtask-xml-upload",
+    ),
 ]
 
 urlpatterns += router.urls

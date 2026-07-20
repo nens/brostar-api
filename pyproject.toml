@@ -31,6 +31,7 @@ dependencies = [
     "whitenoise",
     "xlsx2csv",
     "xmltodict",
+    "defusedxml",
     "pre-commit>=4.2.0",
     "geopandas>=1.0.0",
     "Werkzeug>=3.1.3",
