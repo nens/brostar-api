@@ -117,8 +117,6 @@ class GMNMeasuringPoint(CamelModel):
 class GMNMeasuringPointEndDate(CamelModel):
     event_date: str | None = None
     measuring_point_code: str
-    bro_id: str
-    tube_number: int
 
 
 class GMNTubeReference(CamelModel):
@@ -777,12 +775,7 @@ class DesignLoop(CamelModel):
     design_loop_id: str
     design_loop_pos: str  # Position coordinates for LineString geometry
 
-    loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type
-
-    # Lifespan is formatted from these two fields - ISO-8601 date string
-    # Lifespan is not allowed to be present for NewLicense
-    start_date: str | None
-    end_date: str | None
+    loop_type: DesignLoopTypeOptions | None = None  # Added: soil loop type\
 
     geometry_type: Literal["Point", "LineString"] = "Point"  # Type of geometry
 
@@ -825,11 +818,8 @@ class DesignWell(CamelModel):
     design_screen: DesignScreen | None = None
     design_screen_publicly_available: PubliclyAvailableOptions = None
 
-    installation_function: InstallationFunctionOptions | None = None
-
     @field_validator("gml_id", mode="before")
     def generate_gml_id(cls, v):
-        raise Exception(f"generating gmlid: {v}")
         if v is None or v == "":
             return f"_{uuid.uuid4()}"
         return v
@@ -1051,20 +1041,6 @@ class RealisedLoop(CamelModel):
         return v
 
 
-# Updated RealisedInstallationHeightPart class
-class RealisedInstallationHeightPart(CamelModel):
-    """Height part of realised installation"""
-
-    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
-    realised_installation_id: str
-    installation_function: InstallationFunctionOptions
-
-    @field_validator("gml_id", mode="before")
-    @classmethod
-    def handle_empty_gml_id(cls, v):
-        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
-
-
 class RealisedScreenChanges(CamelModel):
     realised_screen_id: str
     top_screen_depth: float  # meters
@@ -1204,18 +1180,68 @@ class RealisedWellClosurePart(CamelModel):
         return v if v is not None and v != "" else f"_{uuid.uuid4()}"
 
 
+class RealisedLoopClosurePart(CamelModel):
+    """Part of realised well for closure operations"""
+
+    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
+    realised_loop_id: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
+
+
+class RealisedSurfaceInfiltrationClosurePart(CamelModel):
+    """Part of realised well for closure operations"""
+
+    gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
+    infiltration_basin_id: str
+
+    @field_validator("gml_id", mode="before")
+    @classmethod
+    def handle_empty_gml_id(cls, v):
+        return v if v is not None and v != "" else f"_{uuid.uuid4()}"
+
+
 # Updated GUFClosureRealisedPart class
 class GUFClosureRealisedPart(CamelModel):
     """Source document data for GUF_ClosureRealisedPart"""
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions | None = None
-    well_pos: str | None = None
+    installation_pos: str | None = None
     end_time: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
     )
     realised_wells: list[RealisedWellClosurePart] = []
+    realised_loops: list[RealisedLoopClosurePart] = []
+    realised_surface_infiltrations: list[RealisedSurfaceInfiltrationClosurePart] = []
+
+    # Add validation, only one of realised_wells, realised_loops, or realised_surface_infiltrations can be non-empty
+    @field_validator(
+        "realised_wells",
+        "realised_loops",
+        "realised_surface_infiltrations",
+        mode="after",
+    )
+    @classmethod
+    def validate_only_one_non_empty(cls, v, info: ValidationInfo):
+        non_empty_count = sum(
+            1
+            for field in [
+                "realised_wells",
+                "realised_loops",
+                "realised_surface_infiltrations",
+            ]
+            if info.data.get(field)
+        )
+        if non_empty_count > 1:
+            raise ValueError(
+                "Only one of realised_wells, realised_loops, or realised_surface_infiltrations can be non-empty"
+            )
+        return v
 
 
 class GUFClosure(CamelModel):

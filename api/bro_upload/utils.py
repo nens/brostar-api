@@ -6,6 +6,7 @@ import zipfile
 from io import BytesIO
 from typing import Any, TypeVar
 
+import defusedxml.ElementTree as DefusedET
 import polars as pl
 import requests
 from django.conf import settings
@@ -354,6 +355,66 @@ def check_delivery_status(
     except requests.RequestException as e:
         logger.info(e)
         return None
+
+
+_ROOT_TAG_TO_REQUEST_TYPE: dict[str, str] = {
+    "registrationRequest": "registration",
+    "replaceRequest": "replace",
+    "insertRequest": "insert",
+    "moveRequest": "move",
+    "deleteRequest": "delete",
+}
+
+
+def parse_raw_xml_metadata(xml_bytes: bytes) -> dict[str, str]:
+    """Safely parse a BRO XML file and extract request_type, registration_type, and bro_domain.
+
+    Uses defusedxml to prevent XXE attacks. Only reads the root element and the
+    first child of <sourceDocument> — no deeper parsing.
+
+    Raises:
+        ValueError: if the XML cannot be parsed or the expected structure is missing.
+    """
+    try:
+        root = DefusedET.fromstring(xml_bytes)
+    except Exception as e:
+        raise ValueError(f"XML parse error: {e}") from e
+
+    local_root = root.tag.split("}")[-1] if "}" in root.tag else root.tag
+    request_type = _ROOT_TAG_TO_REQUEST_TYPE.get(local_root)
+    if request_type is None:
+        raise ValueError(f"Unrecognised root element: {local_root!r}")
+
+    # Find <sourceDocument> (may have a namespace prefix)
+    source_doc = None
+    for child in root:
+        local_tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+        if local_tag == "sourceDocument":
+            source_doc = child
+            break
+
+    if source_doc is None:
+        raise ValueError("No <sourceDocument> element found")
+
+    first_child = next(iter(source_doc), None)
+    if first_child is None:
+        raise ValueError("<sourceDocument> has no children")
+
+    local_child = (
+        first_child.tag.split("}")[-1] if "}" in first_child.tag else first_child.tag
+    )
+    registration_type = local_child
+    bro_domain = (
+        registration_type.split("_")[0]
+        if "_" in registration_type
+        else registration_type
+    )
+
+    return {
+        "request_type": request_type,
+        "registration_type": registration_type,
+        "bro_domain": bro_domain,
+    }
 
 
 def include_delivery_responsible_party(

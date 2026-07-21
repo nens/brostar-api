@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<moveRequest xmlns="http://www.broservices.nl/xsd/brocommon/3.0"
-             xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
-             xmlns:guf="http://www.broservices.nl/xsd/dsguf/1.0"
-             xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0">
+<moveRequest
+  xmlns="http://www.broservices.nl/xsd/isguf/1.0"
+  xmlns:gufcom="http://www.broservices.nl/xsd/gufcommon/1.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isguf/1.0 https://schema.broservices.nl/xsd/isguf/1.0/isguf-messages.xsd"
+>
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:broId>{{ metadata.broId }}</brocom:broId>
@@ -24,19 +29,6 @@
           <brocom:voidReason>onbekend</brocom:voidReason>
           {% endif %}
         </gufcom:startTime>
-        {% if sourcedocs_data.endTime %}
-        <gufcom:endTime>
-          {% if sourcedocs_data.endTime|length == 10 %}
-          <brocom:date>{{ sourcedocs_data.endTime }}</brocom:date>
-          {% elif sourcedocs_data.endTime|length == 7 %}
-          <brocom:yearMonth>{{ sourcedocs_data.endTime }}</brocom:yearMonth>
-          {% elif sourcedocs_data.endTime|length == 4 %}
-          <brocom:year>{{ sourcedocs_data.endTime }}</brocom:year>
-          {% elif sourcedocs_data.endTime == 'onbekend' %}
-          <brocom:voidReason>onbekend</brocom:voidReason>
-          {% endif %}
-        </gufcom:endTime>
-        {% endif %}
       </gufcom:lifespan>
       <gufcom:licence>
         <gufcom:LicenceGroundwaterUsage gml:id="{{ sourcedocs_data.licenceGmlId }}">
@@ -145,32 +137,7 @@
               <gufcom:designLoop>
                 <gufcom:DesignLoop gml:id="{{ design_loop.gmlId }}">
                   <gufcom:designLoopId>{{ design_loop.designLoopId }}</gufcom:designLoopId>
-                  <gufcom:lifespan>
-                    <gufcom:startTime>
-                      {% if design_loop.startDate|length == 10 %}
-                      <brocom:date>{{ design_loop.startDate }}</brocom:date>
-                      {% elif design_loop.startDate|length == 7 %}
-                      <brocom:yearMonth>{{ design_loop.startDate }}</brocom:yearMonth>
-                      {% elif design_loop.startDate|length == 4 %}
-                      <brocom:year>{{ design_loop.startDate }}</brocom:year>
-                      {% else %}
-                      <brocom:voidReason>onbekend</brocom:voidReason>
-                      {% endif %}
-                    </gufcom:startTime>
-                    {% if design_loop.endDate %}
-                    <gufcom:endTime>
-                      {% if design_loop.endDate|length == 10 %}
-                      <brocom:date>{{ design_loop.endDate }}</brocom:date>
-                      {% elif design_loop.endDate|length == 7 %}
-                      <brocom:yearMonth>{{ design_loop.endDate }}</brocom:yearMonth>
-                      {% elif design_loop.endDate|length == 4 %}
-                      <brocom:year>{{ design_loop.endDate }}</brocom:year>
-                      {% else %}
-                      <brocom:voidReason>onbekend</brocom:voidReason>
-                      {% endif %}
-                    </gufcom:endTime>
-                    {% endif %}
-                  </gufcom:lifespan>
+                  <!-- lifespan is not allowed, as it is determined based on NewLicense delivery -->
                   <gufcom:geometry>
                     {% if design_loop.geometryType == 'LineString' %}
                     <gufcom:geometry>

@@ -2,10 +2,22 @@
 
 ## 1.77 (unreleased)
 
-
+-   Feat [UploadTasks]: Add the option to deliver XMLs based on files.
 -   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
 -   Enhancement [ImportTasks]: Convert to celery tasks, for faster handling
+-   Enhancement [GUF]: Correct GUF_Height Templates
+-   Enhancement [GUF]: Correct GUF_ClosureRealisedPart Templates
+-   Enhancement [GUF]: Correct GUF_StartRegistration Templates
+-   Enhancement [GUF]: Correct GUF_NewLicence Templates
+-   Enhancement [GUF]: Correct GUF_AddRealisedInstallation Templates
+-   Enhancement [GUF]: Correct GUF_ExpandRealisedInstallation Templates
+-   Enhancement [GUF]: Correct GUF_WellFunction Templates
 -   Bugfix [Import]: The most recent tube top was shown within the GMW_Construction, instead of the original.
+-   Bugfix [Upload]: improve NewLicense template
+-   Bugfix [Datamodels]: correct designWell
+-   Bugfix [Datamodels]: remove two unused items from GMN_MeasuringPointEndDate
+-   QOL [Import]: Round to 2 digits for import progress
+
 
 ## 1.76 (2026-07-07)
 

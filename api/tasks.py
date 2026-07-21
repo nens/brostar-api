@@ -319,6 +319,107 @@ def upload_task(
 
 
 @shared_task(queue="upload")
+def validate_and_deliver_raw_xml_task(
+    upload_task_uuid: str,
+    bro_username: str,
+    bro_password: str,
+    cache_key: str,
+) -> None:
+    """Validate and deliver a raw XML file directly to the BRO, bypassing template generation.
+
+    Reads the XML string from Django's cache (keyed by cache_key), forwards it to
+    BRO's validation and delivery services, and chains into the standard
+    check_delivery_status_task.  The cache entry is always deleted when this task
+    finishes, whether it succeeds or fails.
+    """
+    from django.core.cache import cache
+
+    upload_task = api_models.UploadTask.objects.get(uuid=upload_task_uuid)
+
+    xml_string = cache.get(cache_key)
+    if xml_string is None:
+        upload_task.status = "FAILED"
+        upload_task.log = (
+            "XML data is verlopen of niet gevonden. Upload het bestand opnieuw."
+        )
+        upload_task.save(update_fields=["status", "log"])
+        return
+
+    try:
+        validation_response = utils.validate_xml_file(
+            xml_string,
+            bro_username,
+            bro_password,
+            upload_task.project_number,
+        )
+
+        if validation_response["status"] != "VALIDE" and validation_response.get(
+            "errors"
+        ) != ["U bent niet als dataleverancier van dit object geregistreerd."]:
+            upload_task.status = "FAILED"
+            upload_task.progress = 50.0
+            upload_task.log = "XML is niet geldig"
+            upload_task.bro_errors = str(validation_response.get("errors", []))
+            upload_task.save(update_fields=["status", "progress", "log", "bro_errors"])
+            return
+
+        if validation_response.get("errors") == [
+            "U bent niet als dataleverancier van dit object geregistreerd."
+        ]:
+            upload_task.bro_errors = str(validation_response.get("errors", []))
+
+        upload_task.progress = 50.0
+        upload_task.log = "XML is succesvol gevalideerd"
+        upload_task.save(update_fields=["progress", "log", "bro_errors"])
+
+        upload = utils.create_upload_url(
+            bro_username, bro_password, upload_task.project_number
+        )
+        if upload["status"] != "OK":
+            upload_task.status = "FAILED"
+            upload_task.log = f"Error tijdens het maken van de upload URL: {upload.get('errors', 'Unknown error')}"
+            upload_task.save(update_fields=["status", "log"])
+            return
+
+        upload_url = upload["upload_url"]
+        success = utils.add_xml_to_upload(
+            xml_string, upload_url, bro_username, bro_password
+        )
+        if not success:
+            upload_task.status = "FAILED"
+            upload_task.log = (
+                "Error tijdens het toevoegen van het XML bestand aan de upload"
+            )
+            upload_task.save(update_fields=["status", "log"])
+            return
+
+        delivery_url = utils.create_delivery(
+            upload_url, bro_username, bro_password, upload_task.project_number
+        )
+        upload_task.bro_delivery_url = delivery_url
+        upload_task.progress = 75.0
+        upload_task.log = "XML aangeleverd."
+        upload_task.save(update_fields=["progress", "log", "bro_delivery_url"])
+
+        context = {
+            "upload_task_instance_uuid": upload_task_uuid,
+            "bro_username": bro_username,
+            "bro_password": bro_password,
+            "delivery_url": delivery_url,
+        }
+        check_delivery_status_task.apply_async(args=[context], queue="upload")
+
+    except Exception as e:
+        logger.exception(f"Unexpected error in validate_and_deliver_raw_xml_task: {e}")
+        upload_task.status = "FAILED"
+        upload_task.log = f"Onverwachte fout: {e}"
+        upload_task.save(update_fields=["status", "log"])
+
+    finally:
+        cache.delete(cache_key)
+
+
+@shared_task(queue="upload")
 def gar_bulk_upload_task(
     bulk_upload_instance_uuid: str,
     fieldwork_upload_file_uuid: str,
