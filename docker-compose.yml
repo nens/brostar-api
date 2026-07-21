@@ -37,6 +37,11 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
       - NENS_AUTH_RESOURCE_SERVER_ID
+      - NENS_AUTH_APPLICATION
+      - NENS_AUTH_REGION_NAME
+      - NENS_AUTH_ACCESS_KEY_ID
+      - NENS_AUTH_SECRET_ACCESS_KEY
+      - NENS_AUTH_USER_POOL_ID
     build: .
     volumes:
       - .:/code
@@ -63,6 +68,11 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
       - NENS_AUTH_RESOURCE_SERVER_ID
+      - NENS_AUTH_APPLICATION
+      - NENS_AUTH_REGION_NAME
+      - NENS_AUTH_ACCESS_KEY_ID
+      - NENS_AUTH_SECRET_ACCESS_KEY
+      - NENS_AUTH_USER_POOL_ID
     build: .
     volumes:
       - .:/code
@@ -89,6 +99,11 @@ services:
       - NENS_AUTH_CLIENT_ID
       - NENS_AUTH_CLIENT_SECRET
       - NENS_AUTH_RESOURCE_SERVER_ID
+      - NENS_AUTH_APPLICATION
+      - NENS_AUTH_REGION_NAME
+      - NENS_AUTH_ACCESS_KEY_ID
+      - NENS_AUTH_SECRET_ACCESS_KEY
+      - NENS_AUTH_USER_POOL_ID
     build: .
     command: "uv run gunicorn --bind=0.0.0.0:8000 --workers=3 --timeout=180 --preload --max-requests=10000 brostar_api.wsgi"
     ports:
