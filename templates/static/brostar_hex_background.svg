@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="520" viewBox="0 0 600 520">
+  <defs>
+    <pattern id="hexPattern" x="0" y="0" width="104" height="120" patternUnits="userSpaceOnUse">
+      <polygon points="26,2 50,16 50,44 26,58 2,44 2,16" fill="none" stroke="#ffffff" stroke-width="2"/>
+      <polygon points="78,32 102,46 102,74 78,88 54,74 54,46" fill="none" stroke="#ffffff" stroke-width="2"/>
+      <polygon points="26,62 50,76 50,104 26,118 2,104 2,76" fill="none" stroke="#ffffff" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <rect width="600" height="520" fill="#8DAC82"/>
+  <rect width="600" height="520" fill="url(#hexPattern)" opacity="0.16"/>
+</svg>

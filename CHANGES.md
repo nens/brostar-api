@@ -4,6 +4,7 @@
 
 -   Feat [UploadTasks]: Add the option to deliver XMLs based on files.
 -   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
+-   Feat [Invites]: Move to new nens-auth-client and adjust its template
 -   Enhancement [ImportTasks]: Convert to celery tasks, for faster handling
 -   Enhancement [GUF]: Correct GUF_Height Templates
 -   Enhancement [GUF]: Correct GUF_ClosureRealisedPart Templates
