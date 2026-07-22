@@ -1,0 +1,82 @@
+{% load i18n %}
+{% with slug=request.resolver_match.captured_kwargs.slug %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% translate "Register" %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{% static 'brostar.css' %}">
+</head>
+
+<body>
+    <div class="w-lg mt-30 mx-auto p-4">
+        <p class="text-sm">{% translate "After successful registration, you will be redirected to auth.lizard.net, where you can use your newly created username and password to sign in." %}</p>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset class="fieldset border mt-4 p-4 text-base rounded-box">
+                <legend class="fieldset-legend p-1">{% translate "Sign up" %}</legend>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "First name" %}:</span>
+                    <input name="first_name" type="text" placeholder="{% translate 'Type here' %}" class="input validator w-full"
+                        pattern="^\w+([ \-]\w+)*$" value="{{ form.first_name.value|default_if_none:'' }}"
+                        maxlength="150" required />
+                    <span class="validator-hint hidden mt-0">{% translate "Enter a valid name." %}</span>
+                    {% for error in form.first_name.errors %}
+                    <span class="label text-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "Last name" %}:</span>
+                    <input name="last_name" type="text" placeholder="{% translate 'Type here' %}" class="input validator w-full"
+                        pattern="^\w+([ \-]\w+)*$" value="{{ form.last_name.value|default_if_none:'' }}" maxlength="150"
+                        required />
+                    <span class="validator-hint hidden mt-0">{% translate "Enter a valid name." %}</span>
+                    {% for error in form.last_name.errors %}
+                    <span class="label text-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "Email" %}:</span>
+                    <input type="text" class="input w-full" value="{{ email }}" disabled />
+                    <span class="label">{% translate "The email address used for the invitation." %}</span>
+                </label>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "Username" %}:</span>
+                    <input name="username" type="text" placeholder="{% translate 'Type here' %}" class="input validator w-full"
+                        pattern="^[\w\.\+\-_@]+$" value="{{ form.username.value|default_if_none:email }}" minlength="4"
+                        maxlength="128" required />
+                    <span class="validator-hint hidden mt-0">Enter a valid name.</span>
+                    {% for error in form.username.errors %}
+                    <span class="label text-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "Password" %}:</span>
+                    <input name="password" type="password" placeholder="{% translate 'Type here' %}" class="input w-full"
+                        value="{{ form.password.value|default_if_none:'' }}" minlength="8" maxlength="256" required />
+                    {% for error in form.password.errors %}
+                    <span class="label text-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+                <label class="fieldset">
+                    <span class="label text-base">{% translate "Confirm password" %}:</span>
+                    <input name="password2" type="password" placeholder="{% translate 'Type here' %}" class="input w-full"
+                        value="{{ form.password2.value|default_if_none:'' }}" minlength="8" maxlength="256" required />
+                    {% for error in form.non_field_errors %}
+                    <span class="label text-error">{{ error }}</span>
+                    {% endfor %}
+                </label>
+            </fieldset>
+            <a href="{% url 'nens_auth_client:welcome' slug %}" class="btn btn-outline mt-3">{% translate "Back" %}</a>
+            <button class="btn btn-outline mt-3 ml-1">{% translate "Next" %}</button>
+        </form>
+    </div>
+</body>
+
+</html>
+
+{% endwith %}

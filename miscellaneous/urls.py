@@ -79,5 +79,4 @@ urlpatterns = [
         views.berichten_frd_bestaand,
         name="berichten_frd_bestaand",
     ),
-    path("pricing/", views.pricing, name="pricing"),
 ]
