@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <!doctype html>
 <html lang="en">
@@ -8,27 +8,111 @@
     <title>{% translate "Welcome" %}</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="{% static 'brostar.css' %}">
+    <style>
+        body {
+            background-color: #8DAC82; /* accent green */
+            background-image: url("{% static 'brostar_hex_background.svg' %}");
+            background-repeat: repeat;
+            background-size: 260px 225px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bro-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 12px 4px;
+        }
+        .bro-header img {
+            width: 24px;
+            height: 24px;
+        }
+        .bro-header h1 {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 17px;
+            margin: 0;
+        }
+        .bro-box {
+            background: #ffffff; /* was orange gradient, now white per feedback */
+            border: 0.5px solid rgba(0, 0, 0, 0.06);
+            border-radius: 10px; /* radius-large */
+            padding: 1.25rem;
+        }
+        .bro-box legend {
+            display: none; /* replaced by .bro-header above the box */
+        }
+        .bro-box label {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #DA5D2F; /* primaryBg orange, now used as text color on white */
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .bro-box label:hover {
+            background: rgba(218, 93, 47, 0.06);
+        }
+        .bro-box input[type="radio"] {
+            margin-top: 3px;
+            accent-color: #DA5D2F;
+        }
+        .bro-box .option-secondary {
+            opacity: 0.8;
+        }
+        .bro-next-btn {
+            margin-top: 16px;
+            background: #DA5D2F;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .bro-next-btn:hover {
+            background: #c1531f;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="w-lg mt-30 mx-auto p-4">
+    <div style="width: min(32rem, 92vw); padding: clamp(1rem, 3vw, 2rem);">
+        <div class="bro-header">
+            <img src="{% static 'favicon.ico' %}" alt="" />
+            <h1>{% translate "Welcome to" %} {{ application }}</h1>
+        </div>
         <form method="post">
             {% csrf_token %}
-            <fieldset class="fieldset border p-4 text-base rounded-box">
-                <legend class="fieldset-legend p-1">{% translate "Welcome to" %} {{ application }}</legend>
-                <div class="mb-1">
+            <fieldset class="bro-box">
+                <legend>{% translate "Welcome to" %} {{ application }}</legend>
+                <label for="new_user">
                     <input class="radio" type="radio" id="new_user" name="type_of_user" value="new" checked />
-                    <label class="label ml-1" for="new_user">{% translate "I am a new user and I want to sign up." %}</label>
-                </div>
-                <div>
+                    <span>{% translate "I am a new user and I want to sign up." %}</span>
+                </label>
+                <label for="existing_user" class="option-secondary">
                     <input class="radio" type="radio" id="existing_user" name="type_of_user" value="existing" />
-                    <label class="label ml-1" for="existing_user">{% translate "I already have an account and want to sign in." %}</label>
-                </div>
+                    <span>{% translate "I already have an account and want to sign in." %}</span>
+                </label>
             </fieldset>
-            <button class="btn btn-outline mt-3">{% translate "Next" %}</button>
+            <button class="bro-next-btn">
+                {% translate "Next" %}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+            </button>
         </form>
     </div>
 </body>
 
-</html> 
+</html>

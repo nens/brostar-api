@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 {% with slug=request.resolver_match.captured_kwargs.slug %}
 
 <!doctype html>
@@ -9,16 +9,138 @@
     <title>{% translate "Register" %}</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="{% static 'brostar.css' %}">
+<style>
+        body {
+            background-color: #8DAC82;
+            background-image: url("{% static 'brostar_hex_background.svg' %}");
+            background-repeat: repeat;
+            background-size: 260px 225px;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+        .bro-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 12px 4px;
+        }
+        .bro-header img {
+            width: 24px;
+            height: 24px;
+        }
+        .bro-header h1 {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 17px;
+            margin: 0;
+        }
+        .bro-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            margin: 4px 0 0 0;
+        }
+        .bro-box {
+            background: #ffffff;
+            border: 0.5px solid rgba(0, 0, 0, 0.06);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+        .bro-box legend {
+            display: none;
+        }
+        .bro-box label.fieldset {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 8px 0;
+            color: #181819;
+            font-size: 14px;
+        }
+        .bro-box span.label {
+            color: #181819;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .bro-box input {
+            background-color: #ffffff;
+            color: #181819;
+            border: 1px solid rgba(0,0,0,0.2);
+            border-radius: 6px;
+        }
+        .bro-box input:focus {
+            outline: 2px solid #DA5D2F;
+            border-color: #DA5D2F;
+        }
+        .bro-box input:disabled {
+            background-color: rgba(0,0,0,0.05);
+            opacity: 0.7;
+        }
+        .bro-box span.text-error {
+            color: #DA5D2F;
+            font-size: 12px;
+        }
+        .bro-box .validator-hint {
+            color: rgba(0,0,0,0.5);
+            font-size: 12px;
+        }
+        .bro-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .bro-next-btn {
+            background: #DA5D2F;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .bro-next-btn:hover {
+            background: #c1531f;
+        }
+        .bro-back-btn {
+            background: rgba(255,255,255,0.25);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 8px;
+            padding: 9px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .bro-back-btn:hover {
+            background: rgba(255,255,255,0.35);
+        }
+    </style>
 </head>
 
 <body>
-    <div class="w-lg mt-30 mx-auto p-4">
-        <p class="text-sm">{% translate "After successful registration, you will be redirected to auth.lizard.net, where you can use your newly created username and password to sign in." %}</p>
+    <div style="width: min(32rem, 92vw); padding: clamp(1rem, 3vw, 2rem);">
+        <div class="bro-header">
+            <img src="{% static 'favicon.ico' %}" alt="" />
+            <div>
+                <h1>{% translate "Sign up" %}</h1>
+                <p>{% translate "After successful registration, you will be redirected to auth.lizard.net, where you can use your newly created username and password to sign in." %}</p>
+            </div>
+        </div>
         <form method="post">
             {% csrf_token %}
-            <fieldset class="fieldset border mt-4 p-4 text-base rounded-box">
-                <legend class="fieldset-legend p-1">{% translate "Sign up" %}</legend>
+            <fieldset class="bro-box">
+                <legend>{% translate "Sign up" %}</legend>
                 <label class="fieldset">
                     <span class="label text-base">{% translate "First name" %}:</span>
                     <input name="first_name" type="text" placeholder="{% translate 'Type here' %}" class="input validator w-full"
@@ -71,8 +193,22 @@
                     {% endfor %}
                 </label>
             </fieldset>
-            <a href="{% url 'nens_auth_client:welcome' slug %}" class="btn btn-outline mt-3">{% translate "Back" %}</a>
-            <button class="btn btn-outline mt-3 ml-1">{% translate "Next" %}</button>
+            <div class="bro-actions">
+                <a href="{% url 'nens_auth_client:welcome' slug %}" class="bro-back-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M11 18l-6-6 6-6" />
+                    </svg>
+                    {% translate "Back" %}
+                </a>
+                <button class="bro-next-btn">
+                    {% translate "Next" %}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                </button>
+            </div>
         </form>
     </div>
 </body>

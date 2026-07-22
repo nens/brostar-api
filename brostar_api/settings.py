@@ -261,6 +261,7 @@ USE_TZ = True
 # hosted via "whitenoise": https://whitenoise.readthedocs.io/en/latest/django.html
 STATIC_URL = "static/"
 STATIC_ROOT = "/staticfiles"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "templates", "static")]
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
