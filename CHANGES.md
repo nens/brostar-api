@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.77 (unreleased)
+## 1.77 (2026-07-24)
 
 -   Feat [UploadTasks]: Add the option to deliver XMLs based on files.
 -   Feat [ObjectImport]: Made it possible to create individual imports through objectimporttasks
