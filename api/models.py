@@ -74,10 +74,16 @@ class Organisation(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
 
-    # Delivery specefics
+    # Delivery specefics (BRO API v2, HTTP Basic auth)
     kvk_number = models.CharField(max_length=8)
     bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
     bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
+
+    # Delivery specefics (BRO API v3, OAuth2 password grant). Additive and optional:
+    # organisations keep using v2 until they fill these in themselves.
+    bro_user_token_v3 = EncryptedCharField(max_length=100, blank=True, null=True)
+    bro_user_password_v3 = EncryptedCharField(max_length=100, blank=True, null=True)
+
     renewal_date = models.DateField(blank=True, null=True)
     request_count = models.IntegerField(default=0)
 
@@ -91,6 +97,21 @@ class Organisation(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    @property
+    def uses_bro_v3(self) -> bool:
+        """Whether this organisation has fully configured BRO API v3 credentials.
+
+        v3 becomes the preferred API for this organisation as soon as this is True.
+        Requires all four fields, since a partially filled in set of credentials
+        cannot be used to authenticate.
+        """
+        return bool(
+            self.bro_user_token_v3
+            and self.bro_user_password_v3
+            and self.bro_client_id_v3
+            and self.bro_token_url_v3
+        )
 
 
 class BroDomain(models.Model):

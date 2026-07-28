@@ -342,9 +342,12 @@ if SENTRY_DSN:
 if USE_BRO_PRODUCTION:
     BRO_UITGIFTE_SERVICE_URL = "https://publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://www.bronhouderportaal-bro.nl"
+    BRONHOUDERPORTAAL_AUTH_URL = "https://mijn.geologischedienst.nl/auth/realms/tno-geologische-dienst/protocol/openid-connect/token"
 else:
     BRO_UITGIFTE_SERVICE_URL = "https://int-publiek.broservices.nl"
     BRONHOUDERSPORTAAL_URL = "https://demo.bronhouderportaal-bro.nl"
+    BRONHOUDERPORTAAL_AUTH_URL = "https://mijn.geologischedienst.nl/auth/realms/tno-geologische-dienst/protocol/openid-connect/token"
+
 
 if not DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
