@@ -3,7 +3,8 @@
 ## 1.78 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [GAR-Import]: Proces passed as tuple, now as instance
+-   Chore [Type]
 
 
 ## 1.77 (2026-07-24)

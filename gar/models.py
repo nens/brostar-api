@@ -55,12 +55,8 @@ class GAR(models.Model):
 
     @property
     def gmw_nitg_code(self):
-        return (
-            gmw_models.GMW.objects.all()
-            .filter(bro_id=self.gmw_bro_id)
-            .first()
-            .nitg_code
-        )
+        gmw = gmw_models.GMW.objects.all().filter(bro_id=self.gmw_bro_id).first()
+        return gmw.nitg_code if gmw else None
 
     class Meta:
         verbose_name_plural = "GAR's"
