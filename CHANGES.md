@@ -4,7 +4,9 @@
 
 
 -   Bugfix [GAR-Import]: Proces passed as tuple, now as instance
--   Chore [Type]
+-   Chore [Type-Hinting]: Fix multiple incorrect type-hints
+-   Chore [Dependencies]: Update versioning of dependencies
+-   Rework [Swagger]: Move from drf-yasg to drf-spectacular
 
 
 ## 1.77 (2026-07-24)

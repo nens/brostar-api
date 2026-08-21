@@ -6,8 +6,7 @@ from django.db.models import Prefetch
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -26,152 +25,9 @@ logger = logging.getLogger(__name__)
 class GMWGeoJSONView(APIView):
     """Endpoint to serve all GMW data as GeoJSON FeatureCollection"""
 
-    @swagger_auto_schema(
-        operation_description="Get all GMW data as a GeoJSON FeatureCollection",
-        responses={
-            200: openapi.Response(
-                description="GeoJSON FeatureCollection",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        "type": openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description="GeoJSON type",
-                            enum=["FeatureCollection"],
-                        ),
-                        "count": openapi.Schema(
-                            type=openapi.TYPE_INTEGER, description="Number of features"
-                        ),
-                        "features": openapi.Schema(
-                            type=openapi.TYPE_ARRAY,
-                            description="Array of GeoJSON Features",
-                            items=openapi.Schema(
-                                type=openapi.TYPE_OBJECT,
-                                properties={
-                                    "type": openapi.Schema(
-                                        type=openapi.TYPE_STRING, enum=["Feature"]
-                                    ),
-                                    "id": openapi.Schema(
-                                        type=openapi.TYPE_STRING, format="uuid"
-                                    ),
-                                    "geometry": openapi.Schema(
-                                        type=openapi.TYPE_OBJECT,
-                                        properties={
-                                            "type": openapi.Schema(
-                                                type=openapi.TYPE_STRING, enum=["Point"]
-                                            ),
-                                            "coordinates": openapi.Schema(
-                                                type=openapi.TYPE_ARRAY,
-                                                items=openapi.Schema(
-                                                    type=openapi.TYPE_NUMBER
-                                                ),
-                                                description="[longitude, latitude]",
-                                                min_items=2,
-                                                max_items=2,
-                                            ),
-                                        },
-                                        required=["type", "coordinates"],
-                                    ),
-                                    "properties": openapi.Schema(
-                                        type=openapi.TYPE_OBJECT,
-                                        properties={
-                                            "uuid": openapi.Schema(
-                                                type=openapi.TYPE_STRING, format="uuid"
-                                            ),
-                                            "bro_id": openapi.Schema(
-                                                type=openapi.TYPE_STRING, max_length=18
-                                            ),
-                                            "linked_gmns": openapi.Schema(
-                                                type=openapi.TYPE_ARRAY,
-                                                items=openapi.Schema(
-                                                    type=openapi.TYPE_STRING
-                                                ),
-                                            ),
-                                            "nitg_code": openapi.Schema(
-                                                type=openapi.TYPE_STRING,
-                                                x_nullable=True,
-                                            ),
-                                            "well_construction_date": openapi.Schema(
-                                                type=openapi.TYPE_STRING,
-                                                x_nullable=True,
-                                            ),
-                                            "nr_of_monitoring_tubes": openapi.Schema(
-                                                type=openapi.TYPE_INTEGER
-                                            ),
-                                            "quality_regime": openapi.Schema(
-                                                type=openapi.TYPE_STRING,
-                                                x_nullable=True,
-                                            ),
-                                            "removed": openapi.Schema(
-                                                type=openapi.TYPE_STRING,
-                                                x_nullable=True,
-                                            ),
-                                            "tubes": openapi.Schema(
-                                                type=openapi.TYPE_ARRAY,
-                                                items=openapi.Schema(
-                                                    type=openapi.TYPE_OBJECT,
-                                                    properties={
-                                                        "uuid": openapi.Schema(
-                                                            type=openapi.TYPE_STRING,
-                                                            format="uuid",
-                                                        ),
-                                                        "tube_number": openapi.Schema(
-                                                            type=openapi.TYPE_STRING,
-                                                            x_nullable=True,
-                                                        ),
-                                                        "tube_status": openapi.Schema(
-                                                            type=openapi.TYPE_STRING,
-                                                            x_nullable=True,
-                                                        ),
-                                                    },
-                                                ),
-                                            ),
-                                        },
-                                    ),
-                                },
-                                required=["type", "id", "geometry", "properties"],
-                            ),
-                        ),
-                    },
-                    required=["type", "count", "features"],
-                ),
-                examples={
-                    "application/json": {
-                        "type": "FeatureCollection",
-                        "count": 2,
-                        "features": [
-                            {
-                                "type": "Feature",
-                                "id": "123e4567-e89b-12d3-a456-426614174000",
-                                "geometry": {
-                                    "type": "Point",
-                                    "coordinates": [5.123, 52.456],
-                                },
-                                "properties": {
-                                    "uuid": "123e4567-e89b-12d3-a456-426614174000",
-                                    "bro_id": "GMW000000001234",
-                                    "linked_gmns": [
-                                        "456e7890-e89b-12d3-a456-426614174000"
-                                    ],
-                                    "nitg_code": "B25E0123",
-                                    "well_construction_date": "2020-01-15",
-                                    "nr_of_monitoring_tubes": 3,
-                                    "quality_regime": "IMBRO",
-                                    "removed": None,
-                                    "tubes": [
-                                        {
-                                            "uuid": "789e0123-e89b-12d3-a456-426614174000",
-                                            "tube_number": "1",
-                                            "tube_status": "active",
-                                        }
-                                    ],
-                                },
-                            }
-                        ],
-                    }
-                },
-            )
-        },
+    @extend_schema(
+        description="Get all GMW data as a GeoJSON FeatureCollection",
+        responses={200: OpenApiResponse(description="GeoJSON FeatureCollection")},
     )
     def get(self, request) -> Response:
         """

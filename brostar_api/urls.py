@@ -17,35 +17,27 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from nens_auth_client.urls import override_admin_auth, override_rest_framework_auth
-from rest_framework import permissions
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="BROStar API",
-        default_version="v1",
-        description="Simplify the data management of the BRO",
-        terms_of_service="",
-        contact=openapi.Contact(email="servicedesk@nelen-schuurmans.nl"),
-        license=openapi.License(name="BSD License"),
-    ),
-    public=True,
-    permission_classes=(permissions.IsAuthenticated,),
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
 )
+from nens_auth_client.urls import override_admin_auth, override_rest_framework_auth
 
 urlpatterns = [
     path("auth/", include("nens_auth_client.urls", namespace="auth")),
     *override_admin_auth(),
     path("admin/", admin.site.urls),
     *override_rest_framework_auth(),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "swagger/",
-        schema_view.with_ui("swagger", cache_timeout=0),
+        SpectacularSwaggerView.as_view(url_name="schema"),
         name="schema-swagger-ui",
     ),
-    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path(
+        "redoc/", SpectacularRedocView.as_view(url_name="schema"), name="schema-redoc"
+    ),
     path("api/", include(("api.urls", "api"), namespace="api")),
     path(
         "",
