@@ -38,6 +38,7 @@ dependencies = [
     "pyproj",
     "gunicorn>=23.0.0",
     "drf-spectacular>=0.30.0",
+    "pytz>=2026.3.post1",
 ]
 description = "Simplify data management for BRO"
 authors = []
