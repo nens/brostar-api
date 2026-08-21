@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_api_key",
-    "drf_yasg",
+    "drf_spectacular",
     "corsheaders",
     "django_filters",
     "encrypted_model_fields",
@@ -285,6 +285,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # DRF configuration
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
@@ -302,6 +303,15 @@ FILTERS_DEFAULT_FILTER_OVERRIDES = {
     "django.db.models.JSONField": {
         "filter_class": "django_filters.CharFilter",
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "BROStar API",
+    "DESCRIPTION": "Simplify the data management of the BRO",
+    "VERSION": "v1",
+    "CONTACT": {"email": "servicedesk@nelen-schuurmans.nl"},
+    "LICENSE": {"name": "BSD License"},
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
 }
 
 # Automatically discover tasks in Django app

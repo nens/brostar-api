@@ -64,7 +64,7 @@ class UrlFieldMixin:
             )
         return None
 
-    def to_representation(self, instance: Any) -> dict[str, str]:
+    def to_representation(self, instance: Any):
         """
         Method to include the URL field in serialized data.
         """
