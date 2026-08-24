@@ -30,7 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version-file: "3.12"
+          python-version: "3.12"
 
       - uses: pre-commit/action@v3.0.1
 
