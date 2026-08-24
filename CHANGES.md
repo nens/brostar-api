@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.78 (unreleased)
+## 1.78 (2026-08-24)
 
 
 -   Bugfix [GAR-Import]: Proces passed as tuple, now as instance
