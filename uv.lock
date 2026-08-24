@@ -192,7 +192,7 @@ requires-dist = [
     { name = "django-cors-headers" },
     { name = "django-encrypted-model-fields" },
     { name = "django-filter", specifier = "==24.2" },
-    { name = "djangorestframework", specifier = "==3.15.1" },
+    { name = "djangorestframework", specifier = ">=3.15.2" },
     { name = "djangorestframework-api-key" },
     { name = "drf-spectacular", specifier = ">=0.30.0" },
     { name = "fastexcel" },
@@ -841,14 +841,14 @@ wheels = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.15.1"
+version = "3.18.0"
 source = { registry = "https://packages.lizard.net/" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/60/cc2dd985400293fe7bf3fa1b9a5d61f5b44200c33f7d31952f2c9fd79e8a/djangorestframework-3.15.1.tar.gz", hash = "sha256:f88fad74183dfc7144b2756d0d2ac716ea5b4c7c9840995ac3bfd8ec034333c1", size = 1066194 }
+sdist = { url = "https://files.pythonhosted.org/packages/79/bc/de04e3d4dc65e8b926700956ee70d4f084f2005603d21122d4d0683006fd/djangorestframework-3.18.0.tar.gz", hash = "sha256:2323a5111837e0b784dcb8323abc78ecc54fa2a5af7aff2677cf50cdd849477f", size = 913667 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c0/7e/8c45ea7f85dd5d52ceddbacc6f56ecaca21ecbfc0e8c34c95618a14d5082/djangorestframework-3.15.1-py3-none-any.whl", hash = "sha256:3ccc0475bce968608cf30d07fb17d8e52d1d7fc8bfe779c905463200750cbca6", size = 1067096 },
+    { url = "https://files.pythonhosted.org/packages/51/d7/7461738e819b853275b35fd35712a85806c09a327e1fd5f8ff766bdd317e/djangorestframework-3.18.0-py3-none-any.whl", hash = "sha256:381fc44d3249c9565c5f723850855b734e99030eb30957a49f506d3fe11d7dcb", size = 900032 },
 ]
 
 [[package]]
