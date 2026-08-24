@@ -2,13 +2,14 @@ import datetime
 import importlib
 import logging
 import time
+import xml.etree.ElementTree as ET  # nosec B405
 from abc import ABC, abstractmethod
 from typing import IO, Any
 
-import defusedxml.ElementTree as ET
 import polars as pl
 import requests
 import xmltodict
+from defusedxml.ElementTree import fromstring
 from django.conf import settings
 from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
@@ -1244,7 +1245,8 @@ class GLDObjectImporter(ObjectImporter):
                 time.sleep(sleep_time)
                 continue
             r.raise_for_status()
-            return ET.fromstring(r.content)
+            # Use defused variant for safety
+            return fromstring(r.content)
 
     def _format_procedure(self, observation: ET.Element) -> dict:
         procedure = {}

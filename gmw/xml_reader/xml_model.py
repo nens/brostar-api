@@ -1,7 +1,8 @@
 import time
+import xml.etree.ElementTree as ET  # nosec B405
 
-import defusedxml.ElementTree as ET
 import requests
+from defusedxml.ElementTree import fromstring
 
 from .namespaces import (
     ns_reg_gmw,
@@ -50,7 +51,7 @@ class GMWXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gmw", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GMW-ID: {bro_id}")
 
@@ -666,7 +667,7 @@ class GPDXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gpd", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GPD-ID: {bro_id}")
 
