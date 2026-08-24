@@ -1,6 +1,5 @@
 import csv
 import logging
-from typing import TypeVar
 
 import numpy as np
 import pandas as pd
@@ -15,8 +14,6 @@ from gar import models as gar_models
 from gmw import models as gmw_models
 
 logger = logging.getLogger("general")
-
-T = TypeVar("T", bound=models.Model)
 
 
 def write_to_csv(file, row):
@@ -59,7 +56,6 @@ class Command(BaseCommand):
         organisation_uuid = "4253c513-d845-40a5-afd3-0c55b1e64165"  # hardcoded
         gar_data_file_uuid = "ca483e58-40ce-40f0-91df-5b58ccd1e225"  # hardcoded
         field_research_data_uuid = "3bd84329-5711-45a0-8d78-54e782aad88f"  # hardcoded
-        project_number = 1  # hardcoded
 
         # Get instances
         organisation_instance = get_django_instance(Organisation, organisation_uuid)
@@ -89,14 +85,12 @@ class Command(BaseCommand):
 
         grouped_gar_df.apply(
             handle_gar_delivery,
-            organisation_instance,
-            project_number,
             field_data_df,
             gmn_bro_id,
         )
 
 
-def get_django_instance(model: type[T], uuid: str) -> T:
+def get_django_instance[T: models.Model](model: type[T], uuid: str) -> T:
     """Returns the django instance of a given model based on the uuid"""
     try:
         return model.objects.get(uuid=uuid)
@@ -203,14 +197,12 @@ def group_gar_df(df: pd.DataFrame) -> pd.DataFrame:
 
 def handle_gar_delivery(
     gar_df: pd.DataFrame,
-    organisation_instance: T,
-    project_number: int,
     field_data_df: pd.DataFrame,
     gmn_bro_id: str,
 ) -> None:
     """This apply function handles the delivery of a single GAR delivery."""
 
-    uploadtask_sourcedocument_data: datamodels.GAR = setup_gar_sourcedocs_data(
+    uploadtask_sourcedocument_data = setup_gar_sourcedocs_data(
         gar_df, field_data_df, gmn_bro_id
     )
 
