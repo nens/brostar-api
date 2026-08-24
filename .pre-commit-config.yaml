@@ -20,7 +20,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.10  # pin to latest release
+    rev: 1.9.4  # pin to latest release
     hooks:
       - id: bandit
         args: ["-c", "pyproject.toml"]
