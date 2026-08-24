@@ -146,7 +146,7 @@ class BulkImporter:
         try:
             retry = 0
             while True:
-                r = requests.get(url)
+                r = requests.get(url, timeout=15)
                 if r.status_code > 499 and retry < 3:
                     logger.warning(
                         f"Received status code {r.status_code} from BRO service. Retrying in 5 seconds..."

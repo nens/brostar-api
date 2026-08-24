@@ -2,13 +2,14 @@ import datetime
 import importlib
 import logging
 import time
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 from abc import ABC, abstractmethod
 from typing import IO, Any
 
 import polars as pl
 import requests
 import xmltodict
+from defusedxml.ElementTree import fromstring
 from django.conf import settings
 from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
@@ -1210,7 +1211,7 @@ class GLDObjectImporter(ObjectImporter):
                 if attempt == max_retries:
                     r.raise_for_status()
                 wait_time = int(r.headers.get("Retry-After", 5))
-                jitter = random.uniform(0, wait_time * 0.5)
+                jitter = random.uniform(0, wait_time * 0.5)  # ignore B311
                 sleep_time = wait_time + jitter
                 logger.info(
                     f"Received 429 Too Many Requests. Retrying after {sleep_time:.1f} seconds "
@@ -1235,7 +1236,7 @@ class GLDObjectImporter(ObjectImporter):
                 if attempt == max_retries:
                     r.raise_for_status()
                 wait_time = int(r.headers.get("Retry-After", 5))
-                jitter = random.uniform(0, wait_time * 0.5)
+                jitter = random.uniform(0, wait_time * 0.5)  # ignore B311
                 sleep_time = wait_time + jitter
                 logger.info(
                     f"Received 429 Too Many Requests for observation {observation_id}. "
@@ -1244,7 +1245,8 @@ class GLDObjectImporter(ObjectImporter):
                 time.sleep(sleep_time)
                 continue
             r.raise_for_status()
-            return ET.fromstring(r.content)
+            # Use defused variant for safety
+            return fromstring(r.content)
 
     def _format_procedure(self, observation: ET.Element) -> dict:
         procedure = {}

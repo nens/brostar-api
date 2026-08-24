@@ -1,7 +1,8 @@
 import time
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 import requests
+from defusedxml.ElementTree import fromstring
 
 from .namespaces import (
     ns_reg_gmw,
@@ -19,7 +20,9 @@ def _request_bro_xml(
     retry = 0
     while retry < 3:
         # Try to get a response with statuscode 200 (deal with temporary time-out of servicedesk)
-        res = requests.get(f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}")
+        res = requests.get(
+            f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}", timeout=20
+        )
 
         if res.status_code < 300:
             return res.content
@@ -48,7 +51,7 @@ class GMWXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gmw", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GMW-ID: {bro_id}")
 
@@ -664,7 +667,7 @@ class GPDXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gpd", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GPD-ID: {bro_id}")
 
