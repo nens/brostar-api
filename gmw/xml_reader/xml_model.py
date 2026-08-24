@@ -1,6 +1,6 @@
 import time
-import xml.etree.ElementTree as ET
 
+import defusedxml.ElementTree as ET
 import requests
 
 from .namespaces import (
@@ -19,7 +19,9 @@ def _request_bro_xml(
     retry = 0
     while retry < 3:
         # Try to get a response with statuscode 200 (deal with temporary time-out of servicedesk)
-        res = requests.get(f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}")
+        res = requests.get(
+            f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}", timeout=20
+        )
 
         if res.status_code < 300:
             return res.content
