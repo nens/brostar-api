@@ -1,10 +1,9 @@
 from api.bro_upload.upload_datamodels import (
     BHRG,
-    BHRGT,
     BHRP,
     CPT,
     GAR,
-    SFR,
+    BHRGTCompleteReportV1,
     FRDEmmInstrumentConfiguration,
     FRDEmmMeasurement,
     FRDGemMeasurement,
@@ -45,6 +44,7 @@ from api.bro_upload.upload_datamodels import (
     GUFNewLicence,
     GUFStartRegistration,
     GUFWellFunction,
+    SFRCompleteReportV1,
 )
 
 STATUS_CHOICES = [
@@ -108,10 +108,10 @@ REGISTRATION_TYPE_OPTIONS = [
     ("FRD_Closure", "FRD_Closure"),
     # NEW
     ("CPT", "CPT"),
-    ("BHR-P", "BHR-P"),
-    ("BHR-G", "BHR-G"),
-    ("BHR-GT", "BHR-GT"),
-    ("SFR", "SFR"),
+    ("BHR_P", "BHR_P"),
+    ("BHR_G", "BHR_G"),  # no template yet
+    ("BHR_GT_CompleteReport_V1", "BHR_GT_CompleteReport_V1"),
+    ("SFR_CompleteReport_V1", "SFR_CompleteReport_V1"),
     ("GUF_StartRegistration", "GUF_StartRegistration"),
     ("GUF_NewLicence", "GUF_NewLicence"),
     ("GUF_ExpandedRealisedInstallation", "GUF_ExpandedRealisedInstallation"),
@@ -163,10 +163,10 @@ registration_type_datamodel_mapping = {
     "FRD_EMM_Measurement": FRDEmmMeasurement,
     "FRD_Closure": None,
     "CPT": CPT,
-    "BHR-P": BHRP,
-    "BHR-G": BHRG,
-    "BHR-GT": BHRGT,
-    "SFR": SFR,
+    "BHR_P": BHRP,
+    "BHR_G": BHRG,  # stub — no template yet
+    "BHR_GT_CompleteReport_V1": BHRGTCompleteReportV1,
+    "SFR_CompleteReport_V1": SFRCompleteReportV1,
     "GUF_StartRegistration": GUFStartRegistration,
     "GUF_NewLicence": GUFNewLicence,
     "GUF_ExpandedRealisedInstallation": GUFExpandedRealisedInstallation,
