@@ -3,7 +3,7 @@
 ## 1.79 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
 
 
 ## 1.78 (2026-08-24)
