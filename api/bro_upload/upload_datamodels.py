@@ -1278,7 +1278,9 @@ class GPDAddReport(CamelModel):
     report_id: str
     method: MethodOptions = "onbekend"
     volume_series: list[VolumeSeries]
+    temperature_in: TemperatureOptions = None
     groundwater_usage_facility_bro_id: str  # BRO-ID of GUF
+    realised_installation_id: str | None = None
 
 
 class GPDEndRegistration(CamelModel):

@@ -12,30 +12,40 @@
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <brocom:correctionReason>{{ metadata.correctionReason }}</brocom:correctionReason>
   <sourceDocument>
-    <gpdcom:GPD_AddReport gml:id="id_0001">
-      <gpdcom:reportId>{{ sourcedocs_data.reportId }}</gpdcom:reportId>
-      <gpdcom:method codeSpace="urn:bro:gpd:Method">{{ sourcedocs_data.method }}</gpdcom:method>
+    <GPD_AddReport gml:id="id_0001">
+      <reportId>{{ sourcedocs_data.reportId }}</reportId>
+      <method codeSpace="urn:bro:gpd:Method">{{ sourcedocs_data.method }}</method>
       {% for volume in sourcedocs_data.volume_series %}
-      <gpdcom:volumeSeries>
+      <volumeSeries>
         <gpdcom:period>
           <brocom:beginDate>{{ volume.beginDate }}</brocom:beginDate>
           <brocom:endDate>{{ volume.endDate }}</brocom:endDate>
         </gpdcom:period>
-        <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.volumeNumber }}</gpdcom:waterInOut>
-        <gpdcom:volume uom="m3">{{ volume.volumeTotalNumber }}</gpdcom:volume>
-        {% if volume.temperature %}
-        <gpdcom:temperature>{{ volume.temperature }}</gpdcom:temperature>
+        <gpdcom:waterInOut codeSpace="urn:bro:gpd:WaterInOut">{{ volume.waterInOut }}</gpdcom:waterInOut>
+        <gpdcom:volume uom="m3">{{ volume.volume }}</gpdcom:volume>
+        {% if volume.temperatureIn %}
+        <gpdcom:temperatureIn codeSpace="urn:bro:gpd:TemperatureIn">{{ volume.temperatureIn }}</gpdcom:temperatureIn>
         {% endif %}
-      </gpdcom:volumeSeries>
+      </volumeSeries>
       {% endfor %}
-      <gpdcom:installationOrFacility>
+      <installationOrFacility>
         <gpdcom:InstallationOrFacility>
+          {% if sourcedocs_data.realisedInstallationId %}
+          <gpdcom:relatedRealisedInstallation>
+            <gpdcom:RealisedInstallation gml:id="BRO_0001">
+              <gpdcom:broId>{{ sourcedocs_data.groundwaterUsageFacilityBroId }}</gpdcom:broId>
+              <gpdcom:realisedInstallationId>{{ sourcedocs_data.realisedInstallationId }}</gpdcom:realisedInstallationId>
+            </gpdcom:RealisedInstallation>
+          </gpdcom:relatedRealisedInstallation>
+          {% else %}
           <gpdcom:relatedGroundwaterUsageFacility>
             <gpdcom:GroundwaterUsageFacility gml:id="BRO_0001">
               <gpdcom:broId>{{ sourcedocs_data.groundwaterUsageFacilityBroId }}</gpdcom:broId>
             </gpdcom:GroundwaterUsageFacility>
           </gpdcom:relatedGroundwaterUsageFacility>
+          {% endif %}
         </gpdcom:InstallationOrFacility>
-      </gpdcom:installationOrFacility>
-    </gpdcom:GPD_AddReport>
+      </installationOrFacility>
+    </GPD_AddReport>
+  </sourceDocument>
 </deleteRequest>
