@@ -84,10 +84,7 @@ def test_gpd_addreport_xml():
     assert "replaceRequest" in xml
     assert "GPD_AddReport" in xml
     assert "Report1234" in xml
-    assert (
-        '<gpdcom:method codeSpace="urn:bro:gpd:Method">berekening</gpdcom:method>'
-        in xml
-    )
+    assert '<method codeSpace="urn:bro:gpd:Method">berekening</method>' in xml
     assert "GUF1234" in xml
 
 
