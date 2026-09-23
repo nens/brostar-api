@@ -9,12 +9,13 @@
 >
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <sourceDocument>
     <GPD_AddReport gml:id="id_0001">
       <reportId>{{ sourcedocs_data.reportId }}</reportId>
       <method codeSpace="urn:bro:gpd:Method">{{ sourcedocs_data.method }}</method>
-      {% for volume in sourcedocs_data.volume_series %}
+      {% for volume in sourcedocs_data.volumeSeries %}
       <volumeSeries>
         <gpdcom:period>
           <brocom:beginDate>{{ volume.beginDate }}</brocom:beginDate>
