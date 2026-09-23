@@ -11,11 +11,11 @@
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
   <sourceDocument>
-    <gpdcom:GPD_StartRegistration gml:id="id_0001">
-      <gpdcom:objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</gpdcom:objectIdAccountableParty>
+    <GPD_StartRegistration gml:id="id_0001">
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
       {% if sourcedocs_data.publiclyAvailable %}
       <gpdcom:publiclyAvailable>{{ sourcedocs_data.publiclyAvailable }}</gpdcom:publiclyAvailable>
       {% endif %}
-    </gpdcom:GPD_StartRegistration>
+    </GPD_StartRegistration>
   </sourceDocument>
 </registrationRequest>
