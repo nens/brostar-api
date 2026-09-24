@@ -10,7 +10,7 @@
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-  <correctionReason>{{ metadata.correctionReason }}</correctionReason>
+  <correctionReason codeSpace="urn:bro:gpd:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
   <sourceDocument>
     <GPD_StartRegistration gml:id="id_0001">
       <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
