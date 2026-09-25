@@ -1072,6 +1072,7 @@ class RealisedScreen(CamelModel):
     realised_screen_pos: str | None = None  # For Point geometry
     segments: str | None = None  # For Curve geometry
     geometry_type: Literal["Point", "Curve"] = "Point"
+    geometry_publicly_available: PubliclyAvailableOptions = None
 
     @field_validator("gml_id", mode="before")
     @classmethod
@@ -1123,7 +1124,7 @@ class GUFAddRealisedInstallation(CamelModel):
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
     realised_loop_pos: str  # Position coordinates
-    start_validity: str = Field(
+    start_time: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
     )

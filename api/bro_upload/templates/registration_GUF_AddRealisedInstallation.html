@@ -26,17 +26,17 @@
           <gml:pos>{{ sourcedocs_data.realisedLoopPos }}</gml:pos>
         </gml:Point>
       </gufcom:geometry>
-      <gufcom:startValidity>
-        {% if sourcedocs_data.startValidity|length == 10 %}
-        <brocom:date>{{ sourcedocs_data.startValidity }}</brocom:date>
-        {% elif sourcedocs_data.startValidity|length == 7 %}
-        <brocom:yearMonth>{{ sourcedocs_data.startValidity }}</brocom:yearMonth>
-        {% elif sourcedocs_data.startValidity|length == 4 %}
-        <brocom:year>{{ sourcedocs_data.startValidity }}</brocom:year>
+      <gufcom:startTime>
+        {% if sourcedocs_data.startTime|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.startTime }}</brocom:date>
+        {% elif sourcedocs_data.startTime|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.startTime }}</brocom:yearMonth>
+        {% elif sourcedocs_data.startTime|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.startTime }}</brocom:year>
         {% else %}
         <brocom:voidReason>onbekend</brocom:voidReason>
         {% endif %}
-      </gufcom:startValidity>
+      </gufcom:startTime>
       {% for realised_loop in sourcedocs_data.realisedLoops %}
       <gufcom:realisedLoop>
         <gufcom:RealisedLoop gml:id="{{ realised_loop.gmlId }}">
@@ -70,8 +70,8 @@
           {% endif %}
         </gufcom:RealisedLoop>
       </gufcom:realisedLoop>
-      {% endfor %} {% for realised_surface_infiltration in
-      sourcedocs_data.realisedSurfaceInfiltrations %}
+      {% endfor %}
+      {% for realised_surface_infiltration in sourcedocs_data.realisedSurfaceInfiltrations %}
       <gufcom:realisedSurfaceInfiltration>
         <gufcom:RealisedSurfaceInfiltration
           gml:id="{{ realised_surface_infiltration.gmlId }}"
@@ -126,35 +126,7 @@
           {% endif %}
           <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.  -->
           {% if sourcedocs_data.installationFunction == 'openBodemenergiesysteem' and realised_well.wellFunctions|length == 2 %}
-          <gufcom:relativeTemperature codeSpace="">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
-          {% endif %}
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation  -->
-          {% if realised_well.validity %}
-          <gufcom:validity>
-            <brocom:startValidity>
-              {% if realised_well.validity|length == 10 %}
-              <brocom:date>{{ realised_well.validity }}</brocom:date>
-              {% elif realised_well.validity|length == 7 %}
-              <brocom:yearMonth>{{ realised_well.validity }}</brocom:yearMonth>
-              {% elif realised_well.validity|length == 4 %}
-              <brocom:year>{{ realised_well.validity }}</brocom:year>
-              {% endif %}
-            </brocom:startValidity>
-          </gufcom:validity>
-          {% endif %}
-          <!--  Optional: not allowed in GUF_ExpandRealisedInstallation  -->
-          {% if realised_well.lifespan %}
-          <gufcom:lifespan>
-            <gufcom:startTime>
-              {% if realised_well.lifespan|length == 10 %}
-              <brocom:date>{{ realised_well.lifespan }}</brocom:date>
-              {% elif realised_well.lifespan|length == 7 %}
-              <brocom:yearMonth>{{ realised_well.lifespan }}</brocom:yearMonth>
-              {% elif realised_well.lifespan|length == 4 %}
-              <brocom:year>{{ realised_well.lifespan }}</brocom:year>
-              {% endif %}
-            </gufcom:startTime>
-          </gufcom:lifespan>
+          <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
           {% endif %}
           <!--  0 or more repetitions:  -->
           {% for realised_screen in realised_well.realisedScreens %}
@@ -170,6 +142,7 @@
                 >{{ realised_screen.topScreenDepth }}</gufcom:topScreenDepth
               >
               <gufcom:length uom="m">{{ realised_screen.length }}</gufcom:length>
+              {% if realised_screen.screenType == "nietVerticaal" %}
               <gufcom:geometry>
                 <gufcom:PointOrCurve>
                   {% if realised_screen.realisedScreenPos %}
@@ -189,11 +162,16 @@
                   {% endif %}
                 </gufcom:PointOrCurve>
               </gufcom:geometry>
+              {% endif %}
+              {% if realised_screen.geometryPubliclyAvailable %}
+              <gufcom:geometryPubliclyAvailable>{{ realised_screen.geometryPubliclyAvailable }}</gufcom:geometryPubliclyAvailable>
+              {% endif %}
             </gufcom:RealisedScreen>
           </gufcom:realisedScreen>
           {% endfor %}
         </gufcom:RealisedWell>
       </gufcom:realisedWell>
+      {% endfor %}
     </gufcom:GUF_AddRealisedInstallation>
   </sourceDocument>
 </registrationRequest>

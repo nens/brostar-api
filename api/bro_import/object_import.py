@@ -1734,7 +1734,7 @@ class GUFObjectImporter(ObjectImporter):
             "realised_installation_id": realised_installation_id,
             "installation_function": installation_function,
             "realised_loop_pos": realised_loop_pos or "",
-            "start_validity": start_validity,
+            "start_time": start_validity,
             "realised_wells": realised_wells_payload,
         }
 
