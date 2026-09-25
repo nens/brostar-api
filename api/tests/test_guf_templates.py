@@ -1,5 +1,8 @@
 from api.bro_upload import object_upload
-from api.bro_upload.upload_datamodels import GUFStartRegistration
+from api.bro_upload.upload_datamodels import (
+    GUFAddRealisedInstallation,
+    GUFStartRegistration,
+)
 
 
 def test_guf_startregistration_xml():
@@ -92,3 +95,48 @@ def test_guf_startregistration_xml():
     assert "identificationLicence" in xml
     assert "designInstallationId" in xml
     assert "designWellId" in xml
+
+
+def test_guf_addrealisedinstallation_xml():
+    source_doc_dict = {
+        "realisedInstallationId": "401",
+        "installationFunction": "onttrekking",
+        "realisedLoopPos": "147600.000 432900.000",
+        "startTime": "2021-06-01",
+        "realisedWells": [
+            {
+                "realisedWellId": "501",
+                "wellFunctions": ["onttrekking"],
+                "height": 2.53,
+                "wellDepth": 57.9,
+                "wellPos": "147600.000 432900.000",
+                "realisedScreens": [
+                    {
+                        "realisedScreenId": "601",
+                        "screenType": "verticaal",
+                        "topScreenDepth": 42.9,
+                        "length": 15.0,
+                    }
+                ],
+            }
+        ],
+    }
+    source_docs_data = GUFAddRealisedInstallation(**source_doc_dict)
+    generator = object_upload.XMLGenerator(
+        registration_type="GUF_AddRealisedInstallation",
+        request_type="registration",
+        metadata={
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "broId": "GUF000000000001",
+            "qualityRegime": "IMBRO",
+        },
+        sourcedocs_data=source_docs_data.model_dump(mode="json", by_alias=True),
+    )
+
+    xml = generator.create_xml_file()
+    print(xml)
+    assert generator.status == "COMPLETED", generator.error_message
+    assert "GUF_AddRealisedInstallation" in xml
+    assert "realisedWellId" in xml
+    assert "realisedScreenId" in xml
