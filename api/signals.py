@@ -116,12 +116,8 @@ def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
         instance.log = "Starting task."
         instance.save()
 
-        # Accessing the authenticated user's username and token
-        username = instance.data_owner.bro_user_token
-        password = instance.data_owner.bro_user_password
-
         # Start the celery task
-        tasks.upload_task(instance.uuid, username, password)
+        tasks.upload_task(instance.uuid)
 
     if (
         instance.status == "COMPLETED"
