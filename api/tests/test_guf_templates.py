@@ -101,7 +101,7 @@ def test_guf_addrealisedinstallation_xml():
     source_doc_dict = {
         "realisedInstallationId": "401",
         "installationFunction": "onttrekking",
-        "realisedLoopPos": "147600.000 432900.000",
+        "realisedInstallationPos": "147600.000 432900.000",
         "startTime": "2021-06-01",
         "realisedWells": [
             {
@@ -140,3 +140,36 @@ def test_guf_addrealisedinstallation_xml():
     assert "GUF_AddRealisedInstallation" in xml
     assert "realisedWellId" in xml
     assert "realisedScreenId" in xml
+
+
+def test_guf_addrealisedinstallation_pos_from_wells():
+    source_doc_dict = {
+        "realisedInstallationId": "401",
+        "installationFunction": "onttrekking",
+        "startTime": "2021-06-01",
+        "realisedWells": [
+            {
+                "realisedWellId": "501",
+                "wellFunctions": ["onttrekking"],
+                "height": 2.53,
+                "wellDepth": 57.9,
+                "wellPos": "100 200",
+            },
+            {
+                "realisedWellId": "502",
+                "wellFunctions": ["onttrekking"],
+                "height": 2.53,
+                "wellDepth": 57.9,
+                "wellPos": "300 400",
+            },
+            {
+                "realisedWellId": "503",
+                "wellFunctions": ["onttrekking"],
+                "height": 2.53,
+                "wellDepth": 57.9,
+                "wellPos": "500 900",
+            },
+        ],
+    }
+    source_docs_data = GUFAddRealisedInstallation(**source_doc_dict)
+    assert source_docs_data.realised_installation_pos == "300.000 500.000"

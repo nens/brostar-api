@@ -831,6 +831,7 @@ class DesignSurfaceInfiltration(CamelModel):
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     design_surface_infiltration_id: str
     design_surface_infiltration_pos: str  # Position coordinates for Polygon geometry
+    geometry_publicly_available: PubliclyAvailableOptions = None
 
     @field_validator("gml_id", mode="before")
     @classmethod
@@ -1090,7 +1091,7 @@ class RealisedWell(CamelModel):
     height: float  # meters
     well_depth: float  # meters
     wellPos: str
-    publicly_available: PubliclyAvailableOptions = None
+    geometry_publicly_available: PubliclyAvailableOptions = None
     relative_temperature: RelativeTemperatureOptions | None = None
     validity: str | None = None  # Not allowed in ExpandRealisedInstallation
     lifespan: str | None = None  # Not allowed in ExpandRealisedInstallation
@@ -1108,6 +1109,7 @@ class RealisedSurfaceInfiltration(CamelModel):
     gml_id: str = Field(default_factory=lambda: f"_{uuid.uuid4()}")
     realised_surface_infiltration_id: str
     realised_surface_infiltration_pos: str  # Position coordinates for Polygon geometry
+    geometry_publicly_available: PubliclyAvailableOptions = None
 
     @field_validator("gml_id", mode="before")
     @classmethod
@@ -1123,7 +1125,7 @@ class GUFAddRealisedInstallation(CamelModel):
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
-    realised_loop_pos: str  # Position coordinates
+    realised_installation_pos: str | None = None  # Derived from the wells if empty
     start_time: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
@@ -1132,6 +1134,22 @@ class GUFAddRealisedInstallation(CamelModel):
     realised_surface_infiltrations: list[RealisedSurfaceInfiltration] = []
     realised_wells: list[RealisedWell] = []
 
+    @model_validator(mode="after")
+    def derive_installation_pos_from_wells(self):
+        """Use the average position of the wells if no installation position is given."""
+        if self.realised_installation_pos:
+            return self
+        if not self.realised_wells:
+            raise ValueError(
+                "realised_installation_pos is required when there are no realised_wells"
+            )
+        xs = [float(well.wellPos.split()[0]) for well in self.realised_wells]
+        ys = [float(well.wellPos.split()[1]) for well in self.realised_wells]
+        x = sum(xs) / len(xs)
+        y = sum(ys) / len(ys)
+        self.realised_installation_pos = f"{x:.3f} {y:.3f}"
+        return self
+
 
 # Updated GUFExpandedRealisedInstallation class
 class GUFExpandedRealisedInstallation(CamelModel):
@@ -1139,7 +1157,7 @@ class GUFExpandedRealisedInstallation(CamelModel):
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
-    realised_loop_pos: str  # Position coordinates
+    realised_installation_pos: str  # Position coordinates
     start_validity: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
