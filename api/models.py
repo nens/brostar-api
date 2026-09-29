@@ -252,9 +252,7 @@ class UploadTask(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    data_owner = models.ForeignKey(
-        Organisation, on_delete=models.SET_NULL, null=True, blank=True
-    )
+    data_owner = models.ForeignKey(Organisation, on_delete=models.CASCADE)
     bro_domain = models.CharField(
         max_length=8, choices=choices.BRO_DOMAIN_CHOICES, default=None
     )
