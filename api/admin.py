@@ -35,9 +35,17 @@ class OrganisationAdminForm(forms.ModelForm):
         model = api_models.Organisation
         fields = "__all__"
         widgets = {
-            "bro_user_token": forms.PasswordInput(render_value=True),
-            "bro_user_password": forms.PasswordInput(render_value=True),
+            "bro_user_token": forms.PasswordInput(render_value=False),
+            "bro_user_password": forms.PasswordInput(render_value=False),
         }
+
+    def clean_bro_user_token(self):
+        value = self.cleaned_data["bro_user_token"]
+        return value or self.instance.bro_user_token
+
+    def clean_bro_user_password(self):
+        value = self.cleaned_data["bro_user_password"]
+        return value or self.instance.bro_user_password
 
 
 class OrganisationAdmin(admin.ModelAdmin):

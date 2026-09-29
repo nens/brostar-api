@@ -21,12 +21,13 @@ logger = getLogger(__name__)
 
 
 @shared_task(queue="upload")
-def validate_xml_file_task(
-    upload_task_instance_uuid: str, bro_username: str, bro_password: str
-):
+def validate_xml_file_task(upload_task_instance_uuid: str):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=upload_task_instance_uuid
     )
+    bro_username = upload_task_instance.data_owner.bro_user_token
+    bro_password = upload_task_instance.data_owner.bro_user_password
+
     generator = XMLGenerator(
         upload_task_instance.registration_type,
         upload_task_instance.request_type,
@@ -54,8 +55,6 @@ def validate_xml_file_task(
 
     context = {
         "upload_task_instance_uuid": upload_task_instance_uuid,
-        "bro_password": bro_password,
-        "bro_username": bro_username,
     }
 
     if validation_response["status"] != "VALIDE" and validation_response["errors"] != [
@@ -91,8 +90,8 @@ def deliver_xml_file_task(context):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
     )
-    bro_username = context["bro_username"]
-    bro_password = context["bro_password"]
+    bro_username = upload_task_instance.data_owner.bro_user_token
+    bro_password = upload_task_instance.data_owner.bro_user_password
 
     upload = utils.create_upload_url(
         bro_username,
@@ -174,8 +173,10 @@ def check_delivery_status_task(self, context):
     upload_task_instance = api_models.UploadTask.objects.get(
         uuid=context["upload_task_instance_uuid"]
     )
+    bro_username = upload_task_instance.data_owner.bro_user_token
+    bro_password = upload_task_instance.data_owner.bro_user_password
     delivery_info = utils.check_delivery_status(
-        context["delivery_url"], context["bro_username"], context["bro_password"]
+        context["delivery_url"], bro_username, bro_password
     )
     errors = delivery_info["brondocuments"][0]["errors"]
 
@@ -285,8 +286,6 @@ def handle_task_error(request, exc, traceback, upload_task_instance_uuid, step_n
 
 def upload_task(
     upload_task_instance_uuid: str,
-    bro_username: str,
-    bro_password: str,
 ) -> None:
     """Celery chain that:
 
@@ -305,7 +304,7 @@ def upload_task(
 
     # Add error handling to each task using .on_error()
     workflow = chain(
-        validate_xml_file_task.s(upload_task_instance_uuid, bro_username, bro_password)
+        validate_xml_file_task.s(upload_task_instance_uuid)
         .set(queue="upload")
         .on_error(handle_task_error.s(upload_task_instance_uuid, "validate_xml")),
         deliver_xml_file_task.s()
@@ -321,8 +320,6 @@ def upload_task(
 @shared_task(queue="upload")
 def validate_and_deliver_raw_xml_task(
     upload_task_uuid: str,
-    bro_username: str,
-    bro_password: str,
     cache_key: str,
 ) -> None:
     """Validate and deliver a raw XML file directly to the BRO, bypassing template generation.
@@ -335,6 +332,8 @@ def validate_and_deliver_raw_xml_task(
     from django.core.cache import cache
 
     upload_task = api_models.UploadTask.objects.get(uuid=upload_task_uuid)
+    bro_username = upload_task.data_owner.bro_user_token
+    bro_password = upload_task.data_owner.bro_user_password
 
     xml_string = cache.get(cache_key)
     if xml_string is None:
@@ -403,8 +402,6 @@ def validate_and_deliver_raw_xml_task(
 
         context = {
             "upload_task_instance_uuid": upload_task_uuid,
-            "bro_username": bro_username,
-            "bro_password": bro_password,
             "delivery_url": delivery_url,
         }
         check_delivery_status_task.apply_async(args=[context], queue="upload")

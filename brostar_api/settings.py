@@ -37,6 +37,9 @@ _use_bro_production_env = os.getenv("USE_BRO_PRODUCTION", default="false")
 DEBUG = _debug_env.lower() == "true"  # default: True
 USE_BRO_PRODUCTION = _use_bro_production_env.lower() == "true"  # Default: False
 
+if not DEBUG and FIELD_ENCRYPTION_KEY.startswith("DUMMY-"):
+    raise RuntimeError("FIELD_ENCRYPTION_KEY must be configured outside development")
+
 
 TIME_ZONE = "CET"
 USE_TZ = True
