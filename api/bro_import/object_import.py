@@ -1654,7 +1654,7 @@ class GUFObjectImporter(ObjectImporter):
     ) -> dict[str, Any]:
         geometry = parent_payload.get("gufcommon:geometry", {})
         point = geometry.get("gml:Point", {})
-        realised_loop_pos = point.get("gml:pos")
+        realised_installation_pos = point.get("gml:pos")
 
         installation_function = self._extract_text_from_xml_element(
             parent_payload.get("gufcommon:installationFunction")
@@ -1663,7 +1663,7 @@ class GUFObjectImporter(ObjectImporter):
             "gufcommon:realisedInstallationId"
         )
 
-        start_validity = (
+        start_time = (
             self._extract_flexible_date_value(
                 parent_payload.get("gufcommon:validityPeriod", {}).get(
                     "gufcommon:startValidity"
@@ -1733,8 +1733,8 @@ class GUFObjectImporter(ObjectImporter):
         return {
             "realised_installation_id": realised_installation_id,
             "installation_function": installation_function,
-            "realised_loop_pos": realised_loop_pos or "",
-            "start_validity": start_validity,
+            "realised_installation_pos": realised_installation_pos or "",
+            "start_time": start_time,
             "realised_wells": realised_wells_payload,
         }
 
