@@ -229,7 +229,7 @@ class TestValidateAndDeliverRawXmlTask:
         with (
             mock.patch("django.core.cache.cache.get", return_value=None),
         ):
-            validate_and_deliver_raw_xml_task("uuid", "user", "pass", "key")
+            validate_and_deliver_raw_xml_task("uuid", "key")
 
         task = mock_get.return_value
         assert task.status == "FAILED"
@@ -250,7 +250,7 @@ class TestValidateAndDeliverRawXmlTask:
             mock.patch("django.core.cache.cache.get", return_value=xml_str),
             mock.patch("django.core.cache.cache.delete") as mock_delete,
         ):
-            validate_and_deliver_raw_xml_task("uuid", "user", "pass", "key")
+            validate_and_deliver_raw_xml_task("uuid", "key")
 
         task = mock_get.return_value
         assert task.status == "FAILED"
@@ -286,7 +286,7 @@ class TestValidateAndDeliverRawXmlTask:
             mock.patch("django.core.cache.cache.get", return_value=xml_str),
             mock.patch("django.core.cache.cache.delete") as mock_delete,
         ):
-            validate_and_deliver_raw_xml_task("uuid", "user", "pass", "key")
+            validate_and_deliver_raw_xml_task("uuid", "key")
 
         task = mock_get.return_value
         assert task.bro_delivery_url == "http://bro/api/v2/1234/leveringen/42"
@@ -302,7 +302,7 @@ class TestValidateAndDeliverRawXmlTask:
             mock.patch("django.core.cache.cache.get", return_value=xml_str),
             mock.patch("django.core.cache.cache.delete") as mock_delete,
         ):
-            validate_and_deliver_raw_xml_task("uuid", "user", "pass", "key")
+            validate_and_deliver_raw_xml_task("uuid", "key")
 
         task = mock_get.return_value
         assert task.status == "FAILED"
@@ -473,10 +473,9 @@ def test_single_valid_xml_fires_celery_task(mock_cache, mock_task, auth_client):
 
     mock_task.delay.assert_called_once()
     call_args = mock_task.delay.call_args[0]
-    # args: (upload_task_uuid, bro_username, bro_password, cache_key)
-    assert call_args[1] == "secret"  # bro_user_token from fixtures.organisation
-    assert call_args[2] == "secret"  # bro_user_password from fixtures.organisation
-    assert call_args[3].startswith("raw_xml_")
+    # args: (upload_task_uuid, cache_key); credentials are loaded by the worker.
+    assert len(call_args) == 2
+    assert call_args[1].startswith("raw_xml_")
 
 
 @pytest.mark.django_db

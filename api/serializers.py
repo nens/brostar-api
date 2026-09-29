@@ -30,6 +30,10 @@ class OrganisationCredentialSerializer(serializers.ModelSerializer):
     class Meta:
         model = api_models.Organisation
         fields = ["bro_user_token", "bro_user_password"]
+        extra_kwargs = {
+            "bro_user_token": {"write_only": True},
+            "bro_user_password": {"write_only": True},
+        }
 
 
 # Only used for swagger definitions
