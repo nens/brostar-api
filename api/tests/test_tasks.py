@@ -12,14 +12,21 @@ from api.tasks import (
 @mock.patch("api.bro_upload.object_upload.XMLGenerator.create_xml_file")
 def test_validate_xml_file_task_valid(mock_create, mock_validate, mock_get):
     mock_instance = mock.Mock()
+    mock_instance.data_owner.bro_user_token = "user"
+    mock_instance.data_owner.bro_user_password = "pass"
     mock_get.return_value = mock_instance
 
     mock_validate.return_value = {"status": "VALIDE"}
     mock_create.return_value = "<xml>data</xml>"
 
-    result = validate_xml_file_task("uuid", "user", "pass")
+    _ = validate_xml_file_task("uuid")
 
-    assert result["bro_username"] == "user"
+    mock_validate.assert_called_once_with(
+        "<xml>data</xml>",
+        "user",
+        "pass",
+        mock_instance.project_number,
+    )
     assert mock_instance.save.called
 
 

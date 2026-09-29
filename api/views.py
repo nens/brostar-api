@@ -949,8 +949,6 @@ class RawXMLUploadView(APIView):
 
             tasks.validate_and_deliver_raw_xml_task.delay(
                 str(upload_task.uuid),
-                bro_username,
-                bro_password,
                 cache_key,
             )
 
