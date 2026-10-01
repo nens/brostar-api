@@ -124,6 +124,36 @@ def test_convert_xml_to_json(gmn_object_importer):
     assert json_data == expected_json
 
 
+@pytest.mark.parametrize(
+    ("date_string", "expected"),
+    [
+        ("2025", datetime.date(2025, 1, 1)),
+        ("2025-02", datetime.date(2025, 2, 1)),
+        ("2025-02-03", datetime.date(2025, 2, 3)),
+        (" 2025-02 ", datetime.date(2025, 2, 1)),
+    ],
+)
+def test_parse_flexible_date(date_string, expected):
+    assert object_import.ObjectImporter._parse_flexible_date(date_string) == expected
+
+
+@pytest.mark.parametrize("date_string", [None, "", "2025-13", "not-a-date"])
+def test_parse_flexible_date_returns_none_for_invalid_values(date_string):
+    assert object_import.ObjectImporter._parse_flexible_date(date_string) is None
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("gufcommon:GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
+        ("{urn:test}GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
+        ("GUF_AddRealisedInstallation", "GUF_AddRealisedInstallation"),
+    ],
+)
+def test_strip_namespace(value, expected):
+    assert object_import.ObjectImporter._strip_namespace(value) == expected
+
+
 ### Temporarily no integration tests as ACC does not have this dossier.
 # @pytest.fixture
 # def gld_object_importer(organisation):

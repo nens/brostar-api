@@ -149,6 +149,27 @@ class ObjectImporter(ABC):
             return value
         return None
 
+    @staticmethod
+    def _parse_flexible_date(date_str: str | None) -> datetime.date | None:
+        """Parse a BRO date with year, month, or day precision."""
+        if not date_str:
+            return None
+
+        try:
+            date_str = date_str.strip()
+            if len(date_str) == 4:
+                return datetime.date(int(date_str), 1, 1)
+            if len(date_str) == 7:
+                return datetime.date.fromisoformat(f"{date_str}-01")
+            return datetime.date.fromisoformat(date_str)
+        except (AttributeError, TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _strip_namespace(value: str) -> str:
+        """Remove a prefix or Clark-notation namespace from an XML key."""
+        return value.rsplit("}", 1)[-1].rsplit(":", 1)[-1]
+
     def should_import(self) -> bool:
         """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
         last_import_task = (
@@ -527,8 +548,10 @@ class GMWObjectImporter(ObjectImporter):
                     "brocom:deliveryAccountableParty", None
                 ),
                 "quality_regime": gmw_data.get("brocom:qualityRegime", None),
-                "well_construction_date": well_construction_date.get("brocom:date")
-                or well_construction_date.get("brocom:year"),
+                "well_construction_date": self._parse_flexible_date(
+                    well_construction_date.get("brocom:date")
+                    or well_construction_date.get("brocom:year")
+                ),
                 "delivery_context": gmw_data.get("deliveryContext", {}).get(
                     "#text", None
                 ),
@@ -591,20 +614,14 @@ class GMWObjectImporter(ObjectImporter):
                 if isinstance(well_removal_date, dict)
                 else well_removal_date
             )
-            # If event_date is a year, convert it to a date
-            if removal_date_str:
-                removal_date_str = (
-                    removal_date_str + "-01-01"
-                    if len(removal_date_str) == 4
-                    else removal_date_str
-                )
+            removal_date = self._parse_flexible_date(removal_date_str)
             try:
                 Event.objects.update_or_create(
                     gmw=self.gmw_obj,
                     data_owner=self.data_owner,
                     event_name="opruimen",
                     defaults={
-                        "event_date": removal_date_str,
+                        "event_date": removal_date,
                         "metadata": {
                             "broId": self.gmw_obj.bro_id,
                             "qualityRegime": self.gmw_obj.quality_regime,
@@ -786,12 +803,8 @@ class GMWObjectImporter(ObjectImporter):
                 "brocom:date"
             ) or intermediate_event.get("eventDate", {}).get("brocom:year")
 
-            # If event_date is a year, convert it to a date
-            if event_date:
-                event_date = (
-                    event_date + "-01-01" if len(event_date) == 4 else event_date
-                )
-            else:
+            event_date = self._parse_flexible_date(event_date)
+            if event_date is None:
                 continue
 
             metadata = {
@@ -843,12 +856,8 @@ class GMWObjectImporter(ObjectImporter):
                     "brocom:date"
                 ) or intermediate_event.get("eventDate", {}).get("brocom:year")
 
-                # If event_date is a year, convert it to a date
-                if event_date:
-                    event_date = (
-                        event_date + "-01-01" if len(event_date) == 4 else event_date
-                    )
-                else:
+                event_date = self._parse_flexible_date(event_date)
+                if event_date is None:
                     continue
                 tube_data = intermediate_event.get("eventData", {}).get("tubeData")
 

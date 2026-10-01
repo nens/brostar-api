@@ -5,6 +5,7 @@
 
 -   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
 -   Bugfix [Templates]: Finalize and improve GPD templates
+-   Enhancement [ImportTasks]: normalize event-string handling
 
 
 ## 1.78 (2026-08-24)
