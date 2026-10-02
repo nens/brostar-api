@@ -30,7 +30,7 @@
 -   Enhancement [GUF]: Correct GUF_ExpandRealisedInstallation Templates
 -   Enhancement [GUF]: Correct GUF_WellFunction Templates
 -   Bugfix [Import]: The most recent tube top was shown within the GMW_Construction, instead of the original.
--   Bugfix [Upload]: improve NewLicense template
+-   Bugfix [Upload]: improve NewLicence template
 -   Bugfix [Datamodels]: correct designWell
 -   Bugfix [Datamodels]: remove two unused items from GMN_MeasuringPointEndDate
 -   QOL [Import]: Round to 2 digits for import progress

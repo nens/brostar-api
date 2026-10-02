@@ -374,7 +374,7 @@ class GUFEvent(models.Model):
     )
     event_name = models.CharField(
         max_length=40,
-        help_text="Event type: Height, NewLicense, WellFunction, Closure, etc.",
+        help_text="Event type: Height, NewLicence, WellFunction, Closure, etc.",
     )
     event_date = models.DateField()
     metadata = JSONField("Metadata", default=dict, blank=False)
