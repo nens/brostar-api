@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isbhr/2.0"
+  xmlns:bhrcom="http://www.broservices.nl/xsd/bhrcommon/2.0"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:om="http://www.opengis.net/om/2.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isbhr/2.0 https://schema.broservices.nl/xsd/isbhr/2.0/isbhr-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  {% if metadata.deliveryAccountableParty %}
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  {% endif %}
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <BHR_P gml:id="id_0001">
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:bhr:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</deliveryContext>
+      <surveyPurpose codeSpace="urn:bro:bhr:SurveyPurpose">{{ sourcedocs_data.surveyPurpose }}</surveyPurpose>
+      <discipline codeSpace="urn:bro:bhr:Discipline">{{ sourcedocs_data.discipline }}</discipline>
+      <researchReportDate>
+        {% if sourcedocs_data.researchReportDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.researchReportDate }}</brocom:date>
+        {% elif sourcedocs_data.researchReportDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.researchReportDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.researchReportDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.researchReportDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </researchReportDate>
+      <siteCharacteristicDetermined>{{ sourcedocs_data.siteCharacteristicDetermined }}</siteCharacteristicDetermined>
+      <litterLayerInvestigated>{{ sourcedocs_data.litterLayerInvestigated }}</litterLayerInvestigated>
+      <deliveredLocation>
+        <bhrcom:location gml:id="id_0002" srsName="urn:ogc:def:crs:EPSG::28992">
+          <gml:pos>{{ sourcedocs_data.deliveredLocation.location }}</gml:pos>
+        </bhrcom:location>
+        <bhrcom:horizontalPositioningDate>
+          {% if sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </bhrcom:horizontalPositioningDate>
+        <bhrcom:horizontalPositioningMethod codeSpace="urn:bro:bhr:HorizontalPositioningMethod">{{ sourcedocs_data.deliveredLocation.horizontalPositioningMethod }}</bhrcom:horizontalPositioningMethod>
+        {% if sourcedocs_data.deliveredLocation.horizontalPositioningOperator %}
+        <bhrcom:horizontalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredLocation.horizontalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrcom:horizontalPositioningOperator>
+        {% endif %}
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <bhrcom:localVerticalReferencePoint codeSpace="urn:bro:bhr:LocalVerticalReferencePoint">{{ sourcedocs_data.deliveredVerticalPosition.localVerticalReferencePoint }}</bhrcom:localVerticalReferencePoint>
+        <bhrcom:offset uom="m">{{ sourcedocs_data.deliveredVerticalPosition.offset }}</bhrcom:offset>
+        <bhrcom:verticalDatum codeSpace="urn:bro:bhr:VerticalDatum">{{ sourcedocs_data.deliveredVerticalPosition.verticalDatum }}</bhrcom:verticalDatum>
+        <bhrcom:verticalPositioningDate>
+          {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </bhrcom:verticalPositioningDate>
+        <bhrcom:verticalPositioningMethod codeSpace="urn:bro:bhr:VerticalPositioningMethod">{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningMethod }}</bhrcom:verticalPositioningMethod>
+        {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator %}
+        <bhrcom:verticalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrcom:verticalPositioningOperator>
+        {% endif %}
+      </deliveredVerticalPosition>
+      <boring>
+        <bhrcom:boringStartDate>
+          <brocom:date>{{ sourcedocs_data.boring.boringStartDate }}</brocom:date>
+        </bhrcom:boringStartDate>
+        <bhrcom:boringEndDate>
+          <brocom:date>{{ sourcedocs_data.boring.boringEndDate }}</brocom:date>
+        </bhrcom:boringEndDate>
+        <bhrcom:casingUsed>{{ sourcedocs_data.boring.casingUsed }}</bhrcom:casingUsed>
+        <bhrcom:flushingMedium codeSpace="urn:bro:bhr:FlushingMedium">{{ sourcedocs_data.boring.flushingMedium }}</bhrcom:flushingMedium>
+        <bhrcom:stopCriterion codeSpace="urn:bro:bhr:StopCriterion">{{ sourcedocs_data.boring.stopCriterion }}</bhrcom:stopCriterion>
+        <bhrcom:trajectoryRemoved>{{ sourcedocs_data.boring.trajectoryRemoved }}</bhrcom:trajectoryRemoved>
+        <bhrcom:boringProcedure>
+          <bhrcom:boringStandard codeSpace="urn:bro:bhr:BoringStandard">{{ sourcedocs_data.boring.boringProcedure.boringStandard }}</bhrcom:boringStandard>
+        </bhrcom:boringProcedure>
+        <bhrcom:boredTrajectory>
+          <bhrcom:beginDepth uom="m">{{ sourcedocs_data.boring.boredTrajectory.beginDepth }}</bhrcom:beginDepth>
+          <bhrcom:endDepth uom="m">{{ sourcedocs_data.boring.boredTrajectory.endDepth }}</bhrcom:endDepth>
+        </bhrcom:boredTrajectory>
+        {% for tool in sourcedocs_data.boring.boringTools %}
+        <bhrcom:boringTool>
+          <bhrcom:boringToolType codeSpace="urn:bro:bhr:BoringToolType">{{ tool.boringToolType }}</bhrcom:boringToolType>
+          <bhrcom:boringToolDiameter uom="mm">{{ tool.boringToolDiameter }}</bhrcom:boringToolDiameter>
+          {% for interval in tool.boredIntervals %}
+          <bhrcom:boredInterval>
+            <bhrcom:beginDepth uom="m">{{ interval.beginDepth }}</bhrcom:beginDepth>
+            <bhrcom:endDepth uom="m">{{ interval.endDepth }}</bhrcom:endDepth>
+          </bhrcom:boredInterval>
+          {% endfor %}
+        </bhrcom:boringTool>
+        {% endfor %}
+      </boring>
+      {% if sourcedocs_data.boreholeSampleDescription %}
+      <boreholeSampleDescription gml:id="id_0003">
+        <om:phenomenonTime>
+          <gml:TimeInstant gml:id="id_0004" frame="#ISO-8601">
+            <gml:timePosition frame="#ISO-8601">{{ sourcedocs_data.boreholeSampleDescription.phenomenonTime }}</gml:timePosition>
+          </gml:TimeInstant>
+        </om:phenomenonTime>
+        <om:resultTime xlink:type="simple" xlink:href="id_0004"/>
+        <om:procedure nilReason="inapplicable"/>
+        <om:observedProperty nilReason="inapplicable"/>
+        <om:featureOfInterest nilReason="inapplicable"/>
+        <bhrcom:result>
+          <bhrcom:sampleQuality codeSpace="urn:bro:bhr:SampleQuality">{{ sourcedocs_data.boreholeSampleDescription.sampleQuality }}</bhrcom:sampleQuality>
+          <bhrcom:rootPenetrableDepthReached>{{ sourcedocs_data.boreholeSampleDescription.rootPenetrableDepthReached }}</bhrcom:rootPenetrableDepthReached>
+          {% for layer in sourcedocs_data.boreholeSampleDescription.soilLayers %}
+          <bhrcom:soilLayer>
+            <bhrcom:upperBoundary uom="m">{{ layer.upperBoundary }}</bhrcom:upperBoundary>
+            <bhrcom:lowerBoundary uom="m">{{ layer.lowerBoundary }}</bhrcom:lowerBoundary>
+            <bhrcom:anthropogenic>{{ layer.anthropogenic }}</bhrcom:anthropogenic>
+            <bhrcom:numberOfLayerComponents>{{ layer.numberOfLayerComponents }}</bhrcom:numberOfLayerComponents>
+            {% for component in layer.layerComponents %}
+            <bhrcom:layerComponent>
+              {% if component.volumePercentage is not none %}
+              <bhrcom:volumePercentage uom="%">{{ component.volumePercentage }}</bhrcom:volumePercentage>
+              {% endif %}
+              {% if component.depositionalCharacteristic %}
+              <bhrcom:depositionalCharacteristic codeSpace="urn:bro:bhr:DepositionalCharacteristic">{{ component.depositionalCharacteristic }}</bhrcom:depositionalCharacteristic>
+              {% endif %}
+              {% if component.horizonCode %}
+              <bhrcom:horizonCode codeSpace="urn:bro:bhr:HorizonCode">{{ component.horizonCode }}</bhrcom:horizonCode>
+              {% endif %}
+              {% if component.saturatedPermeability is not none %}
+              <bhrcom:saturatedPermeability uom="m/d">{{ component.saturatedPermeability }}</bhrcom:saturatedPermeability>
+              {% endif %}
+              {% if component.soilType %}
+              <bhrcom:soilType>
+                <bhrcom:standardSoilName codeSpace="urn:bro:bhr:StandardSoilName">{{ component.soilType.standardSoilName }}</bhrcom:standardSoilName>
+                <bhrcom:soilTypeLoamBased>{{ component.soilType.soilTypeLoamBased }}</bhrcom:soilTypeLoamBased>
+                {% if component.soilType.pedologicalSoilName %}
+                <bhrcom:pedologicalSoilName codeSpace="urn:bro:bhr:PedologicalSoilName">{{ component.soilType.pedologicalSoilName }}</bhrcom:pedologicalSoilName>
+                {% endif %}
+                <bhrcom:organicMatterClass codeSpace="urn:bro:bhr:OrganicMatterClass">{{ component.soilType.organicMatterClass }}</bhrcom:organicMatterClass>
+                {% if component.soilType.sandMedian is not none %}
+                <bhrcom:sandMedian uom="um">{{ component.soilType.sandMedian }}</bhrcom:sandMedian>
+                {% endif %}
+                <bhrcom:carbonateClass codeSpace="urn:bro:bhr:CarbonateClass">{{ component.soilType.carbonateClass }}</bhrcom:carbonateClass>
+                <bhrcom:containsGravel>{{ component.soilType.containsGravel }}</bhrcom:containsGravel>
+                <bhrcom:containsShellMatter>{{ component.soilType.containsShellMatter }}</bhrcom:containsShellMatter>
+                {% if component.soilType.fractionDistribution %}
+                <bhrcom:fractionDistribution>
+                  <bhrcom:gravelContent uom="%">{{ component.soilType.fractionDistribution.gravelContent }}</bhrcom:gravelContent>
+                  <bhrcom:shellMatterContent uom="%">{{ component.soilType.fractionDistribution.shellMatterContent }}</bhrcom:shellMatterContent>
+                  <bhrcom:organicMatterContent uom="%">{{ component.soilType.fractionDistribution.organicMatterContent }}</bhrcom:organicMatterContent>
+                  <bhrcom:fineFractionContent uom="%">{{ component.soilType.fractionDistribution.fineFractionContent }}</bhrcom:fineFractionContent>
+                  {% if component.soilType.fractionDistribution.fineFractionDistribution %}
+                  <bhrcom:fineFractionDistribution>
+                    <bhrcom:clayContent uom="%">{{ component.soilType.fractionDistribution.fineFractionDistribution.clayContent }}</bhrcom:clayContent>
+                    <bhrcom:siltContent uom="%">{{ component.soilType.fractionDistribution.fineFractionDistribution.siltContent }}</bhrcom:siltContent>
+                    <bhrcom:sandContent uom="%">{{ component.soilType.fractionDistribution.fineFractionDistribution.sandContent }}</bhrcom:sandContent>
+                  </bhrcom:fineFractionDistribution>
+                  {% endif %}
+                </bhrcom:fractionDistribution>
+                {% endif %}
+              </bhrcom:soilType>
+              {% endif %}
+            </bhrcom:layerComponent>
+            {% endfor %}
+          </bhrcom:soilLayer>
+          {% endfor %}
+        </bhrcom:result>
+        <bhrcom:descriptionMethod codeSpace="urn:bro:bhr:DescriptionMethod">{{ sourcedocs_data.boreholeSampleDescription.descriptionMethod }}</bhrcom:descriptionMethod>
+        <bhrcom:descriptionLocation codeSpace="urn:bro:bhr:DescriptionLocation">{{ sourcedocs_data.boreholeSampleDescription.descriptionLocation }}</bhrcom:descriptionLocation>
+        <bhrcom:fractionDistributionDetermined>{{ sourcedocs_data.boreholeSampleDescription.fractionDistributionDetermined }}</bhrcom:fractionDistributionDetermined>
+        <bhrcom:lowerBoundarySandFraction codeSpace="urn:bro:bhr:LowerBoundarySandFraction">{{ sourcedocs_data.boreholeSampleDescription.lowerBoundarySandFraction }}</bhrcom:lowerBoundarySandFraction>
+        {% if sourcedocs_data.boreholeSampleDescription.soilClassification %}
+        <bhrcom:soilClassification>
+          <bhrcom:codeGroup codeSpace="urn:bro:bhr:CodeGroup">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.codeGroup }}</bhrcom:codeGroup>
+          <bhrcom:classificationCode>{{ sourcedocs_data.boreholeSampleDescription.soilClassification.classificationCode }}</bhrcom:classificationCode>
+          {% if sourcedocs_data.boreholeSampleDescription.soilClassification.featureTop %}
+          <bhrcom:featureTop codeSpace="urn:bro:bhr:FeatureTop">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.featureTop }}</bhrcom:featureTop>
+          {% endif %}
+          <bhrcom:soilClass codeSpace="urn:bro:bhr:SoilClass">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.soilClass }}</bhrcom:soilClass>
+          {% if sourcedocs_data.boreholeSampleDescription.soilClassification.textureClass %}
+          <bhrcom:textureClass codeSpace="urn:bro:bhr:TextureClass">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.textureClass }}</bhrcom:textureClass>
+          {% endif %}
+          <bhrcom:reworkingClass codeSpace="urn:bro:bhr:ReworkingClass">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.reworkingClass }}</bhrcom:reworkingClass>
+          <bhrcom:groundwaterTableClass codeSpace="urn:bro:bhr:GroundwaterTableClass">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.groundwaterTableClass }}</bhrcom:groundwaterTableClass>
+          <bhrcom:featureSite codeSpace="urn:bro:bhr:FeatureSite">{{ sourcedocs_data.boreholeSampleDescription.soilClassification.featureSite }}</bhrcom:featureSite>
+          {% for fb in sourcedocs_data.boreholeSampleDescription.soilClassification.featureBottoms %}
+          <bhrcom:featureBottom>
+            <bhrcom:feature codeSpace="urn:bro:bhr:Feature">{{ fb.feature }}</bhrcom:feature>
+            {% if fb.beginDepth is not none %}
+            <bhrcom:beginDepth uom="m">{{ fb.beginDepth }}</bhrcom:beginDepth>
+            {% endif %}
+          </bhrcom:featureBottom>
+          {% endfor %}
+        </bhrcom:soilClassification>
+        {% endif %}
+      </boreholeSampleDescription>
+      {% endif %}
+    </BHR_P>
+  </sourceDocument>
+</registrationRequest>

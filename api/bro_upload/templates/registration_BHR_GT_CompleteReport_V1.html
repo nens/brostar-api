@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registrationRequest
+  xmlns="http://www.broservices.nl/xsd/isbhr-gt/2.1"
+  xmlns:bhrgtcom="http://www.broservices.nl/xsd/bhrgtcommon/2.1"
+  xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0"
+  xmlns:gml="http://www.opengis.net/gml/3.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.broservices.nl/xsd/isbhr-gt/2.1 https://schema.broservices.nl/xsd/isbhr-gt/2.1/isbhr-gt-messages.xsd"
+>
+  <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
+  {% if metadata.deliveryAccountableParty %}
+  <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  {% endif %}
+  <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
+  <sourceDocument>
+    <BHR_GT_CompleteReport_V1 gml:id="id_0001">
+      {% if sourcedocs_data.boreholeSampleDescription %}
+      <boreholeSampleDescription>
+        <bhrgtcom:descriptionReportDate>
+          {% if sourcedocs_data.boreholeSampleDescription.descriptionReportDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.boreholeSampleDescription.descriptionReportDate }}</brocom:date>
+          {% elif sourcedocs_data.boreholeSampleDescription.descriptionReportDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.boreholeSampleDescription.descriptionReportDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.boreholeSampleDescription.descriptionReportDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.boreholeSampleDescription.descriptionReportDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </bhrgtcom:descriptionReportDate>
+        {% for proc in sourcedocs_data.boreholeSampleDescription.descriptionProcedures %}
+        <bhrgtcom:descriptionProcedure codeSpace="urn:bro:bhrgt:DescriptionProcedure">{{ proc }}</bhrgtcom:descriptionProcedure>
+        {% endfor %}
+        {% if sourcedocs_data.boreholeSampleDescription.descriptionOperator %}
+        <bhrgtcom:descriptionOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.boreholeSampleDescription.descriptionOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrgtcom:descriptionOperator>
+        {% endif %}
+        {% for log in sourcedocs_data.boreholeSampleDescription.descriptiveBoreholeLog %}
+        <bhrgtcom:descriptiveBoreholeLog>
+          <bhrgtcom:descriptionQuality codeSpace="urn:bro:bhrgt:DescriptionQuality">{{ log.descriptionQuality }}</bhrgtcom:descriptionQuality>
+          <bhrgtcom:continuouslySampled>{{ log.continuouslySampled }}</bhrgtcom:continuouslySampled>
+          <bhrgtcom:descriptionLocation codeSpace="urn:bro:bhrgt:DescriptionLocation">{{ log.descriptionLocation }}</bhrgtcom:descriptionLocation>
+          <bhrgtcom:describedMaterial codeSpace="urn:bro:bhrgt:DescribedMaterial">{{ log.describedMaterial }}</bhrgtcom:describedMaterial>
+          {% if log.sampleMoistness %}
+          <bhrgtcom:sampleMoistness codeSpace="urn:bro:bhrgt:SampleMoistness">{{ log.sampleMoistness }}</bhrgtcom:sampleMoistness>
+          {% endif %}
+          {% if log.boreholeLogChecked %}
+          <bhrgtcom:boreholeLogChecked>{{ log.boreholeLogChecked }}</bhrgtcom:boreholeLogChecked>
+          {% endif %}
+          {% for layer in log.layers %}
+          <bhrgtcom:layer>
+            <bhrgtcom:upperBoundary uom="m">{{ layer.upperBoundary }}</bhrgtcom:upperBoundary>
+            <bhrgtcom:upperBoundaryDetermination codeSpace="urn:bro:bhrgt:BoundaryPositioningMethod">{{ layer.upperBoundaryDetermination }}</bhrgtcom:upperBoundaryDetermination>
+            <bhrgtcom:lowerBoundary uom="m">{{ layer.lowerBoundary }}</bhrgtcom:lowerBoundary>
+            <bhrgtcom:lowerBoundaryDetermination codeSpace="urn:bro:bhrgt:BoundaryPositioningMethod">{{ layer.lowerBoundaryDetermination }}</bhrgtcom:lowerBoundaryDetermination>
+            <bhrgtcom:anthropogenic>{{ layer.anthropogenic }}</bhrgtcom:anthropogenic>
+            {% if layer.specialMaterial %}
+            <bhrgtcom:specialMaterial codeSpace="urn:bro:bhrgt:SpecialMaterial">{{ layer.specialMaterial }}</bhrgtcom:specialMaterial>
+            {% endif %}
+            {% if layer.slant %}
+            <bhrgtcom:slant>{{ layer.slant }}</bhrgtcom:slant>
+            {% endif %}
+            {% if layer.internalStructureIntact %}
+            <bhrgtcom:internalStructureIntact>{{ layer.internalStructureIntact }}</bhrgtcom:internalStructureIntact>
+            {% endif %}
+            {% if layer.bedded %}
+            <bhrgtcom:bedded>{{ layer.bedded }}</bhrgtcom:bedded>
+            {% endif %}
+            {% if layer.compositeLayer %}
+            <bhrgtcom:compositeLayer>{{ layer.compositeLayer }}</bhrgtcom:compositeLayer>
+            {% endif %}
+          </bhrgtcom:layer>
+          {% endfor %}
+          {% for interval in log.notDescribedIntervals %}
+          <bhrgtcom:notDescribedInterval>
+            <bhrgtcom:beginDepth uom="m">{{ interval.beginDepth }}</bhrgtcom:beginDepth>
+            <bhrgtcom:endDepth uom="m">{{ interval.endDepth }}</bhrgtcom:endDepth>
+            <bhrgtcom:noDescriptionReason codeSpace="urn:bro:bhrgt:NoDescriptionReason">{{ interval.noDescriptionReason }}</bhrgtcom:noDescriptionReason>
+          </bhrgtcom:notDescribedInterval>
+          {% endfor %}
+        </bhrgtcom:descriptiveBoreholeLog>
+        {% endfor %}
+      </boreholeSampleDescription>
+      {% endif %}
+      {% if sourcedocs_data.boreholeSampleAnalysis %}
+      <boreholeSampleAnalysis>
+        <bhrgtcom:analysisReportDate>{{ sourcedocs_data.boreholeSampleAnalysis.analysisReportDate }}</bhrgtcom:analysisReportDate>
+        <bhrgtcom:analysisProcedure codeSpace="urn:bro:bhrgt:AnalysisProcedure">{{ sourcedocs_data.boreholeSampleAnalysis.analysisProcedure }}</bhrgtcom:analysisProcedure>
+        {% if sourcedocs_data.boreholeSampleAnalysis.analysisOperator %}
+        <bhrgtcom:analysisOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.boreholeSampleAnalysis.analysisOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrgtcom:analysisOperator>
+        {% endif %}
+        {% for interval in sourcedocs_data.boreholeSampleAnalysis.investigatedIntervals %}
+        <bhrgtcom:investigatedInterval>
+          <bhrgtcom:beginDepth uom="m">{{ interval.beginDepth }}</bhrgtcom:beginDepth>
+          <bhrgtcom:endDepth uom="m">{{ interval.endDepth }}</bhrgtcom:endDepth>
+          <bhrgtcom:sampleQuality codeSpace="urn:bro:bhrgt:SampleQuality">{{ interval.sampleQuality }}</bhrgtcom:sampleQuality>
+          <bhrgtcom:analysisType codeSpace="urn:bro:bhrgt:AnalysisType">{{ interval.analysisType }}</bhrgtcom:analysisType>
+          <bhrgtcom:waterContentDetermined>{{ interval.waterContentDetermined }}</bhrgtcom:waterContentDetermined>
+          <bhrgtcom:organicMatterContentDetermined>{{ interval.organicMatterContentDetermined }}</bhrgtcom:organicMatterContentDetermined>
+          <bhrgtcom:carbonateContentDetermined>{{ interval.carbonateContentDetermined }}</bhrgtcom:carbonateContentDetermined>
+          <bhrgtcom:volumetricMassDensityDetermined>{{ interval.volumetricMassDensityDetermined }}</bhrgtcom:volumetricMassDensityDetermined>
+          <bhrgtcom:volumetricMassDensitySolidsDetermined>{{ interval.volumetricMassDensitySolidsDetermined }}</bhrgtcom:volumetricMassDensitySolidsDetermined>
+          <bhrgtcom:described>{{ interval.described }}</bhrgtcom:described>
+        </bhrgtcom:investigatedInterval>
+        {% endfor %}
+      </boreholeSampleAnalysis>
+      {% endif %}
+      <objectIdAccountableParty>{{ sourcedocs_data.objectIdAccountableParty }}</objectIdAccountableParty>
+      <deliveryContext codeSpace="urn:bro:bhrgt:DeliveryContext">{{ sourcedocs_data.deliveryContext }}</deliveryContext>
+      <surveyPurpose codeSpace="urn:bro:bhrgt:SurveyPurpose">{{ sourcedocs_data.surveyPurpose }}</surveyPurpose>
+      <discipline codeSpace="urn:bro:bhrgt:Discipline">{{ sourcedocs_data.discipline }}</discipline>
+      <surveyProcedure codeSpace="urn:bro:bhrgt:SurveyProcedure">{{ sourcedocs_data.surveyProcedure }}</surveyProcedure>
+      {% if sourcedocs_data.researchOperator %}
+      <researchOperator>
+        <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.researchOperator }}</brocom:chamberOfCommerceNumber>
+      </researchOperator>
+      {% endif %}
+      <siteCharacteristicDetermined>{{ sourcedocs_data.siteCharacteristicDetermined }}</siteCharacteristicDetermined>
+      <deliveredLocation>
+        <bhrgtcom:location>
+          <gml:Point gml:id="id_0002" srsName="urn:ogc:def:crs:EPSG::28992">
+            <gml:pos>{{ sourcedocs_data.deliveredLocation.location }}</gml:pos>
+          </gml:Point>
+        </bhrgtcom:location>
+        <bhrgtcom:horizontalPositioningDate>
+          {% if sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredLocation.horizontalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredLocation.horizontalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </bhrgtcom:horizontalPositioningDate>
+        <bhrgtcom:horizontalPositioningMethod codeSpace="urn:bro:bhrgt:HorizontalPositioningMethod">{{ sourcedocs_data.deliveredLocation.horizontalPositioningMethod }}</bhrgtcom:horizontalPositioningMethod>
+        {% if sourcedocs_data.deliveredLocation.horizontalPositioningOperator %}
+        <bhrgtcom:horizontalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredLocation.horizontalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrgtcom:horizontalPositioningOperator>
+        {% endif %}
+      </deliveredLocation>
+      <deliveredVerticalPosition>
+        <bhrgtcom:localVerticalReferencePoint codeSpace="urn:bro:bhrgt:LocalVerticalReferencePoint">{{ sourcedocs_data.deliveredVerticalPosition.localVerticalReferencePoint }}</bhrgtcom:localVerticalReferencePoint>
+        <bhrgtcom:offset uom="m">{{ sourcedocs_data.deliveredVerticalPosition.offset }}</bhrgtcom:offset>
+        {% if sourcedocs_data.deliveredVerticalPosition.waterDepth is not none %}
+        <bhrgtcom:waterDepth uom="m">{{ sourcedocs_data.deliveredVerticalPosition.waterDepth }}</bhrgtcom:waterDepth>
+        {% endif %}
+        <bhrgtcom:verticalDatum codeSpace="urn:bro:bhrgt:VerticalDatum">{{ sourcedocs_data.deliveredVerticalPosition.verticalDatum }}</bhrgtcom:verticalDatum>
+        <bhrgtcom:verticalPositioningDate>
+          {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 10 %}
+          <brocom:date>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:date>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 7 %}
+          <brocom:yearMonth>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:yearMonth>
+          {% elif sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate|length == 4 %}
+          <brocom:year>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningDate }}</brocom:year>
+          {% else %}
+          <brocom:voidReason>onbekend</brocom:voidReason>
+          {% endif %}
+        </bhrgtcom:verticalPositioningDate>
+        <bhrgtcom:verticalPositioningMethod codeSpace="urn:bro:bhrgt:VerticalPositioningMethod">{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningMethod }}</bhrgtcom:verticalPositioningMethod>
+        {% if sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator %}
+        <bhrgtcom:verticalPositioningOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.deliveredVerticalPosition.verticalPositioningOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrgtcom:verticalPositioningOperator>
+        {% endif %}
+      </deliveredVerticalPosition>
+      <boring>
+        <bhrgtcom:boringStartDate>
+          <brocom:date>{{ sourcedocs_data.boring.boringStartDate }}</brocom:date>
+        </bhrgtcom:boringStartDate>
+        <bhrgtcom:boringEndDate>
+          <brocom:date>{{ sourcedocs_data.boring.boringEndDate }}</brocom:date>
+        </bhrgtcom:boringEndDate>
+        {% if sourcedocs_data.boring.boringOperator %}
+        <bhrgtcom:boringOperator>
+          <brocom:chamberOfCommerceNumber>{{ sourcedocs_data.boring.boringOperator }}</brocom:chamberOfCommerceNumber>
+        </bhrgtcom:boringOperator>
+        {% endif %}
+        <bhrgtcom:preparation codeSpace="urn:bro:bhrgt:Preparation">{{ sourcedocs_data.boring.preparation }}</bhrgtcom:preparation>
+        <bhrgtcom:trajectoryExcavated>{{ sourcedocs_data.boring.trajectoryExcavated }}</bhrgtcom:trajectoryExcavated>
+        <bhrgtcom:rockReached>{{ sourcedocs_data.boring.rockReached }}</bhrgtcom:rockReached>
+        {% for proc in sourcedocs_data.boring.boringProcedures %}
+        <bhrgtcom:boringProcedure codeSpace="urn:bro:bhrgt:BoringProcedure">{{ proc }}</bhrgtcom:boringProcedure>
+        {% endfor %}
+        <bhrgtcom:finalDepthBoring uom="m">{{ sourcedocs_data.boring.finalDepthBoring }}</bhrgtcom:finalDepthBoring>
+        <bhrgtcom:stopCriterion codeSpace="urn:bro:bhrgt:StopCriterion">{{ sourcedocs_data.boring.stopCriterion }}</bhrgtcom:stopCriterion>
+        <bhrgtcom:samplingProcedure codeSpace="urn:bro:bhrgt:SamplingProcedure">{{ sourcedocs_data.boring.samplingProcedure }}</bhrgtcom:samplingProcedure>
+        <bhrgtcom:finalDepthSampling uom="m">{{ sourcedocs_data.boring.finalDepthSampling }}</bhrgtcom:finalDepthSampling>
+        <bhrgtcom:subsurfaceContaminated>{{ sourcedocs_data.boring.subsurfaceContaminated }}</bhrgtcom:subsurfaceContaminated>
+        <bhrgtcom:boreholeCompleted>{{ sourcedocs_data.boring.boreholeCompleted }}</bhrgtcom:boreholeCompleted>
+        {% for interval in sourcedocs_data.boring.boredIntervals %}
+        <bhrgtcom:boredInterval>
+          <bhrgtcom:beginDepth uom="m">{{ interval.beginDepth }}</bhrgtcom:beginDepth>
+          <bhrgtcom:endDepth uom="m">{{ interval.endDepth }}</bhrgtcom:endDepth>
+          <bhrgtcom:boringTechnique codeSpace="urn:bro:bhrgt:BoringTechnique">{{ interval.boringTechnique }}</bhrgtcom:boringTechnique>
+          <bhrgtcom:boredDiameter uom="mm">{{ interval.boredDiameter }}</bhrgtcom:boredDiameter>
+        </bhrgtcom:boredInterval>
+        {% endfor %}
+        {% for vel in sourcedocs_data.boring.boringVelocities %}
+        <bhrgtcom:boringVelocity>
+          <bhrgtcom:elapsedTime uom="s">{{ vel.elapsedTime }}</bhrgtcom:elapsedTime>
+          <bhrgtcom:depth uom="m">{{ vel.depth }}</bhrgtcom:depth>
+        </bhrgtcom:boringVelocity>
+        {% endfor %}
+        {% for si in sourcedocs_data.boring.sampledIntervals %}
+        <bhrgtcom:sampledInterval>
+          <bhrgtcom:beginDepth uom="m">{{ si.beginDepth }}</bhrgtcom:beginDepth>
+          <bhrgtcom:endDepth uom="m">{{ si.endDepth }}</bhrgtcom:endDepth>
+          <bhrgtcom:preTreatment codeSpace="urn:bro:bhrgt:PreTreatment">{{ si.preTreatment }}</bhrgtcom:preTreatment>
+          <bhrgtcom:samplingMethod codeSpace="urn:bro:bhrgt:SamplingMethod">{{ si.samplingMethod }}</bhrgtcom:samplingMethod>
+          <bhrgtcom:samplingQuality codeSpace="urn:bro:bhrgt:SamplingQuality">{{ si.samplingQuality }}</bhrgtcom:samplingQuality>
+        </bhrgtcom:sampledInterval>
+        {% endfor %}
+        {% for ci in sourcedocs_data.boring.contaminatedIntervals %}
+        <bhrgtcom:contaminatedInterval>
+          <bhrgtcom:beginDepth uom="m">{{ ci.beginDepth }}</bhrgtcom:beginDepth>
+          <bhrgtcom:endDepth uom="m">{{ ci.endDepth }}</bhrgtcom:endDepth>
+        </bhrgtcom:contaminatedInterval>
+        {% endfor %}
+        {% for comp in sourcedocs_data.boring.completedIntervals %}
+        <bhrgtcom:completedInterval>
+          <bhrgtcom:beginDepth uom="m">{{ comp.beginDepth }}</bhrgtcom:beginDepth>
+          <bhrgtcom:endDepth uom="m">{{ comp.endDepth }}</bhrgtcom:endDepth>
+          <bhrgtcom:permanentCasingPresent>{{ comp.permanentCasingPresent }}</bhrgtcom:permanentCasingPresent>
+          {% if comp.backfillMaterial %}
+          <bhrgtcom:backfillMaterial codeSpace="urn:bro:bhrgt:BackfillMaterial">{{ comp.backfillMaterial }}</bhrgtcom:backfillMaterial>
+          {% endif %}
+          {% if comp.backfillMaterialCertified %}
+          <bhrgtcom:backfillMaterialCertified>{{ comp.backfillMaterialCertified }}</bhrgtcom:backfillMaterialCertified>
+          {% endif %}
+        </bhrgtcom:completedInterval>
+        {% endfor %}
+      </boring>
+      {% if sourcedocs_data.siteCharacteristic %}
+      <siteCharacteristic>
+        <bhrgtcom:soilUse codeSpace="urn:bro:bhrgt:SoilUse">{{ sourcedocs_data.siteCharacteristic.soilUse }}</bhrgtcom:soilUse>
+        <bhrgtcom:positionOnGroundBody codeSpace="urn:bro:bhrgt:PositionOnGroundBody">{{ sourcedocs_data.siteCharacteristic.positionOnGroundBody }}</bhrgtcom:positionOnGroundBody>
+        {% if sourcedocs_data.siteCharacteristic.temporaryChange %}
+        <bhrgtcom:temporaryChange codeSpace="urn:bro:bhrgt:TemporaryChange">{{ sourcedocs_data.siteCharacteristic.temporaryChange }}</bhrgtcom:temporaryChange>
+        {% endif %}
+      </siteCharacteristic>
+      {% endif %}
+      <researchReportDate>
+        {% if sourcedocs_data.researchReportDate|length == 10 %}
+        <brocom:date>{{ sourcedocs_data.researchReportDate }}</brocom:date>
+        {% elif sourcedocs_data.researchReportDate|length == 7 %}
+        <brocom:yearMonth>{{ sourcedocs_data.researchReportDate }}</brocom:yearMonth>
+        {% elif sourcedocs_data.researchReportDate|length == 4 %}
+        <brocom:year>{{ sourcedocs_data.researchReportDate }}</brocom:year>
+        {% else %}
+        <brocom:voidReason>onbekend</brocom:voidReason>
+        {% endif %}
+      </researchReportDate>
+    </BHR_GT_CompleteReport_V1>
+  </sourceDocument>
+</registrationRequest>
