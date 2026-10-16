@@ -243,7 +243,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         # Check if request data contains credentials
-        if "bro_user_token" in request.data or "bro_user_password" in request.data:
+        token_present = (
+            "bro_user_token" in request.data or "bro_user_password" in request.data
+        )
+        if token_present:
             credential_serializer = serializers.OrganisationCredentialSerializer(
                 instance, data=request.data, partial=partial
             )
@@ -256,7 +259,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         return Response(
-            {"message": "BRO credentials updated successfully"},
+            # Slightly different message if only non-credential fields were updated
+            {
+                "message": f"BRO credentials updated successfully{'.' if token_present else ''}"
+            },
             status=status.HTTP_200_OK,
         )
 
