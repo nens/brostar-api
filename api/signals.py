@@ -88,13 +88,14 @@ def get_plain_tube_part_length(
                 timeout=5,
             )
             if r.status_code < 300:
+                features = r.json().get("features", [])
+                if len(features) == 0:
+                    return None
+
                 return round(
                     float(tube_top_position)
                     - float(
-                        r.json()
-                        .get("features", [])[0]
-                        .get("properties", {})
-                        .get("screen_top_position")
+                        features[0].get("properties", {}).get("screen_top_position")
                     ),
                     3,
                 )
