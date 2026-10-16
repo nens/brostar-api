@@ -807,7 +807,7 @@ class DesignWell(CamelModel):
     height: float  # meters
 
     well_pos: str  # Position coordinates
-    geometry_publicly_available: PubliclyAvailableOptions
+    geometry_publicly_available: PubliclyAvailableOptions = None
 
     maximum_well_depth: float | None = None  # meters
     maximum_well_depth_publicly_available: PubliclyAvailableOptions = None
@@ -847,13 +847,13 @@ class EnergyCharacteristics(CamelModel):
     """
 
     # energie koude per jaar
-    energy_cold: float | None = Field(
+    energy_cold: int | None = Field(
         default=None,
         description="energie koude per jaar",
     )
 
     # energie warmte per jaar
-    energy_warm: float | None = Field(
+    energy_warm: int | None = Field(
         default=None,
         description="energie warmte per jaar",
     )
@@ -895,27 +895,27 @@ class EnergyCharacteristics(CamelModel):
     )
 
     # gemiddeld jaarvolume koud [0..1]
-    average_cold_water: float | None = Field(
+    average_cold_water: int | None = Field(
         default=None,
-        description="gemiddeld jaarvolume koud",
+        description="gemiddeld jaarvolume koud (m3)",
     )
 
     # gemiddeld jaarvolume warm [0..1]
-    average_warm_water: float | None = Field(
+    average_warm_water: int | None = Field(
         default=None,
-        description="gemiddeld jaarvolume warm",
+        description="gemiddeld jaarvolume warm (m3)",
     )
 
     # maximaal jaarvolume koud [0..1]
-    maximum_year_quantity_cold: float | None = Field(
+    maximum_year_quantity_cold: int | None = Field(
         default=None,
-        description="maximaal jaarvolume koud",
+        description="maximaal jaarvolume koud (m3)",
     )
 
     # maximaal jaarvolume warm [0..1]
-    maximum_year_quantity_warm: float | None = Field(
+    maximum_year_quantity_warm: int | None = Field(
         default=None,
-        description="maximaal jaarvolume warm",
+        description="maximaal jaarvolume warm (m3)",
     )
 
 
@@ -1133,12 +1133,12 @@ class GUFAddRealisedInstallation(CamelModel):
 
 
 # Updated GUFExpandedRealisedInstallation class
-class GUFExpandedRealisedInstallation(CamelModel):
+class GUFExpandRealisedInstallation(CamelModel):
     """Source document data for GUF_ExpandRealisedInstallation"""
 
     realised_installation_id: str
     installation_function: InstallationFunctionOptions
-    realised_loop_pos: str  # Position coordinates
+    installation_pos: str  # Position coordinates
     start_validity: str = Field(
         ...,
         description="Can be YYYY-MM-DD (10 chars), YYYY-MM (7 chars), or YYYY (4 chars)",
