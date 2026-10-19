@@ -621,3 +621,35 @@ def test_uploadtask_check_status_unfinished_complete(
 
     response = api_client.post(url)
     assert response.status_code == status.HTTP_304_NOT_MODIFIED
+
+
+@pytest.mark.django_db
+def test_uploadtask_state_view(api_client, user, userprofile, organisation):
+    """Test get on uploadtasks/state endpoint"""
+    api_client.force_authenticate(user=user)
+
+    upload_task_instance = api_models.UploadTask.objects.create(
+        bro_domain="GMN",
+        project_number="1",
+        registration_type="GMN_StartRegistration",
+        request_type="registration",
+        metadata={},
+        sourcedocument_data={},
+        data_owner=organisation,
+        bro_id="GMN1234",
+        status="UNFINISHED",
+        progress=95.0,
+        log="Check manually",
+    )
+
+    url = reverse("api:uploadtask")
+
+    state_url = f"{url}/{upload_task_instance.uuid}/state"
+
+    response = api_client.get(state_url)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["uuid"] == str(upload_task_instance.uuid)
+    assert response.data["status"] == upload_task_instance.status
+    assert response.data["bro_id"] == upload_task_instance.bro_id
+    assert response.data["log"] == upload_task_instance.log
+    assert response.data["bro_errors"] == upload_task_instance.bro_errors

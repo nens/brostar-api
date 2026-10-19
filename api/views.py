@@ -619,6 +619,25 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
 
         return HttpResponse(xml_str, content_type="application/xml")
 
+    @extend_schema(
+        description="Returns the state of the upload task.",
+        responses={(200, "application/json"): OpenApiTypes.STR},
+    )
+    @action(detail=True, methods=["get"], url_path="state")
+    def state(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
+        """Endpoint to show the current state of this upload task."""
+        upload_task = models.UploadTask.objects.get(uuid=uuid)
+        return Response(
+            {
+                "uuid": upload_task.uuid,
+                "status": upload_task.status,
+                "bro_id": upload_task.bro_id,
+                "log": upload_task.log,
+                "bro_errors": upload_task.bro_errors,
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class UploadTaskOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
     """
