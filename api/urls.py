@@ -32,7 +32,7 @@ urlpatterns = [
         name="uploadtask-overview",
     ),
     path(
-        "uploadtasks/xml-upload/",
+        "uploadtasks/xmlupload/",
         views.RawXMLUploadView.as_view(),
         name="uploadtask-xml-upload",
     ),

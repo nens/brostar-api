@@ -3,7 +3,7 @@
 Covers:
 - parse_raw_xml_metadata() helper
 - validate_and_deliver_raw_xml_task() Celery task
-- RawXMLUploadView (POST /api/uploadtasks/xml-upload/)
+- RawXMLUploadView (POST /api/uploadtasks/xmlupload/)
 
 Replace the XML_* constants below with real BRO XML files once available.
 Each constant follows the BRO document structure:
@@ -137,7 +137,7 @@ XML_UNKNOWN_ROOT = b"""\
 </unknownRequest>
 """
 
-URL = "/api/uploadtasks/xml-upload/"
+URL = "/api/uploadtasks/xmlupload/"
 
 
 # ---------------------------------------------------------------------------

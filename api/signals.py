@@ -88,18 +88,73 @@ def get_plain_tube_part_length(
                 timeout=5,
             )
             if r.status_code < 300:
+                features = r.json().get("features", [])
+                if len(features) == 0:
+                    return None
+
                 return round(
                     float(tube_top_position)
                     - float(
-                        r.json()
-                        .get("features", [])[0]
-                        .get("properties", {})
-                        .get("screen_top_position")
+                        features[0].get("properties", {}).get("screen_top_position")
                     ),
                     3,
                 )
 
     return None
+
+
+# def poll_bro_relations(bro_id: str) -> list[str]:
+#     """
+#     Function to find all related bro-id's based on a GMW-BRO-ID
+
+#     :param bro_id: Description
+#     :type bro_id: str
+#     :return: Description
+#     :rtype: list[str]
+#     """
+#     if not is_valid_bro_id(bro_id):
+#         return []
+
+#     s = request.Session()
+#     r = s.get(f"{settings.PUBLIEKE_BRO_URL}/gm/v1/gmw-relations?{bro_id}", timeout=20)
+#     r.raise_for_status()
+
+#     relations = r.json()
+
+#     return ...
+
+# FINALIZE_MAPPING = {
+#     "GLD": None, # Do not need sourcedocument data
+#     "GMN": GMNClosure,
+#     "FRD": None, # Do not need sourcedocument data
+# }
+
+# def finalize_relation(relation: str, event_date: str, data_owner: str) -> None:
+#     metadata = UploadTaskMetadata(
+#         ""
+#     )
+#     sourcedocument_data = ""
+#     UploadTask.objects.create(
+#         project_number = "",
+#         data_owner=data_owner,
+#         metadata=metadata,
+#         sourcedocument_data=sourcedocument_data,
+#     )
+#     return
+
+
+def close_related_objects(bro_id: str, event_date: str, data_owner: str) -> None:
+    """
+    Create UploadTasks for all related (GMN, GLD, FRD) domains.
+    For GLD, no date is needed.
+    For GMN, the removal date should be used.
+    For FRD, no date is needed.
+    """
+    return
+    # relations = poll_bro_relations(bro_id)
+
+    # for relation in relations:
+    #     finalize_relation(relation, event_date, data_owner)
 
 
 @receiver(post_save, sender=UploadTask)
@@ -124,6 +179,18 @@ def post_save_upload_task(sender, instance: UploadTask, created, **kwargs):
         and instance.request_type in ["registration", "insert"]
         and instance.data_owner
     ):
+        # If a GMW_Removal was completed succesfully, we also might have to send
+        # a GMN_MeasuringPointEndDate, GLD_Closure and a FRD_Closure
+        # To achieve this, the gmw_relations should be polled
+        # Dependent on this, all relations should be closed
+        if instance.registration_type == "GMW_Removal":
+            close_related_objects(
+                instance.bro_id,
+                instance.sourcedocument_data.get("eventDate", "1899-01-01"),
+                instance.data_owner,
+            )
+
+        # Create DB objects to show to users.
         create_objects(
             instance.registration_type,
             instance.bro_id,

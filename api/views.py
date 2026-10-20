@@ -243,7 +243,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         # Check if request data contains credentials
-        if "bro_user_token" in request.data or "bro_user_password" in request.data:
+        token_present = (
+            "bro_user_token" in request.data or "bro_user_password" in request.data
+        )
+        if token_present:
             credential_serializer = serializers.OrganisationCredentialSerializer(
                 instance, data=request.data, partial=partial
             )
@@ -256,7 +259,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         return Response(
-            {"message": "BRO credentials updated successfully"},
+            # Slightly different message if only non-credential fields were updated
+            {
+                "message": f"BRO credentials updated successfully{'.' if token_present else ''}"
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -612,6 +618,25 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         xml_str = xml_generator.create_xml_file()
 
         return HttpResponse(xml_str, content_type="application/xml")
+
+    @extend_schema(
+        description="Returns the state of the upload task.",
+        responses={(200, "application/json"): OpenApiTypes.STR},
+    )
+    @action(detail=True, methods=["get"], url_path="state")
+    def state(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
+        """Endpoint to show the current state of this upload task."""
+        upload_task = models.UploadTask.objects.get(uuid=uuid)
+        return Response(
+            {
+                "uuid": upload_task.uuid,
+                "status": upload_task.status,
+                "bro_id": upload_task.bro_id,
+                "log": upload_task.log,
+                "bro_errors": upload_task.bro_errors,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class UploadTaskOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
