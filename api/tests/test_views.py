@@ -642,14 +642,15 @@ def test_uploadtask_state_view(api_client, user, userprofile, organisation):
         log="Check manually",
     )
 
-    url = reverse("api:uploadtask")
+    url = reverse("api:uploadtask-list")
+    print(url)
 
-    state_url = f"{url}/{upload_task_instance.uuid}/state"
+    state_url = f"{url}{upload_task_instance.uuid}/state/"
 
     response = api_client.get(state_url)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["uuid"] == str(upload_task_instance.uuid)
+    assert str(response.data["uuid"]) == str(upload_task_instance.uuid)
     assert response.data["status"] == upload_task_instance.status
-    assert response.data["bro_id"] == upload_task_instance.bro_id
-    assert response.data["log"] == upload_task_instance.log
-    assert response.data["bro_errors"] == upload_task_instance.bro_errors
+    assert str(response.data["bro_id"]) == str(upload_task_instance.bro_id)
+    assert str(response.data["log"]) == str(upload_task_instance.log)
+    assert str(response.data["bro_errors"]) == str(upload_task_instance.bro_errors)
