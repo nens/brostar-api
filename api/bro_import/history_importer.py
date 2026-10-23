@@ -5,6 +5,8 @@ from api.bro_upload.upload_datamodels import (
     GMWGroundLevelMeasuring,
     GMWInsertion,
     GMWLengthening,
+    GMWMaintainer,
+    GMWOwner,
     GMWPositions,
     GMWPositionsMeasuring,
     GMWShift,
@@ -30,6 +32,10 @@ def history_importer(bro_id: str) -> dict:
         "events": events,
         "quality_regime": gmw.quality_regime,
     }
+
+
+# De publieke BRO geeft bij eigenaar-/onderhouderVeranderd geen kvk van de oude/nieuwe onderhouder/eigenaar terug
+UNKNOWN_PARTY = "00000000"
 
 
 GMW_EVENT_MAPPING = {
@@ -154,6 +160,22 @@ def shift_extractor(event: dict) -> dict:
     return shift_data.model_dump(by_alias=True)
 
 
+def owner_extractor(event: dict) -> dict:
+    owner_data = GMWOwner(
+        event_date=event.get("eventDate"),
+        owner=UNKNOWN_PARTY,
+    )
+    return owner_data.model_dump(by_alias=True)
+
+
+def maintainer_extractor(event: dict) -> dict:
+    maintainer_data = GMWMaintainer(
+        event_date=event.get("eventDate"),
+        maintenance_responsible_party=UNKNOWN_PARTY,
+    )
+    return maintainer_data.model_dump(by_alias=True)
+
+
 SOURCEDOCUMENT_FORMATTER = {
     "GMW_WellHeadProtector": well_head_extractor,
     "GMW_Lengthening": lengthening_extractor,
@@ -166,6 +188,8 @@ SOURCEDOCUMENT_FORMATTER = {
     "GMW_Positions": positions_extractor,
     "GMW_PositionsMeasuring": positions_measuring_extractor,
     "GMW_Shift": shift_extractor,
+    "GMW_Owner": owner_extractor,
+    "GMW_Maintainer": maintainer_extractor,
 }
 
 

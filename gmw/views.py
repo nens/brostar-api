@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api import mixins
+from api.bro_import.history_importer import history_importer
 from api.bro_upload.upload_datamodels import GMWConstruction
 from gmn import models as gmn_models  # ADDED: Import GMN models
 
@@ -118,6 +119,21 @@ class GMWAPIView(View):
 
         gmw_model = GMWConstruction(**data.gmw_construction)
         return JsonResponse(gmw_model.model_dump())
+
+
+class GMWHistoryView(View):
+    """
+    API view that retrieves the full GMW history from the public BRO
+    and returns it as BROSTAR upload data (sourcedocument + metadata per event)
+    """
+
+    def get(self, request, gmw_id):
+        try:
+            data = history_importer(gmw_id)
+        except Exception as e:
+            return JsonResponse({"error": str(e), "gmw_id": gmw_id}, status=500)
+
+        return JsonResponse(data)
 
 
 class GMWListView(mixins.UserOrganizationMixin, generics.ListAPIView):
