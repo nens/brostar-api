@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api import mixins
-from api.bro_import.history_importer import history_importer
+from api.bro_import.gmw_history_importer import gmw_history_importer
 from api.bro_upload.upload_datamodels import GMWConstruction
 from gmn import models as gmn_models  # ADDED: Import GMN models
 
@@ -129,7 +129,7 @@ class GMWHistoryView(View):
 
     def get(self, request, gmw_id):
         try:
-            data = history_importer(gmw_id)
+            data = gmw_history_importer(gmw_id)
         except Exception as e:
             return JsonResponse({"error": str(e), "gmw_id": gmw_id}, status=500)
 

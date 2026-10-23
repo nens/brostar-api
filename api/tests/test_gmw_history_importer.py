@@ -5,7 +5,7 @@ import pytest
 from django.test import RequestFactory
 from django.urls import reverse
 
-from api.bro_import import history_importer as hi
+from api.bro_import import gmw_history_importer as hi
 from gmw.views import GMWHistoryView
 
 BRO_ID = "GMW000000048905"
@@ -21,7 +21,7 @@ def mock_bro(mocker):
 
 
 def test_history_importer_all_events_converted(mock_bro):
-    result = hi.history_importer(BRO_ID)
+    result = hi.gmw_history_importer(BRO_ID)
 
     assert result["bro_id"] == BRO_ID
     assert result["number_of_events"] == 6
@@ -29,7 +29,7 @@ def test_history_importer_all_events_converted(mock_bro):
 
 
 def test_history_importer_metadata(mock_bro):
-    result = hi.history_importer(BRO_ID)
+    result = hi.gmw_history_importer(BRO_ID)
     metadata = result["events"][0]["metadata"]
 
     assert metadata["requestReference"] == f"{BRO_ID}_nieuweInmetingPosities_2011-12-06"
@@ -38,7 +38,7 @@ def test_history_importer_metadata(mock_bro):
 
 
 def test_history_importer_maintainer_gets_default(mock_bro):
-    result = hi.history_importer(BRO_ID)
+    result = hi.gmw_history_importer(BRO_ID)
     maintainer_event = next(
         e for e in result["events"] if e["eventName"] == "onderhouderVeranderd"
     )

@@ -17,7 +17,7 @@ from api.bro_upload.upload_datamodels import (
 )
 
 
-def history_importer(bro_id: str) -> dict:
+def gmw_history_importer(bro_id: str) -> dict:
     gmw = GMWXML(bro_id)
     events = gmw.intermediate_events
     for event in events:
