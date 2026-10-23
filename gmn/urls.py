@@ -9,6 +9,7 @@ urlpatterns = [
     path("ids/", views.GMNIdsList.as_view(), name="gmn-ids"),
     path("overview/", views.GMNOverviewList.as_view(), name="gmn-overview"),
     path("gmns/<uuid:uuid>/", views.GMNDetailView.as_view(), name="gmn-detail"),
+    path("history/<str:gmn_id>/", views.GMNHistoryView.as_view(), name="gmn-history"),
     path(
         "measuringpoints/",
         views.MeasuringpointListView.as_view(),
