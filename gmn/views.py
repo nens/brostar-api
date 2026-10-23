@@ -1,7 +1,10 @@
+from django.http import JsonResponse
+from django.views import View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 
 from api import mixins
+from api.bro_import.gmn_history_importer import gmn_history_importer
 
 from . import filters, serializers
 from . import models as gmn_models
@@ -114,3 +117,18 @@ class EventDetailView(mixins.UserOrganizationMixin, generics.RetrieveAPIView):
     queryset = gmn_models.IntermediateEvent.objects.all()
     serializer_class = serializers.IntermediateEventSerializer
     lookup_field = "uuid"
+
+
+class GMNHistoryView(View):
+    """
+    API view that retrieves the full GMN history from the public BRO
+    and returns it as BROSTAR upload data (sourcedocument + metadata per event)
+    """
+
+    def get(self, request, gmn_id):
+        try:
+            data = gmn_history_importer(gmn_id)
+        except Exception as e:
+            return JsonResponse({"error": str(e), "gmn_id": gmn_id}, status=500)
+
+        return JsonResponse(data)
