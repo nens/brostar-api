@@ -26,6 +26,16 @@ def gmn_history_importer(bro_id: str) -> dict:
     gmn = GMNXML(bro_id, bro_url=BRO_URL)
     measuring_points = gmn.measuring_points
     events = gmn.intermediate_events
+    events = gmn.intermediate_events
+    if gmn.end_monitoring_date:
+        # The BRO stores a closure as endDateMonitoring, not as an intermediateEvent
+        events.append(
+            {
+                "name": "registratieBeeindigen",
+                "date": gmn.end_monitoring_date,
+                "measuring_point_code": None,
+            }
+        )
     for event in events:
         registration_type = GMN_EVENT_MAPPING.get(event["name"])
         if registration_type in SOURCEDOCUMENT_FORMATTER:

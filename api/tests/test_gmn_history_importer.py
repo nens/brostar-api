@@ -47,6 +47,23 @@ def test_history_importer_request_references_are_unique(mock_bro):
     assert len(set(references)) == len(references)
 
 
+def test_history_importer_closure_from_end_date(mocker):
+    mock_response = mocker.Mock()
+    mock_response.status_code = 200
+    mock_response.content = (XML_PATH.parent / "GMN000000000081.xml").read_bytes()
+    mocker.patch("requests.get", return_value=mock_response)
+
+    result = hi.gmn_history_importer("GMN000000000081")
+    closure = result["events"][-1]
+
+    assert result["number_of_events"] == 1
+    assert closure["sourcedocument"] == {"endDateMonitoring": "2021-10-11"}
+    assert (
+        closure["metadata"]["requestReference"]
+        == "GMN000000000081_registratieBeeindigen_2021-10-11"
+    )
+
+
 def test_find_tube_no_match():
     measuring_points = [
         {
