@@ -5,6 +5,7 @@
 
 -   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
 -   Bugfix [Templates]: Finalize and improve GPD templates
+-   Enhancement [Uploadtask]: Add state view for easy, low-usage polling of uploadtask status
 
 
 ## 1.78 (2026-08-24)
@@ -30,7 +31,7 @@
 -   Enhancement [GUF]: Correct GUF_ExpandRealisedInstallation Templates
 -   Enhancement [GUF]: Correct GUF_WellFunction Templates
 -   Bugfix [Import]: The most recent tube top was shown within the GMW_Construction, instead of the original.
--   Bugfix [Upload]: improve NewLicense template
+-   Bugfix [Upload]: improve NewLicence template
 -   Bugfix [Datamodels]: correct designWell
 -   Bugfix [Datamodels]: remove two unused items from GMN_MeasuringPointEndDate
 -   QOL [Import]: Round to 2 digits for import progress
