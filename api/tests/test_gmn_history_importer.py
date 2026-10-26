@@ -24,8 +24,10 @@ def test_history_importer_all_events_converted(mock_bro):
     result = hi.gmn_history_importer(BRO_ID)
 
     assert result["bro_id"] == BRO_ID
-    assert result["number_of_events"] == 17
+    assert result["number_of_events"] == 18
     assert all("sourcedocument" in event for event in result["events"])
+    assert result["events"][0]["registration_type"] == "GMN_StartRegistration"
+    assert all(e["registration_type"].startswith("GMN_") for e in result["events"])
 
 
 def test_history_importer_tube_reference_uses_new_tube(mock_bro):
@@ -56,7 +58,7 @@ def test_history_importer_closure_from_end_date(mocker):
     result = hi.gmn_history_importer("GMN000000000081")
     closure = result["events"][-1]
 
-    assert result["number_of_events"] == 1
+    assert result["number_of_events"] == 2
     assert closure["sourcedocument"] == {"endDateMonitoring": "2021-10-11"}
     assert (
         closure["metadata"]["requestReference"]
@@ -116,7 +118,7 @@ def test_history_view_returns_json(mock_bro):
     response = GMNHistoryView.as_view()(request, gmn_id=BRO_ID)
 
     assert response.status_code == 200
-    assert json.loads(response.content)["number_of_events"] == 17
+    assert json.loads(response.content)["number_of_events"] == 18
 
 
 def test_history_view_invalid_id():

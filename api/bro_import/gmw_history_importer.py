@@ -1,5 +1,6 @@
 from api.bro_import.bro_xml_reader import GMWXML
 from api.bro_upload.upload_datamodels import (
+    GMWConstruction,
     GMWElectrodeStatus,
     GMWGroundLevel,
     GMWGroundLevelMeasuring,
@@ -15,6 +16,9 @@ from api.bro_upload.upload_datamodels import (
     GMWWellHeadProtector,
     UploadTaskMetadata,
 )
+from gmw.xml_reader.xml_model import GMWXML as ConstructionXML
+
+BRO_URL = "https://publiek.broservices.nl/"
 
 
 def gmw_history_importer(bro_id: str) -> dict:
@@ -23,8 +27,12 @@ def gmw_history_importer(bro_id: str) -> dict:
     for event in events:
         registration_type = registration_type_finder(event.get("eventName"))
         if registration_type and registration_type in SOURCEDOCUMENT_FORMATTER:
+            event["registration_type"] = registration_type
             event["sourcedocument"] = SOURCEDOCUMENT_FORMATTER[registration_type](event)
             event["metadata"] = meta_data_formatter(gmw, event)
+
+    # The registration always starts with a GMW_Construction
+    events.insert(0, construction_event(gmw))
 
     return {
         "bro_id": bro_id,
@@ -32,6 +40,19 @@ def gmw_history_importer(bro_id: str) -> dict:
         "events": events,
         "quality_regime": gmw.quality_regime,
     }
+
+
+def construction_event(gmw: GMWXML) -> dict:
+    construction_xml = ConstructionXML(gmw.bro_id, bro_url=BRO_URL)
+    construction = GMWConstruction(**construction_xml.gmw_construction)
+    event = {
+        "eventName": "inrichting",
+        "registration_type": "GMW_Construction",
+        "eventDate": construction.well_construction_date,
+        "sourcedocument": construction.model_dump(by_alias=True),
+    }
+    event["metadata"] = meta_data_formatter(gmw, event)
+    return event
 
 
 # De publieke BRO geeft bij eigenaar-/onderhouderVeranderd geen kvk van de oude/nieuwe onderhouder/eigenaar terug
