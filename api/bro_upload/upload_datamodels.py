@@ -277,8 +277,8 @@ class MonitoringTubePositions(CamelModel):
 
 
 class GMWPositions(GMWEvent):
-    well_stability: Literal["nee"] = "nee"
-    ground_level_stable: Literal["instabiel"] = "instabiel"
+    well_stability: Literal["instabiel"] = "instabiel"
+    ground_level_stable: Literal["nee"] = "nee"
     ground_level_position: float
     ground_level_positioning_method: str
     monitoring_tubes: list[MonitoringTubePositions]

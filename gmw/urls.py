@@ -7,6 +7,7 @@ app_name = "gmw"
 urlpatterns = [
     path("geojson/", views.GMWGeoJSONView.as_view(), name="gmw-geojson-list"),
     path("get/<str:gmw_id>/", views.GMWAPIView.as_view(), name="gmw-direct"),
+    path("history/<str:gmw_id>/", views.GMWHistoryView.as_view(), name="gmw-history"),
     path("gmws/", views.GMWListView.as_view(), name="gmw-list"),
     path("ids/", views.GMWIdsList.as_view(), name="gmw-ids"),
     path("overview/", views.GMWOverviewList.as_view(), name="gmw-overview"),
