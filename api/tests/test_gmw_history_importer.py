@@ -64,6 +64,31 @@ def test_owner_extractor_gets_default():
     }
 
 
+@pytest.mark.parametrize(
+    "date_element, expected",
+    [
+        ("<brocom:date>2007-01-01</brocom:date>", "2007-01-01"),
+        ("<brocom:yearMonth>2007-01</brocom:yearMonth>", "2007-01"),
+        ("<brocom:year>2007</brocom:year>", "2007"),
+    ],
+)
+def test_history_importer_incomplete_construction_date(mocker, date_element, expected):
+    xml = XML_PATH.read_bytes().replace(
+        b"<brocom:date>2007-01-01</brocom:date></wellConstructionDate>",
+        date_element.encode() + b"</wellConstructionDate>",
+    )
+    mock_response = mocker.Mock()
+    mock_response.status_code = 200
+    mock_response.content = xml
+    mocker.patch("requests.get", return_value=mock_response)
+
+    construction = hi.gmw_history_importer(BRO_ID)["events"][0]
+
+    assert construction["registration_type"] == "GMW_Construction"
+    assert construction["eventDate"] == expected
+    assert construction["sourcedocument"]["wellConstructionDate"] == expected
+
+
 def test_history_view_returns_json(mock_bro):
     request = RequestFactory().get(reverse("api:gmw:gmw-history", args=[BRO_ID]))
     response = GMWHistoryView.as_view()(request, gmw_id=BRO_ID)

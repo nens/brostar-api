@@ -514,9 +514,13 @@ class GMWXML:
     def construction_date(self) -> str | None:
         well_history = self.xml_etree.find(".//wellHistory", ns_reg_gmw)
         construction_element = well_history.find(".//wellConstructionDate", ns_reg_gmw)
-        construction_date = construction_element.find(".//brocom:date", ns_reg_gmw)
-        if construction_date is not None:
-            return construction_date.text
+        # De BRO kent ook onvolledige datums; het template schrijft die weer als yearMonth/year
+        for date_type in ("date", "yearMonth", "year"):
+            construction_date = construction_element.find(
+                f".//brocom:{date_type}", ns_reg_gmw
+            )
+            if construction_date is not None:
+                return construction_date.text
 
     @property
     def removal_date(self) -> str | None:
