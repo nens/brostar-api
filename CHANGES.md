@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.79 (unreleased)
+## 1.79 (2026-10-27)
 
 
 -   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
