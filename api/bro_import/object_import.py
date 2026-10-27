@@ -149,6 +149,21 @@ class ObjectImporter(ABC):
             return value
         return None
 
+    def _parse_flexible_date(self, date_str: Any) -> datetime.date | None:
+        """Parse BRO dates with flexible granularity: YYYY-MM-DD, YYYY-MM, or YYYY."""
+        if not date_str:
+            return None
+        try:
+            if len(date_str) == 4:  # YYYY
+                return datetime.date(int(date_str), 1, 1)
+            elif len(date_str) == 7:  # YYYY-MM
+                year, month = date_str.split("-")
+                return datetime.date(int(year), int(month), 1)
+            else:  # YYYY-MM-DD
+                return datetime.date.fromisoformat(date_str)
+        except (ValueError, AttributeError):
+            return None
+
     def should_import(self) -> bool:
         """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
         last_import_task = (

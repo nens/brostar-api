@@ -1,3 +1,4 @@
+import datetime
 import time
 import xml.etree.ElementTree as ET  # nosec B405
 
@@ -5,6 +6,33 @@ import requests
 from defusedxml.ElementTree import fromstring
 
 from api.bro_import.namespaces import ns_reg_gld_tot, ns_reg_gmn_tot, ns_reg_gmw
+
+
+def parse_flexible_date(date_value: str | None) -> str | None:
+    """Return a complete ISO date for BRO dates with partial precision."""
+    if not date_value:
+        return None
+    try:
+        if len(date_value) == 4:
+            parsed_date = datetime.date(int(date_value), 1, 1)
+        elif len(date_value) == 7:
+            year, month = date_value.split("-")
+            parsed_date = datetime.date(int(year), int(month), 1)
+        else:
+            parsed_date = datetime.date.fromisoformat(date_value)
+    except (TypeError, ValueError):
+        return None
+    return parsed_date.isoformat()
+
+
+def _date_text(element: ET.Element | None, namespace: dict[str, str]) -> str | None:
+    if element is None:
+        return None
+    for date_type in ("date", "yearMonth", "year"):
+        value = element.find(f".//brocom:{date_type}", namespace)
+        if value is not None:
+            return parse_flexible_date(value.text)
+    return None
 
 
 def _request_bro_xml(
@@ -613,9 +641,7 @@ class GMWXML:
         events = []
         for event in well_history.findall(".//intermediateEvent", ns_reg_gmw):
             event_name = getattr(event.find(".//eventName", ns_reg_gmw), "text", None)
-            event_date = getattr(
-                event.find(".//eventDate/brocom:date", ns_reg_gmw), "text", None
-            )
+            event_date = _date_text(event.find(".//eventDate", ns_reg_gmw), ns_reg_gmw)
 
             if event_name is None or event_date is None:
                 continue  # Skip malformed events
@@ -938,17 +964,14 @@ class GMNXML:
 
     @property
     def end_monitoring_date(self) -> str | None:
-        try:
-            start_date_monitoring = self._monitoring_net_history.find(
-                ".//endDateMonitoring", ns_reg_gmn_tot
-            )
-            return start_date_monitoring.find(".//brocom:date", ns_reg_gmn_tot).text
-        except AttributeError:
-            return None
+        end_date_monitoring = self._monitoring_net_history.find(
+            ".//endDateMonitoring", ns_reg_gmn_tot
+        )
+        return _date_text(end_date_monitoring, ns_reg_gmn_tot)
 
     def _setup_event_dict(self, intermediate_event: ET.Element) -> dict:
         event_name = intermediate_event.find(".//eventName", ns_reg_gmn_tot).text
-        event_date = intermediate_event.find(".//brocom:date", ns_reg_gmn_tot).text
+        event_date = _date_text(intermediate_event, ns_reg_gmn_tot)
         point_code = intermediate_event.find(".//measuringPointCode", ns_reg_gmn_tot)
         if point_code is not None:
             point_code = point_code.text
@@ -969,7 +992,7 @@ class GMNXML:
         return event_list
 
     def _date(self, element: ET.Element) -> str:
-        return element.find(".//brocom:date", ns_reg_gmn_tot).text
+        return _date_text(element, ns_reg_gmn_tot)
 
     def _setup_monitoring_tube(self, monitoring_tube: ET.Element) -> dict:
         start_date = self._date(monitoring_tube.find(".//startDate", ns_reg_gmn_tot))
