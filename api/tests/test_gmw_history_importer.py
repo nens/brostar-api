@@ -24,13 +24,15 @@ def test_history_importer_all_events_converted(mock_bro):
     result = hi.gmw_history_importer(BRO_ID)
 
     assert result["bro_id"] == BRO_ID
-    assert result["number_of_events"] == 6
+    assert result["number_of_events"] == 7
     assert all("sourcedocument" in event for event in result["events"])
+    assert result["events"][0]["registration_type"] == "GMW_Construction"
+    assert all(e["registration_type"].startswith("GMW_") for e in result["events"])
 
 
 def test_history_importer_metadata(mock_bro):
     result = hi.gmw_history_importer(BRO_ID)
-    metadata = result["events"][0]["metadata"]
+    metadata = result["events"][1]["metadata"]
 
     assert metadata["requestReference"] == f"{BRO_ID}_nieuweInmetingPosities_2011-12-06"
     assert metadata["deliveryAccountableParty"] == "27375169"
@@ -67,7 +69,7 @@ def test_history_view_returns_json(mock_bro):
     response = GMWHistoryView.as_view()(request, gmw_id=BRO_ID)
 
     assert response.status_code == 200
-    assert json.loads(response.content)["number_of_events"] == 6
+    assert json.loads(response.content)["number_of_events"] == 7
 
 
 def test_history_view_invalid_id():

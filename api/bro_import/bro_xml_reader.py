@@ -982,7 +982,7 @@ class GMNXML:
         }
 
     @property
-    def intermediate_events(self) -> list | None:
+    def intermediate_events(self) -> list:
         events = self._monitoring_net_history.findall(
             ".//intermediateEvent", ns_reg_gmn_tot
         )

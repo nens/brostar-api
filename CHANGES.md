@@ -6,6 +6,7 @@
 -   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
 -   Bugfix [Templates]: Finalize and improve GPD templates
 -   Enhancement [Uploadtask]: Add state view for easy, low-usage polling of uploadtask status
+-   Enhancement [HistoryView]: Add a view that shows all of the messages send for GMN and GMW
 
 
 ## 1.78 (2026-08-24)
