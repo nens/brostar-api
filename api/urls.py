@@ -36,6 +36,10 @@ urlpatterns = [
         views.RawXMLUploadView.as_view(),
         name="uploadtask-xml-upload",
     ),
+    path(
+        "uploadtask/correction/gld/",
+        include("api.corrections.gld.urls"),
+    ),
 ]
 
 urlpatterns += router.urls

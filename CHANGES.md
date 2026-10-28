@@ -3,7 +3,7 @@
 ## 1.80 (unreleased)
 
 
-- Nothing changed yet.
+-   Feature [Corrections]: Add GLD correction endpoints to correct measurements or the procedure of an existing observation with a single request
 
 
 ## 1.79 (2026-10-27)

@@ -770,6 +770,81 @@ with open(veldwerk_path, "rb") as fp_fieldwork, open(lab_path, "rb") as fp_lab:
     print(r.json())
 ```
 
+### Correcties
+
+Met de correctie-endpoints kan een bestaande observatie van een GLD in één request gecorrigeerd worden. De BROSTAR haalt daarvoor zelf de huidige waarheid op bij de publieke BRO-uitgifteservice, voegt de correctie daarin samen en maakt vervolgens een `GLD_Addition` uploadtaak met request type `replace` aan. De response bevat de `uuid` van die uploadtaak, zodat de status op de reguliere manier gevolgd kan worden.
+
+De urls zijn als volgt opgebouwd:
+
+-   `https://www.brostar.nl/api/uploadtask/correction/gld/{gld_id}/addition/{observation_id}/measurements/`
+
+-   `https://www.brostar.nl/api/uploadtask/correction/gld/{gld_id}/addition/{observation_id}/procedure/`
+
+Het segment `addition` geeft aan dat de correctie betrekking heeft op een GLD-addition; de `observation_id` identificeert de observatie binnen die GLD.
+
+#### Metingen corrigeren
+
+Op het measurements endpoint worden alleen de gewijzigde metingen meegestuurd. Alle overige metingen van de observatie blijven ongewijzigd.
+
+```python
+import requests
+from requests.auth import HTTPBasicAuth
+
+auth = HTTPBasicAuth("__key__", BROSTAR_API_KEY)
+url = "https://www.brostar.nl/api/uploadtask/correction/gld/GLD000000000024/addition/observationId_001/measurements/"
+
+payload = {
+    "project_number": "1255",
+    "correction_reason": "eigenCorrectie",
+    "measurements": [
+        {
+            "time": "2021-01-05T12:00:00+01:00",
+            "value": 0.99,
+            "statusQualityControl": "goedgekeurd"
+        }
+    ]
+}
+
+r = requests.post(url, auth=auth, json=payload)
+print(r.json())
+```
+
+De regels die hierbij gelden:
+
+-   Een meting met exact hetzelfde tijdstip als een bestaande meting vervangt die meting.
+
+-   Een meting met een onbekend tijdstip wordt toegevoegd, waarna de tijdreeks opnieuw gesorteerd wordt.
+
+-   Met de queryparameter `delta_t` (in seconden) wordt een bestaande meting binnen die marge als dezelfde meting beschouwd en overschreven, inclusief het tijdstip. Vallen er meerdere bestaande metingen binnen de marge, dan volgt een `400`.
+
+-   Valt een meting buiten de huidige observatieperiode, dan wordt gecontroleerd of er geen andere observatie van hetzelfde observatietype dichter bij ligt. Is dat wel zo, dan volgt een `400`. Zo niet, dan worden de `beginPosition`, `endPosition` en `resultTime` van de observatie herberekend.
+
+#### Procedure corrigeren
+
+Op het procedure endpoint worden alleen de gewijzigde proceduregegevens meegestuurd. De metingen van de observatie blijven ongewijzigd.
+
+```python
+payload = {
+    "project_number": "1255",
+    "procedure": {
+        "evaluationProcedure": "oordeelDeskundige",
+        "measurementInstrumentType": "druksensor"
+    }
+}
+```
+
+Een observatie die via een referentie (`xlink:href`) de procedure van een andere observatie hergebruikt, kan niet los gecorrigeerd worden. In dat geval moet de observatie gecorrigeerd worden waarin de procedure zelf is vastgelegd.
+
+#### Overige velden
+
+-   `project_number` is verplicht.
+
+-   `correction_reason` is optioneel en staat standaard op `eigenCorrectie`.
+
+-   `investigator_kvk` is optioneel. Wordt het niet meegegeven, dan wordt de `deliveryAccountableParty` uit de BRO gebruikt. De BRO levert de `principalInvestigator` namelijk niet publiek uit. Met `"use_organisation_kvk": true` (of de header `X-Investigator-Kvk-Source: organisation`) wordt in plaats daarvan het KvK-nummer van de organisatie van de ingelogde gebruiker gebruikt.
+
+Mogelijke foutcodes zijn `400` (ongeldige of tegenstrijdige correctie), `404` (onbekende GLD of observatie) en `502` (de BRO-uitgifteservice is niet bereikbaar).
+
 ### Data endpoints
 
 De data endpoints zijn een tijdelijke opslag voor de data die volgt uit de importtaken. De urls van de data endpoints zijn:
