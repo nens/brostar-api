@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.80 (unreleased)
+## 1.80 (2026-10-29)
 
 
 -   Feature [Corrections]: Add GLD correction endpoints to correct measurements or the procedure of an existing observation with a single request
