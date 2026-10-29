@@ -1,0 +1,29 @@
+[
+  {
+    "observationId": "observationId_001",
+    "startDate": "04-01-2021",
+    "endDate": "08-01-2021",
+    "observationType": "reguliereMeting",
+    "observationProcessId": "ObservationProcessId_001",
+    "observationStatus": "onbekend",
+    "definitionProcessExists": "ja"
+  },
+  {
+    "observationId": "observationId_002",
+    "startDate": "29-03-2021",
+    "endDate": "02-04-2021",
+    "observationType": "reguliereMeting",
+    "observationProcessId": "ObservationProcessId_002",
+    "observationStatus": "volledigBeoordeeld",
+    "definitionProcessExists": "ja"
+  },
+  {
+    "observationId": "observationId_003",
+    "startDate": "17-05-2021",
+    "endDate": "18-05-2021",
+    "observationType": "controlemeting",
+    "observationProcessId": "ObservationProcessId_002",
+    "observationStatus": "onbekend",
+    "definitionProcessExists": "nee"
+  }
+]
