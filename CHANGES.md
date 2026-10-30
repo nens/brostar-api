@@ -3,7 +3,7 @@
 ## 1.81 (unreleased)
 
 
-- Nothing changed yet.
+- Bugfix [Templates]: Improve FRD GEM Measurement templates.
 
 
 ## 1.80 (2026-10-29)

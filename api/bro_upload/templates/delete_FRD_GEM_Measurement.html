@@ -24,6 +24,7 @@
             <frdcom:resistance uom="{{ measurement.unit }}">{{ measurement.value }}</frdcom:resistance>
             <frdcom:relatedMeasurementConfiguration xlink:href="{{ measurement.configuration }}" />
           </frdcom:measure>
+          {% endfor %}
           <frdcom:relatedCalculatedApparentFormationResistance>
             <frdcom:CalculatedApparentFormationResistance gml:id="id_0003">
               <frdcom:calculationOperator>
