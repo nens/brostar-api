@@ -109,9 +109,12 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
             if plain_tube_length is not None and not is_staging:
                 tube["plainTubePartLength"] = str(plain_tube_length)
 
-    if (
-        "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis"
-        in instance.bro_errors
+    if any(
+        err in instance.bro_errors
+        for err in [
+            "gebeurtenis mag niet voor de laatst geregistreerde gebeurtenis",
+            "moet liggen na de waarde van het attribuut",
+        ]
     ):
         instance.request_type = "insert"
         instance.metadata.update({"correctionReason": "eigenCorrectie"})
