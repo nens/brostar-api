@@ -4,6 +4,7 @@
 
 
 - Bugfix [Templates]: Improve FRD GEM Measurement templates.
+- Enhancement [Errors]: Translate BRO-errors to more human readable output.
 
 
 ## 1.80 (2026-10-29)

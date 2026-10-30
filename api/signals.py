@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
@@ -10,6 +11,60 @@ from .models import ImportTask, InviteUser, UploadTask, UserProfile
 from .utils import create_objects, delete_objects, update_objects
 
 logger = logging.getLogger(__name__)
+
+
+# Error translation registry with regex patterns for extracting dynamic values
+BRO_ERROR_TRANSLATIONS = {
+    # Static error patterns (exact match)
+    "static": {
+        "FormationResistanceDetermination.determinationType) moet aanwezig zijn": "De meetconfiguraties voor dit Formatieweerstandsdossier zijn nog niet aangeleverd. Lever eerst de meetconfiguraties aan."
+    },
+    # Dynamic error patterns with regex extraction
+    "dynamic": [
+        {
+            "pattern": r"De combinatie van Posities inmeten\.naam gebeurtenis \(PositionsMeasuring\.eventName\) = (.+?) op Posities inmeten\.datum gebeurtenis \(PositionsMeasuring\.eventDate\) = \((\d{4}-\d{2}-\d{2}), JJJJ-MM-DD\) is niet correct: Er is reeds een zelfde gebeurtenis op deze datum geregistreerd\.",
+            "template": "Er is al een {eventName} geregistreerd op {eventDate}.",
+            "groups": {"eventName": 1, "eventDate": 2},
+        }
+    ],
+}
+
+
+def translate_bro_error(error_message: str) -> str:
+    """
+    Translate BRO error messages to user-friendly Dutch messages.
+
+    Supports both static exact matches and dynamic patterns with value extraction.
+
+    Args:
+        error_message: The original BRO error message
+
+    Returns:
+        Translated error message or original if no translation found
+    """
+    if not error_message:
+        return error_message
+
+    # Check static translations first
+    for static_error, translation in BRO_ERROR_TRANSLATIONS.get("static", {}).items():
+        if static_error in error_message:
+            return translation
+
+    # Check dynamic translations
+    for dynamic_pattern in BRO_ERROR_TRANSLATIONS.get("dynamic", []):
+        match = re.search(dynamic_pattern["pattern"], error_message)
+        if match:
+            template = dynamic_pattern["template"]
+            groups = dynamic_pattern["groups"]
+
+            # Extract values and format template
+            format_dict = {}
+            for var_name, group_index in groups.items():
+                format_dict[var_name] = match.group(group_index)
+
+            return template.format(**format_dict)
+
+    return error_message
 
 
 @receiver(post_save, sender=User)
@@ -62,6 +117,9 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
         instance.metadata.update({"correctionReason": "eigenCorrectie"})
         instance.bro_errors = ""
         instance.status = "PENDING"
+
+    # Translate BRO error messages to user-friendly format
+    instance.bro_errors = translate_bro_error(instance.bro_errors)
 
 
 def get_plain_tube_part_length(
