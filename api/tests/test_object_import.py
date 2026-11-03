@@ -98,6 +98,7 @@ def test_object_importer_download_xml(mocker, gmn_object_importer):
     assert result == expected_content
 
 
+@pytest.mark.django_db
 def test_download_xml_http_error(mocker, gmn_object_importer):
     # Setup
     mock_get = mocker.patch("requests.get")
@@ -106,7 +107,7 @@ def test_download_xml_http_error(mocker, gmn_object_importer):
     mock_get.return_value = mock_response
 
     # Test
-    url = "https://example.com/data.xml"
+    url = "https://publieke.restservices.nl/data.xml"
 
     # Assert that an HTTPError is raised
     with pytest.raises(HTTPError):
