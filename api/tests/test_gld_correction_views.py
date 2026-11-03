@@ -240,57 +240,6 @@ def test_measurement_outside_period_with_better_observation(
 
 
 @pytest.mark.django_db
-def test_delta_t_overwrites_shifted_measurement(
-    api_client, user, userprofile, organisation, bro, celery
-):
-    login(api_client, user)
-
-    response = post(
-        api_client,
-        measurements_url(),
-        {
-            "project_number": "1255",
-            "measurements": [
-                {"time": "2021-01-05T12:02:00+01:00", "value": 0.56},
-            ],
-        },
-        delta_t=300,
-    )
-
-    assert response.status_code == status.HTTP_201_CREATED, response.data
-    assert response.data["measurements_changed"] == 1
-
-    task = UploadTask.objects.get(uuid=response.data["uuid"])
-    times = [tvp["time"] for tvp in task.sourcedocument_data["timeValuePairs"]]
-    assert "2021-01-05T12:02:00+01:00" in times
-    assert "2021-01-05T12:00:00+01:00" not in times
-    assert len(times) == 5
-
-
-@pytest.mark.django_db
-def test_delta_t_with_multiple_matches(
-    api_client, user, userprofile, organisation, bro, celery
-):
-    login(api_client, user)
-
-    response = post(
-        api_client,
-        measurements_url(),
-        {
-            "project_number": "1255",
-            "measurements": [
-                {"time": "2021-01-05T18:00:00+01:00", "value": 0.56},
-            ],
-        },
-        delta_t=172800,
-    )
-
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert "delta_t" in str(response.data)
-    assert UploadTask.objects.count() == 0
-
-
-@pytest.mark.django_db
 def test_procedure_correction(api_client, user, userprofile, organisation, bro, celery):
     login(api_client, user)
 

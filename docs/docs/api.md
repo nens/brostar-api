@@ -815,8 +815,6 @@ De regels die hierbij gelden:
 
 -   Een meting met een onbekend tijdstip wordt toegevoegd, waarna de tijdreeks opnieuw gesorteerd wordt.
 
--   Met de queryparameter `delta_t` (in seconden) wordt een bestaande meting binnen die marge als dezelfde meting beschouwd en overschreven, inclusief het tijdstip. Vallen er meerdere bestaande metingen binnen de marge, dan volgt een `400`.
-
 -   Valt een meting buiten de huidige observatieperiode, dan wordt gecontroleerd of er geen andere observatie van hetzelfde observatietype dichter bij ligt. Is dat wel zo, dan volgt een `400`. Zo niet, dan worden de `beginPosition`, `endPosition` en `resultTime` van de observatie herberekend.
 
 #### Procedure corrigeren
