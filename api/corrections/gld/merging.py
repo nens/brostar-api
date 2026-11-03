@@ -3,7 +3,8 @@
 from dataclasses import replace
 from typing import Any
 
-from .matching import parse_time, single_match
+from ..exceptions import CorrectionValidationError
+from .matching import parse_time
 from .xml_reader import Measurement
 
 PROCEDURE_FIELDS = (
@@ -19,19 +20,47 @@ PROCEDURE_FIELDS = (
 def merge_measurements(
     existing: list[Measurement],
     incoming: list[Measurement],
-    delta_t: float = 0,
 ) -> tuple[list[Measurement], int, list[str]]:
     """Replace matching measurements and add the rest, keeping the order by time.
+
+    Empty measurements (without value and censorReason) are treated as deletion markers
+    and are removed from the result without being added to the merge.
 
     Returns the new series, the number of changed measurements and a log.
     """
     merged = list(existing)
+
     log: list[str] = []
     changed = 0
 
     for measurement in incoming:
-        times = [item.time for item in merged]
-        index = single_match(times, measurement.time, delta_t)
+        normalized_time = parse_time(measurement.time)
+
+        # Build indexes dynamically to handle deletions correctly
+        indexes: dict[Any, list[int]] = {}
+        for index, m in enumerate(merged):
+            indexes.setdefault(parse_time(m.time), []).append(index)
+
+        matches = indexes.get(normalized_time, [])
+
+        if len(matches) > 1:
+            matched_times = ", ".join(merged[index].time for index in matches)
+            raise CorrectionValidationError(
+                f"Meerdere waarden hebben hetzelfde tijdstip als "
+                f"{measurement.time}: {matched_times}. Controleer de data."
+            )
+
+        # Empty measurements (no value, no censorReason) are deletion markers
+        if measurement.value is None and measurement.censor_reason is None:
+            if matches:
+                index = matches[0]
+                removed_time = merged[index].time
+                del merged[index]
+                changed += 1
+                log.append(f"Meting op {removed_time} verwijderd.")
+            continue
+
+        index = matches[0] if matches else None
 
         if index is None:
             merged.append(measurement)
@@ -57,7 +86,7 @@ def merge_measurements(
         else:
             log.append(
                 f"Meting op {current.time} vervangen door {measurement.time} "
-                f"(binnen delta_t van {delta_t} seconden, "
+                f"(hetzelfde genormaliseerde tijdstip, "
                 f"waarde {current.value} -> {measurement.value})."
             )
 
