@@ -6,6 +6,7 @@
 -   Bugfix [Templates]: Improve FRD GEM Measurement templates.
 -   Enhancement [Errors]: Translate BRO-errors to more human readable output.
 -   Enhancement [UploadTasks]: auto-correction to insert for FRD messages
+-   Enhancement [Corrections]: improve speed of corrections for GLD-measurements
 
 
 ## 1.80 (2026-10-29)

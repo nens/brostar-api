@@ -21,10 +21,9 @@ class MeasurementSerializer(serializers.Serializer):
     censoring_limitvalue = serializers.FloatField(required=False, allow_null=True)
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
-        if attrs.get("value") is None and not attrs.get("censor_reason"):
-            raise serializers.ValidationError(
-                "Een meting zonder 'value' moet een 'censor_reason' hebben."
-            )
+        # Allow measurements with value (measurement) or censor_reason (censored).
+        # Empty measurements (no value, no censor_reason) are used to delete
+        # measurements from the BRO and will be filtered during merging.
         return attrs
 
 

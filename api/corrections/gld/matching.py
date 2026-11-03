@@ -1,4 +1,4 @@
-"""Matching of measurement times, with an optional tolerance (delta_t)."""
+"""Matching of measurement times using normalized datetime values."""
 
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -31,31 +31,25 @@ def seconds_between(first: str | datetime, second: str | datetime) -> float:
     return abs((parse_time(first) - parse_time(second)).total_seconds())
 
 
-def find_matches(times: list[str], target: str, delta_t: float = 0) -> list[int]:
-    """Return the indices of *times* that match *target*, closest match first.
-
-    With ``delta_t <= 0`` only an exact match (same moment in time) counts.
-    """
-    matches: list[tuple[float, int]] = []
-    for index, time in enumerate(times):
-        difference = seconds_between(time, target)
-        if difference == 0 or (delta_t > 0 and difference <= delta_t):
-            matches.append((difference, index))
-
-    matches.sort()
-    return [index for _, index in matches]
+def find_matches(times: list[str], target: str) -> list[int]:
+    """Return indices whose normalized datetimes equal the target."""
+    normalized_target = parse_time(target)
+    return [
+        index
+        for index, time in enumerate(times)
+        if parse_time(time) == normalized_target
+    ]
 
 
-def single_match(times: list[str], target: str, delta_t: float = 0) -> int | None:
+def single_match(times: list[str], target: str) -> int | None:
     """Return the index of the single match, or None when there is no match."""
-    matches = find_matches(times, target, delta_t)
+    matches = find_matches(times, target)
 
     if len(matches) > 1:
         matched_times = ", ".join(times[index] for index in matches)
         raise CorrectionValidationError(
-            f"Meerdere waarden matchen binnen de opgegeven delta_t ({delta_t} "
-            f"seconden) met {target}: {matched_times}. Controleer de data of "
-            "kies een kleinere delta_t (seconden)."
+            f"Meerdere waarden hebben hetzelfde tijdstip als {target}: "
+            f"{matched_times}. Controleer de data."
         )
 
     return matches[0] if matches else None
