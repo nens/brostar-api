@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import TypeVar
 
 import numpy as np
 import pandas as pd
@@ -15,8 +14,6 @@ from gar import models as gar_models
 from gmw import models as gmw_models
 
 logger = logging.getLogger("general")
-
-T = TypeVar("T", bound=models.Model)
 
 
 class Command(BaseCommand):
@@ -104,7 +101,7 @@ class Command(BaseCommand):
         )
 
 
-def get_django_instance(model: type[T], uuid: str) -> T:
+def get_django_instance[T: models.Model](model: type[T], uuid: str) -> T:
     """Returns the django instance of a given model based on the uuid"""
     try:
         return model.objects.get(uuid=uuid)
@@ -205,7 +202,7 @@ def group_gar_df(df: pd.DataFrame) -> pd.DataFrame:
 
 def handle_gar_delivery(
     gar_df: pd.DataFrame,
-    organisation_instance: T,
+    organisation_instance: models.Model,
     project_number: int,
     field_data_df: pd.DataFrame,
     gmn_bro_id: str,

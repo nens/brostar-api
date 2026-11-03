@@ -85,7 +85,8 @@ class DataRetrieverOGC:
 def request_from_pdok(type, bbox) -> list:
     basis_url = "https://api.pdok.nl"
     ogc_verzoek = requests.get(
-        f"{basis_url}/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_{type}/items?bbox={bbox[0]}%2C{bbox[1]}%2C{bbox[2]}%2C{bbox[3]}&f=json&limit=1000"
+        f"{basis_url}/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_{type}/items?bbox={bbox[0]}%2C{bbox[1]}%2C{bbox[2]}%2C{bbox[3]}&f=json&limit=1000",
+        timeout=30,
     )
     try:
         features = json.loads(ogc_verzoek.text)["features"]

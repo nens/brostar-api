@@ -1,7 +1,8 @@
 import time
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 
 import requests
+from defusedxml.ElementTree import fromstring
 
 from .namespaces import (
     ns_reg_gmw,
@@ -19,7 +20,9 @@ def _request_bro_xml(
     retry = 0
     while retry < 3:
         # Try to get a response with statuscode 200 (deal with temporary time-out of servicedesk)
-        res = requests.get(f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}")
+        res = requests.get(
+            f"{bro_url}gm/{type}/v1/objects/{bro_id}?{query_params}", timeout=20
+        )
 
         if res.status_code < 300:
             return res.content
@@ -48,7 +51,7 @@ class GMWXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gmw", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GMW-ID: {bro_id}")
 
@@ -511,9 +514,13 @@ class GMWXML:
     def construction_date(self) -> str | None:
         well_history = self.xml_etree.find(".//wellHistory", ns_reg_gmw)
         construction_element = well_history.find(".//wellConstructionDate", ns_reg_gmw)
-        construction_date = construction_element.find(".//brocom:date", ns_reg_gmw)
-        if construction_date is not None:
-            return construction_date.text
+        # De BRO kent ook onvolledige datums; het template schrijft die weer als yearMonth/year
+        for date_type in ("date", "yearMonth", "year"):
+            construction_date = construction_element.find(
+                f".//brocom:{date_type}", ns_reg_gmw
+            )
+            if construction_date is not None:
+                return construction_date.text
 
     @property
     def removal_date(self) -> str | None:
@@ -664,7 +671,7 @@ class GPDXML:
             self.xml_content = _request_bro_xml(
                 bro_id, f"fullHistory={fh}", "gpd", bro_url
             )
-            self.xml_etree = ET.fromstring(self.xml_content)
+            self.xml_etree = fromstring(self.xml_content)
         else:
             raise ValueError(f"Incorrect GPD-ID: {bro_id}")
 

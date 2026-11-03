@@ -7,7 +7,7 @@ from django.db import models
 from .choices import GMN_EVENT_TYPES
 
 
-def generate_random_color() -> str:
+def generate_random_color() -> str:  # ignore B311
     """Generate a random hex color code."""
     return f"#{random.randint(0, 0xFFFFFF):06x}"
 

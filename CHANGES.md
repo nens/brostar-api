@@ -1,9 +1,35 @@
 # Changelog for BROStar API
 
-## 1.78 (unreleased)
+## 1.81 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Templates]: Improve FRD GEM Measurement templates.
+-   Enhancement [Errors]: Translate BRO-errors to more human readable output.
+-   Enhancement [UploadTasks]: auto-correction to insert for FRD messages
+
+
+## 1.80 (2026-10-29)
+
+
+-   Feature [Corrections]: Add GLD correction endpoints to correct measurements or the procedure of an existing observation with a single request
+
+
+## 1.79 (2026-10-27)
+
+
+-   Bugfix [Templates]: Correct the order of the GMW-ElectrodeStatus template
+-   Bugfix [Templates]: Finalize and improve GPD templates
+-   Enhancement [Uploadtask]: Add state view for easy, low-usage polling of uploadtask status
+-   Enhancement [HistoryView]: Add a view that shows all of the messages send for GMN and GMW
+
+
+## 1.78 (2026-08-24)
+
+
+-   Bugfix [GAR-Import]: Proces passed as tuple, now as instance
+-   Chore [Type-Hinting]: Fix multiple incorrect type-hints
+-   Chore [Dependencies]: Update versioning of dependencies
+-   Rework [Swagger]: Move from drf-yasg to drf-spectacular
 
 
 ## 1.77 (2026-07-24)
@@ -20,7 +46,7 @@
 -   Enhancement [GUF]: Correct GUF_ExpandRealisedInstallation Templates
 -   Enhancement [GUF]: Correct GUF_WellFunction Templates
 -   Bugfix [Import]: The most recent tube top was shown within the GMW_Construction, instead of the original.
--   Bugfix [Upload]: improve NewLicense template
+-   Bugfix [Upload]: improve NewLicence template
 -   Bugfix [Datamodels]: correct designWell
 -   Bugfix [Datamodels]: remove two unused items from GMN_MeasuringPointEndDate
 -   QOL [Import]: Round to 2 digits for import progress

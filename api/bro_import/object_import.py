@@ -2,13 +2,14 @@ import datetime
 import importlib
 import logging
 import time
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ET  # nosec B405
 from abc import ABC, abstractmethod
 from typing import IO, Any
 
 import polars as pl
 import requests
 import xmltodict
+from defusedxml.ElementTree import fromstring
 from django.conf import settings
 from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
@@ -121,7 +122,7 @@ class ObjectImporter(ABC):
         self.s.mount("http://", adapter)
         self.s.mount("https://", adapter)
 
-    def _to_float(value: Any, default: float = 0.0) -> float:
+    def _to_float(self, value: Any, default: float = 0.0) -> float:
         if value is None:
             return default
         if isinstance(value, dict):
@@ -147,6 +148,21 @@ class ObjectImporter(ABC):
         if isinstance(value, str):
             return value
         return None
+
+    def _parse_flexible_date(self, date_str: Any) -> datetime.date | None:
+        """Parse BRO dates with flexible granularity: YYYY-MM-DD, YYYY-MM, or YYYY."""
+        if not date_str:
+            return None
+        try:
+            if len(date_str) == 4:  # YYYY
+                return datetime.date(int(date_str), 1, 1)
+            elif len(date_str) == 7:  # YYYY-MM
+                year, month = date_str.split("-")
+                return datetime.date(int(year), int(month), 1)
+            else:  # YYYY-MM-DD
+                return datetime.date.fromisoformat(date_str)
+        except (ValueError, AttributeError):
+            return None
 
     def should_import(self) -> bool:
         """Check PDOK API to see if the last_correction_date or the last_addition_date is more recent than the last_import_date"""
@@ -278,7 +294,7 @@ class GMNObjectImporter(ObjectImporter):
         self._create_events_df(intermediate_events)
         self._save_measuringpoint_data(measuringpoint_data)
 
-    def _create_events_df(self, events_data: list[dict, Any] | dict[str, Any]) -> None:
+    def _create_events_df(self, events_data: list[dict] | dict[str, Any]) -> None:
         event_types = []
         event_dates = []
         measuring_point_codes = []
@@ -306,7 +322,7 @@ class GMNObjectImporter(ObjectImporter):
 
     def _split_json_data(
         self, dispatch_document_data: dict[str, Any]
-    ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
         """Takes in the json data and splits it up into GMN and Measuringpoint data"""
 
         intermediate_events = (
@@ -489,7 +505,7 @@ class GMWObjectImporter(ObjectImporter):
         event_data = gmw_data.get("wellHistory", [])
 
         self._save_gmw_data(gmw_data)
-        self._save_monitoringtubes_data(monitoringtubes_data, event_data)
+        self._save_monitoringtubes_data(monitoringtubes_data)
         self._save_events_data(event_data)
 
     def _split_json_data(
@@ -622,7 +638,6 @@ class GMWObjectImporter(ObjectImporter):
     def _save_monitoringtubes_data(
         self,
         monitoringtubes_data: list[dict[str, Any]] | dict[str, Any],
-        event_data: list[dict[str, any]],
     ) -> None:
         # If only one monitoringtube data, the monitoringtubes_data is not in a list
         if not isinstance(monitoringtubes_data, list):
@@ -734,7 +749,7 @@ class GMWObjectImporter(ObjectImporter):
                 },
             )
 
-    def _get_well_data(self, intermediate_event: list[dict[str, any]]) -> dict:
+    def _get_well_data(self, intermediate_event: dict[str, Any]) -> dict:
         event_data = intermediate_event.get("eventData", {}).get("wellData", {})
         if not event_data:
             return {}
@@ -748,10 +763,10 @@ class GMWObjectImporter(ObjectImporter):
 
         return well_data
 
-    def _get_tube_data(self, intermediate_event: list[dict[str, any]]) -> list[dict]:
+    def _get_tube_data(self, intermediate_event: dict[str, Any]) -> list[dict]:
         event_data = intermediate_event.get("eventData", {}).get("tubeData", {})
         if not event_data:
-            return {}
+            return []
 
         tubes_data = []
         if isinstance(event_data, list):
@@ -764,7 +779,7 @@ class GMWObjectImporter(ObjectImporter):
                         tube_data[key] = tube[key].get("#text", None)
                 tubes_data.append(tube_data)
 
-            return tube_data
+            return tubes_data
 
         tube_data = {}
         for key in event_data.keys():
@@ -775,7 +790,7 @@ class GMWObjectImporter(ObjectImporter):
         tubes_data.append(tube_data)
         return tubes_data
 
-    def _save_events_data(self, event_data: list[dict[str, any]]):
+    def _save_events_data(self, event_data: dict[str, Any]):
         intermediate_events = event_data.get("intermediateEvent", [])
         if isinstance(intermediate_events, dict):
             intermediate_events = [intermediate_events]
@@ -818,7 +833,7 @@ class GMWObjectImporter(ObjectImporter):
             )
 
     def _lookup_most_recent_top_position(
-        self, monitoringtube: list[dict[str, any]], event_data: list[dict[str, any]]
+        self, monitoringtube: dict[str, Any], event_data: dict[str, Any]
     ):
         """In the BRO uigifteservice, the most recent top position is not always found in the metadata.
         Instead, the eventdata has to be checked for any changes.
@@ -1072,7 +1087,7 @@ class GARObjectImporter(ObjectImporter):
                     process.get("garcommon:valuationMethod", None)
                 ),
                 data_owner=self.data_owner,
-            )
+            )[0]
             self._save_analyses(analysis_process, process)
 
     def _save_analyses(
@@ -1127,7 +1142,7 @@ OBSERVATION_NAMESPACE = {
 }
 
 
-def date_or_none(string: str | None) -> datetime.date:
+def date_or_none(string: str | None) -> datetime.date | None:
     """DD-MM-YYYY to Datetime.Date"""
     if string:
         return datetime.datetime.strptime(string, "%d-%m-%Y").date()
@@ -1185,7 +1200,7 @@ class GLDObjectImporter(ObjectImporter):
         )[0]
         self._save_observations()
 
-    def _gmn_ids(self, gld_data: dict[list[dict[str, any]]]) -> list:
+    def _gmn_ids(self, gld_data: dict[str, list[dict[str, Any]]]) -> list[str]:
         """Retrieve a list of all coupled gmn-ids."""
         # Navigate to the `groundwaterMonitoringNet` key
         monitoring_nets = gld_data.get("groundwaterMonitoringNet", {})
@@ -1211,7 +1226,7 @@ class GLDObjectImporter(ObjectImporter):
                 if attempt == max_retries:
                     r.raise_for_status()
                 wait_time = int(r.headers.get("Retry-After", 5))
-                jitter = random.uniform(0, wait_time * 0.5)
+                jitter = random.uniform(0, wait_time * 0.5)  # ignore B311
                 sleep_time = wait_time + jitter
                 logger.info(
                     f"Received 429 Too Many Requests. Retrying after {sleep_time:.1f} seconds "
@@ -1221,7 +1236,9 @@ class GLDObjectImporter(ObjectImporter):
                 continue
             r.raise_for_status()
             return r.json()
+
         r.raise_for_status()  # unreachable, but satisfies type checker
+        return []  # Fallback return, should never be reached due to raise_for_status()
 
     def _procedure_information(self, observation_id: str):
         import random
@@ -1234,7 +1251,7 @@ class GLDObjectImporter(ObjectImporter):
                 if attempt == max_retries:
                     r.raise_for_status()
                 wait_time = int(r.headers.get("Retry-After", 5))
-                jitter = random.uniform(0, wait_time * 0.5)
+                jitter = random.uniform(0, wait_time * 0.5)  # ignore B311
                 sleep_time = wait_time + jitter
                 logger.info(
                     f"Received 429 Too Many Requests for observation {observation_id}. "
@@ -1243,7 +1260,8 @@ class GLDObjectImporter(ObjectImporter):
                 time.sleep(sleep_time)
                 continue
             r.raise_for_status()
-            return ET.fromstring(r.content)
+            # Use defused variant for safety
+            return fromstring(r.content)
 
     def _format_procedure(self, observation: ET.Element) -> dict:
         procedure = {}
@@ -1651,7 +1669,7 @@ class GUFObjectImporter(ObjectImporter):
     ) -> dict[str, Any]:
         geometry = parent_payload.get("gufcommon:geometry", {})
         point = geometry.get("gml:Point", {})
-        realised_loop_pos = point.get("gml:pos")
+        realised_installation_pos = point.get("gml:pos")
 
         installation_function = self._extract_text_from_xml_element(
             parent_payload.get("gufcommon:installationFunction")
@@ -1660,7 +1678,7 @@ class GUFObjectImporter(ObjectImporter):
             "gufcommon:realisedInstallationId"
         )
 
-        start_validity = (
+        start_time = (
             self._extract_flexible_date_value(
                 parent_payload.get("gufcommon:validityPeriod", {}).get(
                     "gufcommon:startValidity"
@@ -1730,8 +1748,8 @@ class GUFObjectImporter(ObjectImporter):
         return {
             "realised_installation_id": realised_installation_id,
             "installation_function": installation_function,
-            "realised_loop_pos": realised_loop_pos or "",
-            "start_validity": start_validity,
+            "realised_installation_pos": realised_installation_pos or "",
+            "start_time": start_time,
             "realised_wells": realised_wells_payload,
         }
 

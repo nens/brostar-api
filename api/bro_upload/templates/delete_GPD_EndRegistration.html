@@ -9,9 +9,10 @@
 >
   <brocom:requestReference>{{ metadata.requestReference }}</brocom:requestReference>
   <brocom:deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</brocom:deliveryAccountableParty>
+  <brocom:broId>{{ metadata.broId }}</brocom:broId>
   <brocom:qualityRegime>{{ metadata.qualityRegime }}</brocom:qualityRegime>
-  <brocom:correctionReason>{{ metadata.correctionReason }}</brocom:correctionReason>
+  <correctionReason codeSpace="urn:bro:gpd:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
   <sourceDocument>
-    <gpdcom:GPD_EndRegistration gml:id="id_0001"/>
+    <GPD_EndRegistration gml:id="id_0001"/>
   </sourceDocument>
 </deleteRequest>

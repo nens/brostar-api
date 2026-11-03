@@ -8,7 +8,6 @@ import requests
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from api.bro_upload.utils import (
-    T,
     add_xml_to_upload,
     check_delivery_status,
     create_delivery,
@@ -27,7 +26,6 @@ from api.utils import drop_empty_strings, strip_whitespace
 
 organisation
 bulk_upload
-T
 
 
 # Test simplify_validation_errors function

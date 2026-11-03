@@ -4,7 +4,7 @@ import json
 import logging
 import zipfile
 from io import BytesIO
-from typing import Any, TypeVar
+from typing import Any
 
 import defusedxml.ElementTree as DefusedET
 import polars as pl
@@ -26,8 +26,6 @@ retry_strategy = Retry(
 )
 adapter = HTTPAdapter(max_retries=retry_strategy)
 
-T = TypeVar("T", bound="api_models.UploadFile")
-
 
 def simplify_validation_errors(errors: list[str]) -> dict[str, str]:
     """Transforms the verbose pydantic errors to a readable format"""
@@ -46,7 +44,7 @@ def detect_delimiter_from_content(sample: str) -> str:
         return ","
 
 
-def read_csv(file: T | bytes) -> pl.DataFrame:
+def read_csv(file: api_models.UploadFile | bytes) -> pl.DataFrame:
     if isinstance(file, bytes):
         sample = file[:2048].decode("utf-8", errors="ignore")
         delimiter = detect_delimiter_from_content(sample)
@@ -87,7 +85,7 @@ def read_csv(file: T | bytes) -> pl.DataFrame:
     raise TypeError("Unsupported file type passed to read_csv.")
 
 
-def read_excel(file: T | bytes) -> pl.DataFrame:
+def read_excel(file: api_models.UploadFile | bytes) -> pl.DataFrame:
     if isinstance(file, api_models.UploadFile):
         return pl.read_excel(
             source=file.file.path,
@@ -97,7 +95,7 @@ def read_excel(file: T | bytes) -> pl.DataFrame:
     )
 
 
-def read_zip(file_instance: T) -> pl.DataFrame:
+def read_zip(file_instance: api_models.UploadFile) -> pl.DataFrame:
     csv_files = []
     xls_files = []
     xlsx_files = []
@@ -133,7 +131,7 @@ def read_zip(file_instance: T) -> pl.DataFrame:
         return pl.concat(dfs)
 
 
-def file_to_df(file_instance: T) -> pl.DataFrame:
+def file_to_df(file_instance: api_models.UploadFile) -> pl.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
     filetype = file_instance.file.name.split(".")[-1].lower()
     if filetype == "csv":

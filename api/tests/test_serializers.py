@@ -222,7 +222,7 @@ def test_valid_data_uploadtask_gar_serialization(organisation):
     serializer = api_serializers.UploadTaskSerializer(data=data)
     assert serializer.is_valid(), serializer.errors
 
-    instance = serializer.save()
+    instance = serializer.save(data_owner=organisation)
     serializer = api_serializers.UploadTaskSerializer(
         instance, context={"view": Mock(action="list")}
     )
@@ -331,7 +331,7 @@ def test_valid_data_uploadtask_gld_serialization(organisation):
     serializer = api_serializers.UploadTaskSerializer(data=data)
     assert serializer.is_valid(), serializer.errors
 
-    instance = serializer.save()
+    instance = serializer.save(data_owner=organisation)
     serializer = api_serializers.UploadTaskSerializer(
         instance, context={"view": Mock(action="list")}
     )

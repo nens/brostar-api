@@ -19,7 +19,7 @@
       >
       <gufcom:geometry>
         <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="id_0002">
-          <gml:pos>{{ sourcedocs_data.realisedLoopPos }}</gml:pos>
+          <gml:pos>{{ sourcedocs_data.realisedInstallationPos }}</gml:pos>
         </gml:Point>
       </gufcom:geometry>
       <gufcom:startValidity>
@@ -91,8 +91,8 @@
             </gml:Point>
           </gufcom:geometry>
           <!--  Optional: mandatory if primaryUsageType is openbareDrinkwatervoorziening.  -->
-          {% if realised_well.publiclyAvailable %}
-          <gufcom:geometryPubliclyAvailable>{{ realised_well.publiclyAvailable }}</gufcom:geometryPubliclyAvailable>
+          {% if realised_well.geometryPubliclyAvailable %}
+          <gufcom:geometryPubliclyAvailable>{{ realised_well.geometryPubliclyAvailable }}</gufcom:geometryPubliclyAvailable>
           {% endif %}
           <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.  -->
           {% if sourcedocs_data.installationFunction == 'openBodemenergiesysteem' and realised_well.wellFunctions|length == 2 %}

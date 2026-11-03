@@ -37,6 +37,9 @@ _use_bro_production_env = os.getenv("USE_BRO_PRODUCTION", default="false")
 DEBUG = _debug_env.lower() == "true"  # default: True
 USE_BRO_PRODUCTION = _use_bro_production_env.lower() == "true"  # Default: False
 
+if not DEBUG and FIELD_ENCRYPTION_KEY.startswith("DUMMY-"):
+    raise RuntimeError("FIELD_ENCRYPTION_KEY must be configured outside development")
+
 
 TIME_ZONE = "CET"
 USE_TZ = True
@@ -78,7 +81,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework_api_key",
-    "drf_yasg",
+    "drf_spectacular",
     "corsheaders",
     "django_filters",
     "encrypted_model_fields",
@@ -213,6 +216,11 @@ DATABASES = {
         "PASSWORD": DATABASE_PASSWORD,
         "HOST": DATABASE_HOST,
         "CONN_MAX_AGE": 60,
+        "CONN_HEALTH_CHECKS": True,
+        "OPTIONS": {
+            "connect_timeout": 5,
+            "options": "-c statement_timeout=90000",
+        },
     }
 }
 
@@ -285,6 +293,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # DRF configuration
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
@@ -302,6 +311,15 @@ FILTERS_DEFAULT_FILTER_OVERRIDES = {
     "django.db.models.JSONField": {
         "filter_class": "django_filters.CharFilter",
     },
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "BROStar API",
+    "DESCRIPTION": "Simplify the data management of the BRO",
+    "VERSION": "v1",
+    "CONTACT": {"email": "servicedesk@nelen-schuurmans.nl"},
+    "LICENSE": {"name": "BSD License"},
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
 }
 
 # Automatically discover tasks in Django app

@@ -241,7 +241,7 @@ class GMNBulkUploader:
         self.bulk_upload_instance.save()
 
 
-def file_to_df(file_instance: T) -> pl.DataFrame:
+def file_to_df(file_instance: api_models.UploadFile) -> pl.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
     filetype = file_instance.file.name.split(".")[-1].lower()
 

@@ -2,7 +2,6 @@ import logging
 import os
 import re
 from collections import defaultdict
-from typing import TypeVar
 
 import pandas as pd
 import polars as pl
@@ -19,9 +18,6 @@ from api.bro_upload.upload_datamodels import (
 )
 
 logger = logging.getLogger("general")
-
-
-T = TypeVar("T", bound="api_models.UploadFile")
 
 
 _REPORTING_LIMIT_COLUMN_RE = re.compile(r"^\s*Rapportagegrens\s+(.+?)\s+\(.*\)\s*$")
@@ -311,7 +307,7 @@ class GARBulkUploader:
         self.bulk_upload_instance.save(update_fields=["progress", "status"])
 
 
-def csv_or_excel_to_df(file_instance: T) -> pd.DataFrame:
+def csv_or_excel_to_df(file_instance: api_models.UploadFile) -> pd.DataFrame:
     """Reads out csv or excel files and returns a pandas df."""
     # Get the file extension more robustly
     _, ext = os.path.splitext(file_instance.file.name)

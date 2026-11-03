@@ -13,8 +13,8 @@ from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django_filters.rest_framework import DjangoFilterBackend
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from pydantic import ValidationError
 from rest_framework import generics, permissions, status, views, viewsets
 from rest_framework.decorators import action
@@ -147,9 +147,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    @swagger_auto_schema(
-        responses={200: serializers.UserLoggedInSerializer()},
-    )
+    @extend_schema(responses={200: serializers.UserLoggedInSerializer})
     @action(
         detail=False,
         url_path="logged-in",
@@ -245,7 +243,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         # Check if request data contains credentials
-        if "bro_user_token" in request.data or "bro_user_password" in request.data:
+        token_present = (
+            "bro_user_token" in request.data or "bro_user_password" in request.data
+        )
+        if token_present:
             credential_serializer = serializers.OrganisationCredentialSerializer(
                 instance, data=request.data, partial=partial
             )
@@ -258,7 +259,10 @@ class OrganisationViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         return Response(
-            {"message": "BRO credentials updated successfully"},
+            # Slightly different message if only non-credential fields were updated
+            {
+                "message": f"BRO credentials updated successfully{'.' if token_present else ''}"
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -595,17 +599,9 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
                         status=status.HTTP_304_NOT_MODIFIED,
                     )
 
-    @swagger_auto_schema(
-        method="get",
-        operation_description="Returns the generated XML file for this upload task.",
-        responses={
-            200: openapi.Response(
-                description="Raw XML content",
-                schema=openapi.Schema(type=openapi.TYPE_STRING),
-                examples={"application/xml": "<root><example/></root>"},
-            )
-        },
-        produces=["application/xml"],
+    @extend_schema(
+        description="Returns the generated XML file for this upload task.",
+        responses={(200, "application/xml"): OpenApiTypes.STR},
     )
     @action(detail=True, methods=["get"], url_path="read_xml")
     def read_xml(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
@@ -622,6 +618,25 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
         xml_str = xml_generator.create_xml_file()
 
         return HttpResponse(xml_str, content_type="application/xml")
+
+    @extend_schema(
+        description="Returns the state of the upload task.",
+        responses={(200, "application/json"): OpenApiTypes.STR},
+    )
+    @action(detail=True, methods=["get"], url_path="state")
+    def state(self, request: HttpRequest, uuid: str | None = None) -> HttpResponse:
+        """Endpoint to show the current state of this upload task."""
+        upload_task = models.UploadTask.objects.get(uuid=uuid)
+        return Response(
+            {
+                "uuid": upload_task.uuid,
+                "status": upload_task.status,
+                "bro_id": upload_task.bro_id,
+                "log": upload_task.log,
+                "bro_errors": upload_task.bro_errors,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class UploadTaskOverviewList(mixins.UserOrganizationMixin, generics.ListAPIView):
@@ -678,17 +693,6 @@ class BulkUploadViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
     parser_classes = (MultiPartParser,)
     filter_backends = [DjangoFilterBackend]
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                "fieldwork_file", openapi.IN_FORM, type=openapi.TYPE_FILE
-            ),
-            openapi.Parameter("lab_file", openapi.IN_FORM, type=openapi.TYPE_FILE),
-            openapi.Parameter(
-                "measurement_tvp_file", openapi.IN_FORM, type=openapi.TYPE_FILE
-            ),
-        ]
-    )
     def _create_gar(self, serializer, data_owner, fieldwork_file, lab_file):
         # The BulkUpload instance is created here, because the uuid needs to be passed to the celery task.
         self.perform_create(serializer)
@@ -970,8 +974,6 @@ class RawXMLUploadView(APIView):
 
             tasks.validate_and_deliver_raw_xml_task.delay(
                 str(upload_task.uuid),
-                bro_username,
-                bro_password,
                 cache_key,
             )
 
