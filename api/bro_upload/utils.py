@@ -14,6 +14,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 import api.models as api_models
+from api.bro_upload.bronhouderportaal_v3 import get_bearer_headers
 
 logger = logging.getLogger("general")
 
@@ -158,18 +159,21 @@ def validate_xml_file(
     - errors
 
     """
-    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/validatie"
+    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v3/{project_number}/validatie"
 
     session = requests.Session()
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
     try:
+        headers = {
+            **get_bearer_headers(bro_username, bro_password),
+            "Content-Type": "application/xml",
+        }
         r = session.post(
             url=url,
             data=xml_file,
-            headers={"Content-Type": "application/xml"},
-            auth=(bro_username, bro_password),
+            headers=headers,
             timeout=300,  # Update as Replace GMN_StartRegistration runs out of time.
         )
         r.raise_for_status()
@@ -227,17 +231,20 @@ def create_upload_url(
     - status
     - upload_url (if status is OK)
     """
-    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/uploads"
+    url = f"{settings.BRONHOUDERSPORTAAL_URL}/api/v3/{project_number}/uploads"
 
     session = requests.Session()
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
     try:
+        headers = {
+            **get_bearer_headers(bro_username, bro_password),
+            "Content-Type": "application/xml",
+        }
         r = session.post(
             url,
-            headers={"Content-Type": "application/xml"},
-            auth=(bro_username, bro_password),
+            headers=headers,
             timeout=60,
         )
         r.raise_for_status()
@@ -283,10 +290,13 @@ def add_xml_to_upload(
     session.mount("https://", adapter)
 
     try:
+        headers = {
+            **get_bearer_headers(bro_username, bro_password),
+            "Content-Type": "application/xml",
+        }
         r = session.post(
             upload_url,
-            headers={"Content-Type": "application/xml"},
-            auth=(bro_username, bro_password),
+            headers=headers,
             data=xml_file,
             params={"filename": f"{datetime_str}_BROSTAR_request.xml"},
             timeout=60,
@@ -308,7 +318,7 @@ def create_delivery(
     payload = {"upload": int(upload_id)}
 
     deliver_url = (
-        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v2/{project_number}/leveringen"
+        f"{settings.BRONHOUDERSPORTAAL_URL}/api/v3/{project_number}/leveringen"
     )
 
     session = requests.Session()
@@ -316,11 +326,14 @@ def create_delivery(
     session.mount("https://", adapter)
 
     try:
+        headers = {
+            **get_bearer_headers(bro_username, bro_password),
+            "Content-Type": "application/json",
+        }
         r = session.post(
             deliver_url,
-            headers={"Content-type": "application/json"},
+            headers=headers,
             data=json.dumps(payload),
-            auth=(bro_username, bro_password),
             timeout=60,
         )
         r.raise_for_status()
@@ -342,9 +355,10 @@ def check_delivery_status(
     session.mount("https://", adapter)
 
     try:
+        headers = get_bearer_headers(bro_username, bro_password)
         r = session.get(
             url=delivery_url,
-            auth=(bro_username, bro_password),
+            headers=headers,
             timeout=20,
         )
 

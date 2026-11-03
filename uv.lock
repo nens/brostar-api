@@ -135,7 +135,7 @@ wheels = [
 
 [[package]]
 name = "brostar-api"
-version = "1.80.dev0"
+version = "1.81.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "celery", extra = ["redis"] },

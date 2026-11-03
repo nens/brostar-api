@@ -28,6 +28,15 @@ organisation
 bulk_upload
 
 
+@pytest.fixture(autouse=True)
+def mock_bronhouderportaal_bearer_headers():
+    with mock.patch(
+        "api.bro_upload.utils.get_bearer_headers",
+        return_value={"Authorization": "Bearer test-access-token"},
+    ):
+        yield
+
+
 # Test simplify_validation_errors function
 def test_simplify_validation_errors():
     errors = [
@@ -78,6 +87,9 @@ def test_validate_xml_file_success():
 
         result = validate_xml_file("<xml>data</xml>", "bro_user", "bro_pass", "12345")
         assert result == {"status": "VALID"}
+        assert mock_post.call_args.kwargs["headers"]["Authorization"] == (
+            "Bearer test-access-token"
+        )
 
 
 def test_validate_xml_file_server_error():
