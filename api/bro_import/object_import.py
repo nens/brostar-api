@@ -12,8 +12,8 @@ import xmltodict
 from defusedxml.ElementTree import fromstring
 from django.conf import settings
 from requests.adapters import HTTPAdapter, Retry
-from requests.auth import HTTPBasicAuth
 
+from api.bro_upload.bronhouderportaal_v3 import get_bearer_headers
 from api.models import ImportTask, Organisation
 from frd.models import (
     FRD,
@@ -107,12 +107,7 @@ class ObjectImporter(ABC):
         self.data_owner = data_owner
 
         self.s = requests.Session()
-        auth = HTTPBasicAuth(
-            username=data_owner.bro_user_token,
-            password=data_owner.bro_user_password,
-        )
         self.s.headers = {"Content-Type": "application/json"}
-        self.s.auth = auth
         retry = Retry(
             total=6,
             backoff_factor=1,
@@ -458,7 +453,11 @@ class GMWObjectImporter(ObjectImporter):
         bronhouder_url = settings.BRONHOUDERSPORTAAL_URL
         try:
             r = self.s.get(
-                url=f"{bronhouder_url}/api/v2/transacties/?zoekveld=broId&zoektekst={bro_id}",
+                url=f"{bronhouder_url}/api/v3/transacties/?zoekveld=broId&zoektekst={bro_id}",
+                headers=get_bearer_headers(
+                    self.data_owner.bro_user_token,
+                    self.data_owner.bro_user_password,
+                ),
                 timeout=15,
             )
             # Check if the request was successful

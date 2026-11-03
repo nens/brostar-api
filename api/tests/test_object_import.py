@@ -98,7 +98,6 @@ def test_object_importer_download_xml(mocker, gmn_object_importer):
     assert result == expected_content
 
 
-@pytest.mark.django_db
 def test_download_xml_http_error(mocker, gmn_object_importer):
     # Setup
     mock_get = mocker.patch("requests.get")

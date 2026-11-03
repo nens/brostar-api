@@ -79,11 +79,6 @@ class Organisation(models.Model):
     bro_user_token = EncryptedCharField(max_length=100, blank=True, null=True)
     bro_user_password = EncryptedCharField(max_length=100, blank=True, null=True)
 
-    # Delivery specefics (BRO API v3, OAuth2 password grant). Additive and optional:
-    # organisations keep using v2 until they fill these in themselves.
-    bro_user_token_v3 = EncryptedCharField(max_length=100, blank=True, null=True)
-    bro_user_password_v3 = EncryptedCharField(max_length=100, blank=True, null=True)
-
     renewal_date = models.DateField(blank=True, null=True)
     request_count = models.IntegerField(default=0)
 
