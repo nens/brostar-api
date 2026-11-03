@@ -115,23 +115,19 @@ def test_find_matches_exact_only():
     assert find_matches(times, "2021-01-05T12:02:00+01:00") == []
 
 
-def test_find_matches_within_delta_t_sorted_by_distance():
-    times = [
-        "2021-01-04T12:00:00+01:00",
-        "2021-01-04T12:10:00+01:00",
-        "2021-01-05T12:00:00+01:00",
-    ]
+def test_find_matches_normalizes_timezone_offsets():
+    times = ["2021-01-04T12:00:00+01:00", "2021-01-05T12:00:00+01:00"]
 
-    assert find_matches(times, "2021-01-04T12:08:00+01:00", delta_t=600) == [1, 0]
+    assert find_matches(times, "2021-01-04T11:00:00Z") == [0]
 
 
-def test_single_match_raises_on_multiple():
-    times = ["2021-01-04T12:00:00+01:00", "2021-01-04T12:10:00+01:00"]
+def test_single_match_raises_on_duplicate_normalized_time():
+    times = ["2021-01-04T12:00:00+01:00", "2021-01-04T11:00:00Z"]
 
     with pytest.raises(CorrectionValidationError) as error:
-        single_match(times, "2021-01-04T12:05:00+01:00", delta_t=600)
+        single_match(times, "2021-01-04T12:00:00+01:00")
 
-    assert "delta_t" in str(error.value)
+    assert "hetzelfde tijdstip" in str(error.value)
 
 
 def test_parse_time_rejects_nonsense():
@@ -173,15 +169,14 @@ def test_merge_measurements_adds_and_sorts():
     ]
 
 
-def test_merge_measurements_within_delta_t_overwrites_time():
+def test_merge_measurements_does_not_match_nearby_time():
     existing = [Measurement(time="2021-01-05T12:00:00+01:00", value=0.55)]
     incoming = [Measurement(time="2021-01-05T12:02:00+01:00", value=0.56)]
 
-    merged, changed, _ = merge_measurements(existing, incoming, delta_t=300)
+    merged, changed, _ = merge_measurements(existing, incoming)
 
     assert changed == 1
-    assert len(merged) == 1
-    assert merged[0].time == "2021-01-05T12:02:00+01:00"
+    assert len(merged) == 2
 
 
 def test_merge_measurements_identical_is_no_change():
@@ -193,6 +188,69 @@ def test_merge_measurements_identical_is_no_change():
     assert changed == 0
     assert len(merged) == 1
     assert "niets gewijzigd" in log[0]
+
+
+def test_merge_measurements_deletes_empty_measurement():
+    existing = [
+        Measurement(time="2021-01-04T12:00:00+01:00", value=0.52),
+        Measurement(time="2021-01-05T12:00:00+01:00", value=0.55),
+        Measurement(time="2021-01-06T12:00:00+01:00", value=0.58),
+    ]
+    incoming = [
+        Measurement(time="2021-01-05T12:00:00+01:00", value=None, censor_reason=None)
+    ]
+
+    merged, changed, log = merge_measurements(existing, incoming)
+
+    assert changed == 1
+    assert len(merged) == 2
+    assert [item.time for item in merged] == [
+        "2021-01-04T12:00:00+01:00",
+        "2021-01-06T12:00:00+01:00",
+    ]
+    assert "verwijderd" in log[0]
+
+
+def test_merge_measurements_ignores_empty_measurement_not_in_existing():
+    existing = [
+        Measurement(time="2021-01-04T12:00:00+01:00", value=0.52),
+        Measurement(time="2021-01-06T12:00:00+01:00", value=0.58),
+    ]
+    incoming = [
+        Measurement(time="2021-01-05T12:00:00+01:00", value=None, censor_reason=None)
+    ]
+
+    merged, changed, log = merge_measurements(existing, incoming)
+
+    assert changed == 0
+    assert len(merged) == 2
+    assert [item.time for item in merged] == [
+        "2021-01-04T12:00:00+01:00",
+        "2021-01-06T12:00:00+01:00",
+    ]
+
+
+def test_merge_measurements_deletes_multiple_measurements():
+    existing = [
+        Measurement(time="2021-01-04T12:00:00+01:00", value=0.52),
+        Measurement(time="2021-01-05T12:00:00+01:00", value=0.55),
+        Measurement(time="2021-01-06T12:00:00+01:00", value=0.58),
+        Measurement(time="2021-01-07T12:00:00+01:00", value=0.61),
+    ]
+    incoming = [
+        Measurement(time="2021-01-05T12:00:00+01:00", value=None, censor_reason=None),
+        Measurement(time="2021-01-07T12:00:00+01:00", value=None, censor_reason=None),
+    ]
+
+    merged, changed, log = merge_measurements(existing, incoming)
+
+    assert changed == 2
+    assert len(merged) == 2
+    assert [item.time for item in merged] == [
+        "2021-01-04T12:00:00+01:00",
+        "2021-01-06T12:00:00+01:00",
+    ]
+    assert sum(1 for line in log if "verwijderd" in line) == 2
 
 
 def test_merge_procedure_only_touches_given_fields():

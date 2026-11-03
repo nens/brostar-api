@@ -127,28 +127,14 @@ class BaseGLDCorrectionView(APIView):
     description=(
         "Haalt de observatie op bij de publieke BRO-uitgifteservice, vervangt of "
         "voegt de meegegeven metingen toe en maakt een GLD_Addition (replace) "
-        "UploadTask aan.\n\n"
-        "Met de queryparameter `delta_t` (seconden) wordt een meting die binnen "
-        "die marge valt als dezelfde meting beschouwd en overschreven."
+        "UploadTask aan. Metingen worden uitsluitend gematcht op hetzelfde "
+        "genormaliseerde tijdstip."
     ),
     request=GLDMeasurementCorrectionSerializer,
 )
 class GLDMeasurementCorrectionView(BaseGLDCorrectionView):
     serializer_class = GLDMeasurementCorrectionSerializer
     changed_key = "measurements_changed"
-
-    def _delta_t(self, request: Request) -> float:
-        raw = request.query_params.get("delta_t", "0")
-        try:
-            delta_t = float(raw)
-        except (TypeError, ValueError) as exc:
-            raise CorrectionValidationError(
-                f"delta_t moet een getal in seconden zijn, '{raw}' is dat niet."
-            ) from exc
-
-        if delta_t < 0:
-            raise CorrectionValidationError("delta_t mag niet negatief zijn.")
-        return delta_t
 
     def apply_correction(
         self,
@@ -157,14 +143,11 @@ class GLDMeasurementCorrectionView(BaseGLDCorrectionView):
         data: dict[str, Any],
         request: Request,
     ) -> tuple[list[Any], dict[str, Any], tuple[str, str, str | None], int, list[str]]:
-        delta_t = self._delta_t(request)
         incoming = [
             measurement_from_payload(payload) for payload in data["measurements"]
         ]
 
-        merged, changed, log = merge_measurements(
-            observation.measurements, incoming, delta_t
-        )
+        merged, changed, log = merge_measurements(observation.measurements, incoming)
 
         period = (
             observation.begin_position or "",
