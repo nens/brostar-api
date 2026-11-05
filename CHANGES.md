@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.81 (unreleased)
+## 1.81 (2026-11-05)
 
 
 -   Bugfix [Templates]: Improve FRD GEM Measurement templates.
