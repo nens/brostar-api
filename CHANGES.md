@@ -3,7 +3,7 @@
 ## 1.82 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [Errors]: Update BRO-Event dynamic translation to include all GMW-Events
 
 
 ## 1.81 (2026-11-05)
