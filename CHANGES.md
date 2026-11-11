@@ -3,6 +3,7 @@
 ## 1.82 (unreleased)
 
 
+-   Bugfix [UploadTasks]: fix empty sourcedocument_data for GLDClosure, FRDClosure and GPDEndRegistration
 -   Enhancement [Errors]: Update BRO-Event dynamic translation to include all GMW-Events
 
 

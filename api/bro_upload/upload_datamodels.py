@@ -513,7 +513,8 @@ class GLDAddition(CamelModel):
 
 
 class GLDClosure(CamelModel):
-    event_date: str
+    # No data required for the model
+    pass
 
 
 class FRDStartRegistration(CamelModel):
@@ -586,6 +587,11 @@ class FRDGemMeasurement(CamelModel):
     related_calculated_apparent_formation_resistance: (
         RelatedCalculatedApparentFormationResistance | None
     ) = None
+
+
+class FRDClosure(CamelModel):
+    # No data required for the model
+    pass
 
 
 class UploadTask(BaseModel):
