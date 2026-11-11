@@ -4,6 +4,7 @@
 
 
 -   Bugfix [UploadTasks]: fix empty sourcedocument_data for GLDClosure, FRDClosure and GPDEndRegistration
+-   Enhancement [Errors]: Update BRO-Event dynamic translation to include all GMW-Events
 
 
 ## 1.81 (2026-11-05)

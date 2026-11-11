@@ -2,6 +2,7 @@
 import pytest
 
 from api.models import UploadTask
+from api.signals import translate_bro_error
 from api.tests.fixtures import (  # noqa: F401
     frd,
     geo_electric_measurement,
@@ -27,6 +28,33 @@ from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
 
 from ..models import Organisation
+
+
+@pytest.mark.parametrize(
+    ("error_message", "expected_translation"),
+    [
+        (
+            "De combinatie van Posities inmeten.naam gebeurtenis "
+            "(PositionsMeasuring.eventName) = gebeurtenisEen op "
+            "Posities inmeten.datum gebeurtenis "
+            "(PositionsMeasuring.eventDate) = (2016-12-18, JJJJ-MM-DD) "
+            "is niet correct: Er is reeds een zelfde gebeurtenis op deze datum geregistreerd.",
+            "Er is al een gebeurtenisEen geregistreerd op 2016-12-18.",
+        ),
+        (
+            "De combinatie van Beschermconstructie.naam gebeurtenis "
+            "(WellHeadProtector.eventName) = beschermconstructieVeranderd op "
+            "Beschermconstructie.datum gebeurtenis "
+            "(WellHeadProtector.eventDate) = (2016-12-18, JJJJ-MM-DD) "
+            "is niet correct: Er is reeds een zelfde gebeurtenis op deze datum geregistreerd.",
+            "Er is al een beschermconstructieVeranderd geregistreerd op 2016-12-18.",
+        ),
+    ],
+)
+def test_translate_bro_error_for_duplicate_events(
+    error_message: str, expected_translation: str
+):
+    assert translate_bro_error(error_message) == expected_translation
 
 
 @pytest.mark.django_db

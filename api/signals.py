@@ -22,7 +22,7 @@ BRO_ERROR_TRANSLATIONS = {
     # Dynamic error patterns with regex extraction
     "dynamic": [
         {
-            "pattern": r"De combinatie van Posities inmeten\.naam gebeurtenis \(PositionsMeasuring\.eventName\) = (.+?) op Posities inmeten\.datum gebeurtenis \(PositionsMeasuring\.eventDate\) = \((\d{4}-\d{2}-\d{2}), JJJJ-MM-DD\) is niet correct: Er is reeds een zelfde gebeurtenis op deze datum geregistreerd\.",
+            "pattern": r"De combinatie van .+?\.naam gebeurtenis \([^)]*\.eventName\) = (.+?) op .+?\.datum gebeurtenis \([^)]*\.eventDate\) = \((\d{4}-\d{2}-\d{2}), JJJJ-MM-DD\) is niet correct: Er is reeds een zelfde gebeurtenis op deze datum geregistreerd\.",
             "template": "Er is al een {eventName} geregistreerd op {eventDate}.",
             "groups": {"eventName": 1, "eventDate": 2},
         }
