@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.82 (unreleased)
+## 1.82 (2026-11-11)
 
 
 -   Bugfix [UploadTasks]: fix empty sourcedocument_data for GLDClosure, FRDClosure and GPDEndRegistration
