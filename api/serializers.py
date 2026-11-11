@@ -79,6 +79,9 @@ class UploadTaskSerializer(UrlFieldMixin, serializers.ModelSerializer):
         model = api_models.UploadTask
         fields = "__all__"
         read_only_fields = ["data_owner"]
+        extra_kwargs = {
+            "sourcedocument_data": {"required": False, "allow_null": True},
+        }
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)

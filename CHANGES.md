@@ -3,7 +3,7 @@
 ## 1.82 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [UploadTasks]: fix empty sourcedocument_data for GLDClosure, FRDClosure and GPDEndRegistration
 
 
 ## 1.81 (2026-11-05)

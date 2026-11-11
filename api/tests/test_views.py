@@ -413,6 +413,57 @@ def test_uploadtask_view_post_valid_gld_addition_data(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    "registration_type", ["GLD_Closure", "FRD_Closure", "GPD_EndRegistration"]
+)
+def test_uploadtask_view_post_without_sourcedocument_data(
+    api_client, user, userprofile, organisation, registration_type
+):
+    api_client.force_authenticate(user=user)
+    data = {
+        "bro_domain": registration_type[:3],
+        "project_number": "1",
+        "registration_type": registration_type,
+        "request_type": "registration",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+        },
+    }
+
+    response = api_client.post("/api/uploadtasks/", data, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json()["sourcedocument_data"] == {}
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("registration_type", ["GLD_Closure", "GPD_EndRegistration"])
+def test_uploadtask_view_ignores_sourcedocument_data_without_fields(
+    api_client, user, userprofile, organisation, registration_type
+):
+    api_client.force_authenticate(user=user)
+    data = {
+        "bro_domain": registration_type[:3],
+        "project_number": "1",
+        "registration_type": registration_type,
+        "request_type": "registration",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+        },
+        "sourcedocument_data": {"unused": "input"},
+    }
+
+    response = api_client.post("/api/uploadtasks/", data, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json()["sourcedocument_data"] == {}
+
+
+@pytest.mark.django_db
 def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organisation):
     """Test posting on the uploadtasks enpoint
     Note: userprofile needs to be used as fixture for this test

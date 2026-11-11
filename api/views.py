@@ -426,20 +426,18 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate the sourcedocument_data input
-        raw_sourcedocument_data = serializer.validated_data["sourcedocument_data"]
-        sourcedocument_data = strip_whitespace(
-            drop_empty_strings(raw_sourcedocument_data)
-        )
-
-        validation_class = registration_type_datamodel_mapping.get(
-            serializer.validated_data["registration_type"]
-        )
-        if validation_class:
+        # Some sourcedocuments have no internal data.
+        registration_type = serializer.validated_data["registration_type"]
+        validation_class = registration_type_datamodel_mapping.get(registration_type)
+        if validation_class and validation_class.model_fields:
+            raw_sourcedocument_data = (
+                serializer.validated_data.get("sourcedocument_data") or {}
+            )
+            sourcedocument_data = strip_whitespace(
+                drop_empty_strings(raw_sourcedocument_data)
+            )
             try:
-                if (
-                    serializer.validated_data["registration_type"] == "GLD_Addition"
-                    or "GUF" in serializer.validated_data["registration_type"]
-                ):
+                if registration_type == "GLD_Addition" or "GUF" in registration_type:
                     validated_sourcedocument_data = validation_class(
                         **sourcedocument_data
                     )
@@ -454,6 +452,10 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             except ValidationError as e:
                 errors = utils.simplify_validation_errors(e.errors())
                 return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            # Registration types without source-document fields do not use
+            # caller-provided source-document data.
+            serializer.validated_data["sourcedocument_data"] = {}
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)
