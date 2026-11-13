@@ -20,6 +20,7 @@
 -   Enhancement [Errors]: Translate BRO-errors to more human readable output.
 -   Enhancement [UploadTasks]: auto-correction to insert for FRD messages
 -   Enhancement [Corrections]: improve speed of corrections for GLD-measurements
+-   Feature [BRO-Delivery]: Bump to Bronhouderportaal V3
 
 
 ## 1.80 (2026-10-29)

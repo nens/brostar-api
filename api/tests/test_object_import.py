@@ -107,7 +107,7 @@ def test_download_xml_http_error(mocker, gmn_object_importer):
     mock_get.return_value = mock_response
 
     # Test
-    url = "https://example.com/data.xml"
+    url = "https://publieke.restservices.nl/data.xml"
 
     # Assert that an HTTPError is raised
     with pytest.raises(HTTPError):
