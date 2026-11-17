@@ -91,12 +91,15 @@
                     {% if process.analyticalTechnique %}
                     <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique">{{ process.analyticalTechnique }}</garcom:analyticalTechnique>
                     {% else %}
-                    <garcom:analyticalTechnique xsi:nil="true"/>
+                    <garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique" xsi:nil="true"/>
                     {% endif %}
+                    {# validationMethod: key used by the BROSTAR frontend (named after the GAR model field) #}
                     {% if process.valuationMethod %}
                     <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.valuationMethod }}</garcom:valuationMethod>
+                    {% elif process.validationMethod %}
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">{{ process.validationMethod }}</garcom:valuationMethod>
                     {% else %}
-                    <garcom:valuationMethod xsi:nil="true"/>
+                    <garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod" xsi:nil="true"/>
                     {% endif %}
                     {% for analysis in process.analyses %}
                     <garcom:analysis>
