@@ -2,7 +2,7 @@
 import pytest
 
 from api.models import UploadTask
-from api.signals import translate_bro_error
+from api.signals import pre_save_upload_task, to_bro_datetime, translate_bro_error
 from api.tests.fixtures import (  # noqa: F401
     frd,
     geo_electric_measurement,
@@ -55,6 +55,45 @@ def test_translate_bro_error_for_duplicate_events(
     error_message: str, expected_translation: str
 ):
     assert translate_bro_error(error_message) == expected_translation
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        # Frontend format (UTC with milliseconds), summer and winter time
+        ("1993-04-28T11:00:00.000Z", "1993-04-28T13:00:00+02:00"),
+        ("2007-11-15T10:00:00Z", "2007-11-15T11:00:00+01:00"),
+        # Already in the BRO format: keep the original
+        ("1993-04-28T13:00:00+02:00", "1993-04-28T13:00:00+02:00"),
+        ("2018-10-23T16:59:32+00:00", "2018-10-23T16:59:32+00:00"),
+        # No time zone or not a datetime: leave unchanged
+        ("1993-04-28T13:00:00", "1993-04-28T13:00:00"),
+        ("onbekend", "onbekend"),
+        (None, None),
+    ],
+)
+def test_to_bro_datetime(value, expected):
+    assert to_bro_datetime(value) == expected
+
+
+def test_pre_save_gar_normalizes_sampling_datetime():
+    task = UploadTask(
+        bro_domain="GAR",
+        registration_type="GAR",
+        request_type="replace",
+        metadata={"qualityRegime": "IMBRO/A", "requestReference": "test"},
+        sourcedocument_data={
+            "fieldResearch": {"samplingDateTime": "1993-04-28T11:00:00.000Z"}
+        },
+        bro_errors="",
+    )
+
+    pre_save_upload_task(sender=UploadTask, instance=task)
+
+    assert (
+        task.sourcedocument_data["fieldResearch"]["samplingDateTime"]
+        == "1993-04-28T13:00:00+02:00"
+    )
 
 
 @pytest.mark.django_db

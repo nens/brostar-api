@@ -1,6 +1,8 @@
 import logging
 import os
 import re
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
@@ -67,6 +69,30 @@ def translate_bro_error(error_message: str) -> str:
     return error_message
 
 
+# The BRO DatumTijd format: JJJJ-MM-DDTUU:MM:SS+UU:MM (seconds, offset in hours:minutes)
+BRO_DATETIME_PATTERN = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$"
+)
+
+
+def to_bro_datetime(value):
+    """Rewrite a datetime string to the BRO DatumTijd format in Dutch time.
+
+    The frontend sends e.g. "1993-04-28T11:00:00.000Z", which the BRO rejects.
+    Values already in the BRO format are kept as they are; values that cannot be
+    parsed or have no time zone are left unchanged.
+    """
+    if not isinstance(value, str) or BRO_DATETIME_PATTERN.match(value):
+        return value
+    try:
+        parsed = datetime.fromisoformat(value)
+    except ValueError:
+        return value
+    if parsed.tzinfo is None:
+        return value
+    return parsed.astimezone(ZoneInfo("Europe/Amsterdam")).isoformat(timespec="seconds")
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance: User, created, **kwargs):
     """After a user accepts a nens auth client invitation, this creates a UserProfile.
@@ -96,6 +122,13 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     # Raw XML uploads bypass template logic; do not apply any auto-corrections.
     if instance.metadata.get("_is_raw_xml"):
         return
+
+    if instance.registration_type == "GAR":
+        field_research = instance.sourcedocument_data.get("fieldResearch") or {}
+        if "samplingDateTime" in field_research:
+            field_research["samplingDateTime"] = to_bro_datetime(
+                field_research["samplingDateTime"]
+            )
 
     is_staging = "staging" in os.getenv("NENS_AUTH_RESOURCE_SERVER_ID", "")
 
