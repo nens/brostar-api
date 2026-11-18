@@ -3,7 +3,7 @@
 ## 1.83 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Templates]: GAR valuationMethod is also read from validationMethod; empty valuationMethod and analyticalTechnique now get a codeSpace (fixes XSD error on GAR corrections)
 
 
 ## 1.82 (2026-11-11)
