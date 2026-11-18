@@ -15,8 +15,8 @@ def create_gar(
     bro_id: str, metadata: dict, sourcedocument_data: dict, data_owner: str
 ) -> None:
     """Create a GAR with its field measurements and laboratory research hierarchy."""
+    # Field observations are flat keys in fieldResearch, as in the GAR templates.
     field_research = sourcedocument_data.get("fieldResearch", {})
-    field_observation = field_research.get("fieldObservation", {})
 
     gar, _ = GAR.objects.update_or_create(
         bro_id=bro_id,
@@ -36,17 +36,17 @@ def create_gar(
             "secondary_colour": field_research.get("secondaryColour"),
             "colour_strength": field_research.get("colourStrength"),
             "pump_type": field_research.get("pumpType"),
-            "abnormality_in_cooling": field_observation.get("abnormalityInCooling"),
-            "abnormality_in_device": field_observation.get("abnormalityInDevice"),
-            "polluted_by_engine": field_observation.get("pollutedByEngine"),
-            "filter_aerated": field_observation.get("filterAerated"),
-            "groundwater_level_dropped_too_much": field_observation.get(
-                "groundwaterLevelDroppedTooMuch"
+            "abnormality_in_cooling": field_research.get("abnormalityInCooling"),
+            "abnormality_in_device": field_research.get("abnormalityInDevice"),
+            "polluted_by_engine": field_research.get("pollutedByEngine"),
+            "filter_aerated": field_research.get("filterAerated"),
+            "groundwater_level_dropped_too_much": field_research.get(
+                "groundWaterLevelDroppedTooMuch"
             ),
-            "abnormal_filter": field_observation.get("abnormalFilter"),
-            "sample_aerated": field_observation.get("sampleAerated"),
-            "hose_reused": field_observation.get("hoseReused"),
-            "temperature_difficult_to_measure": field_observation.get(
+            "abnormal_filter": field_research.get("abnormalFilter"),
+            "sample_aerated": field_research.get("sampleAerated"),
+            "hose_reused": field_research.get("hoseReused"),
+            "temperature_difficult_to_measure": field_research.get(
                 "temperatureDifficultToMeasure"
             ),
         },

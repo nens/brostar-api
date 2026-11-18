@@ -23,6 +23,7 @@ from frd.models import (
     GeoElectricMeasurement,
     MeasurementConfiguration,
 )
+from gar.models import GAR
 from gld.models import GLD, Observation  # Example model to check side effects
 from gmn.models import GMN, Measuringpoint
 from gmw.models import GMW, Event, MonitoringTube  # Example model to check side effects
@@ -306,6 +307,82 @@ def test_post_save_uploadtask_triggers_create_objects_gld(organisation: Organisa
     assert gld_instance.bro_id == "GLD000000012345"
     assert gld_instance.gmw_bro_id == "BRO123"
     assert int(gld_instance.tube_number) == 1
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_create_objects_gar(organisation: Organisation):  # noqa: F811
+    """A completed GAR registration creates the GAR with its field and lab data."""
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GAR",
+        registration_type="GAR",
+        request_type="registration",
+        status="COMPLETED",
+        bro_id="GAR000000012345",
+        metadata={
+            "qualityRegime": "IMBRO/A",
+            "requestReference": "BROSTAR_Request",
+            "deliveryAccountableParty": "50616641",
+        },
+        sourcedocument_data={
+            "objectIdAccountableParty": "test_upload",
+            "qualityControlMethod": "onbekend",
+            "gmwBroId": "GMW000000012345",
+            "tubeNumber": 2,
+            "fieldResearch": {
+                "samplingDateTime": "1993-04-28T14:00:00+02:00",
+                "samplingOperator": "27376655",
+                "pumpType": "onderwaterpomp",
+                "hoseReused": "nee",
+                "groundWaterLevelDroppedTooMuch": "onbekend",
+                "fieldMeasurements": [
+                    {
+                        "parameter": 1522,
+                        "unit": "Cel",
+                        "fieldMeasurementValue": 9.8,
+                        "qualityControlStatus": "goedgekeurd",
+                    }
+                ],
+            },
+            "laboratoryAnalyses": [
+                {
+                    "responsibleLaboratoryKvk": "27376655",
+                    "analysisProcesses": [
+                        {
+                            "date": "1993-05-04",
+                            "analyticalTechnique": "AAS",
+                            "valuationMethod": "CIW",
+                            "analyses": [
+                                {
+                                    "parameter": 1267,
+                                    "unit": "ug/l",
+                                    "analysisMeasurementValue": 8.7,
+                                    "reportingLimit": 1,
+                                    "qualityControlStatus": "goedgekeurd",
+                                }
+                            ],
+                        }
+                    ],
+                }
+            ],
+        },
+    )
+
+    gar = GAR.objects.get(bro_id="GAR000000012345")
+    assert gar.internal_id == "test_upload"
+    assert gar.gmw_bro_id == "GMW000000012345"
+    assert int(gar.tube_number) == 2
+    assert gar.pump_type == "onderwaterpomp"
+    # Field observations are read from the flat fieldResearch keys
+    assert gar.hose_reused == "nee"
+    assert gar.groundwater_level_dropped_too_much == "onbekend"
+    assert gar.field_measurements.count() == 1
+
+    lab_research = gar.laboratory_researches.get()
+    assert lab_research.laboratory_kvk_number == "27376655"
+    process = lab_research.laboratory_processes.get()
+    assert process.validation_method == "CIW"
+    assert process.laboratory_analyses.get().parameter == 1267
 
 
 @pytest.mark.django_db
