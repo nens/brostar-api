@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from . import views
+from .corrections.gld.views import GLDRegistrationView
 
 app_name = "api"
 
@@ -39,6 +40,11 @@ urlpatterns = [
     path(
         "uploadtask/correction/gld/",
         include("api.corrections.gld.urls"),
+    ),
+    path(
+        "uploadtask/registration/gld/",
+        GLDRegistrationView.as_view(),
+        name="uploadtask-gld-registration",
     ),
 ]
 

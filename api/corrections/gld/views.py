@@ -5,8 +5,10 @@ correction into it and create a GLD_Addition / replace UploadTask.
 """
 
 import logging
+import uuid
 from typing import Any
 
+from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.request import Request
@@ -14,15 +16,30 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api import models as api_models
+from api.bro_upload.upload_datamodels import UploadTaskMetadata
 
 from ..exceptions import CorrectionValidationError, ObservationNotFound
 from ..kvk import resolve_investigator_kvk, wants_organisation_kvk
 from . import client, timespan
 from .builder import build_addition, build_metadata
 from .merging import measurement_from_payload, merge_measurements, merge_procedure
+from .registration import (
+    build_segment_addition,
+    fetch_tube_geometry,
+    split_measurements,
+)
 from .serializers import (
     GLDMeasurementCorrectionSerializer,
     GLDProcedureCorrectionSerializer,
+    GLDRegistrationSerializer,
+)
+from .validation import (
+    DEFAULT_FLATLINE_SIGMA_MULTIPLIER,
+    DEFAULT_PHYSICAL_TOLERANCE,
+    DEFAULT_RULES,
+    DEFAULT_SPIKE_SIGMA_MULTIPLIER,
+    ValidationSettings,
+    validate_measurements,
 )
 from .xml_reader import ParsedGLD, ParsedObservation, parse_gld_response
 
@@ -215,3 +232,134 @@ class GLDProcedureCorrectionView(BaseGLDCorrectionView):
         )
 
         return observation.measurements, merged, period, changed, log
+
+
+@extend_schema(
+    summary="Registreer een GLD_Addition op basis van metingen",
+    description=(
+        "Valideert de metingen en maakt een aparte GLD_Addition UploadTask voor "
+        "elk aaneengesloten meetsegment. De standaardregels zijn flatline "
+        "(vijf opeenvolgende lage delta's, standaard 0.1 standaarddeviatie), "
+        "spike (standaard 3 standaarddeviaties), onder de tube-top en boven de "
+        "tube-bottom (beide met een tolerantie van 0.1 m). De sensorhoogteregel "
+        "is opt-in en vereist validation_options.sensor_height. Regels en "
+        "toleranties kunnen via validation_options worden aangepast. Per meting "
+        "heeft afgekeurd voorrang op onbeslist, en onbeslist op goedgekeurd; "
+        "niet-numerieke metingen behouden hun bestaande kwaliteitsstatus. "
+        "Bij ten minste 50 metingen wordt de mediaan van positieve meetintervallen "
+        "gebruikt, begrensd op een dag en vermenigvuldigd met 24; bij minder "
+        "metingen is de cutoff een dag. Bepaalde peilklokjes worden niet gesplitst."
+    ),
+    request=GLDRegistrationSerializer,
+)
+class GLDRegistrationView(BaseGLDCorrectionView):
+    """Validate and split a complete GLD addition before creating UploadTasks."""
+
+    serializer_class = GLDRegistrationSerializer
+
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        organisation = self._get_organisation(request)
+
+        options = data.get("validation_options", {})
+        rules = tuple(options.get("rules", DEFAULT_RULES))
+        settings = ValidationSettings(
+            rules=rules,
+            flatline_sigma_multiplier=options.get(
+                "flatline_sigma_multiplier",
+                DEFAULT_FLATLINE_SIGMA_MULTIPLIER,
+            ),
+            spike_sigma_multiplier=options.get(
+                "spike_sigma_multiplier",
+                DEFAULT_SPIKE_SIGMA_MULTIPLIER,
+            ),
+            tube_top_tolerance=options.get(
+                "tube_top_tolerance", DEFAULT_PHYSICAL_TOLERANCE
+            ),
+            tube_bottom_tolerance=options.get(
+                "tube_bottom_tolerance", DEFAULT_PHYSICAL_TOLERANCE
+            ),
+            sensor_height_tolerance=options.get(
+                "sensor_height_tolerance", DEFAULT_PHYSICAL_TOLERANCE
+            ),
+            sensor_height=options.get("sensor_height"),
+        )
+
+        addition = serializer.addition_model
+        segments = split_measurements(addition)
+        tube_top = tube_bottom = None
+        if {"below_tube_top", "above_tube_bottom"}.intersection(rules):
+            bro_id = serializer.metadata_model.bro_id
+            if not bro_id:
+                raise CorrectionValidationError(
+                    "metadata.broId is required to validate tube geometry."
+                )
+            tube_top, tube_bottom = fetch_tube_geometry(bro_id)
+
+        task_payloads: list[
+            tuple[UploadTaskMetadata, dict[str, Any], tuple[str, str, str]]
+        ] = []
+        for index, segment in enumerate(segments, start=1):
+            validate_measurements(
+                segment,
+                settings,
+                tube_top=tube_top,
+                tube_bottom=tube_bottom,
+            )
+            segmented_addition = build_segment_addition(addition, segment)
+            metadata = serializer.metadata_model.model_copy(deep=True)
+            if len(segments) > 1:
+                metadata.request_reference = (
+                    f"{metadata.request_reference}_{index}_{uuid.uuid4().hex[:8]}"
+                )
+            task_payloads.append(
+                (
+                    metadata,
+                    segmented_addition.model_dump(
+                        mode="json", by_alias=True, exclude_unset=True
+                    ),
+                    (
+                        segmented_addition.begin_position,
+                        segmented_addition.end_position,
+                        segmented_addition.result_time or "",
+                    ),
+                )
+            )
+
+        upload_tasks = [
+            api_models.UploadTask(
+                data_owner=organisation,
+                bro_domain="GLD",
+                project_number=data["project_number"],
+                registration_type="GLD_Addition",
+                request_type="registration",
+                metadata=metadata.model_dump(by_alias=True, exclude_unset=True),
+                sourcedocument_data=sourcedocument_data,
+            )
+            for metadata, sourcedocument_data, _ in task_payloads
+        ]
+        with transaction.atomic():
+            created_tasks = api_models.UploadTask.objects.bulk_create(upload_tasks)
+
+            def start_created_tasks() -> None:
+                for task in created_tasks:
+                    task.save()
+
+            transaction.on_commit(start_created_tasks)
+
+        return Response(
+            {
+                "upload_tasks": [
+                    {
+                        "uuid": str(task.uuid),
+                        "begin_position": period[0],
+                        "end_position": period[1],
+                        "result_time": period[2],
+                    }
+                    for task, (_, _, period) in zip(created_tasks, task_payloads)
+                ]
+            },
+            status=status.HTTP_201_CREATED,
+        )
