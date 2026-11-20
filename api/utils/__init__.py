@@ -147,7 +147,7 @@ CREATE_FUNCTION_MAPPING = {
     "FRD_EMM_InstrumentConfiguration": create_frd_emm_instrument_configuration,
     "FRD_GEM_Measurement": create_frd_gem_measurement,
     "FRD_EMM_Measurement": create_frd_emm_measurement,
-    "GAR_StartRegistration": create_gar,
+    "GAR": create_gar,
     "GUF_StartRegistration": create_guf,
     "GPD_StartRegistration": create_gpd,
     "GPD_AddReport": create_gpd_report,
@@ -188,6 +188,7 @@ UPDATE_FUNCTION_MAPPING = {
         update_gmn_measuringpoint, event_type="GMN_TubeReference"
     ),
     "FRD_StartRegistration": update_frd,
+    "GAR": create_gar,
 }
 
 DELETE_FUNCTION_MAPPING = {
