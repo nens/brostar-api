@@ -135,18 +135,19 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
     # Move from initially correcting, to correcting if error occurs.
     # This way, we only apply the correction logic if the specific error occurs.
     # The correction only works for up-to-date tubes.
-    if (
-        instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]
-        and "wordt geacht gelijk te zijn aan het verschil in" in instance.bro_errors
-    ):
+    if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
         for tube in instance.sourcedocument_data.get("monitoringTubes", []):
-            plain_tube_length = get_plain_tube_part_length(
-                instance.metadata.get("broId"),
-                tube.get("tubeNumber"),
-                tube.get("tubeTopPosition"),
-            )
-            if plain_tube_length is not None and not is_staging:
-                tube["plainTubePartLength"] = str(plain_tube_length)
+            if (
+                "wordt geacht gelijk te zijn aan het verschil in" in instance.bro_errors
+                or tube.get("plainTubePartLength") is None
+            ):
+                plain_tube_length = get_plain_tube_part_length(
+                    instance.metadata.get("broId"),
+                    tube.get("tubeNumber"),
+                    tube.get("tubeTopPosition"),
+                )
+                if plain_tube_length is not None and not is_staging:
+                    tube["plainTubePartLength"] = str(plain_tube_length)
 
         instance.status = "PENDING"
         instance.bro_errors = ""
