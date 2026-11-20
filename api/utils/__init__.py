@@ -188,7 +188,6 @@ UPDATE_FUNCTION_MAPPING = {
         update_gmn_measuringpoint, event_type="GMN_TubeReference"
     ),
     "FRD_StartRegistration": update_frd,
-    
     "GAR": create_gar,
 }
 
