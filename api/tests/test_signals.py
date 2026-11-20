@@ -385,6 +385,92 @@ def test_post_save_uploadtask_triggers_create_objects_gar(organisation: Organisa
     assert process.laboratory_analyses.get().parameter == 1267
 
 
+def _gar_sourcedocument(hose_reused: str, analyses: list[dict], process: dict) -> dict:
+    return {
+        "objectIdAccountableParty": "test_upload",
+        "qualityControlMethod": "onbekend",
+        "gmwBroId": "GMW123456789",
+        "tubeNumber": 1,
+        "fieldResearch": {
+            "samplingDateTime": "1993-04-28T14:00:00+02:00",
+            "hoseReused": hose_reused,
+        },
+        "laboratoryAnalyses": [
+            {
+                "responsibleLaboratoryKvk": "27376655",
+                "analysisProcesses": [
+                    {"date": "1993-05-04", **process, "analyses": analyses}
+                ],
+            }
+        ],
+    }
+
+
+@pytest.mark.django_db
+def test_post_save_uploadtask_triggers_update_objects_gar(
+    organisation: Organisation,  # noqa: F811
+    tube: MonitoringTube,  # noqa: F811
+):
+    """A completed GAR replace rebuilds the GAR in BROSTAR from the delivered data."""
+    metadata = {
+        "qualityRegime": "IMBRO/A",
+        "requestReference": "BROSTAR_Request",
+        "deliveryAccountableParty": "50616641",
+    }
+    analysis_1267 = {
+        "parameter": 1267,
+        "unit": "ug/l",
+        "analysisMeasurementValue": 8.7,
+        "qualityControlStatus": "goedgekeurd",
+    }
+    analysis_284 = {
+        "parameter": 284,
+        "unit": "ug/l",
+        "analysisMeasurementValue": 54,
+        "limitSymbol": "LT",
+        "reportingLimit": 54,
+        "qualityControlStatus": "goedgekeurd",
+    }
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GAR",
+        registration_type="GAR",
+        request_type="registration",
+        status="COMPLETED",
+        bro_id="GAR000000012345",
+        metadata=metadata,
+        sourcedocument_data=_gar_sourcedocument(
+            "nee", [analysis_1267], {"valuationMethod": "CIW"}
+        ),
+    )
+
+    # The correction form sends validationMethod and the complete analysis list
+    UploadTask.objects.create(
+        data_owner=organisation,
+        bro_domain="GAR",
+        registration_type="GAR",
+        request_type="replace",
+        status="COMPLETED",
+        bro_id="GAR000000012345",
+        metadata={**metadata, "broId": "GAR000000012345"},
+        sourcedocument_data=_gar_sourcedocument(
+            "ja", [analysis_284], {"validationMethod": "CIW"}
+        ),
+    )
+
+    gar = GAR.objects.get(bro_id="GAR000000012345")
+    assert gar.hose_reused == "ja"
+    assert gar.monitoring_tube == tube
+
+    # Only the analysis from the replace is left, not the one from before
+    process = gar.laboratory_researches.get().laboratory_processes.get()
+    assert process.validation_method == "CIW"
+    analysis = process.laboratory_analyses.get()
+    assert analysis.parameter == 284
+    assert analysis.limit_symbol == "LT"
+    assert analysis.reporting_limit == "54"
+
+
 @pytest.mark.django_db
 def test_post_save_uploadtask_triggers_create_objects_gld_observation(
     organisation: Organisation,  # noqa: F811

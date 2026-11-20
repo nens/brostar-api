@@ -7,6 +7,7 @@ from gar.models import (
     FieldMeasurement,
     LaboratoryResearch,
 )
+from gmw.models import MonitoringTube
 
 logger = logging.getLogger(__name__)
 
@@ -14,14 +15,26 @@ logger = logging.getLogger(__name__)
 def create_gar(
     bro_id: str, metadata: dict, sourcedocument_data: dict, data_owner: str
 ) -> None:
-    """Create a GAR with its field measurements and laboratory research hierarchy."""
+    """Create or replace a GAR with its field measurements and laboratory research.
+
+    Used after a successful registration and after a successful replace, so the
+    GAR in BROSTAR matches what was delivered to the BRO.
+    """
     # Field observations are flat keys in fieldResearch, as in the GAR templates.
     field_research = sourcedocument_data.get("fieldResearch", {})
+
+    # Same lookup as the GAR import, so the GAR shows up under the right tube
+    monitoring_tube = MonitoringTube.objects.filter(
+        gmw__bro_id=sourcedocument_data.get("gmwBroId"),
+        tube_number=sourcedocument_data.get("tubeNumber"),
+        data_owner=data_owner,
+    ).first()
 
     gar, _ = GAR.objects.update_or_create(
         bro_id=bro_id,
         data_owner=data_owner,
         defaults={
+            "monitoring_tube": monitoring_tube,
             "internal_id": sourcedocument_data.get("objectIdAccountableParty"),
             "delivery_accountable_party": metadata.get("deliveryAccountableParty"),
             "quality_regime": metadata.get("qualityRegime"),
@@ -51,6 +64,12 @@ def create_gar(
             ),
         },
     )
+
+    # A replace delivers the complete GAR: remove the old child rows first, so no
+    # analyses or measurements from before the correction are left behind.
+    # Deleting a LaboratoryResearch also deletes its processes and analyses.
+    FieldMeasurement.objects.filter(gar=gar, data_owner=data_owner).delete()
+    LaboratoryResearch.objects.filter(gar=gar, data_owner=data_owner).delete()
 
     _create_field_measurements(gar, field_research, data_owner)
     _create_laboratory_researches(
@@ -89,7 +108,9 @@ def _create_laboratory_researches(
                 data_owner=data_owner,
                 defaults={
                     "analytical_technique": process.get("analyticalTechnique"),
-                    "validation_method": process.get("valuationMethod"),
+                    # The GAR correction form sends validationMethod (model field name)
+                    "validation_method": process.get("valuationMethod")
+                    or process.get("validationMethod"),
                 },
             )
             for analysis in process.get("analyses", []):

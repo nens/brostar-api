@@ -6,6 +6,9 @@
 -   Bugfix [Templates]: GAR valuationMethod is also read from validationMethod; empty valuationMethod and analyticalTechnique now get a codeSpace (fixes XSD error on GAR corrections)
 -   Bugfix [UploadTasks]: GAR samplingDateTime is rewritten to the BRO format in Dutch time (e.g. 1993-04-28T11:00:00.000Z becomes 1993-04-28T13:00:00+02:00); values already in the BRO format are kept
 -   Bugfix [Import]: GAR import now keeps colours, reporting limits and values with a limit symbol
+-   Bugfix [UploadTasks]: a successful GAR registration now creates the GAR object, linked to its monitoring tube
+-   Enhancement [UploadTasks]: a successful GAR replace updates the GAR object in BROSTAR
+-   Enhancement [GAR]: new field internal_id on GAR for the objectIdAccountableParty
 
 
 ## 1.82 (2026-11-11)
