@@ -54,6 +54,16 @@ class UploadTaskMetadata(CamelModel):
     correction_reason: CorrectionReasonOptions | None = None
 
 
+class MoveRequestData(CamelModel):
+    """Extra data that only move requests carry next to the sourcedocument data.
+
+    The sourcedocument datamodels describe the registration/replace/insert
+    payloads; move-specific fields are validated here instead.
+    """
+
+    date_to_be_corrected: str
+
+
 class GARBulkUploadMetadata(CamelModel):
     request_reference: str
     quality_regime: QualityRegimeOptions
@@ -188,7 +198,6 @@ class GMWConstruction(CamelModel):
     ground_level_position: float | None = None
     ground_level_positioning_method: str
     monitoring_tubes: list["MonitoringTube"]
-    date_to_be_corrected: str | None = None
 
     # Newly added in GMW1.1
     geometric_data_publicly_available: str | None = None
@@ -1157,7 +1166,7 @@ class GUFAddRealisedInstallation(CamelModel):
         return self
 
 
-# Updated GUFExpandedRealisedInstallation class
+# Updated GUFExpandRealisedInstallation class
 class GUFExpandRealisedInstallation(CamelModel):
     """Source document data for GUF_ExpandRealisedInstallation"""
 

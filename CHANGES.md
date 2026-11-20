@@ -3,7 +3,10 @@
 ## 1.83 (unreleased)
 
 
-- Nothing changed yet.
+-   Bugfix [Templates]: Correct many templates in style and variable naming
+-   Enhancement [Automation]: TubeLength determination only triggers on faulty first attempt.
+            PDOK uses most recent state, cannot be used for inserts of old events.
+-   Enhancement [Datamodels]: Add MoveData model, to add date_to_be_corrected to sourcedocument data
 
 
 ## 1.82 (2026-11-11)
