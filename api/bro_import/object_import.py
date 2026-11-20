@@ -952,14 +952,14 @@ class GARObjectImporter(ObjectImporter):
                 "sampling_standard": field_research_data.get(
                     "garcommon:samplingStandard", None
                 ).get("#text", None),
-                "primary_colour": field_research_data.get(
-                    "garcommon:primaryColour", None
+                "primary_colour": self._text_or_none(
+                    field_observation_data.get("garcommon:primaryColour", None)
                 ),
-                "secondary_colour": field_research_data.get(
-                    "garcommon:secondaryColour", None
+                "secondary_colour": self._text_or_none(
+                    field_observation_data.get("garcommon:secondaryColour", None)
                 ),
-                "colour_strength": field_research_data.get(
-                    "garcommon:colourStrength", None
+                "colour_strength": self._text_or_none(
+                    field_observation_data.get("garcommon:colourStrength", None)
                 ),
                 "pump_type": field_research_data.get("garcommon:samplingDevice", None)
                 .get("garcommon:pumpType", None)
@@ -1102,30 +1102,35 @@ class GARObjectImporter(ObjectImporter):
             analysis_process=analysis_process, data_owner=self.data_owner
         ).delete()
         for analysis in analyses:
-            analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
-            value = self._text_or_none(analysis_value)
-            limit_symbol = self._text_or_none(
-                analysis.get("garcommon:limitSymbol", None)
-            )
-            reporting_limit = None
-            if limit_symbol is not None:
-                reporting_limit = value
-                value = None
-
             Analysis.objects.update_or_create(
                 analysis_process=analysis_process,
                 parameter=int(analysis.get("garcommon:parameter")),
                 data_owner=self.data_owner,
-                defaults={
-                    "value": value,
-                    "unit": self._attr_or_none(analysis_value, "uom"),
-                    "reporting_limit": reporting_limit,
-                    "limit_symbol": limit_symbol,
-                    "status_quality_control": self._text_or_none(
-                        analysis.get("garcommon:qualityControlStatus", None)
-                    ),
-                },
+                defaults=self._parse_analysis(analysis),
             )
+
+    @classmethod
+    def _parse_analysis(cls, analysis: dict[str, Any]) -> dict[str, Any]:
+        """Read one garcommon:analysis as it is stored in the BRO.
+
+        The value and the reporting limit are kept as delivered, also for values
+        with a limit symbol (e.g. "<"), so a correction sends them back unchanged.
+        """
+        analysis_value = analysis.get("garcommon:analysisMeasurementValue", None)
+        reporting_limit = analysis.get("garcommon:reportingLimit", None)
+        return {
+            "value": cls._text_or_none(analysis_value),
+            # A nil value has no uom; the reporting limit uses the same unit
+            "unit": cls._attr_or_none(analysis_value, "uom")
+            or cls._attr_or_none(reporting_limit, "uom"),
+            "reporting_limit": cls._text_or_none(reporting_limit),
+            "limit_symbol": cls._text_or_none(
+                analysis.get("garcommon:limitSymbol", None)
+            ),
+            "status_quality_control": cls._text_or_none(
+                analysis.get("garcommon:qualityControlStatus", None)
+            ),
+        }
 
 
 OBSERVATION_NAMESPACE = {

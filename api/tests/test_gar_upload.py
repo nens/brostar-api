@@ -1,3 +1,5 @@
+import pytest
+
 from api.bro_upload import object_upload
 
 expected_gar_xml_str = """<registrationRequest xmlns="http://www.broservices.nl/xsd/isgar/1.0"
@@ -172,3 +174,72 @@ def test_gar_xml_creation():
     xml = generator.create_xml_file()
     print(xml)
     assert xml
+
+
+def _gar_sourcedocs(process_fields: dict) -> dict:
+    return {
+        "objectIdAccountableParty": "test",
+        "qualityControlMethod": "onbekend",
+        "gmwBroId": "GMW1234567890",
+        "tubeNumber": 1,
+        "fieldResearch": {"samplingDateTime": "2018-10-23T16:59:32+01:00"},
+        "laboratoryAnalyses": [
+            {
+                "responsibleLaboratoryKvk": "12345678",
+                "analysisProcesses": [
+                    {
+                        "date": "2018-10-25",
+                        **process_fields,
+                        "analyses": [
+                            {
+                                "parameter": "1234",
+                                "unit": "ug/l",
+                                "analysisMeasurementValue": "0.1",
+                                "qualityControlStatus": "goed",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    }
+
+
+VALUATION_CIW = '<garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod">CIW</garcom:valuationMethod>'
+
+
+@pytest.mark.parametrize("request_type", ["registration", "replace"])
+@pytest.mark.parametrize(
+    "process_fields, expected",
+    [
+        ({"analyticalTechnique": "AAS", "valuationMethod": "CIW"}, [VALUATION_CIW]),
+        # The BROSTAR frontend sends validationMethod (named after the model field)
+        ({"analyticalTechnique": "AAS", "validationMethod": "CIW"}, [VALUATION_CIW]),
+        # The XSD requires codeSpace, also on nil elements
+        (
+            {},
+            [
+                '<garcom:analyticalTechnique codeSpace="urn:bro:gar:AnalyticalTechnique" xsi:nil="true"/>',
+                '<garcom:valuationMethod codeSpace="urn:bro:gar:ValuationMethod" xsi:nil="true"/>',
+            ],
+        ),
+    ],
+)
+def test_gar_analysis_process_codespace(request_type, process_fields, expected):
+    generator = object_upload.XMLGenerator(
+        registration_type="GAR",
+        request_type=request_type,
+        metadata={
+            "requestReference": "test",
+            "qualityRegime": "IMBRO/A",
+            "broId": "GAR000000000001",
+            "correctionReason": "eigenCorrectie",
+        },
+        sourcedocs_data=_gar_sourcedocs(process_fields),
+    )
+
+    xml = generator.create_xml_file()
+
+    assert generator.status == "COMPLETED"
+    for fragment in expected:
+        assert fragment in xml

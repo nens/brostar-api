@@ -7,6 +7,9 @@
 -   Enhancement [Automation]: TubeLength determination only triggers on faulty first attempt.
             PDOK uses most recent state, cannot be used for inserts of old events.
 -   Enhancement [Datamodels]: Add MoveData model, to add date_to_be_corrected to sourcedocument data
+-   Bugfix [Templates]: GAR valuationMethod is also read from validationMethod; empty valuationMethod and analyticalTechnique now get a codeSpace (fixes XSD error on GAR corrections)
+-   Bugfix [UploadTasks]: GAR samplingDateTime is rewritten to the BRO format in Dutch time (e.g. 1993-04-28T11:00:00.000Z becomes 1993-04-28T13:00:00+02:00); values already in the BRO format are kept
+-   Bugfix [Import]: GAR import now keeps colours, reporting limits and values with a limit symbol
 
 
 ## 1.82 (2026-11-11)
