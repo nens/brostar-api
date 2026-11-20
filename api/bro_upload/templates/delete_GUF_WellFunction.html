@@ -19,7 +19,7 @@
       >
       {% endfor %}
       {% if sourcedocs_data.wellFunctions|length == 2 %}
-      <gufcom:relativeTemperature codeSpace=""
+      <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature"
         >{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature
       >
       {% endif %}
@@ -27,12 +27,10 @@
       {% if sourcedocs_data.realisedInstallationFunction %}
       <gufcom:realisedInstallationFunction>
         <gufcom:realisedInstallationId
-          >{{ sourcedocs_data.realisedInstallationFunction.realisedInstallationId
-          }}</gufcom:realisedInstallationId
+          >{{ sourcedocs_data.realisedInstallationFunction.realisedInstallationId }}</gufcom:realisedInstallationId
         >
         <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction"
-          >{{ sourcedocs_data.realisedInstallationFunction.installationFunction
-          }}</gufcom:installationFunction
+          >{{ sourcedocs_data.realisedInstallationFunction.installationFunction }}</gufcom:installationFunction
         >
       </gufcom:realisedInstallationFunction>
       {% endif %}

@@ -19,10 +19,10 @@
       {% if sourcedocs_data.installationFunction %}
       <gufcom:installationFunction codeSpace="urn:bro:guf:InstallationFunction">{{ sourcedocs_data.installationFunction }}</gufcom:installationFunction>
       {% endif %}
-      {% if sourcedocs_data.installation_pos %}
+      {% if sourcedocs_data.installationPos %}
       <gufcom:geometry>
         <gml:Point srsName="urn:ogc:def:crs:EPSG::28992" gml:id="id_0002">
-          <gml:pos>{{ sourcedocs_data.installation_pos }}</gml:pos>
+          <gml:pos>{{ sourcedocs_data.installationPos }}</gml:pos>
         </gml:Point>
       </gufcom:geometry>
       {% endif %}
@@ -39,15 +39,15 @@
       </gufcom:endTime>
       {% for realised_loop in sourcedocs_data.realisedLoops %}
       <gufcom:realisedLoop>
-        <gufcom:RealisedLoopClosurePart gml:id="{{ realised_loop.gml_id }}">
-          <gufcom:realisedLoopId>{{ realised_loop.realised_loop_id }}</gufcom:realisedLoopId>
+        <gufcom:RealisedLoopClosurePart gml:id="{{ realised_loop.gmlId }}">
+          <gufcom:realisedLoopId>{{ realised_loop.realisedLoopId }}</gufcom:realisedLoopId>
         </gufcom:RealisedLoopClosurePart>
       </gufcom:realisedLoop>
       {% endfor %}
       {% for realised_surface_infiltration in sourcedocs_data.realisedSurfaceInfiltrations %}
       <gufcom:realisedSurfaceInfiltration>
-        <gufcom:RealisedSurfaceInfiltrationClosurePart gml:id="{{ realised_surface_infiltration.gml_id }}">
-          <gufcom:infiltrationBasinId>{{ realised_surface_infiltration.infiltration_basin_id }}</gufcom:infiltrationBasinId>
+        <gufcom:RealisedSurfaceInfiltrationClosurePart gml:id="{{ realised_surface_infiltration.gmlId }}">
+          <gufcom:infiltrationBasinId>{{ realised_surface_infiltration.infiltrationBasinId }}</gufcom:infiltrationBasinId>
         </gufcom:RealisedSurfaceInfiltrationClosurePart>
       </gufcom:realisedSurfaceInfiltration>
       {% endfor %}

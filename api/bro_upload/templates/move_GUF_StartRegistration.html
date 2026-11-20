@@ -44,19 +44,19 @@
           {% for licensed_quantity in sourcedocs_data.licensedQuantities %}
           <gufcom:licensedQuantity>
             <gufcom:licensedInOut codeSpace="urn:bro:guf:LicensedInOut">{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut>
-            {% if licensed_quantity.maximumPerHour is not none %}
+            {% if licensed_quantity.maximumPerHour is not None %}
             <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumPerHour }}</gufcom:maximumPerHour>
             {% endif %}
-            {% if licensed_quantity.maximumPerDay is not none %}
+            {% if licensed_quantity.maximumPerDay is not None %}
             <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumPerDay }}</gufcom:maximumPerDay>
             {% endif %}
-            {% if licensed_quantity.maximumPerMonth is not none %}
+            {% if licensed_quantity.maximumPerMonth is not None %}
             <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumPerMonth }}</gufcom:maximumPerMonth>
             {% endif %}
-            {% if licensed_quantity.maximumPerQuarter is not none %}
+            {% if licensed_quantity.maximumPerQuarter is not None %}
             <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumPerQuarter }}</gufcom:maximumPerQuarter>
             {% endif %}
-            {% if licensed_quantity.maximumPerYear is not none %}
+            {% if licensed_quantity.maximumPerYear is not None %}
             <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumPerYear }}</gufcom:maximumPerYear>
             {% endif %}
           </gufcom:licensedQuantity>
@@ -74,19 +74,19 @@
               {% for licensed_quantity in installation.licensedQuantities %}
               <gufcom:licensedQuantity>
                 <gufcom:licensedInOut codeSpace="urn:bro:guf:LicensedInOut">{{ licensed_quantity.licensedInOut }}</gufcom:licensedInOut>
-                {% if licensed_quantity.maximumPerHour is not none %}
+                {% if licensed_quantity.maximumPerHour is not None %}
                 <gufcom:maximumPerHour uom="m3">{{ licensed_quantity.maximumPerHour }}</gufcom:maximumPerHour>
                 {% endif %}
-                {% if licensed_quantity.maximumPerDay is not none %}
+                {% if licensed_quantity.maximumPerDay is not None %}
                 <gufcom:maximumPerDay uom="m3">{{ licensed_quantity.maximumPerDay }}</gufcom:maximumPerDay>
                 {% endif %}
-                {% if licensed_quantity.maximumPerMonth is not none %}
+                {% if licensed_quantity.maximumPerMonth is not None %}
                 <gufcom:maximumPerMonth uom="m3">{{ licensed_quantity.maximumPerMonth }}</gufcom:maximumPerMonth>
                 {% endif %}
-                {% if licensed_quantity.maximumPerQuarter is not none %}
+                {% if licensed_quantity.maximumPerQuarter is not None %}
                 <gufcom:maximumPerQuarter uom="m3">{{ licensed_quantity.maximumPerQuarter }}</gufcom:maximumPerQuarter>
                 {% endif %}
-                {% if licensed_quantity.maximumPerYear is not none %}
+                {% if licensed_quantity.maximumPerYear is not None %}
                 <gufcom:maximumPerYear uom="m3">{{ licensed_quantity.maximumPerYear }}</gufcom:maximumPerYear>
                 {% endif %}
               </gufcom:licensedQuantity>
@@ -211,8 +211,8 @@
                   {% if well.maximumWellCapacity %}
                   <gufcom:maximumWellCapacity uom="m3/h">{{ well.maximumWellCapacity }}</gufcom:maximumWellCapacity>
                   {% endif %}
-                  {% if well.installationFunction == 'openBodemenergiesysteem' and well.wellFunctions|length == 2 %}
-                  <gufcom:relativeTemperature codeSpace="">{{ well.relativeTemperature }}</gufcom:relativeTemperature>
+                  {% if installation.installationFunction == 'openBodemenergiesysteem' and well.wellFunctions|length == 2 %}
+                  <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature">{{ well.relativeTemperature }}</gufcom:relativeTemperature>
                   {% endif %}
                   {% if well.designScreen %}
                   <gufcom:designScreen>
@@ -222,8 +222,8 @@
                     <gufcom:designScreenBottom uom="m">{{ well.designScreen.designScreenBottom }}</gufcom:designScreenBottom>
                     {% endif %}
                   </gufcom:designScreen>
-                  {% if well.designScreen.geometryPubliclyAvailable %}
-                  <gufcom:designScreenPubliclyAvailable>{{ well.designScreen.geometryPubliclyAvailable }}</gufcom:designScreenPubliclyAvailable>
+                  {% if well.designScreenPubliclyAvailable %}
+                  <gufcom:designScreenPubliclyAvailable>{{ well.designScreenPubliclyAvailable }}</gufcom:designScreenPubliclyAvailable>
                   {% endif %}
                   {% endif %}
                 </gufcom:DesignWell>

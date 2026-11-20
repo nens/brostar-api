@@ -18,7 +18,7 @@
         >
         {% endfor %}
         {% if sourcedocs_data.wellFunctions|length == 2 %}
-        <gufcom:relativeTemperature codeSpace="">{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature>
+        <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature">{{ sourcedocs_data.relativeTemperature }}</gufcom:relativeTemperature>
         {% endif %}
         <gufcom:startValidity>{{ sourcedocs_data.eventDate }}</gufcom:startValidity>
         {% if sourcedocs_data.realisedInstallationFunction %}

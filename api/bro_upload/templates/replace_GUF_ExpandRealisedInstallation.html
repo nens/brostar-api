@@ -71,15 +71,13 @@
           </gufcom:geometry>
         </gufcom:RealisedLoop>
       </gufcom:realisedLoop>
-      {% endfor %} {% for realised_surface_infiltration in
-      sourcedocs_data.realisedSurfaceInfiltrations %}
+      {% endfor %} {% for realised_surface_infiltration in sourcedocs_data.realisedSurfaceInfiltrations %}
       <gufcom:realisedSurfaceInfiltration>
         <gufcom:RealisedSurfaceInfiltration
           gml:id="{{ realised_surface_infiltration.gmlId }}"
         >
           <gufcom:realisedSurfaceInfiltrationId
-            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId
-            }}</gufcom:realisedSurfaceInfiltrationId
+            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId }}</gufcom:realisedSurfaceInfiltrationId
           >
           <gufcom:geometry>
             <gml:Polygon
@@ -127,7 +125,7 @@
           {% endif %}
           <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.  -->
           {% if sourcedocs_data.installationFunction == 'openBodemenergiesysteem' and realised_well.wellFunctions|length == 2 %}
-          <gufcom:relativeTemperature codeSpace="">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
+          <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
           {% endif %}
           <!--  validity/lifespan are not allowed in GUF_ExpandRealisedInstallation  -->
           <!--  0 or more repetitions:  -->
