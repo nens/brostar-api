@@ -99,7 +99,13 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
 
     is_staging = "staging" in os.getenv("NENS_AUTH_RESOURCE_SERVER_ID", "")
 
-    if instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]:
+    # Move from initially correcting, to correcting if error occurs.
+    # This way, we only apply the correction logic if the specific error occurs.
+    # The correction only works for up-to-date tubes.
+    if (
+        instance.registration_type in ["GMW_Shortening", "GMW_Lengthening"]
+        and "wordt geacht gelijk te zijn aan het verschil in" in instance.bro_errors
+    ):
         for tube in instance.sourcedocument_data.get("monitoringTubes", []):
             plain_tube_length = get_plain_tube_part_length(
                 instance.metadata.get("broId"),
@@ -108,6 +114,9 @@ def pre_save_upload_task(sender, instance: UploadTask, **kwargs):
             )
             if plain_tube_length is not None and not is_staging:
                 tube["plainTubePartLength"] = str(plain_tube_length)
+
+        instance.status = "PENDING"
+        instance.bro_errors = ""
 
     if any(
         err in instance.bro_errors
@@ -130,38 +139,67 @@ def get_plain_tube_part_length(
 ) -> float | None:
     """Fetch the plain tube part length for a given bro_id and tube_number."""
     import requests
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 
-    r = requests.get(
-        f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw/items?f=json&bro_id={bro_id}",
-        timeout=5,
+    base_url = (
+        "https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections"
     )
-    if r.status_code < 300:
-        features = r.json().get("features", [])
-        logger.info(f"Fetched features for bro_id {bro_id}: {features}")
-        if len(features) > 0:
-            gm_gmw_pk = features[0].get("properties", {}).get("gm_gmw_pk")
-        else:
-            gm_gmw_pk = None
+    retry = Retry(
+        total=3,
+        backoff_factor=0.5,  # waits 0.5s, 1s, 2s between attempts
+        status_forcelist=(429, 500, 502, 503, 504),
+        allowed_methods=("GET",),
+    )
 
-        if gm_gmw_pk:
-            r = requests.get(
-                f"https://api.pdok.nl/bzk/bro-gminsamenhang-karakteristieken/ogc/v1/collections/gm_gmw_monitoringtube/items?f=json&gm_gmw_fk={gm_gmw_pk}&tube_number={tube_number}",
+    try:
+        with requests.Session() as s:
+            s.mount("https://", HTTPAdapter(max_retries=retry))
+
+            r = s.get(
+                f"{base_url}/gm_gmw/items",
+                params={"f": "json", "bro_id": bro_id},
                 timeout=5,
             )
-            if r.status_code < 300:
-                features = r.json().get("features", [])
-                if len(features) == 0:
-                    return None
+            if r.status_code >= 300:
+                return None
 
-                return round(
-                    float(tube_top_position)
-                    - float(
-                        features[0].get("properties", {}).get("screen_top_position")
-                    ),
-                    3,
-                )
+            features = r.json().get("features", [])
+            logger.info(f"Fetched features for bro_id {bro_id}: {features}")
+            if not features:
+                return None
 
-    return None
+            gm_gmw_pk = features[0].get("properties", {}).get("gm_gmw_pk")
+            if not gm_gmw_pk:
+                return None
+
+            r = s.get(
+                f"{base_url}/gm_gmw_monitoringtube/items",
+                params={
+                    "f": "json",
+                    "gm_gmw_fk": gm_gmw_pk,
+                    "tube_number": tube_number,
+                },
+                timeout=5,
+            )
+            if r.status_code >= 300:
+                return None
+
+            features = r.json().get("features", [])
+            if not features:
+                return None
+
+            return round(
+                float(tube_top_position)
+                - float(features[0].get("properties", {}).get("screen_top_position")),
+                3,
+            )
+    except requests.RequestException as e:
+        logger.warning(
+            f"Failed to fetch plain tube part length for {bro_id} "
+            f"(tube {tube_number}): {e}"
+        )
+        return None
 
 
 # def poll_bro_relations(bro_id: str) -> list[str]:
