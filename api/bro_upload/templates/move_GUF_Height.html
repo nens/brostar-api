@@ -20,7 +20,9 @@
       <gufcom:wellFunction codeSpace="urn:bro:guf:WellFunction">{{ well_function }}</gufcom:wellFunction>
       {% endfor %}
       <gufcom:height>{{ sourcedocs_data.height }}</gufcom:height>
-      <gufcom:wellDepth>{{ sourcedocs_data.height }}</gufcom:wellDepth>
+      {% if sourcedocs_data.wellDepth is not None %}
+      <gufcom:wellDepth>{{ sourcedocs_data.wellDepth }}</gufcom:wellDepth>
+      {% endif %}
       <gufcom:startValidity>
         {% if sourcedocs_data.startValidity|length == 10 %}
         <brocom:date>{{ sourcedocs_data.startValidity }}</brocom:date>
@@ -32,10 +34,12 @@
         <brocom:voidReason>onbekend</brocom:voidReason>
         {% endif %}
       </gufcom:startValidity>
-      <gufcom:RealisedScreenChanges gml:id="id_0002">
-        <gufcom:realisedScreenId>{{ sourcedocs_data.realisedScreenId }}</gufcom:realisedScreenId>
-        <gufcom:topScreenDepth>{{ sourcedocs_data.topScreenDepth }}</gufcom:topScreenDepth>
+      {% for realised_screen in sourcedocs_data.realisedScreens %}
+      <gufcom:RealisedScreenChanges gml:id="id_screen_{{ forloop.counter }}">
+        <gufcom:realisedScreenId>{{ realised_screen.realisedScreenId }}</gufcom:realisedScreenId>
+        <gufcom:topScreenDepth>{{ realised_screen.topScreenDepth }}</gufcom:topScreenDepth>
       </gufcom:RealisedScreenChanges>
+      {% endfor %}
     </gufcom:GUF_Height>
   </sourceDocument>
   <dateToBeCorrected>

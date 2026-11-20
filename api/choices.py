@@ -116,7 +116,7 @@ REGISTRATION_TYPE_OPTIONS = [
     ("SFR", "SFR"),
     ("GUF_StartRegistration", "GUF_StartRegistration"),
     ("GUF_NewLicence", "GUF_NewLicence"),
-    ("GUF_ExpandedRealisedInstallation", "GUF_ExpandedRealisedInstallation"),
+    ("GUF_ExpandRealisedInstallation", "GUF_ExpandRealisedInstallation"),
     # (
     #     "GUF_GeometryRealisedSurfaceInfiltration",
     #     "GUF_GeometryRealisedSurfaceInfiltration",

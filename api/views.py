@@ -31,6 +31,7 @@ from api.bro_upload.upload_datamodels import (
     GLDBulkUploadMetadata,
     GLDBulkUploadSourcedocumentData,
     GMNBulkUploadMetadata,
+    MoveRequestData,
     UploadTaskMetadata,
 )
 from api.choices import registration_type_datamodel_mapping
@@ -425,6 +426,22 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             errors = utils.simplify_validation_errors(e.errors())
             return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Move requests carry dateToBeCorrected next to the sourcedocument data.
+        # It is not part of the sourcedocument datamodels, so validate it separately.
+        move_data = None
+        if serializer.validated_data["request_type"] == "move":
+            try:
+                move_data = MoveRequestData(
+                    **strip_whitespace(
+                        drop_empty_strings(
+                            serializer.validated_data.get("sourcedocument_data") or {}
+                        )
+                    )
+                )
+            except ValidationError as e:
+                errors = utils.simplify_validation_errors(e.errors())
+                return Response({"detail": errors}, status=status.HTTP_400_BAD_REQUEST)
+
         # Validate the sourcedocument_data input
         # Some sourcedocuments have no internal data.
         registration_type = serializer.validated_data["registration_type"]
@@ -456,6 +473,12 @@ class UploadTaskViewSet(mixins.UserOrganizationMixin, viewsets.ModelViewSet):
             # Registration types without source-document fields do not use
             # caller-provided source-document data.
             serializer.validated_data["sourcedocument_data"] = {}
+
+        # model_dump() drops fields outside the datamodel, so restore the move date.
+        if move_data is not None:
+            serializer.validated_data["sourcedocument_data"]["dateToBeCorrected"] = (
+                move_data.date_to_be_corrected
+            )
 
         # Accessing the authenticated user's organization
         user_profile = models.UserProfile.objects.get(user=request.user)

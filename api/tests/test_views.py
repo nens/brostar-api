@@ -463,6 +463,54 @@ def test_uploadtask_view_ignores_sourcedocument_data_without_fields(
     assert response.json()["sourcedocument_data"] == {}
 
 
+def _move_upload_data(sourcedocument_data):
+    return {
+        "bro_domain": "GUF",
+        "project_number": "1",
+        "registration_type": "GUF_Closure",
+        "request_type": "move",
+        "metadata": {
+            "requestReference": "test",
+            "deliveryAccountableParty": "12345678",
+            "qualityRegime": "IMBRO",
+            "broId": "GUF000000000001",
+            "correctionReason": "eigenCorrectie",
+        },
+        "sourcedocument_data": sourcedocument_data,
+    }
+
+
+@pytest.mark.django_db
+def test_uploadtask_view_move_keeps_date_to_be_corrected(
+    api_client, user, userprofile, organisation
+):
+    """GUF data is stored via model_dump, which must not drop dateToBeCorrected."""
+    api_client.force_authenticate(user=user)
+    data = _move_upload_data(
+        {"endTime": "2024-05-01", "dateToBeCorrected": "2024-01-01"}
+    )
+
+    response = api_client.post("/api/uploadtasks/", data, format="json")
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.json()["sourcedocument_data"] == {
+        "endTime": "2024-05-01",
+        "dateToBeCorrected": "2024-01-01",
+    }
+
+
+@pytest.mark.django_db
+def test_uploadtask_view_move_requires_date_to_be_corrected(
+    api_client, user, userprofile, organisation
+):
+    api_client.force_authenticate(user=user)
+    data = _move_upload_data({"endTime": "2024-05-01"})
+
+    response = api_client.post("/api/uploadtasks/", data, format="json")
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
 @pytest.mark.django_db
 def test_uploadtask_view_post_invalid_data(api_client, user, userprofile, organisation):
     """Test posting on the uploadtasks enpoint

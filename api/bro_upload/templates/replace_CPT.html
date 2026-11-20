@@ -59,7 +59,7 @@
       <deliveredVerticalPosition>
         <cptcom:localVerticalReferencePoint codeSpace="urn:bro:cpt:LocalVerticalReferencePoint">{{ sourcedocs_data.localVerticalReferencePoint }}</cptcom:localVerticalReferencePoint>
         <cptcom:offset uom="m">{{ sourcedocs_data.offset }}</cptcom:offset>
-        {% if sourcedocs_data.waterDepth is not none %}
+        {% if sourcedocs_data.waterDepth is not None %}
         <cptcom:waterDepth uom="m">{{ sourcedocs_data.waterDepth }}</cptcom:waterDepth>
         {% endif %}
         <cptcom:verticalDatum codeSpace="urn:bro:cpt:VerticalDatum">{{ sourcedocs_data.verticalDatum }}</cptcom:verticalDatum>
@@ -98,7 +98,7 @@
         {% if sourcedocs_data.additionalInvestigation.surfaceDescription %}
         <cptcom:surfaceDescription>{{ sourcedocs_data.additionalInvestigation.surfaceDescription }}</cptcom:surfaceDescription>
         {% endif %}
-        {% if sourcedocs_data.additionalInvestigation.groundwaterLevel is not none %}
+        {% if sourcedocs_data.additionalInvestigation.groundwaterLevel is not None %}
         <cptcom:groundwaterLevel uom="m">{{ sourcedocs_data.additionalInvestigation.groundwaterLevel }}</cptcom:groundwaterLevel>
         {% endif %}
         {% for layer in sourcedocs_data.additionalInvestigation.removedLayers %}
@@ -128,7 +128,7 @@
         <cptcom:cptMethod codeSpace="urn:bro:cpt:CPTMethod">{{ sourcedocs_data.conePenetrometerSurvey.cptMethod }}</cptcom:cptMethod>
         <cptcom:qualityClass codeSpace="urn:bro:cpt:QualityClass">{{ sourcedocs_data.conePenetrometerSurvey.qualityClass }}</cptcom:qualityClass>
         <cptcom:stopCriterion codeSpace="urn:bro:cpt:StopCriterion">{{ sourcedocs_data.conePenetrometerSurvey.stopCriterion }}</cptcom:stopCriterion>
-        {% if sourcedocs_data.conePenetrometerSurvey.sensorAzimuth is not none %}
+        {% if sourcedocs_data.conePenetrometerSurvey.sensorAzimuth is not None %}
         <cptcom:sensorAzimuth uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.sensorAzimuth }}</cptcom:sensorAzimuth>
         {% endif %}
         <cptcom:trajectory>
@@ -147,48 +147,48 @@
           <cptcom:zeroLoadMeasurement>
             <cptcom:coneResistanceBefore uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.coneResistanceBefore }}</cptcom:coneResistanceBefore>
             <cptcom:coneResistanceAfter uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.coneResistanceAfter }}</cptcom:coneResistanceAfter>
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityBefore is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityBefore is not None %}
             <cptcom:electricalConductivityBefore uom="S/m">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityBefore }}</cptcom:electricalConductivityBefore>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityAfter is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityAfter is not None %}
             <cptcom:electricalConductivityAfter uom="S/m">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.electricalConductivityAfter }}</cptcom:electricalConductivityAfter>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwBefore is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwBefore is not None %}
             <cptcom:inclinationEWBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwBefore }}</cptcom:inclinationEWBefore>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwAfter is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwAfter is not None %}
             <cptcom:inclinationEWAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationEwAfter }}</cptcom:inclinationEWAfter>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsBefore is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsBefore is not None %}
             <cptcom:inclinationNSBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsBefore }}</cptcom:inclinationNSBefore>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsAfter is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsAfter is not None %}
             <cptcom:inclinationNSAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationNsAfter }}</cptcom:inclinationNSAfter>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantBefore is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantBefore is not None %}
             <cptcom:inclinationResultantBefore uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantBefore }}</cptcom:inclinationResultantBefore>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantAfter is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantAfter is not None %}
             <cptcom:inclinationResultantAfter uom="deg">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.inclinationResultantAfter }}</cptcom:inclinationResultantAfter>
             {% endif %}
             <cptcom:localFrictionBefore uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.localFrictionBefore }}</cptcom:localFrictionBefore>
             <cptcom:localFrictionAfter uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.localFrictionAfter }}</cptcom:localFrictionAfter>
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1Before is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1Before is not None %}
             <cptcom:porePressureU1Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1Before }}</cptcom:porePressureU1Before>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1After is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1After is not None %}
             <cptcom:porePressureU1After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU1After }}</cptcom:porePressureU1After>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2Before is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2Before is not None %}
             <cptcom:porePressureU2Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2Before }}</cptcom:porePressureU2Before>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2After is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2After is not None %}
             <cptcom:porePressureU2After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU2After }}</cptcom:porePressureU2After>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3Before is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3Before is not None %}
             <cptcom:porePressureU3Before uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3Before }}</cptcom:porePressureU3Before>
             {% endif %}
-            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3After is not none %}
+            {% if sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3After is not None %}
             <cptcom:porePressureU3After uom="MPa">{{ sourcedocs_data.conePenetrometerSurvey.conePenetrometer.zeroLoadMeasurement.porePressureU3After }}</cptcom:porePressureU3After>
             {% endif %}
           </cptcom:zeroLoadMeasurement>
@@ -253,7 +253,7 @@
             </swe:encoding>
             <cptcom:values>{{ dissipationTest.dissipationTestResult.values }}</cptcom:values>
           </cptcom:disResult>
-          <cptcom:penetrationLength uom="m">{{ dissipationTest.dissipationTestResult.penetrationLength }}</cptcom:penetrationLength>
+          <cptcom:penetrationLength uom="m">{{ dissipationTest.penetrationLength }}</cptcom:penetrationLength>
         </cptcom:dissipationTest>
         {% endfor %}
         <cptcom:procedure>

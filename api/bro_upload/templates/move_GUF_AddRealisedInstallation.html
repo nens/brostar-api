@@ -7,7 +7,7 @@
     <deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</deliveryAccountableParty>
     <broId>{{ metadata.broId }}</broId>
     <qualityRegime>{{ metadata.qualityRegime }}</qualityRegime>
-    <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ correction_reason }}</correctionReason>
+    <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
     <sourceDocument>
         <gufcom:GUF_AddRealisedInstallation gml:id="id_0001" xmlns:gml="http://www.opengis.net/gml/3.2">
       <gufcom:realisedInstallationId
@@ -72,8 +72,7 @@
           gml:id="{{ realised_surface_infiltration.gmlId }}"
         >
           <gufcom:realisedSurfaceInfiltrationId
-            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId
-            }}</gufcom:realisedSurfaceInfiltrationId
+            >{{ realised_surface_infiltration.realisedSurfaceInfiltrationId }}</gufcom:realisedSurfaceInfiltrationId
           >
           <gufcom:geometry>
             <gml:Polygon

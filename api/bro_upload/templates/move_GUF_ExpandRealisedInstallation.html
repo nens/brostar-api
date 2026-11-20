@@ -7,7 +7,7 @@
     <deliveryAccountableParty>{{ metadata.deliveryAccountableParty }}</deliveryAccountableParty>
     <broId>{{ metadata.broId }}</broId>
     <qualityRegime>{{ metadata.qualityRegime }}</qualityRegime>
-    <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ correction_reason }}</correctionReason>
+    <correctionReason codeSpace="urn:bro:guf:CorrectionReason">{{ metadata.correctionReason }}</correctionReason>
     <sourceDocument>
         <gufcom:GUF_ExpandRealisedInstallation gml:id="id_0001" xmlns:gml="http://www.opengis.net/gml/3.2">
       <gufcom:realisedInstallationId
@@ -95,7 +95,7 @@
           {% endif %}
           <!--  Optional: mandatory if installationFunction is openBodemenergiesysteem and multiplicity of wellFunction is 2.  -->
           {% if sourcedocs_data.installationFunction == 'openBodemenergiesysteem' and realised_well.wellFunctions|length == 2 %}
-          <gufcom:relativeTemperature codeSpace="">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
+          <gufcom:relativeTemperature codeSpace="urn:bro:guf:RelativeTemperature">{{ realised_well.relativeTemperature }}</gufcom:relativeTemperature>
           {% endif %}
           <!--  validity/lifespan are not allowed in GUF_ExpandRealisedInstallation  -->
           <!--  0 or more repetitions:  -->
