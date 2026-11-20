@@ -16,6 +16,12 @@ class GAR(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     data_owner = models.ForeignKey("api.Organisation", on_delete=models.CASCADE)
+    internal_id = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        help_text="Object-ID bronhouder (objectIdAccountableParty).",
+    )
     bro_id = models.CharField(max_length=18)
     delivery_accountable_party = models.CharField(max_length=8, null=True)
     quality_regime = models.CharField(max_length=100, null=True)
