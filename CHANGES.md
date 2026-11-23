@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.83 (unreleased)
+## 1.83 (2026-11-23)
 
 
 -   Bugfix [Templates]: Correct many templates in style and variable naming
