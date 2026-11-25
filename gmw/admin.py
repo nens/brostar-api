@@ -23,11 +23,11 @@ class MonitoringTubeAdmin(admin.ModelAdmin):
         "tube_number",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "gmw",
-    )
+    list_select_related = ("gmw", "data_owner")
+    list_filter = ("data_owner",)
+    # Required by autocomplete_fields on other admins.
+    search_fields = ("gmw__bro_id", "tube_number")
+    raw_id_fields = ("gmw",)
 
 
 class EventAdmin(admin.ModelAdmin):

@@ -1,11 +1,8 @@
-import django_filters
-from django import forms
 from django.db.models import ForeignKey, JSONField
 from django_filters import CharFilter, FilterSet, UUIDFilter
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
-from gmw.models import MonitoringTube
 
 from . import models as gar_models
 
@@ -16,17 +13,15 @@ class GarFilter(DateTimeFilterMixin, FilterSet):
         field_name="gmw_bro_id", lookup_expr="icontains"
     )
 
-    monitoring_tube = django_filters.ModelChoiceFilter(
-        queryset=MonitoringTube.objects.all(),
-        widget=forms.TextInput(attrs={"placeholder": "Enter Monitoring Tube UUID"}),
-    )
-
     class Meta:
         model = gar_models.GAR
         fields = "__all__"
         filter_overrides = {
             JSONField: {
                 "filter_class": CharFilter,
+            },
+            ForeignKey: {
+                "filter_class": UUIDFilter,
             },
         }
 

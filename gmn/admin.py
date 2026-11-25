@@ -24,11 +24,10 @@ class MeasuringpointAdmin(admin.ModelAdmin):
         "tube_number",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "gmn",
-    )
+    list_select_related = ("gmn", "data_owner")
+    list_filter = ("data_owner",)
+    autocomplete_fields = ("monitoring_tube",)
+    raw_id_fields = ("gmn",)
 
 
 class IntermediateEventAdmin(admin.ModelAdmin):

@@ -14,11 +14,11 @@ class FRDAdmin(admin.ModelAdmin):
         "bro_id",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "bro_id",
-    )
+    list_select_related = ("data_owner",)
+    list_filter = ("data_owner",)
+    search_fields = ("bro_id", "gmw_bro_id")
+    # Avoids rendering a dropdown with every monitoring tube.
+    autocomplete_fields = ("monitoring_tube",)
 
 
 class MeasurementConfigurationAdmin(admin.ModelAdmin):
@@ -27,11 +27,9 @@ class MeasurementConfigurationAdmin(admin.ModelAdmin):
         "frd",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "frd",
-    )
+    list_select_related = ("frd", "data_owner")
+    list_filter = ("data_owner",)
+    raw_id_fields = ("frd",)
 
 
 class GeoElectricMeasurementAdmin(admin.ModelAdmin):
@@ -41,28 +39,24 @@ class GeoElectricMeasurementAdmin(admin.ModelAdmin):
         "measurement_date",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "frd",
-    )
+    list_select_related = ("frd", "data_owner")
+    list_filter = ("data_owner",)
+    raw_id_fields = ("frd",)
 
 
 class GeoElectricMeasureAdmin(admin.ModelAdmin):
     model = GeoElectricMeasure
     list_display = (
         "geo_electric_measurement",
-        "resistance_value",
+        "resistance",
         "data_owner",
     )
-
-    list_filter = (
-        "data_owner",
-        "geo_electric_measurement",
-    )
+    list_select_related = ("geo_electric_measurement__frd", "data_owner")
+    list_filter = ("data_owner",)
+    raw_id_fields = ("geo_electric_measurement",)
 
 
-admin.site.register(FRD)
-admin.site.register(MeasurementConfiguration)
-admin.site.register(GeoElectricMeasurement)
-admin.site.register(GeoElectricMeasure)
+admin.site.register(FRD, FRDAdmin)
+admin.site.register(MeasurementConfiguration, MeasurementConfigurationAdmin)
+admin.site.register(GeoElectricMeasurement, GeoElectricMeasurementAdmin)
+admin.site.register(GeoElectricMeasure, GeoElectricMeasureAdmin)
