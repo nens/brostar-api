@@ -14,6 +14,7 @@ class GARAdmin(admin.ModelAdmin):
         "data_owner",
         "bro_id",
     )
+    autocomplete_fields = ("monitoring_tube",)
 
 
 class FieldMeasurementAdmin(admin.ModelAdmin):

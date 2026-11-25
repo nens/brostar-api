@@ -1,4 +1,5 @@
-from django_filters import DateFilter, FilterSet
+from django.db.models import ForeignKey
+from django_filters import DateFilter, FilterSet, UUIDFilter
 from django_filters import rest_framework as filters
 
 from api.mixins import DateTimeFilterMixin
@@ -43,6 +44,11 @@ class MeasuringPointFilter(DateTimeFilterMixin, FilterSet):
     class Meta:
         model = Measuringpoint
         fields = "__all__"
+        filter_overrides = {
+            ForeignKey: {
+                "filter_class": UUIDFilter,
+            },
+        }
 
 
 class IntermediateEventFilter(DateTimeFilterMixin, FilterSet):
