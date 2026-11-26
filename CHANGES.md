@@ -1,6 +1,6 @@
 # Changelog for BROStar API
 
-## 1.84 (unreleased)
+## 1.84 (2026-11-26)
 
 
 -   Enhancement [Queries]: Updated the way 'monitoring_tube' is used for GMN MonitoringPoint and FRD objects, for both the admin and API filters. Increasing performance.
