@@ -3,7 +3,7 @@
 ## 1.84 (unreleased)
 
 
-- Nothing changed yet.
+-   Enhancement [Queries]: Updated the way 'monitoring_tube' is used for GMN MonitoringPoint and FRD objects, for both the admin and API filters. Increasing performance.
 
 
 ## 1.83 (2026-11-23)
