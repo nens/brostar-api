@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Made up GMN for the comparison tests: A active, B active with a replaced tube, C ended, D ended on an unknown date. -->
+<dispatchDataResponse xmlns="http://www.broservices.nl/xsd/dsgmn/1.0" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:brocom="http://www.broservices.nl/xsd/brocommon/3.0">
+  <brocom:responseType>dispatch</brocom:responseType>
+  <dispatchDocument>
+    <GMN_PPO gml:id="BRO_0001">
+      <brocom:broId>GMN000000000999</brocom:broId>
+      <brocom:deliveryAccountableParty>12345678</brocom:deliveryAccountableParty>
+      <brocom:qualityRegime>IMBRO</brocom:qualityRegime>
+      <monitoringNetHistory>
+        <startDateMonitoring><brocom:date>2020-01-01</brocom:date></startDateMonitoring>
+      </monitoringNetHistory>
+      <measuringPoint>
+        <MeasuringPoint gml:id="BRO_0002">
+          <measuringPointCode>A</measuringPointCode>
+          <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+          <monitoringTube>
+            <GroundwaterMonitoringTube gml:id="BRO_0003">
+              <broId>GMW000000000001</broId>
+              <tubeNumber>1</tubeNumber>
+              <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+            </GroundwaterMonitoringTube>
+          </monitoringTube>
+        </MeasuringPoint>
+      </measuringPoint>
+      <measuringPoint>
+        <MeasuringPoint gml:id="BRO_0004">
+          <measuringPointCode>B</measuringPointCode>
+          <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+          <monitoringTube>
+            <GroundwaterMonitoringTube gml:id="BRO_0005">
+              <broId>GMW000000000002</broId>
+              <tubeNumber>1</tubeNumber>
+              <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+              <endDate><brocom:date>2022-03-01</brocom:date></endDate>
+            </GroundwaterMonitoringTube>
+          </monitoringTube>
+          <monitoringTube>
+            <GroundwaterMonitoringTube gml:id="BRO_0006">
+              <broId>GMW000000000003</broId>
+              <tubeNumber>2</tubeNumber>
+              <startDate><brocom:date>2022-03-01</brocom:date></startDate>
+            </GroundwaterMonitoringTube>
+          </monitoringTube>
+        </MeasuringPoint>
+      </measuringPoint>
+      <measuringPoint>
+        <MeasuringPoint gml:id="BRO_0007">
+          <measuringPointCode>C</measuringPointCode>
+          <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+          <endDate><brocom:date>2023-05-01</brocom:date></endDate>
+          <monitoringTube>
+            <GroundwaterMonitoringTube gml:id="BRO_0008">
+              <broId>GMW000000000004</broId>
+              <tubeNumber>1</tubeNumber>
+              <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+              <endDate><brocom:date>2023-05-01</brocom:date></endDate>
+            </GroundwaterMonitoringTube>
+          </monitoringTube>
+        </MeasuringPoint>
+      </measuringPoint>
+      <measuringPoint>
+        <MeasuringPoint gml:id="BRO_0009">
+          <measuringPointCode>D</measuringPointCode>
+          <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+          <endDate><brocom:voidReason>onbekend</brocom:voidReason></endDate>
+          <monitoringTube>
+            <GroundwaterMonitoringTube gml:id="BRO_0010">
+              <broId>GMW000000000005</broId>
+              <tubeNumber>1</tubeNumber>
+              <startDate><brocom:date>2020-01-01</brocom:date></startDate>
+            </GroundwaterMonitoringTube>
+          </monitoringTube>
+        </MeasuringPoint>
+      </measuringPoint>
+    </GMN_PPO>
+  </dispatchDocument>
+</dispatchDataResponse>
