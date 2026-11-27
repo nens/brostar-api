@@ -2,6 +2,7 @@ from django.urls import include, path
 from rest_framework import routers
 
 from . import views
+from .comparisons.gmn.views import GMNComparisonView
 
 app_name = "api"
 
@@ -39,6 +40,11 @@ urlpatterns = [
     path(
         "uploadtask/correction/gld/",
         include("api.corrections.gld.urls"),
+    ),
+    path(
+        "uploadtasks/gmn/<str:gmn_id>/comparison/",
+        GMNComparisonView.as_view(),
+        name="gmn-comparison",
     ),
 ]
 

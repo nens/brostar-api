@@ -3,7 +3,7 @@
 ## 1.85 (unreleased)
 
 
-- Nothing changed yet.
+-   Feature [GMN]: New endpoint `uploadtasks/gmn/<bro_id>/comparison/`. Send the complete GMN; without `confirm` it returns the actions needed, with `confirm=true` it creates GMN_MeasuringPoint, GMN_TubeReference and GMN_MeasuringPointEndDate uploadtasks.
 
 
 ## 1.84 (2026-11-26)
