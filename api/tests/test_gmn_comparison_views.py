@@ -139,7 +139,7 @@ def test_confirm_creates_upload_tasks(
         "eventDate": "2026-10-01",
         "measuringPointCode": "B",
         "broId": "GMW000000000009",
-        "tubeNumber": 1,
+        "tubeNumber": 2,
     }
     assert celery.call_count == 2
 
